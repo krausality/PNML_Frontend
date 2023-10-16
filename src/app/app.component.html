@@ -1,0 +1,32 @@
+<div fxLayout="column" fxLayoutAlign="start stretch">
+    <!--  Header  -->
+    <a href="https://www.fernuni-hagen.de/ilovepetrinets/"><h1>I <span class="red">❤</span> Petri Nets</h1></a>
+    <h2>
+        Fachpraktikum Programmiersysteme WiSe23/24 by<br>
+        ..., ..., ..., ... and ...
+    </h2>
+
+    <!--    Main content    -->
+    <app-display class="padding full-size" (fileContent)="processSourceChange($event)"></app-display>
+
+
+    <div fxLayout="row" fxLayoutAlign="space-evenly start">
+        <app-example-button title="Button"></app-example-button>
+
+        <app-example-file title="File" link="assets/example.json" description="An example .json Petri net"></app-example-file>
+
+        <mat-form-field appearance="outline"
+                        class="textarea">
+            <mat-label>File content</mat-label>
+            <textarea matInput
+                      cdkTextareaAutosize
+                      cdkAutosizeMinRows="10"
+                      cdkAutosizeMaxRows="20"
+                      [formControl]="textareaFc"></textarea>
+        </mat-form-field>
+    </div>
+
+    <!--  Footer  -->
+    <hr>
+    <app-footer></app-footer>
+</div>
