@@ -29,7 +29,7 @@ export class PetriNetComponent {
     ];
 
     this.arcs = [
-        new Arc(this.places[0], this.transitions[0], 1),
+        new Arc(this.places[0], this.transitions[0], 5),
         new Arc(this.transitions[0], this.places[1], 1),
         new Arc(this.places[1], this.transitions[1], 1),
         new Arc(this.transitions[1], this.places[2], 1, [new Point(250, 300)]),

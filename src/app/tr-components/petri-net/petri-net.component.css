@@ -4,3 +4,42 @@
     border-style: dotted;
     border-color: lightgrey;
 }
+
+.place {
+    fill: white;
+    stroke: black;
+    stroke-width: 2;
+}
+
+.transition {
+    fill: grey;
+    stroke: black;
+    stroke-width: 2;
+}
+
+.transition.active{
+    fill: green;
+}
+
+
+.arc {
+    fill: none;
+    stroke: black;
+    stroke-width: 2;
+}
+
+.place-id{
+    fill: black;
+}
+
+.token-label{
+    fill: black;
+}
+
+.tansition-id{
+    fill: grey;
+}
+
+.arc-weight{
+    fill: black;
+}
