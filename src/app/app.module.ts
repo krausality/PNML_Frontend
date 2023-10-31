@@ -14,6 +14,7 @@ import {ExampleFileComponent} from './components/example-file/example-file.compo
 import {APP_BASE_HREF, PlatformLocation} from "@angular/common";
 import {HttpClientModule} from "@angular/common/http";
 import {ExampleButtonComponent} from "./components/example-button/example-button.component";
+import { PetriNetComponent } from './tr-components/petri-net/petri-net.component';
 
 @NgModule({
     declarations: [
@@ -22,6 +23,7 @@ import {ExampleButtonComponent} from "./components/example-button/example-button
         FooterComponent,
         ExampleFileComponent,
         ExampleButtonComponent,
+        PetriNetComponent,
     ],
     imports: [
         BrowserModule,

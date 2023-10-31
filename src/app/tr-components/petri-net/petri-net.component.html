@@ -1,0 +1,30 @@
+<svg #drawingArea class="canvas">
+
+    <defs>
+        <marker id="arrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7"></polygon>
+        </marker>
+    </defs>
+
+    // Places
+    <g *ngFor="let place of places">
+        <g>
+            <circle class="place" [attr.cx]="place.position.x" [attr.cy]="place.position.y" r="25" />
+            <text class="token-label" [attr.x]="place.position.x" [attr.y]="place.position.y" text-anchor="middle"
+                dominant-baseline="central">{{place.token}}</text>
+        </g>
+        <text class="place-id" [attr.x]="place.position.x" [attr.y]="place.position.y + 45" text-anchor="middle">{{place.id}}</text>
+    </g>
+
+    // Transitions
+    <g *ngFor="let transition of transitions">
+        <rect [attr.class]="transition.isActive ? 'transition active' : 'transition'" [attr.x]="transition.position.x - 25" [attr.y]="transition.position.y - 25" width="50" height="50" />
+        <text class="transition-id" [attr.x]="transition.position.x" [attr.y]="transition.position.y + 45" text-anchor="middle">{{transition.id}}</text>
+    </g>
+
+    // Arcs
+    <g *ngFor="let arc of arcs">
+        <polyline class="arc" [attr.points]="arc.polyLinePoints" marker-end="url(#arrow)"></polyline>
+    </g>
+
+</svg>
