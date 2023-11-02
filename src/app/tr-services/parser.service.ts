@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Coords, JsonPetriNet } from '../classes/json-petri-net';
-import { HttpClient } from '@angular/common/http';
 import { Place } from '../tr-classes/petri-net/place';
 import { Point } from '../tr-classes/petri-net/point';
 import { Transition } from '../tr-classes/petri-net/transition';
@@ -12,11 +11,7 @@ import { Node } from '../tr-interfaces/petri-net/node';
 })
 export class ParserService {
 
-  constructor(private httpClient: HttpClient) {}
-
-  mockParser() {
-    
-  }
+  constructor() {}
 
   // TODO specify correct return type
   parse(text: string): [Array<Place>, Array<Transition>, Array<Arc>] {
