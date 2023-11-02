@@ -75,10 +75,15 @@ export class DataService {
         ];
 
         this.arcs = [
-            new Arc(this.places[0], this.transitions[0], 5),
-            new Arc(this.transitions[0], this.places[1], 1),
-            new Arc(this.places[1], this.transitions[1], 1),
-            new Arc(this.transitions[1], this.places[2], 1, [new Point(250, 300)]),
+            new Arc(this._places[0], this._transitions[0], 5),
+            new Arc(this._transitions[0], this._places[1], 1),
+            new Arc(this._places[1], this._transitions[1], 1),
+            new Arc(this._transitions[1], this._places[2], 1, [new Point(250, 300)]),
         ];
+
+        this._transitions[0].appendPreArc(this._arcs[0]);
+        this._transitions[0].appendPostArc(this._arcs[1]);
+        this._transitions[1].appendPreArc(this._arcs[2]);
+        this._transitions[1].appendPreArc(this._arcs[3]);
     }
 }
