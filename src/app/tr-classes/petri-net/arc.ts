@@ -1,6 +1,7 @@
 import { Node } from "src/app/tr-interfaces/petri-net/node";
 import { Point } from "./point";
 import { Place } from "./place";
+import { Transition } from "./transition";
 
 export class Arc {
     from: Node;
@@ -32,5 +33,13 @@ export class Arc {
           s = s + point.x + ',' + point.y + ' ';
         }
         return s;
+    }
+
+    appendSelfToTransition() {
+        if (this.from instanceof Transition) {
+            (this.from as Transition).appendPostArc(this);
+        } else {
+            (this.to as Transition).appendPreArc(this);
+        }
     }
 }
