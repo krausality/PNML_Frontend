@@ -3,6 +3,7 @@ import {Arc} from "../tr-classes/petri-net/arc";
 import {Place} from "../tr-classes/petri-net/place";
 import {Transition} from "../tr-classes/petri-net/transition";
 import {Point} from "../tr-classes/petri-net/point";
+import {Observable, of} from "rxjs";
 
 @Injectable({
     providedIn: 'root'
@@ -22,12 +23,24 @@ export class DataService {
         return this._places
     }
 
+    getPlacesAsync(): Observable<Place[]> {
+        return of(this._places);
+    }
+
     getTransitions(): Transition[] {
         return this._transitions
     }
 
+    getTranistionsAsync(): Observable<Transition[]> {
+        return of(this._transitions);
+    }
+
     getArcs(): Arc[] {
         return this._arcs
+    }
+
+    getArcsAsync(): Observable<Arc[]> {
+        return of(this._arcs);
     }
 
 
@@ -44,19 +57,31 @@ export class DataService {
     }
 
     removePlace(deletablePlace: Place): Place[] {
-        this._arcs = this._arcs.filter(arc => !(arc.from === deletablePlace || arc.to === deletablePlace));
+        const deletableArcs= this._arcs.filter(arc => !(arc.from === deletablePlace || arc.to === deletablePlace));
+        deletableArcs.forEach(arc => this.removeArc(arc));
         this._places = this._places.filter(place => place !== deletablePlace);
         return this._places;
     }
 
     removeTransition(deletableTransition: Transition): Transition[] {
-        this._arcs = this._arcs.filter(arc => !(arc.from === deletableTransition || arc.to === deletableTransition));
+        const deletableArcs = this._arcs.filter(arc => !(arc.from === deletableTransition || arc.to === deletableTransition));
+        deletableArcs.forEach(arc => this.removeArc(arc));
         this.transitions = this._transitions.filter(transition => transition !== deletableTransition);
         return this._transitions;
     }
 
     removeArc(deletableArc: Arc): Arc[] {
         this._arcs = this._arcs.filter(arc => arc != deletableArc);
+
+        if (deletableArc.from instanceof Transition){
+            const t: Transition = deletableArc.from as Transition;
+            t.preArcs = t.preArcs.filter(arc => arc !== deletableArc);
+            t.postArcs = t.postArcs.filter(arc => arc !== deletableArc);
+        } else {
+            const t: Transition = deletableArc.to as Transition;
+            t.preArcs = t.preArcs.filter(arc => arc !== deletableArc);
+            t.postArcs = t.postArcs.filter(arc => arc !== deletableArc);
+        }
         return this._arcs;
     }
 
@@ -84,6 +109,6 @@ export class DataService {
         this._transitions[0].appendPreArc(this._arcs[0]);
         this._transitions[0].appendPostArc(this._arcs[1]);
         this._transitions[1].appendPreArc(this._arcs[2]);
-        this._transitions[1].appendPreArc(this._arcs[3]);
+        this._transitions[1].appendPostArc(this._arcs[3]);
     }
 }
