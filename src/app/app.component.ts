@@ -20,10 +20,5 @@ export class AppComponent {
 
     public processSourceChange(newSource: string) {
         this.textareaFc.setValue(newSource);
-
-        const result = this._parserService.parse(newSource);
-        if (result !== undefined) {
-            this._displayService.display(result);
-        }
     }
 }
