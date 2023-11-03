@@ -1,11 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Output } from '@angular/core';
-import { Arc } from 'src/app/tr-classes/petri-net/arc';
-import { Place } from 'src/app/tr-classes/petri-net/place';
-import { Transition } from 'src/app/tr-classes/petri-net/transition';
 import { ParserService } from 'src/app/tr-services/parser.service';
-import { catchError, of, Subscription, take } from 'rxjs';
+import { catchError, of, take } from 'rxjs';
 import { FileReaderService } from "../../services/file-reader.service";
+import {DataService} from "../../tr-services/data.service";
 
 @Component({
   selector: 'app-petri-net',
@@ -15,16 +13,12 @@ import { FileReaderService } from "../../services/file-reader.service";
 export class PetriNetComponent {
   @Output('fileContent') fileContent: EventEmitter<string>;
 
-  places: Place[] = [];
-  transitions: Transition[] = [];
-  arcs: Arc[] = [];
-
-  constructor(private parserService: ParserService, private httpClient: HttpClient, private fileReaderService: FileReaderService) {
+  constructor(private parserService: ParserService, private httpClient: HttpClient, private fileReaderService: FileReaderService, protected dataService: DataService) {
     this.httpClient.get("assets/example.json", { responseType: "text" }).subscribe(data => {
       const [places, transitions, arcs] = parserService.parse(data);
-      this.places = places;
-      this.transitions = transitions;
-      this.arcs = arcs;
+      this.dataService.places = places;
+      this.dataService.transitions = transitions;
+      this.dataService.arcs = arcs;
     });
 
     this.fileContent = new EventEmitter<string>();
@@ -34,9 +28,9 @@ export class PetriNetComponent {
     console.log('Parsing data');
     if (content) {
       const [places, transitions, arcs] = this.parserService.parse(content);
-      this.places = places;
-      this.transitions = transitions;
-      this.arcs = arcs;
+        this.dataService.places = places;
+        this.dataService.transitions = transitions;
+        this.dataService.arcs = arcs;
     }
   }
 
