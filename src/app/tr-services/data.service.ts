@@ -57,7 +57,7 @@ export class DataService {
     }
 
     removePlace(deletablePlace: Place): Place[] {
-        const deletableArcs= this._arcs.filter(arc => !(arc.from === deletablePlace || arc.to === deletablePlace));
+        const deletableArcs = this._arcs.filter(arc => !(arc.from === deletablePlace || arc.to === deletablePlace));
         deletableArcs.forEach(arc => this.removeArc(arc));
         this._places = this._places.filter(place => place !== deletablePlace);
         return this._places;
@@ -73,14 +73,12 @@ export class DataService {
     removeArc(deletableArc: Arc): Arc[] {
         this._arcs = this._arcs.filter(arc => arc != deletableArc);
 
-        if (deletableArc.from instanceof Transition){
+        if (deletableArc.from instanceof Transition) {
             const t: Transition = deletableArc.from as Transition;
-            t.preArcs = t.preArcs.filter(arc => arc !== deletableArc);
             t.postArcs = t.postArcs.filter(arc => arc !== deletableArc);
         } else {
             const t: Transition = deletableArc.to as Transition;
             t.preArcs = t.preArcs.filter(arc => arc !== deletableArc);
-            t.postArcs = t.postArcs.filter(arc => arc !== deletableArc);
         }
         return this._arcs;
     }
