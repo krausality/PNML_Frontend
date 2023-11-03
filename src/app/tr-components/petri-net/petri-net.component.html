@@ -25,6 +25,7 @@
     // Arcs
     <g *ngFor="let arc of arcs">
         <polyline class="arc" [attr.points]="arc.polyLinePoints" marker-end="url(#arrow)"></polyline>
+        <text class="arc-weight" [attr.x]="arc.from.position.x +50" [attr.y]="arc.from.position.y" text-anchor="middle">{{arc.weight}}</text>
     </g>
 
 </svg>
