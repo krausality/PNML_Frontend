@@ -1,4 +1,7 @@
-<svg #drawingArea class="canvas">
+<svg #drawingArea class="canvas"
+    (drop)="processDropEvent($event)"
+    (dragover)="prevent($event)"
+>
 
     <defs>
         <marker id="arrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
