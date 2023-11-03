@@ -20,7 +20,7 @@
     </g>
 
     // Transitions
-    <g *ngFor="let transition of dataService.getTranistionsAsync() | async">
+    <g *ngFor="let transition of dataService.getTranitionsAsync() | async">
         <rect [attr.class]="transition.isActive ? 'transition active' : 'transition'" [attr.x]="transition.position.x - 25" [attr.y]="transition.position.y - 25" width="50" height="50" />
         <text class="transition-id" [attr.x]="transition.position.x" [attr.y]="transition.position.y + 45" text-anchor="middle">{{transition.id}}</text>
     </g>

@@ -31,7 +31,7 @@ export class DataService {
         return this._transitions
     }
 
-    getTranistionsAsync(): Observable<Transition[]> {
+    getTranitionsAsync(): Observable<Transition[]> {
         return of(this._transitions);
     }
 
