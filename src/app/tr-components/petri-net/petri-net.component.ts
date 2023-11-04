@@ -4,6 +4,13 @@ import { ParserService } from 'src/app/tr-services/parser.service';
 import { catchError, of, take } from 'rxjs';
 import { FileReaderService } from "../../services/file-reader.service";
 import {DataService} from "../../tr-services/data.service";
+import {
+    idOffset,
+    radius,
+    transitionLength,
+    transitionOffset,
+    transitionWidth
+} from "../../tr-services/position.constants";
 
 @Component({
   selector: 'app-petri-net',
@@ -84,4 +91,10 @@ export class PetriNetComponent {
     // dragover must be prevented for drop to work
     e.preventDefault();
   }
+
+    protected readonly transitionWidth = transitionWidth;
+    protected readonly transitionLength = transitionLength;
+    protected readonly transitionOffset = transitionOffset;
+    protected readonly idOffset = idOffset;
+    protected readonly radius = radius;
 }
