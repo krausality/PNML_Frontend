@@ -66,7 +66,7 @@ export class DataService {
     removeTransition(deletableTransition: Transition): Transition[] {
         const deletableArcs = this._arcs.filter(arc => !(arc.from === deletableTransition || arc.to === deletableTransition));
         deletableArcs.forEach(arc => this.removeArc(arc));
-        this.transitions = this._transitions.filter(transition => transition !== deletableTransition);
+        this._transitions = this._transitions.filter(transition => transition !== deletableTransition);
         return this._transitions;
     }
 
