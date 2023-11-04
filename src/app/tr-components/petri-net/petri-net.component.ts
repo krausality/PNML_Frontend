@@ -5,11 +5,13 @@ import { catchError, of, take } from 'rxjs';
 import { FileReaderService } from "../../services/file-reader.service";
 import {DataService} from "../../tr-services/data.service";
 import {
-    idOffset,
     radius,
-    transitionLength,
-    transitionOffset,
-    transitionWidth
+    placeIdYOffset,
+    transitionWidth,
+    transitionHeight,
+    transitionXOffset,
+    transitionYOffset,
+    transitionIdYOffset
 } from "../../tr-services/position.constants";
 
 @Component({
@@ -92,9 +94,13 @@ export class PetriNetComponent {
     e.preventDefault();
   }
 
-    protected readonly transitionWidth = transitionWidth;
-    protected readonly transitionLength = transitionLength;
-    protected readonly transitionOffset = transitionOffset;
-    protected readonly idOffset = idOffset;
     protected readonly radius = radius;
+    protected readonly placeIdYOffset = placeIdYOffset;
+
+    protected readonly transitionWidth = transitionWidth;
+    protected readonly transitionHeight = transitionHeight;
+    protected readonly transitionXOffset = transitionXOffset;
+    protected readonly transitionYOffset = transitionYOffset;
+    protected readonly transitionIdYOffset = transitionIdYOffset;
+
 }
