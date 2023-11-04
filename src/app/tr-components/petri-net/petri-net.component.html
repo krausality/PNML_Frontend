@@ -25,7 +25,21 @@
     // Arcs
     <g *ngFor="let arc of arcs">
         <polyline class="arc" [attr.points]="arc.polyLinePoints" marker-end="url(#arrow)"></polyline>
-        <text class="arc-weight" [attr.x]="arc.from.position.x +50" [attr.y]="arc.from.position.y" text-anchor="middle">{{arc.weight}}</text>
+
+        // Weight at Arc without Anchorpoints - Middle of Polyline
+        // White Text for Background
+        <text *ngIf="arc.anchors.length == 0" class="arc-weight" [attr.x]="(arc.from.position.x + arc.to.position.x) / 2" [attr.y]="(arc.from.position.y + arc.to.position.y) / 2"  style="stroke:white; stroke-width:0.8em">{{arc.weight}}</text>
+        <text *ngIf="arc.anchors.length == 0" class="arc-weight" [attr.x]="(arc.from.position.x + arc.to.position.x) / 2" [attr.y]="(arc.from.position.y + arc.to.position.y) / 2" >{{arc.weight}}</text>
+
+        // Weight at Arc with 1 Anchorpoint - At the Anchorpoint
+        <text *ngIf="arc.anchors.length == 1" class="arc-weight" [attr.x]="arc.anchors[0].x" [attr.y]="arc.anchors[0].y">{{arc.weight}}</text>
+
+        // Weight at Arc with 2 Anchorpoints - Middle of the middle Line
+        <text *ngIf="arc.anchors.length == 2" class="arc-weight" [attr.x]="(arc.anchors[0].x + arc.anchors[1].x) / 2" [attr.y]="(arc.anchors[0].y + arc.anchors[1].y) / 2" >{{arc.weight}}</text>
+
+        // Weight at Arc with 3 Anchorpoints - At the middle Anchorpoint
+        <text *ngIf="arc.anchors.length == 3" class="arc-weight" [attr.x]="arc.anchors[1].x" [attr.y]="arc.anchors[1].y">{{arc.weight}}</text>
+
     </g>
 
 </svg>
