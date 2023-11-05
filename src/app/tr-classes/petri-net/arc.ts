@@ -24,7 +24,20 @@ export class Arc {
     }
 
     get polyLinePoints(): string {
-        return this.pointArrayToString([this.from.position, ...this.anchors, this.to.position]); // shallow copy
+        // ToDo: the application should make shure that no anchor points lie
+        // within the boundaries of the shapes associated with the from and
+        // to nodes
+
+        // Determine start point of the line
+        const pForStartCalc: Point = [...this.anchors, this.to.position][0];
+        const start: Point = this.from.intersectionOfBoundaryWithLineTo(pForStartCalc);
+
+        // Determine end point of the line
+        const anchorsPlusFrom: Point[] = [this.from.position, ...this.anchors]
+        const pForEndCalc: Point = anchorsPlusFrom[anchorsPlusFrom.length - 1]
+        const end: Point = this.to.intersectionOfBoundaryWithLineTo(pForEndCalc);
+
+        return this.pointArrayToString([start, ...this.anchors, end]);
     }
 
     private pointArrayToString(points: Point[]): string {
