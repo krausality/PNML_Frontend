@@ -30,26 +30,31 @@ export class Transition implements Node {
         let xIntersect: number;
         let yIntersect: number;
 
+        // angle of the line segment from this.position to p with the x-axis
         let alpha = Math.atan2((p.y - m.y), (p.x - m.x));
-        alpha = alpha < 0 ? alpha + 2 * Math.PI : alpha;
 
+        // angles of diagonal line segments from the center of the node rectangle to its four corners with respect to the x-axis.
+        let beta1 = Math.atan2(height, width);   // 1: center --> top right corner
+        let beta2 = Math.atan2(height, -width);  // 2: center --> top left corner
+        let beta3 = Math.atan2(-height, width);  // 3: center --> bottom left corner
+        let beta4 = Math.atan2(-height, -width); // 4: center --> bottom right corner
 
-        if (0.25 * Math.PI < alpha && alpha <= 0.75 * Math.PI){
+        if (beta1 < alpha && alpha <= beta2){
             // intersection with top side
             yIntersect = m.y + height/2;
-            xIntersect = m.x - Math.tan(alpha - Math.PI / 2) * height/2
-        } else if (1.25 * Math.PI < alpha && alpha <= 1.75 * Math.PI){
+            xIntersect = m.x + (height/2) / Math.tan(alpha);
+        } else if (beta3 < alpha && alpha <= beta4){
             // intersection with bottom side
             yIntersect = m.y - height/2;
-            xIntersect = m.x + Math.tan(alpha + 0.5 * Math.PI) * height/2
-        }else if (0.75 * Math.PI < alpha && alpha <= 1.25 * Math.PI){
-            // intersection with left side
-            xIntersect = m.x - width/2;
-            yIntersect = m.y + Math.tan(Math.PI - alpha) * (m.x - xIntersect);
-        }else {
+            xIntersect = m.x - (height/2) / Math.tan(alpha);
+        }else if (beta4 < alpha && alpha <= beta1) {
             // intersection with right side
             xIntersect = m.x + width/2;
-            yIntersect = m.y + Math.tan(alpha) * (xIntersect - m.x);
+            yIntersect = m.y + Math.tan(alpha) * width/2;
+        } else {
+            // intersection with left side
+            xIntersect = m.x - width/2;
+            yIntersect = m.y - Math.tan(alpha) * width/2;
         }
 
         return new Point(xIntersect, yIntersect);
