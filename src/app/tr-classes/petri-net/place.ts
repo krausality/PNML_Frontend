@@ -18,15 +18,12 @@ export class Place implements Node {
         // ToDo: replace hard coded value with value from graphics data service
         const r = 25;
 
+        if (! this.pLiesOutsideNodeShapeBoudary(p)){
+            throw new Error('Point p for calculating intersection with node shape must lie outside of the node shape boundary.')
+        }
+
         const m = this.position;
         const d = Math.sqrt((p.x - m.x) ** 2 + (p.y - m.y) ** 2);
-
-        if (d == 0) {
-            // d == 0 (i.e. p == this.position) should not occur!!!
-            // Return node position as fall back value, so that arcs could
-            // still be drawn (then to the center of the node instead of the boundary).
-            return (this.position);
-        }
 
         const sinAlpha = (p.y - m.y) / d;
         const cosAlpha = (p.x - m.x) / d;
@@ -34,4 +31,12 @@ export class Place implements Node {
         const xIntersect = m.x + r * cosAlpha;
         return new Point(xIntersect, yIntersect);
     }
+
+    pLiesOutsideNodeShapeBoudary(p: Point): boolean {
+        // ToDo: replace hard coded value with value from graphics data service
+        let r = 25;
+
+        const d = Math.sqrt((p.x - this.position.x)**2 + (p.y - this.position.y)**2);
+        return d > r;
+    };
 }

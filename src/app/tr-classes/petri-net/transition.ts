@@ -18,13 +18,13 @@ export class Transition implements Node {
     }
 
     intersectionOfBoundaryWithLineTo(p: Point): Point {
-        // Note: in the case of this.position == p (which should not
-        // occur), the alpha value given by Math.atan2 is 0. Thus, an
-        // intersection point with the left side will be given.
-
         // ToDo: replace hard coded values with values from graphics data service
         const width = 50;
         const height = 50;
+
+        if (! this.pLiesOutsideNodeShapeBoudary(p)){
+            throw new Error('Point p for calculating intersection with node shape must lie outside of the node shape boundary.')
+        }
 
         const m = this.position;
         let xIntersect: number;
@@ -36,8 +36,8 @@ export class Transition implements Node {
         // angles of diagonal line segments from the center of the node rectangle to its four corners with respect to the x-axis.
         let beta1 = Math.atan2(height, width);   // 1: center --> top right corner
         let beta2 = Math.atan2(height, -width);  // 2: center --> top left corner
-        let beta3 = Math.atan2(-height, width);  // 3: center --> bottom left corner
-        let beta4 = Math.atan2(-height, -width); // 4: center --> bottom right corner
+        let beta3 = Math.atan2(-height, -width); // 3: center --> bottom left corner
+        let beta4 = Math.atan2(-height, width);  // 4: center --> bottom right corner
 
         if (beta1 < alpha && alpha <= beta2){
             // intersection with top side
@@ -59,6 +59,17 @@ export class Transition implements Node {
 
         return new Point(xIntersect, yIntersect);
     }
+
+    pLiesOutsideNodeShapeBoudary(p: Point): boolean {
+        // ToDo: replace hard coded values with values from graphics data service
+        let width = 50;
+        let height = 50;
+
+        const absDx = Math.abs(p.x - this.position.x);
+        const absDy = Math.abs(p.y - this.position.y);
+
+        return absDx > width/2 || absDy > height/2;
+    };
 
     get isActive(): boolean{
         if (this.preArcs.length === 0) return false;

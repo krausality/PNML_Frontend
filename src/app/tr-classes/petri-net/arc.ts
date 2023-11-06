@@ -24,18 +24,35 @@ export class Arc {
     }
 
     get polyLinePoints(): string {
-        // ToDo: the application should make shure that no anchor points lie
+        // ToDo: the application should make sure that no anchor points lie
         // within the boundaries of the shapes associated with the from and
         // to nodes
 
+        let start: Point;
+        let end: Point;
+
         // Determine start point of the line
         const pForStartCalc: Point = [...this.anchors, this.to.position][0];
-        const start: Point = this.from.intersectionOfBoundaryWithLineTo(pForStartCalc);
+        if (this.from.pLiesOutsideNodeShapeBoudary(pForStartCalc)){
+            start = this.from.intersectionOfBoundaryWithLineTo(pForStartCalc);
+        } else {
+            // Fall back solution: if pForStartCalc lies within the boundaries
+            // of the shape, the start for the line is given as the center
+            // of the from-node --> a graphical representation of the petri-net
+            // can still be produced, even though the layout may not (yet) be
+            // optimal (e.g. somewhat overlapping nodes)
+            start = this.from.position;
+        }
 
         // Determine end point of the line
         const anchorsPlusFrom: Point[] = [this.from.position, ...this.anchors]
         const pForEndCalc: Point = anchorsPlusFrom[anchorsPlusFrom.length - 1]
-        const end: Point = this.to.intersectionOfBoundaryWithLineTo(pForEndCalc);
+        if (this.to.pLiesOutsideNodeShapeBoudary(pForEndCalc)){
+            end = this.to.intersectionOfBoundaryWithLineTo(pForEndCalc);
+        } else {
+            // Fall back solution as above
+            end = this.to.position;
+        }
 
         return this.pointArrayToString([start, ...this.anchors, end]);
     }

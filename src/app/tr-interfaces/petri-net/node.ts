@@ -5,8 +5,11 @@ export interface Node {
     id: string;
     label?: string;
 
-    // Returns the intersection of the line between this.position and p
-    // with the boundary of the geometric shape associated with the
-    // node (Place --> circle, Transition --> square or rectangle)
+    // Returns the intersection of the line segment between this.position and p
+    // with the boundary of the geometric shape of the node. If p doesn't lie
+    // outside the shape boundary, an Error is thrown.
     intersectionOfBoundaryWithLineTo(p: Point) : Point;
+
+    // Returns true, if Point p lies outside of the node shape boundary
+    pLiesOutsideNodeShapeBoudary(p: Point): boolean;
 }
