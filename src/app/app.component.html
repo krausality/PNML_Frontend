@@ -7,7 +7,7 @@
     </h2>
 
     <!--    Main content    -->
-    <app-petri-net class="padding full-size"></app-petri-net>
+    <app-petri-net class="padding full-size" (fileContent)="processSourceChange($event)"></app-petri-net>
 
 
     <div fxLayout="row" fxLayoutAlign="space-evenly start">

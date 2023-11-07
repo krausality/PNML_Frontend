@@ -1,8 +1,18 @@
-import { Component } from '@angular/core';
-import { Arc } from 'src/app/tr-classes/petri-net/arc';
-import { Place } from 'src/app/tr-classes/petri-net/place';
-import { Point } from 'src/app/tr-classes/petri-net/point';
-import { Transition } from 'src/app/tr-classes/petri-net/transition';
+import { HttpClient } from '@angular/common/http';
+import { Component, EventEmitter, Output } from '@angular/core';
+import { ParserService } from 'src/app/tr-services/parser.service';
+import { catchError, of, take } from 'rxjs';
+import { FileReaderService } from "../../services/file-reader.service";
+import {DataService} from "../../tr-services/data.service";
+import {
+    radius,
+    placeIdYOffset,
+    transitionWidth,
+    transitionHeight,
+    transitionXOffset,
+    transitionYOffset,
+    transitionIdYOffset
+} from "../../tr-services/position.constants";
 
 @Component({
   selector: 'app-petri-net',
@@ -10,37 +20,87 @@ import { Transition } from 'src/app/tr-classes/petri-net/transition';
   styleUrls: ['./petri-net.component.css']
 })
 export class PetriNetComponent {
-  places: Place[] = [];
-  transitions: Transition[] = [];
-  arcs: Arc[] = [];
+  @Output('fileContent') fileContent: EventEmitter<string>;
 
-  constructor(){
-    this.places = [
-        new Place(4, new Point(100, 200), "p1"),
-        new Place(2, new Point(400, 200), "p2"),
-        new Place(3, new Point(800, 200), "p3"),
-        new Place(0, new Point(1200, 200), "p4")
-    ];
+  constructor(private parserService: ParserService, private httpClient: HttpClient, private fileReaderService: FileReaderService, protected dataService: DataService) {
+    this.httpClient.get("assets/example.json", { responseType: "text" }).subscribe(data => {
+      const [places, transitions, arcs] = parserService.parse(data);
+      this.dataService.places = places;
+      this.dataService.transitions = transitions;
+      this.dataService.arcs = arcs;
+    });
 
-    this.transitions = [
-        new Transition(new Point(200, 150), "t1"),
-        new Transition(new Point(600, 200), "t2"),
-        new Transition(new Point(1000, 250), "t3"),
-        new Transition(new Point(1600, 250), "t4")
-    ];
-
-    this.arcs = [
-        new Arc(this.places[0], this.transitions[0], 5),
-        new Arc(this.transitions[0], this.places[1], 12),
-        new Arc(this.places[1], this.transitions[1], 1),
-        new Arc(this.transitions[1], this.places[2], 1, [new Point(700, 300)]),
-        new Arc(this.transitions[2], this.places[3], 6, [new Point(800, 100), new Point(900, 350)]),
-        new Arc(this.places[3], this.transitions[3], 8, [new Point(1300, 100), new Point(1400, 300), new Point(1500, 100)]),
-    ];
-
-    this.transitions[0].appendPreArc(this.arcs[0]);
-    this.transitions[0].appendPostArc(this.arcs[1]);
-    this.transitions[1].appendPreArc(this.arcs[2]);
-    this.transitions[1].appendPreArc(this.arcs[3]);
+    this.fileContent = new EventEmitter<string>();
   }
+
+  private parsePetrinetData(content: string | undefined) {
+    console.log('Parsing data');
+    if (content) {
+      const [places, transitions, arcs] = this.parserService.parse(content);
+        this.dataService.places = places;
+        this.dataService.transitions = transitions;
+        this.dataService.arcs = arcs;
+    }
+  }
+
+  // Process Drag & Drop using Observables
+  public processDropEvent(e: DragEvent) {
+    console.log('caught processDropEvent');
+    e.preventDefault();
+
+    const fileLocation = e.dataTransfer?.getData("assets/example.json");
+
+    if (fileLocation) {
+      this.fetchFile(fileLocation);
+    } else {
+      this.readFile(e.dataTransfer?.files);
+    }
+  }
+
+  private fetchFile(link: string) {
+    this.httpClient.get(link, {
+      responseType: 'text'
+    }).pipe(
+      catchError(err => {
+        console.error('Error while fetching file from link', link, err);
+        return of(undefined);
+      }),
+      take(1)
+    ).subscribe(content => {
+      this.parsePetrinetData(content);
+      this.emitFileContent(content);
+    })
+  }
+
+  private readFile(files: FileList | undefined | null) {
+    if (files === undefined || files === null || files.length === 0) {
+      return;
+    }
+    this.fileReaderService.readFile(files[0]).pipe(take(1)).subscribe(content => {
+      this.parsePetrinetData(content);
+      this.emitFileContent(content);
+    });
+  }
+
+  private emitFileContent(content: string | undefined) {
+    if (content === undefined) {
+      return;
+    }
+    this.fileContent.emit(content);
+  }
+
+  public prevent(e: DragEvent) {
+    // dragover must be prevented for drop to work
+    e.preventDefault();
+  }
+
+    protected readonly radius = radius;
+    protected readonly placeIdYOffset = placeIdYOffset;
+
+    protected readonly transitionWidth = transitionWidth;
+    protected readonly transitionHeight = transitionHeight;
+    protected readonly transitionXOffset = transitionXOffset;
+    protected readonly transitionYOffset = transitionYOffset;
+    protected readonly transitionIdYOffset = transitionIdYOffset;
+
 }
