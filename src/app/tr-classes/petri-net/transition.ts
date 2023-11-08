@@ -88,5 +88,9 @@ export class Transition implements Node {
     appendPostArc(arc: Arc){
         this.postArcs.push(arc);
     }
+
+    getPostArcs(){
+        return this.postArcs;
+    }
 }
 

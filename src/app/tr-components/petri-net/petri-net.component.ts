@@ -4,6 +4,7 @@ import { ParserService } from 'src/app/tr-services/parser.service';
 import { catchError, of, take } from 'rxjs';
 import { FileReaderService } from "../../services/file-reader.service";
 import {DataService} from "../../tr-services/data.service";
+import { LayoutService } from "../../tr-services/sugyiamaLayout.service";
 import {
     radius,
     placeIdYOffset,
@@ -22,7 +23,7 @@ import {
 export class PetriNetComponent {
   @Output('fileContent') fileContent: EventEmitter<string>;
 
-  constructor(private parserService: ParserService, private httpClient: HttpClient, private fileReaderService: FileReaderService, protected dataService: DataService) {
+  constructor(private parserService: ParserService, private httpClient: HttpClient, private fileReaderService: FileReaderService, protected dataService: DataService, protected layoutService: LayoutService) {
     this.httpClient.get("assets/example.json", { responseType: "text" }).subscribe(data => {
       const [places, transitions, arcs] = parserService.parse(data);
       this.dataService.places = places;
@@ -37,9 +38,11 @@ export class PetriNetComponent {
     console.log('Parsing data');
     if (content) {
       const [places, transitions, arcs] = this.parserService.parse(content);
-        this.dataService.places = places;
-        this.dataService.transitions = transitions;
-        this.dataService.arcs = arcs;
+      this.dataService.places = places;
+      this.dataService.transitions = transitions;
+      this.dataService.arcs = arcs;
+
+      this.layoutService.applySugyiamaLayout();
     }
   }
 
