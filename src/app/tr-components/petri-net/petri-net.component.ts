@@ -13,6 +13,7 @@ import {
     transitionYOffset,
     transitionIdYOffset
 } from "../../tr-services/position.constants";
+import { LayoutService } from 'src/app/tr-services/layout.service';
 
 @Component({
   selector: 'app-petri-net',
@@ -22,7 +23,7 @@ import {
 export class PetriNetComponent {
   @Output('fileContent') fileContent: EventEmitter<string>;
 
-  constructor(private parserService: ParserService, private httpClient: HttpClient, private fileReaderService: FileReaderService, protected dataService: DataService) {
+  constructor(private parserService: ParserService, private httpClient: HttpClient, private fileReaderService: FileReaderService, protected dataService: DataService, private layoutService: LayoutService) {
     this.httpClient.get("assets/example.json", { responseType: "text" }).subscribe(data => {
       const [places, transitions, arcs] = parserService.parse(data);
       this.dataService.places = places;
@@ -37,9 +38,12 @@ export class PetriNetComponent {
     console.log('Parsing data');
     if (content) {
       const [places, transitions, arcs] = this.parserService.parse(content);
-        this.dataService.places = places;
-        this.dataService.transitions = transitions;
-        this.dataService.arcs = arcs;
+      this.dataService.places = places;
+      this.dataService.transitions = transitions;
+      this.dataService.arcs = arcs;
+
+      // testing spring embedder
+      this.layoutService.layoutSpringEmbedder(this.dataService);
     }
   }
 
