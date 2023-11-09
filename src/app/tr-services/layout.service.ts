@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { DataService } from './data.service';
 import { Point } from '../tr-classes/petri-net/point';
 import { Node } from '../tr-interfaces/petri-net/node';
+import { Arc } from '../tr-classes/petri-net/arc';
 
 @Injectable({
     providedIn: 'root'
@@ -12,45 +13,65 @@ export class LayoutService {
 
     // testing layout with spring-embedder
     layoutSpringEmbedder(dataService: DataService) {
-        console.log("spring embedder!");
+        // scramble for testing
+        // dataService.getPlaces().forEach(place => {
+        //     place.position.x = Math.floor(Math.random() * 1000);
+        //     place.position.y = Math.floor(Math.random() * 800);
+        // });
+        // dataService.getTransitions().forEach(place => {
+        //     place.position.x = Math.floor(Math.random() * 1000);
+        //     place.position.y = Math.floor(Math.random() * 800);
+        // });
 
         // remove anchorpoints
         dataService.getArcs().forEach(arc => arc.anchors.length = 0);
 
+        // combining places and transitions into one array because we don't need to handle them differently in this algorithm
+        const nodes: Node[] = [...dataService.getPlaces(), ...dataService.getTransitions()];
+
+        // discover the connected nodes of each node once and keep the map in memory
+        // instead of doing it every iteration
+        const connectedNodeMap: { [id: string]: Node[] } = {};
+        nodes.forEach(n => {
+            const connectedNodes: Node[] = [];
+            dataService.getArcs().forEach(arc => {
+                if (arc.from.id === n.id) {
+                    connectedNodes.push(arc.to);
+                } else if (arc.to.id === n.id) {
+                    connectedNodes.push(arc.from);
+                }
+            });
+            connectedNodeMap[n.id] = connectedNodes;
+        });
+
         // parameters needed to make the spring embedder algorithm terminate
-        const epsilon = 0.99;
-        const maxIterations = 100;
+        const epsilon = 0.9;
+        const maxIterations = 500;
 
         let iterations = 1;
+        // this is only needed for the first iteration
         let maxForceVectorLength = epsilon + 1;
-        while (iterations < maxIterations && maxForceVectorLength > epsilon) {
+
+        // the algorithm terminates after the maximum iterations are reached
+        // or if the maximum force applied in one iteration gets to small to really change much in the layout
+        while (iterations <= maxIterations && maxForceVectorLength > epsilon) {
             // keep track of force vectors to be applied in a map
             const forceVectors: { [id: string]: Point } = {};
 
-            // calculate force vector to be applied for every place and transition
-            dataService.getPlaces().forEach(place => forceVectors[place.id] = this.calculateForceVector(place, dataService));
-            dataService.getTransitions().forEach(transition => forceVectors[transition.id] = this.calculateForceVector(transition, dataService));
+            // calculate force vector to be applied for every node
+            nodes.forEach(n => forceVectors[n.id] = this.calculateForceVector(n, nodes, connectedNodeMap[n.id]))
 
-            console.log(forceVectors);
+            // console.log(forceVectors);
 
             // add the calculated force vectors to the places and transitions
             // and calculate the maximum force applied while iterating
             maxForceVectorLength = 0;
-            dataService.getPlaces().forEach(place => {
-                const forceVector = forceVectors[place.id];
-                // ((maxIterations - iterations) / maxIterations) is the cooling factor delta(t)
-                place.position.x += forceVector.x * ((maxIterations - iterations) / maxIterations);
-                place.position.y += forceVector.y * ((maxIterations - iterations) / maxIterations);
-                // set the max force vector length if it's greater than current highest one
-                const forceVectorLength = this.calculateVectorLength(forceVector);
-                if (forceVectorLength > maxForceVectorLength) {
-                    maxForceVectorLength = forceVectorLength;
-                }
-            });
-            dataService.getTransitions().forEach(transition => {
-                const forceVector = forceVectors[transition.id];
-                transition.position.x += forceVector.x * ((maxIterations - iterations) / maxIterations);
-                transition.position.y += forceVector.y * ((maxIterations - iterations) / maxIterations);
+            nodes.forEach(n => {
+                const forceVector = forceVectors[n.id];
+                // TODO?: ((maxIterations - iterations) / maxIterations) is the cooling factor delta(t)
+                n.position.x += forceVector.x;
+                n.position.y += forceVector.y;
+                // set the max force vector length if it's greater than the current highest one
                 const forceVectorLength = this.calculateVectorLength(forceVector);
                 if (forceVectorLength > maxForceVectorLength) {
                     maxForceVectorLength = forceVectorLength;
@@ -60,49 +81,33 @@ export class LayoutService {
             iterations++;
         }
 
-        console.log(iterations + " " + maxForceVectorLength);
+        // console.log(iterations + " " + maxForceVectorLength);
     }
 
-    private calculateForceVector(node: Node, dataService: DataService): Point {
+    // calculate the force vector that should be applied to the node in one iteration of the algorithm
+    private calculateForceVector(node: Node, nodes: Node[], connectedNodes: Node[]): Point {
         // initialize force vector
         const forceVector = new Point(0, 0);
 
-        // discover all connected nodes --> can this be done more efficiently
-        const connectedNodes: Node[] = [];
-        dataService.getArcs().forEach(arc => {
-            if (arc.from.id === node.id) {
-                connectedNodes.push(arc.to);
-            } else if (arc.to.id === node.id) {
-                connectedNodes.push(arc.from);
-            }
-        });
+        // console.log(connectedNodes);
 
         // calculate repulsion force only towards the other non connected nodes
-        dataService.getPlaces().forEach(place => {
-            // check that no node in connectedNodes has the id of the current place
-            // --> they are not connected
-            if (place.id !== node.id && !connectedNodes.some(connectedNode => connectedNode.id === place.id)) {
-                const repulsionForce = this.calculateRepulsionForce(node.position, place.position);
+        nodes.forEach(n => {
+            if (n.id !== node.id) {
+                const repulsionForce = this.calculateRepulsionForce(node.position, n.position);
                 // add the calculated repulsion force to the force vector
                 forceVector.x += repulsionForce.x;
                 forceVector.y += repulsionForce.y;
-            }
-        });
-
-        // do the same thing for transitions
-        dataService.getTransitions().forEach(transition => {
-            if (transition.id !== node.id && !connectedNodes.some(connectedNode => connectedNode.id === transition.id)) {
-                const repulsionForce = this.calculateRepulsionForce(node.position, transition.position);
-                forceVector.x += repulsionForce.x;
-                forceVector.y += repulsionForce.y;
+                // console.log("rep of " + node.id + " from " + n.id + ": " + repulsionForce.x + ", " + repulsionForce.y);
             }
         });
 
         // calculate the attraction force for all connected nodes
-        connectedNodes.forEach(connectedNode => {
-            const attractionForce = this.calculateSpringForce(node.position, connectedNode.position);
+        connectedNodes.forEach(cn => {
+            const attractionForce = this.calculateSpringForce(node.position, cn.position);
             forceVector.x += attractionForce.x;
             forceVector.y += attractionForce.y;
+            // console.log("attr of " + node.id + " to " + cn.id + ": " + attractionForce.x + ", " + attractionForce.y);
         });
 
         return forceVector;
@@ -110,29 +115,39 @@ export class LayoutService {
 
     // calculate repulsion vector between two nodes (points)
     private calculateRepulsionForce(u: Point, v: Point): Point {
-        // repulsion constant --> sensible default value?
-        const c = 2;
-        const factor = c / this.calculateDistance(u, v); // = c / distance
-        const length = this.calculateVectorLength(u);
-        return new Point(u.x * factor / length, u.y * factor / length);
+        // constant repulsion force
+        const c = 20000;
+        const factor = c / (this.calculateDistance(v, u) ** 2);
+        const unitVector = this.calculateUnitVector(v, u);
+        return new Point(unitVector.x * factor, unitVector.y * factor);
     }
 
+    // calculation attraction vector between two points
     private calculateSpringForce(u: Point, v: Point): Point {
-        // spring constant --> sensible default value?
-        const c = 1;
         // ideal length of arcs --> sensible default value?
-        const l = 1;
-        const factor = c * Math.log(this.calculateDistance(u, v) / l);
-        const length = this.calculateVectorLength(u);
-        return new Point(u.x * factor / length, u.y * factor / length);
+        const l = 150;
+        // constant spring force
+        const c = 20;
+        const factor = c * Math.log10(this.calculateDistance(v, u) / l);
+        const unitVector = this.calculateUnitVector(u, v);
+        return new Point(unitVector.x * factor, unitVector.y * factor);
     }
 
-    private calculateDistance(u: Point, v: Point): number {
-        return Math.sqrt((u.x - v.x) ** 2 + (u.y - v.y) ** 2);
+    // calculate distance between two points
+    private calculateDistance(p1: Point, p2: Point): number {
+        return Math.sqrt((p2.x - p1.x) ** 2 + (p2.y - p1.y) ** 2);
     }
 
+    // calculate length of one vector (passed as a point)
     private calculateVectorLength(p: Point) {
         return Math.sqrt(p.x ** 2 + p.y ** 2);
+    }
+
+    // calculate the unit vector between two points
+    private calculateUnitVector(p1: Point, p2: Point) {
+        const v = new Point(p2.x - p1.x, p2.y - p1.y);
+        const length = this.calculateVectorLength(v);
+        return new Point(v.x / length, v.y / length);
     }
 
 }
