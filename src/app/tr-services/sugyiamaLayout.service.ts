@@ -8,6 +8,8 @@ import { Observable, of } from "rxjs";
 import { DataService } from "src/app/tr-services/data.service";
 import { transition } from "@angular/animations";
 
+import { LayerAssignmentService } from "../tr-services/sugyiama/layerAssignment.service";
+
 @Injectable({
     providedIn: 'root'
 })
@@ -18,6 +20,7 @@ export class LayoutService {
     private _nodes: Set<Node> = new Set<Node>();
     private _arcs: Arc[] = [];
 
+    /* utility vars for cycle removal */
     private _stack: Set<Node> = new Set<Node>();
     private _visited: Set<Node> = new Set<Node>();
 
@@ -29,14 +32,22 @@ export class LayoutService {
         // copy initial state of datamodel to local datamodel
         this._arcs = [...this.dataService.getArcs()];
         this._nodes = new Set([...this.dataService.getPlaces(), ...this.dataService.getTransitions()]);
+        console.log('[Sugyiama Layout:] Initial set of arcs and nodes', this._nodes, this._arcs);
+
+        // TODO: There are some requirements for the layout to work correctly.
+        // - There cannot be orphaned nodes
 
         // Sugyiama Step 1: remove cycles
         this.removeCycles();
-        this.reverseArcs();
 
-        console.log('Result: ', this._arcsToBeReversed);
+        console.log('[Sugyiama Layout:] Arcs to be reversed: ', this._arcsToBeReversed);
+
+        console.log('[Sugyiama Layout:] Nodes & Arcs after removal of cycles', this._nodes, this._arcs);
 
         // Sugyiama Step 2: assign layers
+        const layerAssignmentService = new LayerAssignmentService(this._nodes, this._arcs)
+        layerAssignmentService.assignLayers();
+
         // Sugyiama Step 3: vertex ordering
         // Sugyiama Step 4: coordinate assignment
     }
@@ -52,7 +63,7 @@ export class LayoutService {
         // Add reversed arcs
         this._arcs = this._arcs.concat(this._arcsToBeReversed);
     }
-
+ 
     depthFirstSearchRemove(node: Node) {
         if (this._visited.has(node)) {
             return;
@@ -92,5 +103,9 @@ export class LayoutService {
             arc.to = newTo;
             arc.from = newFrom;
         }
+    }
+
+    getNodeMap() {
+
     }
 }
