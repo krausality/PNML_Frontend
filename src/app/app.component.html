@@ -13,7 +13,7 @@
     <div fxLayout="row" fxLayoutAlign="space-evenly start">
         <app-example-button title="Button"></app-example-button>
 
-        <app-example-button title="PNG Download" (click)="downloadPng()"></app-example-button>
+        <app-example-button title="PNG Download" (click)="downloadCanvas('image/png', 'pngExport.png')"></app-example-button>
 
         <app-example-file title="File" link="assets/example.json" description="An example .json Petri net"></app-example-file>
 

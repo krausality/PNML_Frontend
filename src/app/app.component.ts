@@ -24,12 +24,9 @@ export class AppComponent {
     }
 
     public saveAs = (blob: string, fileName: string) =>{
-        console.log('SaveAs Begin');
         var elem = window.document.createElement('a');
-        console.log(elem);
         elem.href = blob;
         elem.download = fileName;
-        // elem.style = 'display:none;';
         (document.body || document.documentElement).appendChild(elem);
         if (typeof elem.click === 'function') {
             elem.click();
@@ -45,25 +42,19 @@ export class AppComponent {
         elem.remove()
       }
 
-    public downloadPng() {
+    public downloadCanvas(fileType: string, fileName: string) {
 
         const svgElement = document.getElementById('drawingArea');
         console.log(svgElement);
 
         if(svgElement) {
             let svg = (svgElement as unknown) as SVGGraphicsElement;
-            // let {width, height} = svg.getBBox();
-
             let clonedSvgElement = (svg.cloneNode(true) as any) as HTMLElement;
-            console.log(clonedSvgElement);
             let outerHTML = clonedSvgElement.outerHTML;
 
             const wrapper = document.createElement("div");
             const myHTMLString = outerHTML;
-            console.log("myHTMLString: ",myHTMLString);
             wrapper.insertAdjacentHTML("afterbegin", myHTMLString);
-            console.log("wrapper: ", wrapper);
-
             document.body.appendChild(wrapper);
 
             html2canvas(wrapper,
@@ -71,13 +62,11 @@ export class AppComponent {
                     logging: true
                 }
                 ).then((canvas) => {
-                let image = canvas.toDataURL('image/png', 1.0);
-                console.log('Image: ', image);
-                this.saveAs(image, 'pngExport.png');
+                let image = canvas.toDataURL(fileType);
+                this.saveAs(image, fileName);
             })
 
-            // Comment for Debugging
-            // wrapper.remove();
+            wrapper.remove();
         }
     }
 }
