@@ -41,10 +41,16 @@ export class LayoutService {
         // Sugyiama Step 4: coordinate assignment
     }
 
+    /* Utility functions for cycle removal */
     removeCycles() {
+        // Get and remove arcs that lead to circle
         for (let node of this._nodes) {
             this.depthFirstSearchRemove(node);
         }
+        // Reverse arcs that need reversing
+        this.reverseArcs();
+        // Add reversed arcs
+        this._arcs = this._arcs.concat(this._arcsToBeReversed);
     }
 
     depthFirstSearchRemove(node: Node) {
@@ -60,7 +66,7 @@ export class LayoutService {
                 // TODO: Check if it's possibly that a petrinet contains two arcs
                 // leading from and to the same node ?
                 this._arcs = this._arcs.filter(
-                    (a) => !(a.from.label === arc.from.label && a.to.label === arc.to.label)
+                    (a) => !(a.from.id === arc.from.id && a.to.id === arc.to.id)
                 );
             } else if (!this._visited.has(arc.to)) {
                 this.depthFirstSearchRemove(arc.to);
