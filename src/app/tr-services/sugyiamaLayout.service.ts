@@ -16,7 +16,7 @@ import { CycleRemovalService } from "./sugyiama/cycleRemoval.service";
 })
 
 export class LayoutService {
-    private _nodes: Set<Node> = new Set<Node>();
+    private _nodes: Node[] = [];
     private _arcs: Arc[] = [];
 
     constructor(protected dataService: DataService) {
@@ -26,7 +26,8 @@ export class LayoutService {
     applySugyiamaLayout() {
         // copy initial state of datamodel to local datamodel
         this._arcs = [...this.dataService.getArcs()];
-        this._nodes = new Set([...this.dataService.getPlaces(), ...this.dataService.getTransitions()]);
+        // this._nodes = new Set([...this.dataService.getPlaces(), ...this.dataService.getTransitions()]);
+        this._nodes = [...this.dataService.getPlaces(), ...this.dataService.getTransitions()];
         console.log('[Sugyiama Layout:] Initial set of arcs and nodes', this._nodes, this._arcs);
 
         // TODO: There are some requirements for the layout to work correctly.
@@ -40,8 +41,11 @@ export class LayoutService {
         const layerAssignmentService = new LayerAssignmentService(this._nodes, this._arcs)
         layerAssignmentService.assignLayers();
 
-        // Sugyiama Step 3: vertex ordering
+        // Sugyiama Step 3: vertex ordering (optional)
         // Sugyiama Step 4: coordinate assignment
+
+        // Arcs that have been reversed for layer assignment can now to be re-reversed
+        cycleRemovalService.reverseArcs();
     }
 
     

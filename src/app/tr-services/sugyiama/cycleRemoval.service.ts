@@ -4,16 +4,16 @@ import { Transition } from "src/app/tr-classes/petri-net/transition";
 
 export class CycleRemovalService {
     // Initial set of nodes and arcs
-    private _nodes: Set<Node> = new Set<Node>();
+    private _nodes: Node[] = [];
     private _arcs: Arc[] = [];
 
-    private _stack: Set<Node> = new Set<Node>();
-    private _visited: Set<Node> = new Set<Node>();
+    private _stack: Node[] = [];
+    private _visited: Node[] = [];
 
     private _arcsToBeReversed: Arc[] = [];
 
     constructor(
-        nodes: Set<Node>,
+        nodes: Node[],
         arcs: Arc[],
     ) {
         this._nodes = nodes;
@@ -35,26 +35,26 @@ export class CycleRemovalService {
     }
  
     depthFirstSearchRemove(node: Node) {
-        if (this._visited.has(node)) {
+        if (this._visited.includes(node)) {
             return;
         }
-        this._visited.add(node);
-        this._stack.add(node);
+        this._visited.push(node);
+        this._stack.push(node);
 
         for (let arc of this.getPostArcsForNode(node)) {
-            if (this._stack.has(arc.to)) {
+            if (this._stack.includes(arc.to)) {
                 this._arcsToBeReversed.push(arc);
                 // TODO: Check if it's possibly that a petrinet contains two arcs
                 // leading from and to the same node ?
                 this._arcs = this._arcs.filter(
                     (a) => !(a.from.id === arc.from.id && a.to.id === arc.to.id)
                 );
-            } else if (!this._visited.has(arc.to)) {
+            } else if (!this._visited.includes(arc.to)) {
                 this.depthFirstSearchRemove(arc.to);
             }
         }
 
-        this._stack.delete(node);
+        this._stack.pop();
     }
 
     // Change the direction of the arcs in the arcs to reverse array

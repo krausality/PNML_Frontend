@@ -1,29 +1,22 @@
-import { Injectable, Inject } from "@angular/core";
 import { Node } from "src/app/tr-interfaces/petri-net/node";
 import { Arc } from "src/app/tr-classes/petri-net/arc";
-import { Place } from "src/app/tr-classes/petri-net/place";
-import { Transition } from "src/app/tr-classes/petri-net/transition";
-import { DataService } from "src/app/tr-services/data.service";
 
 export class LayerAssignmentService {
     // Initial set of nodes and arcs
-    private _nodes: Set<Node> = new Set<Node>();
+    private _nodes: Node[] = [];
     private _arcs: Arc[] = [];
 
     // Map parent nodes for each node
     private _nodeInputMap = new Map();
     
     // U: Keep track of all nodes that have been assigned to any layer
-    private _assignedNodes = new Set<Node>(); 
+    private _assignedNodes: Node[] = []; 
     
     // Z: Nodes assigned to layer below current layer
-    private _layers: Record<number, Set<Node>> = {
-        0: new Set<Node>(),
-        1: new Set<Node>(),
-    };
+    private _layers: Record<number, Node[]> = {};
 
     constructor(
-        nodes: Set<Node>,
+        nodes: Node[],
         arcs: Arc[],
     ) {
         this._nodes = nodes;
@@ -33,10 +26,10 @@ export class LayerAssignmentService {
         console.log('[Layer Assignment:] Arcs', arcs);
 
         this._nodes.forEach((node) => {
-            const parentNodes = new Set<Node>();
+            const parentNodes: Node[] = [];
 
             this._arcs.forEach((arc) => {
-                if (arc.to === node) parentNodes.add(arc.from);
+                if (arc.to === node) parentNodes.push(arc.from);
             });
             this._nodeInputMap.set(node, parentNodes);
         });
@@ -54,12 +47,10 @@ export class LayerAssignmentService {
         let counter = 0;
 
         // TODO: Check if there is a more elegant way to check if two sets are equal
-        while (this._assignedNodes.size < this._nodes.size && counter < 20) {
+        while (this._assignedNodes.length < this._nodes.length && counter < 20) {
             counter++;
 
             const parentLayer = this._layers[layerId - 1];
-
-            console.log('[Layer Assignment:] ParentLayer', this._layers, this._layers[0], (parentLayer));
 
             const choices = this.getNodeChoicesForLayer(parentLayer);
             const picked = choices.pop();
@@ -67,16 +58,17 @@ export class LayerAssignmentService {
             console.log('[Layer Assignment:] Choices: ', choices, 'Picked: ', picked);
 
             if (picked) {
-                this._layers[layerId].add(picked);
-                this._assignedNodes.add(picked);
+                if (!this._layers[layerId]) this._layers[layerId] = [];
+                this._layers[layerId].push(picked);
+                this._assignedNodes.push(picked);
             } else {
                 layerId++;
-                this._layers[layerId] = new Set<Node>();
+                this._layers[layerId] = [];
             }
 
             console.log('[Layer Assignment:] Layers:', this._layers);
 
-            if (layerId > this._nodes.size) {
+            if (layerId > this._nodes.length) {
                 // if there are more layers than vertices
                 // something has gone very wrong!
                 console.log('Error during Layer Assignment.');
@@ -87,19 +79,19 @@ export class LayerAssignmentService {
     }
 
     // gets all nodes that have incoming edges from the given layer
-    getNodeChoicesForLayer(layer: Set<Node>)  {
+    getNodeChoicesForLayer(layer: Node[] | undefined)  {
         const incomingNodes: Node[] = [];
 
         for (const [node, parentNodes] of this._nodeInputMap.entries()) {
-            if (this._assignedNodes.has(node)) {
+            if (this._assignedNodes.includes(node)) {
                 // this node has already been assigned, ignore
                 continue;
             }
 
-            if (layer.size === 0 && parentNodes.size === 0) {
-                incomingNodes.push(node);
+            if (!layer || layer.length === 0) {
+                if (parentNodes.length === 0) incomingNodes.push(node);  
             } else {
-                let intersection = new Set([...parentNodes].filter(parentNode => layer.has(parentNode)));
+                let intersection = new Set([...parentNodes].filter(parentNode => layer.includes(parentNode)));
                 if (intersection.size) {
                     incomingNodes.push(node);
                 }
@@ -107,18 +99,5 @@ export class LayerAssignmentService {
         }
 
         return incomingNodes;
-    }
-
-    // Compares the members of sets A and B but ignores their order
-    isEqualSet(a: Set<any>, b: Set<any>) {
-        // a and b reference the same set -> they are the same set
-        if (a === b) return true;
-
-        // a and b have a different amount of items and cannot be the same
-        if (a.size !== b.size) return false;
-
-        // since both sets have an equal amount of items,
-        // set b has to contain every single item that is in a
-        return [...a].every(value => b.has(value));
     }
 }
