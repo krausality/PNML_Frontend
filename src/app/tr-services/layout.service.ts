@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { DataService } from './data.service';
 import { Point } from '../tr-classes/petri-net/point';
 import { Node } from '../tr-interfaces/petri-net/node';
-import { Arc } from '../tr-classes/petri-net/arc';
 
 @Injectable({
     providedIn: 'root'

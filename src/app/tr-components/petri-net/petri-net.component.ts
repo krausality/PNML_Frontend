@@ -24,7 +24,7 @@ export class PetriNetComponent {
   @Output('fileContent') fileContent: EventEmitter<string>;
 
   constructor(private parserService: ParserService, private httpClient: HttpClient, private fileReaderService: FileReaderService, protected dataService: DataService, private layoutService: LayoutService) {
-    this.httpClient.get("assets/example.json", { responseType: "text" }).subscribe(data => {
+    this.httpClient.get("assets/example_scrambled.json", { responseType: "text" }).subscribe(data => {
       const [places, transitions, arcs] = parserService.parse(data);
       this.dataService.places = places;
       this.dataService.transitions = transitions;
