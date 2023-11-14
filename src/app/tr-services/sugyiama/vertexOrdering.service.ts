@@ -69,6 +69,9 @@ export class VertexOrderingService {
                         }
                     }
                 }
+
+                // Update the now outdated node maps to reflect the dummy arcs & nodes
+                this.generateAdjacentNodeMaps();
             }
         }
     }
@@ -95,4 +98,22 @@ export class VertexOrderingService {
         return 0;
     }
 
+    generateAdjacentNodeMaps() {
+        this._nodeInputMap.clear();
+        this._nodeOutputMap.clear();
+
+        this._arcs.forEach((arc) => {
+            if (this._nodeInputMap.get(arc.to)) {
+                this._nodeInputMap.get(arc.to)?.push(arc.from);
+            } else {
+                this._nodeInputMap.set(arc.to, [arc.from]);
+            }
+
+            if (this._nodeOutputMap.get(arc.from)) {
+                this._nodeOutputMap.get(arc.from)?.push(arc.to);
+            } else {
+                this._nodeOutputMap.set(arc.from, [arc.to]);
+            }
+        });
+    }
 }
