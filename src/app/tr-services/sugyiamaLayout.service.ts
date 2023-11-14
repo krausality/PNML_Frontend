@@ -53,10 +53,9 @@ export class LayoutService {
         cycleRemovalService.reverseArcs();
 
         // Sugyiama Step 3: vertex ordering/crossing minimization
-        const layerAssignmentService = new LayerAssignmentService(this._nodes, this._arcs)
-        layerAssignmentService.assignLayers();
+        const vertexOrderingService = new VertexOrderingService(layers, this._arcs, this._nodeInputMap, this._nodeOutputMap);
+        vertexOrderingService.orderVertices();        
 
-        // Sugyiama Step 3: vertex ordering (optional)
         // Sugyiama Step 4: coordinate assignment
 
         // Arcs that have been reversed for layer assignment can now to be re-reversed
