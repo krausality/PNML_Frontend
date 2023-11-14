@@ -8,8 +8,10 @@ import { Observable, of } from "rxjs";
 import { DataService } from "src/app/tr-services/data.service";
 import { transition } from "@angular/animations";
 
-import { LayerAssignmentService } from "../tr-services/sugyiama/layerAssignment.service";
 import { CycleRemovalService } from "./sugyiama/cycleRemoval.service";
+import { LayerAssignmentService } from "./sugyiama/layerAssignment.service";
+import { VertexOrderingService } from "./sugyiama/vertexOrdering.service";
+import { CoordinateAssignmentService } from "./sugyiama/coordinateAssignment.service";
 
 @Injectable({
     providedIn: 'root'
@@ -18,6 +20,10 @@ import { CycleRemovalService } from "./sugyiama/cycleRemoval.service";
 export class LayoutService {
     private _nodes: Node[] = [];
     private _arcs: Arc[] = [];
+
+    // Map parent nodes for each node
+    private _nodeInputMap = new Map();
+    private _nodeOutputMap = new Map();
 
     constructor(protected dataService: DataService) {
         this.dataService = dataService;
@@ -28,6 +34,9 @@ export class LayoutService {
         this._arcs = [...this.dataService.getArcs()];
         // this._nodes = new Set([...this.dataService.getPlaces(), ...this.dataService.getTransitions()]);
         this._nodes = [...this.dataService.getPlaces(), ...this.dataService.getTransitions()];
+
+        this.generateAdjacentNodeMaps();
+
         console.log('[Sugyiama Layout:] Initial set of arcs and nodes', this._nodes, this._arcs);
 
         // TODO: There are some requirements for the layout to work correctly.
@@ -38,6 +47,12 @@ export class LayoutService {
         cycleRemovalService.removeCycles();
 
         // Sugyiama Step 2: assign layers
+        const layerAssignmentService = new LayerAssignmentService(this._nodes, this._arcs, this._nodeInputMap);
+        const layers = layerAssignmentService.assignLayers();
+        // Arcs that have been reversed for layer assignment can now to be re-reversed
+        cycleRemovalService.reverseArcs();
+
+        // Sugyiama Step 3: vertex ordering/crossing minimization
         const layerAssignmentService = new LayerAssignmentService(this._nodes, this._arcs)
         layerAssignmentService.assignLayers();
 
@@ -48,5 +63,17 @@ export class LayoutService {
         cycleRemovalService.reverseArcs();
     }
 
-    
+    generateAdjacentNodeMaps() {
+        this._nodes.forEach((node) => {
+            const inputNodes: Node[] = [];
+            const outputNodes: Node[] = [];
+
+            this._arcs.forEach((arc) => {
+                if (arc.to === node) inputNodes.push(arc.from);
+                if (arc.from === node) outputNodes.push(arc.to);
+            });
+            this._nodeInputMap.set(node, inputNodes);
+            this._nodeOutputMap.set(node, outputNodes);
+        });
+    }
 }

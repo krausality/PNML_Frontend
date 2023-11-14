@@ -7,7 +7,7 @@ export class LayerAssignmentService {
     private _arcs: Arc[] = [];
 
     // Map parent nodes for each node
-    private _nodeInputMap = new Map();
+    private _nodeInputMap: Map<Node, Node[]> = new Map();
     
     // U: Keep track of all nodes that have been assigned to any layer
     private _assignedNodes: Node[] = []; 
@@ -18,31 +18,24 @@ export class LayerAssignmentService {
     constructor(
         nodes: Node[],
         arcs: Arc[],
+        nodeInputMap: Map<Node, Node[]>
     ) {
         this._nodes = nodes;
         this._arcs = arcs;
 
-        console.log('[Layer Assignment:] Nodes', nodes);
-        console.log('[Layer Assignment:] Arcs', arcs);
+        this._nodeInputMap = nodeInputMap;
 
-        this._nodes.forEach((node) => {
-            const parentNodes: Node[] = [];
+        // console.log('[Layer Assignment:] Nodes', nodes);
+        // console.log('[Layer Assignment:] Arcs', arcs);
 
-            this._arcs.forEach((arc) => {
-                if (arc.to === node) parentNodes.push(arc.from);
-            });
-            this._nodeInputMap.set(node, parentNodes);
-        });
-
-        console.log('[Layer Assignment:] NodeInputMap', (this._nodeInputMap));
+        // console.log('[Layer Assignment:] NodeInputMap', (this._nodeInputMap));
      }
 
-    /* Utility functions for layer assignment */
     assignLayers() {
         // Layer which is currently being processed
         let layerId = 1;
 
-        console.log('[Layer Assignment:] Layer ID:', layerId, 'Assigned nodes: ', this._assignedNodes, 'all nodes: ', this._nodes);
+        // console.log('[Layer Assignment:] Layer ID:', layerId, 'Assigned nodes: ', this._assignedNodes, 'all nodes: ', this._nodes);
 
         let counter = 0;
 
@@ -55,7 +48,7 @@ export class LayerAssignmentService {
             const choices = this.getNodeChoicesForLayer(parentLayer);
             const picked = choices.pop();
 
-            console.log('[Layer Assignment:] Choices: ', choices, 'Picked: ', picked);
+            // console.log('[Layer Assignment:] Choices: ', choices, 'Picked: ', picked);
 
             if (picked) {
                 if (!this._layers[layerId]) this._layers[layerId] = [];
@@ -66,7 +59,7 @@ export class LayerAssignmentService {
                 this._layers[layerId] = [];
             }
 
-            console.log('[Layer Assignment:] Layers:', this._layers);
+            // console.log('[Layer Assignment:] Layers:', this._layers);
 
             if (layerId > this._nodes.length) {
                 // if there are more layers than vertices
@@ -76,6 +69,7 @@ export class LayerAssignmentService {
             }
         }
 
+        return this._layers;
     }
 
     // gets all nodes that have incoming edges from the given layer
