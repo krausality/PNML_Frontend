@@ -16,6 +16,8 @@ export class Place implements Node {
     }
 
     intersectionOfBoundaryWithLineTo(p: Point): Point {
+        const r = radius;
+
         if (! this.pLiesOutsideNodeShapeBoudary(p)){
             throw new Error('Point p for calculating intersection with node shape must lie outside of the node shape boundary.')
         }
@@ -25,8 +27,8 @@ export class Place implements Node {
 
         const sinAlpha = (p.y - m.y) / d;
         const cosAlpha = (p.x - m.x) / d;
-        const yIntersect = m.y + radius * sinAlpha;
-        const xIntersect = m.x + radius * cosAlpha;
+        const yIntersect = m.y + r * sinAlpha;
+        const xIntersect = m.x + r * cosAlpha;
         return new Point(xIntersect, yIntersect);
     }
 
