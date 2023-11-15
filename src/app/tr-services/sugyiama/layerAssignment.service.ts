@@ -1,42 +1,34 @@
 import { Node } from "src/app/tr-interfaces/petri-net/node";
 import { Arc } from "src/app/tr-classes/petri-net/arc";
 
+/** 
+ * Layer Assignment Service
+ *
+ * Loops through a graph and assigns its nodes to layers.
+ * This implementation follows the Longest Path Algorithm proposed by
+ * Tamassia et al., Handbook of Graph Drawing and Visualization, 2010
+ * 
+ */
 export class LayerAssignmentService {
     // Initial set of nodes and arcs
     private _nodes: Node[] = [];
-    private _arcs: Arc[] = [];
-
-    // Map parent nodes for each node
     private _nodeInputMap: Map<Node, Node[]> = new Map();
     
-    // U: Keep track of all nodes that have been assigned to any layer
     private _assignedNodes: Node[] = []; 
     
-    // Z: Nodes assigned to layer below current layer
     private _layers: Record<number, Node[]> = {};
 
     constructor(
         nodes: Node[],
-        arcs: Arc[],
         nodeInputMap: Map<Node, Node[]>
     ) {
         this._nodes = nodes;
-        this._arcs = arcs;
-
         this._nodeInputMap = nodeInputMap;
-
-        // console.log('[Layer Assignment:] Nodes', nodes);
-        // console.log('[Layer Assignment:] Arcs', arcs);
-
-        // console.log('[Layer Assignment:] NodeInputMap', (this._nodeInputMap));
-     }
+    }
 
     assignLayers() {
         // Layer which is currently being processed
         let layerId = 1;
-
-        // console.log('[Layer Assignment:] Layer ID:', layerId, 'Assigned nodes: ', this._assignedNodes, 'all nodes: ', this._nodes);
-
         let counter = 0;
 
         // TODO: Check if there is a more elegant way to check if two sets are equal
@@ -48,7 +40,6 @@ export class LayerAssignmentService {
             const choices = this.getNodeChoicesForLayer(parentLayer);
             const picked = choices.pop();
 
-            // console.log('[Layer Assignment:] Choices: ', choices, 'Picked: ', picked);
 
             if (picked) {
                 if (!this._layers[layerId]) this._layers[layerId] = [];
@@ -58,8 +49,6 @@ export class LayerAssignmentService {
                 layerId++;
                 this._layers[layerId] = [];
             }
-
-            // console.log('[Layer Assignment:] Layers:', this._layers);
 
             if (layerId > this._nodes.length) {
                 // if there are more layers than vertices
@@ -81,7 +70,6 @@ export class LayerAssignmentService {
                 // this node has already been assigned, ignore
                 continue;
             }
-
             if (!layer || layer.length === 0) {
                 if (parentNodes.length === 0) incomingNodes.push(node);  
             } else {

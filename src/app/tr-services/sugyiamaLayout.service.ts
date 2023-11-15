@@ -32,12 +32,9 @@ export class LayoutService {
     applySugyiamaLayout() {
         // copy initial state of datamodel to local datamodel
         this._arcs = [...this.dataService.getArcs()];
-        // this._nodes = new Set([...this.dataService.getPlaces(), ...this.dataService.getTransitions()]);
         this._nodes = [...this.dataService.getPlaces(), ...this.dataService.getTransitions()];
 
-        this.generateAdjacentNodeMaps();
-
-        console.log('[Sugyiama Layout:] Initial set of arcs and nodes', this._nodes, this._arcs);
+        // console.log('[Sugyiama Layout:] Initial set of arcs and nodes', this._nodes, this._arcs);
 
         // TODO: There are some requirements for the layout to work correctly.
         // -> There cannot be orphaned nodes
@@ -46,9 +43,12 @@ export class LayoutService {
         const cycleRemovalService = new CycleRemovalService(this._nodes, this._arcs)
         cycleRemovalService.removeCycles();
 
+        this.generateAdjacentNodeMaps();
+
         // Sugyiama Step 2: assign layers
-        const layerAssignmentService = new LayerAssignmentService(this._nodes, this._arcs, this._nodeInputMap);
+        const layerAssignmentService = new LayerAssignmentService(this._nodes, this._nodeInputMap);
         const layers = layerAssignmentService.assignLayers();
+        
         // Arcs that have been reversed for layer assignment can now to be re-reversed
         cycleRemovalService.reverseArcs();
 
