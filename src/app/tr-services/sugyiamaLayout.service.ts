@@ -57,6 +57,8 @@ export class LayoutService {
         vertexOrderingService.orderVertices();        
 
         // Sugyiama Step 4: coordinate assignment
+        const coordinateAssignmentService = new CoordinateAssignmentService(layers, this._nodes, this._arcs, this._nodeInputMap, this._nodeOutputMap);
+        coordinateAssignmentService.assignCoordinates();
 
         // Arcs that have been reversed for layer assignment can now to be re-reversed
         cycleRemovalService.reverseArcs();
