@@ -1,12 +1,24 @@
 import { Node } from "src/app/tr-interfaces/petri-net/node";
 import { Arc } from "src/app/tr-classes/petri-net/arc";
-import { Transition } from "src/app/tr-classes/petri-net/transition";
 
+/** 
+ * Cycle removal service
+ *
+ * Loops through a graph and performs a depth first search on each node.
+ * If a node is found that is already on stack a cycle has been identified.
+ * To remove the cycle, one its edges are removed and replaced with a 
+ * reversed arc.
+ * 
+ * The arcs array is modified in place.
+ * Reversed arcs are kept in memory (arcsToBeReversed) for re-reversal later on.
+ * 
+ */
 export class CycleRemovalService {
     // Initial set of nodes and arcs
     private _nodes: Node[] = [];
     private _arcs: Arc[] = [];
 
+    // Uitility variables
     private _stack: Node[] = [];
     private _visited: Node[] = [];
 
@@ -21,17 +33,12 @@ export class CycleRemovalService {
     }
 
     removeCycles() {
-        // Get and remove arcs that lead to circle
+        // Find cycles
         for (let node of this._nodes) {
             this.depthFirstSearchRemove(node);
         }
-        // Reverse arcs that need reversing
+        // Reverse arcs 
         this.reverseArcs();
-        console.log('[Sugyiama Layout:] Arcs to be reversed: ', this._arcsToBeReversed);
-
-        // Add reversed arcs
-        this._arcs = this._arcs.concat(this._arcsToBeReversed);
-        console.log('[Sugyiama Layout:] Nodes & Arcs after removal of cycles', this._nodes, this._arcs);
     }
  
     depthFirstSearchRemove(node: Node) {
@@ -41,40 +48,37 @@ export class CycleRemovalService {
         this._visited.push(node);
         this._stack.push(node);
 
-        for (let arc of this.getPostArcsForNode(node)) {
+        const postArcs = this.getPostArcsForNode(node);
+        for (let arc of postArcs) {
             if (this._stack.includes(arc.to)) {
                 this._arcsToBeReversed.push(arc);
                 // TODO: Check if it's possibly that a petrinet contains two arcs
                 // leading from and to the same node ?
-                this._arcs = this._arcs.filter(
-                    (a) => !(a.from.id === arc.from.id && a.to.id === arc.to.id)
-                );
             } else if (!this._visited.includes(arc.to)) {
                 this.depthFirstSearchRemove(arc.to);
             }
         }
-
         this._stack.pop();
     }
 
-    // Change the direction of the arcs in the arcs to reverse array
-    // original arcs array is not touched, as we do not want to modify
-    // the original data structure
+    // Change the direction of the arcs to eliminate circles
     reverseArcs() {
         for (let arc of this._arcsToBeReversed) {
+            // Remove original arc
+            const index = this._arcs.indexOf(arc);
+            this._arcs.splice(index, 1);
+
+            // Reverse & add arc
             const newTo = arc.from;
             const newFrom = arc.to;
-
             arc.to = newTo;
             arc.from = newFrom;
+
+            this._arcs.push(arc);
         }
     }
 
     getPostArcsForNode(node: Node) {
-        if (node instanceof Transition) {
-            return node.getPostArcs();
-        } else {
-            return this._arcs.filter((arc) => arc.from === node);
-        }
+        return this._arcs.filter((arc) => arc.from === node);
     }
 }
