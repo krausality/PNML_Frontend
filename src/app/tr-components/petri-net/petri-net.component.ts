@@ -21,7 +21,7 @@ import {
 })
 export class PetriNetComponent {
     @Output('fileContent') fileContent: EventEmitter<string>;
-
+    
     constructor(private parserService: ParserService, private httpClient: HttpClient, private fileReaderService: FileReaderService, protected dataService: DataService) {
         this.httpClient.get("assets/example.json", { responseType: "text" }).subscribe(data => {
             const [places, transitions, arcs, actions] = parserService.parse(data);
@@ -29,11 +29,11 @@ export class PetriNetComponent {
             this.dataService.transitions = transitions;
             this.dataService.arcs = arcs;
             this.dataService.actions = actions;
-    });
-
+        });
+        
         this.fileContent = new EventEmitter<string>();
     }
-
+    
     private parsePetrinetData(content: string | undefined) {
         console.log('Parsing data');
         if (content) {
@@ -44,21 +44,21 @@ export class PetriNetComponent {
             this.dataService.actions = actions;
         }
     }
-
+    
     // Process Drag & Drop using Observables
     public processDropEvent(e: DragEvent) {
         console.log('caught processDropEvent');
         e.preventDefault();
-
+        
         const fileLocation = e.dataTransfer?.getData("assets/example.json");
-
+        
         if (fileLocation) {
             this.fetchFile(fileLocation);
         } else {
             this.readFile(e.dataTransfer?.files);
         }
     }
-
+    
     private fetchFile(link: string) {
         this.httpClient.get(link, {
             responseType: 'text'
@@ -73,7 +73,7 @@ export class PetriNetComponent {
             this.emitFileContent(content);
         })
     }
-
+        
     private readFile(files: FileList | undefined | null) {
         if (files === undefined || files === null || files.length === 0) {
             return;
@@ -83,26 +83,26 @@ export class PetriNetComponent {
             this.emitFileContent(content);
         });
     }
-
+    
     private emitFileContent(content: string | undefined) {
         if (content === undefined) {
             return;
         }
         this.fileContent.emit(content);
     }
-
+    
     public prevent(e: DragEvent) {
         // dragover must be prevented for drop to work
         e.preventDefault();
     }
-
+    
     protected readonly radius = radius;
     protected readonly placeIdYOffset = placeIdYOffset;
-
+    
     protected readonly transitionWidth = transitionWidth;
     protected readonly transitionHeight = transitionHeight;
     protected readonly transitionXOffset = transitionXOffset;
     protected readonly transitionYOffset = transitionYOffset;
     protected readonly transitionIdYOffset = transitionIdYOffset;
-
+    
 }
