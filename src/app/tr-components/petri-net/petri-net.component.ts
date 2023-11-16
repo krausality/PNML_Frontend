@@ -24,10 +24,11 @@ export class PetriNetComponent {
 
     constructor(private parserService: ParserService, private httpClient: HttpClient, private fileReaderService: FileReaderService, protected dataService: DataService) {
         this.httpClient.get("assets/example.json", { responseType: "text" }).subscribe(data => {
-            const [places, transitions, arcs] = parserService.parse(data);
+            const [places, transitions, arcs, actions] = parserService.parse(data);
             this.dataService.places = places;
             this.dataService.transitions = transitions;
             this.dataService.arcs = arcs;
+            this.dataService.actions = actions;
         });
 
         this.fileContent = new EventEmitter<string>();
@@ -36,10 +37,11 @@ export class PetriNetComponent {
     private parsePetrinetData(content: string | undefined) {
         console.log('Parsing data');
         if (content) {
-            const [places, transitions, arcs] = this.parserService.parse(content);
+            const [places, transitions, arcs, actions] = this.parserService.parse(content);
             this.dataService.places = places;
             this.dataService.transitions = transitions;
             this.dataService.arcs = arcs;
+            this.dataService.actions = actions;
         }
     }
 

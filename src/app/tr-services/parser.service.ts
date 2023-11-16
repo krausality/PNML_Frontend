@@ -14,19 +14,20 @@ export class ParserService {
     constructor() { }
 
     // TODO specify correct return type
-    parse(text: string): [Array<Place>, Array<Transition>, Array<Arc>] {
+    parse(text: string): [Array<Place>, Array<Transition>, Array<Arc>, Array<string>] {
         let rawData: JsonPetriNet;
         try {
             rawData = JSON.parse(text) as JsonPetriNet;
         } catch (e) {
             // TODO error handling
             console.error("Cannot parse JSON", e, text);
-            return [[], [], []];
+            return [[], [], [], []];
         }
 
         let places: Place[] = [];
         let transitions: Transition[] = [];
         let arcs: Arc[] = [];
+        let actions: string[] = [];
 
         // parse Places
         rawData.places.forEach(placeId => {
@@ -55,8 +56,15 @@ export class ParserService {
             });
         }
 
+        // parse actions
+        if (rawData.actions){
+            rawData.actions.forEach((action:string) => {
+                actions.push(action);
+            });
+        }
+
         // TODO store in extra data service
-        return [places, transitions, arcs];
+        return [places, transitions, arcs, actions];
     }
 
     // if contained returns the position from data.layout for the provided id
