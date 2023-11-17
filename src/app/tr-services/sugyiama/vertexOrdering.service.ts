@@ -77,18 +77,18 @@ export class VertexOrderingService {
     }
 
     addDummyNodeAndArcs(index: number, layer: Node[], from: Node, to: Node) {
-        console.log('[Vertex Ordering]: Create dummy for  ' , from, 'to: ', to);
+        // console.log('[Vertex Ordering]: Create dummy for  ' , from, 'to: ', to);
         const dummy = new DummyNode(new Point(1, 1), `dummyNode-${index}`, `DummyNode ${index}`);
         layer.push(dummy);
+
         // Remove original arc
-        this._arcs = this._arcs.filter(
-            (arc) => {
-                return !(arc.to.id === to.id && arc.from.id === from.id)
-            }
-        );
+        const arcIndex = this._arcs.findIndex((arc) => arc.equals(new Arc(from, to)));
+        const weight = this._arcs[arcIndex].weight;
+        this._arcs.splice(arcIndex, 1);
+
         // Instead add two arc sections to and from the dummy node
-        this._arcs.push(new Arc(from, dummy));
-        this._arcs.push(new Arc(dummy, to));
+        this._arcs.push(new Arc(from, dummy, weight));
+        this._arcs.push(new Arc(dummy, to, weight));
     }
 
     findLayerIdForNode(node: Node): number {
