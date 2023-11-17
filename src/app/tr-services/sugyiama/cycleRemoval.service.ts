@@ -78,7 +78,7 @@ export class CycleRemovalService {
         }
     }
 
-    getPostArcsForNode(node: Node) {
+    getPostArcsForNode(node: Node): Arc[] {
         return this._arcs.filter((arc) => arc.from === node);
     }
 }

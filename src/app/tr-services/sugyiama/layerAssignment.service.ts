@@ -1,5 +1,4 @@
 import { Node } from "src/app/tr-interfaces/petri-net/node";
-import { Arc } from "src/app/tr-classes/petri-net/arc";
 
 /** 
  * Layer Assignment Service
@@ -26,7 +25,7 @@ export class LayerAssignmentService {
         this._nodeInputMap = nodeInputMap;
     }
 
-    assignLayers() {
+    assignLayers(): Record<number, Node[]> {
         // Layer which is currently being processed
         let layerId = 1;
         let counter = 0;
@@ -62,7 +61,7 @@ export class LayerAssignmentService {
     }
 
     // gets all nodes that have incoming edges from the given layer
-    getNodeChoicesForLayer(layer: Node[] | undefined)  {
+    getNodeChoicesForLayer(layer: Node[] | undefined): Node[]  {
         const incomingNodes: Node[] = [];
 
         for (const [node, parentNodes] of this._nodeInputMap.entries()) {
@@ -73,8 +72,8 @@ export class LayerAssignmentService {
             if (!layer || layer.length === 0) {
                 if (parentNodes.length === 0) incomingNodes.push(node);  
             } else {
-                let intersection = new Set([...parentNodes].filter(parentNode => layer.includes(parentNode)));
-                if (intersection.size) {
+                let intersection = [...parentNodes].filter(parentNode => layer.includes(parentNode));
+                if (intersection.length) {
                     incomingNodes.push(node);
                 }
             }

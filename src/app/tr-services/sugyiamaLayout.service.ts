@@ -1,12 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Node } from "src/app/tr-interfaces/petri-net/node";
 import { Arc } from "../tr-classes/petri-net/arc";
-import { Place } from "../tr-classes/petri-net/place";
-import { Transition } from "../tr-classes/petri-net/transition";
-import { Point } from "../tr-classes/petri-net/point";
-import { Observable, of } from "rxjs";
 import { DataService } from "src/app/tr-services/data.service";
-import { transition } from "@angular/animations";
 
 import { CycleRemovalService } from "./sugyiama/cycleRemoval.service";
 import { LayerAssignmentService } from "./sugyiama/layerAssignment.service";
@@ -53,15 +48,15 @@ export class LayoutService {
         cycleRemovalService.reverseArcs();
 
         // Sugyiama Step 3: vertex ordering/crossing minimization
+        // - Add dummy nodes for "long" arcs
+        // - Re-order vertices to reduce crossings between arcs
         const vertexOrderingService = new VertexOrderingService(layers, this._arcs, this._nodeInputMap, this._nodeOutputMap);
-        vertexOrderingService.orderVertices();        
+        vertexOrderingService.orderVertices();
 
         // Sugyiama Step 4: coordinate assignment
-        const coordinateAssignmentService = new CoordinateAssignmentService(layers, this._nodes, this._arcs, this._nodeInputMap, this._nodeOutputMap);
+        const coordinateAssignmentService = new CoordinateAssignmentService(layers, this._arcs);
         coordinateAssignmentService.assignCoordinates();
 
-        // Arcs that have been reversed for layer assignment can now to be re-reversed
-        cycleRemovalService.reverseArcs();
     }
 
     generateAdjacentNodeMaps() {

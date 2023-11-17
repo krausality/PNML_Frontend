@@ -72,6 +72,10 @@ export class Arc {
             (this.to as Transition).appendPreArc(this);
         }
     }
+
+    resetAnchors() {
+        this.anchors = [];
+    }
     
     equals(arc: Arc): boolean {
         return this.from === arc.from
