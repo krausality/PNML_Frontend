@@ -32,7 +32,84 @@ export class VertexOrderingService {
     orderVertices() {
         this.insertDummyNodes();
 
-        // TODO: Now follow barycenter algorithm by Ganser et al.
+        this.transpose();
+    }
+
+
+    transpose() {
+        let improved = true;
+
+        // TODO: remove once sure that we're not creating any endless loops by accident
+        let failsafe = 0;
+        while (improved && failsafe < 5) {
+            failsafe++;
+            improved = false;
+            for (const [layerId, layer] of Object.entries(this._layers)) {
+                if (layer.length === 1 || !this._layers[+layerId + 1]) {
+                    // console.log('Skipping Layer ' + layerId + ' which has only 1 node or it is the last one');
+                    continue;
+                }
+                for (let position = 0; position < layer.length - 1; position++) {
+                    console.log('Layer ' + layerId, layer);
+                    const nodeA = layer[position];
+                    const nodeB = layer[position + 1];
+                    const crossings = this.crossings(nodeA, nodeB, +layerId);
+                    //  console.log('Crossing between NodeA', nodeA, 'NodeB', nodeB, this.crossings(nodeA, nodeB, +layerId));
+                    if (this.crossings(nodeA, nodeB, +layerId) > this.crossings(nodeB, nodeA, +layerId)) {
+                        improved = true;
+
+                        const temp = nodeA;
+                        layer[position] = nodeB;
+                        layer[position+1] = temp;
+                    }
+                }
+            }
+
+        }
+    }
+
+    crossings(nodeA: Node, nodeB: Node, layerId: number) {
+        if (this._layers[layerId + 1].length === 1) {
+            // there is only one node in the next layer, there can be no crossings
+            console.log('Only one node in the next layer --> no crossings');
+            return 0;
+        }
+        
+        let crossings = 0;
+
+        // TODO: check which is better:
+        // - either iterate over nodes in the next layer and check for each node if the given node is node a or b
+        // - get adjacent nodes of nodeA and nodeB and check if they are in the next layer
+        let adjacentNodesIndexA = this.getConnectedNodes(nodeA).map((node) => this._layers[layerId +1].indexOf(node)).filter((item) => item !== -1);
+        let adjacentNodesIndexB = this.getConnectedNodes(nodeB).map((node) => this._layers[layerId +1].indexOf(node)).filter((item) => item !== -1);
+        
+        for (const indexA of adjacentNodesIndexA ) {
+            for (const indexB of adjacentNodesIndexB) {
+                if (indexA > indexB) {
+                    crossings++;
+                }
+            }
+        }
+        // console.log('Crossings:', adjacentNodesIndexA, adjacentNodesIndexB, crossings);
+
+        return crossings;
+    }
+
+    getConnectedNodes(node: Node) {
+        const inputNodes = this._nodeInputMap.get(node);
+        const outputNodes = this._nodeOutputMap.get(node);
+
+        const connectedNodes = [];
+        if (inputNodes) {
+            connectedNodes.push(...inputNodes);
+        }
+        if (outputNodes) {
+            connectedNodes.push(...outputNodes);
+        }
+
+        return connectedNodes;
+    }
+
     }
 
     insertDummyNodes() {
