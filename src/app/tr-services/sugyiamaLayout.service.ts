@@ -3,6 +3,8 @@ import { Node } from "src/app/tr-interfaces/petri-net/node";
 import { Arc } from "../tr-classes/petri-net/arc";
 import { DataService } from "src/app/tr-services/data.service";
 
+import { LayeredGraph } from "src/app/tr-services/sugyiama/types";
+
 import { CycleRemovalService } from "./sugyiama/cycleRemoval.service";
 import { LayerAssignmentService } from "./sugyiama/layerAssignment.service";
 import { VertexOrderingService } from "./sugyiama/vertexOrdering.service";
@@ -43,7 +45,7 @@ export class LayoutService {
         // Sugyiama Step 2: assign layers
         const layerAssignmentService = new LayerAssignmentService(this._nodes, this._nodeInputMap);
         const layers = layerAssignmentService.assignLayers();
-        
+
         // Arcs that have been reversed for layer assignment can now to be re-reversed
         cycleRemovalService.reverseArcs();
 

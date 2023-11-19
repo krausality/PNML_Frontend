@@ -1,3 +1,4 @@
+import { LayeredGraph } from "src/app/tr-services/sugyiama/types";
 import { Node } from "src/app/tr-interfaces/petri-net/node";
 
 /** 
@@ -15,7 +16,7 @@ export class LayerAssignmentService {
     
     private _assignedNodes: Node[] = []; 
     
-    private _layers: Record<number, Node[]> = {};
+    private _layers: LayeredGraph = [];
 
     constructor(
         nodes: Node[],
@@ -25,9 +26,9 @@ export class LayerAssignmentService {
         this._nodeInputMap = nodeInputMap;
     }
 
-    assignLayers(): Record<number, Node[]> {
+    assignLayers(): LayeredGraph {
         // Layer which is currently being processed
-        let layerId = 1;
+        let layerId = 0;
         let counter = 0;
 
         // TODO: Check if there is a more elegant way to check if two sets are equal

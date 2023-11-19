@@ -3,10 +3,12 @@ import { Arc } from "src/app/tr-classes/petri-net/arc";
 import { Point } from "src/app/tr-classes/petri-net/point";
 import { DummyNode } from "src/app/tr-classes/petri-net/dummyNode";
 
+import { LayeredGraph } from "src/app/tr-services/sugyiama/types";
+
 export class CoordinateAssignmentService {
     // Initial set of nodes and arcs
     private _arcs: Arc[] = [];
-    private _layers: Record<number, Node[]> = {};
+    private _layers: LayeredGraph = [];
 
     private _canvasHeight = 400;
     private _canvasWidth = 1140;
@@ -18,7 +20,7 @@ export class CoordinateAssignmentService {
     private _minRowHeight = 50;
 
     constructor(
-        layers: Record<number, Node[]>,
+        layers: LayeredGraph,
         arcs: Arc[]
     ) {
         this._layers = layers;
@@ -29,15 +31,16 @@ export class CoordinateAssignmentService {
         let currentX = 0;
         let currentY = 0;
 
-        const columns = Object.entries(this._layers).length;
+        const columns = this._layers.length;
         const columnSize = Math.max(Math.min((this._canvasWidth/columns), this._maxColumnWidth), this._minColumnWidth);
-        const maxRows = Math.max(...(Object.entries(this._layers).map((layer) => layer[1].length)));
+        const maxRows = Math.max(...(this._layers.map((layer) => layer.length)));
         const rowSize = Math.max(Math.min((this._canvasHeight/maxRows), this._maxRowHeight), this._minRowHeight);
 
         this.clearArcAnchorpoints();
 
-        for (const [layerId, layer] of Object.entries(this._layers)) {
-            currentX = (columnSize * +layerId) - columnSize/2 ;
+        for (const [layerId, layer] of this._layers.entries()) {
+            const column = layerId + 1;
+            currentX = (columnSize * column) - columnSize/2 ;
             currentY = this._canvasHeight/2 - (rowSize * (layer.length - 1)/2);
             for (const index in layer) {
                 const node = layer[index];
