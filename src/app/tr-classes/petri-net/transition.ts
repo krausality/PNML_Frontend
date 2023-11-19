@@ -1,8 +1,8 @@
 import { Node } from "src/app/tr-interfaces/petri-net/node";
 import { Point } from "./point";
-import { booleanAttribute } from "@angular/core";
 import { Arc } from "./arc";
 import { Place } from "./place";
+import { transitionWidth, transitionHeight } from "src/app/tr-services/position.constants";
 
 export class Transition implements Node {
     position: Point;
@@ -18,9 +18,8 @@ export class Transition implements Node {
     }
 
     intersectionOfBoundaryWithLineTo(p: Point): Point {
-        // ToDo: replace hard coded values with values from graphics data service
-        const width = 50;
-        const height = 50;
+        const width = transitionWidth;
+        const height = transitionHeight;
 
         if (! this.pLiesOutsideNodeShapeBoudary(p)){
             throw new Error('Point p for calculating intersection with node shape must lie outside of the node shape boundary.')
@@ -61,9 +60,8 @@ export class Transition implements Node {
     }
 
     pLiesOutsideNodeShapeBoudary(p: Point): boolean {
-        // ToDo: replace hard coded values with values from graphics data service
-        let width = 50;
-        let height = 50;
+        let width = transitionWidth;
+        let height = transitionHeight;
 
         const absDx = Math.abs(p.x - this.position.x);
         const absDy = Math.abs(p.y - this.position.y);

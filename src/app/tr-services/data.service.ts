@@ -14,6 +14,7 @@ export class DataService {
     private _places: Place[] = []
     private _transitions: Transition[] = [];
     private _arcs: Arc[] = [];
+    private _actions: string[] = [];
 
 
     constructor() {
@@ -43,6 +44,14 @@ export class DataService {
         return of(this._arcs);
     }
 
+    getActions(): string[] {
+        return this._actions;
+    }
+
+    getActionsAsync(): Observable<string[]> {
+        return of(this._actions);
+    }
+
 
     set places(value: Place[]) {
         this._places = value;
@@ -55,6 +64,11 @@ export class DataService {
     set arcs(value: Arc[]) {
         this._arcs = value;
     }
+
+    set actions(value: string[]) {
+        this._actions = value;
+    }
+
 
     removePlace(deletablePlace: Place): Place[] {
         const deletableArcs = this._arcs.filter(arc => !(arc.from === deletablePlace || arc.to === deletablePlace));
@@ -81,6 +95,16 @@ export class DataService {
             t.preArcs = t.preArcs.filter(arc => arc !== deletableArc);
         }
         return this._arcs;
+    }
+
+    removeAction(deletableAction: string): string[] {
+        this._transitions.forEach(
+            transition => {if (transition.label === deletableAction) {
+                transition.label = undefined;
+            }
+        });
+        this._actions = this._actions.filter(action => action !== deletableAction);
+        return this._actions;
     }
 
     mockData() {
