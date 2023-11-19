@@ -55,7 +55,6 @@ export class AppComponent {
     public downloadImage(fileType: string, fileName: string) {
 
         const svgElement = document.getElementById('drawingArea');
-        console.log(svgElement);
 
         if(svgElement) {
             let svg = (svgElement as unknown) as SVGGraphicsElement;
@@ -69,7 +68,7 @@ export class AppComponent {
 
             html2canvas(wrapper,
                 {
-                    // logging: true
+
                 }
                 ).then((canvas) => {
                 let image = canvas.toDataURL(fileType);
@@ -82,29 +81,21 @@ export class AppComponent {
 
     public downloadSvg() {
         var svgHolder = document.getElementById("drawingArea");
-        // console.log('>>> svgHolder: ' + svgHolder);
 
         if(svgHolder) {
             var svgDocument = svgHolder.ownerDocument;
             var style = svgDocument.createElementNS("http://www.w3.org/2000/svg", "style");
-
-            // const petrinetCss = '.canvas {    width: 100%;    height: 400px;    border-style: dotted;    border-color: lightgrey;}.place {    fill: white;    stroke: black;    stroke-width: 2;}.transition {    fill: #33FF3C;    stroke: black;    stroke-width: 2;}.transition.active{    fill: green;}.arc {    fill: none;    stroke: black;    stroke-width: 2;}.place-id{    fill: black;}.token-label{    fill: black;}.tansition-id{    fill: grey;}.arc-weight{    fill: black;}.arc-weight-background{    fill: white;}';
-
-            // console.log('>>> FileContent: ' + this.petrinetCss);
             style.textContent = this.petrinetCss;
-            // console.log('>>> style.textContent: ' + style.textContent);
 
             var svgElem = svgDocument.querySelector('svg');
 
             if(svgElem){
                 svgElem.insertBefore(style, svgElem.firstChild);
             }
-            // console.log('>>> svgElem: ' + svgElem);
 
             var serializer = new XMLSerializer();
                 if(svgElem) {
                     var source = serializer.serializeToString(svgElem);
-                    // console.log('>>> source: ' + source);
 
                     //add name spaces
                     if(!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)){
@@ -117,8 +108,7 @@ export class AppComponent {
                     //add xml declaration
                     source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
                     //convert svg source to URI data scheme
-                    var url = "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(source);
-                    // console.log('>>> url: ' + url);
+                    var url = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(source);
 
                 this.saveAs(url, 'svgExport.svg');
             }
