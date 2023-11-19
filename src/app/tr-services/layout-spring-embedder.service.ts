@@ -6,34 +6,25 @@ import { Node } from '../tr-interfaces/petri-net/node';
 @Injectable({
     providedIn: 'root'
 })
-export class LayoutService {
+export class LayoutSpringEmbedderService {
 
-    constructor() { }
+    constructor(private dataService: DataService) { }
 
-    // testing layout with spring-embedder
-    layoutSpringEmbedder(dataService: DataService) {
-        // scramble for testing
-        // dataService.getPlaces().forEach(place => {
-        //     place.position.x = Math.floor(Math.random() * 1000);
-        //     place.position.y = Math.floor(Math.random() * 800);
-        // });
-        // dataService.getTransitions().forEach(place => {
-        //     place.position.x = Math.floor(Math.random() * 1000);
-        //     place.position.y = Math.floor(Math.random() * 800);
-        // });
-
+    // spring embedder adaptation for layouting our petri net
+    // based on Eades spring embedder algorithm
+    async layoutSpringEmbedder() {
         // remove anchorpoints
-        dataService.getArcs().forEach(arc => arc.anchors.length = 0);
+        this.dataService.getArcs().forEach(arc => arc.anchors.length = 0);
 
         // combining places and transitions into one array because we don't need to handle them differently in this algorithm
-        const nodes: Node[] = [...dataService.getPlaces(), ...dataService.getTransitions()];
+        const nodes: Node[] = [...this.dataService.getPlaces(), ...this.dataService.getTransitions()];
 
         // discover the connected nodes of each node once and keep the map in memory
         // instead of doing it every iteration
         const connectedNodeMap: { [id: string]: Node[] } = {};
         nodes.forEach(n => {
             const connectedNodes: Node[] = [];
-            dataService.getArcs().forEach(arc => {
+            this.dataService.getArcs().forEach(arc => {
                 if (arc.from.id === n.id) {
                     connectedNodes.push(arc.to);
                 } else if (arc.to.id === n.id) {
@@ -60,8 +51,6 @@ export class LayoutService {
             // calculate force vector to be applied for every node
             nodes.forEach(n => forceVectors[n.id] = this.calculateForceVector(n, nodes, connectedNodeMap[n.id]))
 
-            // console.log(forceVectors);
-
             // add the calculated force vectors to the places and transitions
             // and calculate the maximum force applied while iterating
             maxForceVectorLength = 0;
@@ -77,10 +66,15 @@ export class LayoutService {
                 }
             });
 
+            // sleep for a few ms each iteration to visualize layouting via spring forces
+            await this.sleep(10);
+
             iterations++;
         }
+    }
 
-        // console.log(iterations + " " + maxForceVectorLength);
+    private sleep(ms: number) {
+        return new Promise(r => setTimeout(r, ms));
     }
 
     // calculate the force vector that should be applied to the node in one iteration of the algorithm
@@ -88,25 +82,21 @@ export class LayoutService {
         // initialize force vector
         const forceVector = new Point(0, 0);
 
-        // console.log(connectedNodes);
-
-        // calculate repulsion force only towards the other non connected nodes
+        // calculate repulsion force from all other nodes
         nodes.forEach(n => {
             if (n.id !== node.id) {
                 const repulsionForce = this.calculateRepulsionForce(node.position, n.position);
                 // add the calculated repulsion force to the force vector
                 forceVector.x += repulsionForce.x;
                 forceVector.y += repulsionForce.y;
-                // console.log("rep of " + node.id + " from " + n.id + ": " + repulsionForce.x + ", " + repulsionForce.y);
             }
         });
 
-        // calculate the attraction force for all connected nodes
+        // calculate the spring force from all connected nodes
         connectedNodes.forEach(cn => {
             const attractionForce = this.calculateSpringForce(node.position, cn.position);
             forceVector.x += attractionForce.x;
             forceVector.y += attractionForce.y;
-            // console.log("attr of " + node.id + " to " + cn.id + ": " + attractionForce.x + ", " + attractionForce.y);
         });
 
         return forceVector;

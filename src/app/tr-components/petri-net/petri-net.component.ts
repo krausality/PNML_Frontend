@@ -13,7 +13,6 @@ import {
     transitionYOffset,
     transitionIdYOffset
 } from "../../tr-services/position.constants";
-import { LayoutService } from 'src/app/tr-services/layout.service';
 
 @Component({
     selector: 'app-petri-net',
@@ -24,14 +23,6 @@ export class PetriNetComponent {
     @Output('fileContent') fileContent: EventEmitter<string>;
 
     constructor(private parserService: ParserService, private httpClient: HttpClient, private fileReaderService: FileReaderService, protected dataService: DataService) {
-        this.httpClient.get("assets/example.json", { responseType: "text" }).subscribe(data => {
-            const [places, transitions, arcs, actions] = parserService.parse(data);
-            this.dataService.places = places;
-            this.dataService.transitions = transitions;
-            this.dataService.arcs = arcs;
-            this.dataService.actions = actions;
-        });
-
         this.fileContent = new EventEmitter<string>();
     }
 

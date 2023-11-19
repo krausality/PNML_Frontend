@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { LayoutSpringEmbedderService } from 'src/app/tr-services/layout-spring-embedder.service';
 
 @Component({
   selector: 'app-layout-switch',
@@ -8,11 +9,11 @@ import { Component } from '@angular/core';
 export class LayoutSwitchComponent {
     selected: string = "free";
 
-    constructor(/* layout services go here */) {}
+    constructor(private layoutSpringEmebdderService: LayoutSpringEmbedderService /* layout services go here */) {}
 
     public layoutSwitchChanged() {
         if (this.selected == "spring-embedder") {
-            // call spring embedder layout service
+            this.layoutSpringEmebdderService.layoutSpringEmbedder();
         } else if (this.selected == "sugiyama") {
             // call sugiyama layout service
         }
