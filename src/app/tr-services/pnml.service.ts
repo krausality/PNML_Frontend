@@ -36,7 +36,6 @@ export class PnmlService {
             if (pnmlArcs) {
                 arcs = this.parsePnmlArcs(pnmlArcs, places, transitions);
             }
-            this.writePNML(places, transitions, arcs);
             return [places, transitions, arcs]
         } catch (error) {
             throw new Error(`Error parsing XML to JSON: ${error}`);
