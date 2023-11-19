@@ -7,15 +7,22 @@
     </h2>
 
     <!--    Main content    -->
+
     <app-petri-net class="padding full-size" (fileContent)="processSourceChange($event)"></app-petri-net>
 
-
     <div fxLayout="row" fxLayoutAlign="space-evenly start">
+        <!-- Preliminary place for menu buttons -->
         <app-example-button title="Button"></app-example-button>
 
         <app-example-button title="PNG Download" (click)="downloadImage('image/png', 'pngExport.png')"></app-example-button>
 
         <app-example-button title="SVG Download" (click)="downloadSvg()"></app-example-button>
+
+        <app-layout-switch></app-layout-switch>
+    </div>
+
+    <div fxLayout="row" fxLayoutAlign="space-evenly start">
+
 
         <app-example-file title="File" link="assets/example.json" description="An example .json Petri net"></app-example-file>
 
