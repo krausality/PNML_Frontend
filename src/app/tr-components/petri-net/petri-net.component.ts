@@ -13,6 +13,7 @@ import {
     transitionYOffset,
     transitionIdYOffset
 } from "../../tr-services/position.constants";
+import {PnmlService} from "../../tr-services/pnml.service";
 
 @Component({
     selector: 'app-petri-net',
@@ -22,7 +23,7 @@ import {
 export class PetriNetComponent {
     @Output('fileContent') fileContent: EventEmitter<string>;
 
-    constructor(private parserService: ParserService, private httpClient: HttpClient, private fileReaderService: FileReaderService, protected dataService: DataService) {
+    constructor(private parserService: ParserService, private httpClient: HttpClient, private fileReaderService: FileReaderService, protected dataService: DataService, private pnmlService: PnmlService) {
         this.httpClient.get("assets/example.json", { responseType: "text" }).subscribe(data => {
             const [places, transitions, arcs, actions] = parserService.parse(data);
             this.dataService.places = places;
@@ -30,6 +31,13 @@ export class PetriNetComponent {
             this.dataService.arcs = arcs;
             this.dataService.actions = actions;
         });
+
+        // this.httpClient.get("assets/woped_reference_model.pnml", { responseType: "text" }).subscribe(data => {
+        //     const [places, transitions, arcs] = pnmlService.parse(data);
+        //     this.dataService.places = places;
+        //     this.dataService.transitions = transitions;
+        //     this.dataService.arcs = arcs;
+        // });
 
         this.fileContent = new EventEmitter<string>();
     }
