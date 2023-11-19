@@ -55,8 +55,10 @@ export class LayoutService {
         const vertexOrderingService = new VertexOrderingService(layers, this._arcs, this._nodeInputMap, this._nodeOutputMap);
         vertexOrderingService.orderVertices();
 
+        this.dataService.arcs = this._arcs;
+
         // Sugyiama Step 4: coordinate assignment
-        const coordinateAssignmentService = new CoordinateAssignmentService(layers, this._arcs);
+        const coordinateAssignmentService = new CoordinateAssignmentService(layers, this._arcs, this._nodes);
         coordinateAssignmentService.assignCoordinates();
 
     }

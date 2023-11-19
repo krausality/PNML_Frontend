@@ -8,6 +8,7 @@ import { LayeredGraph } from "src/app/tr-services/sugyiama/types";
 export class CoordinateAssignmentService {
     // Initial set of nodes and arcs
     private _arcs: Arc[] = [];
+    private _nodes: Node[] = [];
     private _layers: LayeredGraph = [];
 
     private _canvasHeight = 400;
@@ -21,10 +22,12 @@ export class CoordinateAssignmentService {
 
     constructor(
         layers: LayeredGraph,
-        arcs: Arc[]
+        arcs: Arc[],
+        nodes: Node[]
     ) {
         this._layers = layers;
         this._arcs = arcs;
+        this._nodes = nodes;
     }
     
     assignCoordinates() {
@@ -80,7 +83,7 @@ export class CoordinateAssignmentService {
         this.removeItemFromArray(outputArc, this._arcs);
         this._arcs.push(new Arc(inputArc.from, outputArc.to, 1, anchorpoints));
 
-        this.removeItemFromArray(node, this._nodes);
+        // this.removeItemFromArray(node, this._nodes);
     }
 
     removeItemFromArray(item: any, array: any[]) {
