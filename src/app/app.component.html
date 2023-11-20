@@ -7,9 +7,6 @@
     </h2>
 
     <!--    Main content    -->
-
-    <app-petri-net class="padding full-size" (fileContent)="processSourceChange($event)"></app-petri-net>
-
     <div fxLayout="row" fxLayoutAlign="space-evenly start">
         <!-- Preliminary place for menu buttons -->
         <app-example-button title="Button"></app-example-button>
@@ -20,6 +17,8 @@
 
         <app-layout-switch></app-layout-switch>
     </div>
+
+    <app-petri-net class="padding full-size" (fileContent)="processSourceChange($event)"></app-petri-net>
 
     <div fxLayout="row" fxLayoutAlign="space-evenly start">
 

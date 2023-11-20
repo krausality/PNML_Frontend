@@ -21,7 +21,7 @@ export class AppComponent {
                 private httpClient: HttpClient) {
         this.textareaFc = new FormControl();
         this.textareaFc.disable();
-        this.httpClient.get('assets/petri-net.css', {responseType: 'text'})
+        this.httpClient.get('assets/petri-net.component.css', {responseType: 'text'})
             .subscribe(data => {
                 // console.log(data),
                 this.petrinetCss = data;
@@ -80,23 +80,16 @@ export class AppComponent {
     }
 
     public downloadSvg() {
-        var svgHolder = document.getElementById("drawingArea");
-
-        if(svgHolder) {
-            var svgDocument = svgHolder.ownerDocument;
-            var style = svgDocument.createElementNS("http://www.w3.org/2000/svg", "style");
+        var svg = document.getElementById("drawingArea");
+        if (svg) {
+            var style = document.createElementNS("http://www.w3.org/2000/svg", "style");
             style.textContent = this.petrinetCss;
-
-            var svgElem = svgDocument.querySelector('svg');
-
-            if(svgElem){
-                svgElem.insertBefore(style, svgElem.firstChild);
+            if (svg) {
+                svg.insertBefore(style, svg.firstChild);
             }
-
             var serializer = new XMLSerializer();
-                if(svgElem) {
-                    var source = serializer.serializeToString(svgElem);
-
+                if(svg) {
+                    var source = serializer.serializeToString(svg);
                     //add name spaces
                     if(!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)){
                         source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
@@ -104,12 +97,10 @@ export class AppComponent {
                     if(!source.match(/^<svg[^>]+"http\:\/\/www\.w3\.org\/1999\/xlink"/)){
                         source = source.replace(/^<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
                     }
-
                     //add xml declaration
                     source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
                     //convert svg source to URI data scheme
                     var url = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(source);
-
                 this.saveAs(url, 'svgExport.svg');
             }
         }
