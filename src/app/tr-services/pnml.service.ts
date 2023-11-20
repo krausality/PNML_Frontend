@@ -76,9 +76,9 @@ export class PnmlService {
         const pnmlContent = `<?xml version="1.0" encoding="UTF-8"?>
   <pnml xmlns="http://www.pnml.org/version-2009/grammar/pnml">
     <net id="net1" type="http://www.pnml.org/version-2009/grammar/ptnet">
-      ${places.map(place => this.getPlaceString(place)).join('\n')}
-      ${transitions.map(transition => this.getTransitionString(transition)).join('\n')}}
-      ${arcs.map(arc => this.getArcString(arc)).join('\n')}}
+${places.map(place => this.getPlaceString(place)).join('\n')}
+${transitions.map(transition => this.getTransitionString(transition)).join('\n')}
+${arcs.map(arc => this.getArcString(arc)).join('\n')}
     </net>
   </pnml>`;
 
@@ -92,46 +92,46 @@ export class PnmlService {
 
     getPlaceString(place: Place): string {
         if (place.label) {
-return `<place id=${place.id}>
-          <name>
-            <text>${place.label}</text>
-          </name>
-          <graphics>
-            <postition> x="${place.position.x}" y="${place.position.y}"/>
-          </graphics>
-        </place>`
+return       `      <place id=${place.id}>
+        <name>
+          <text>${place.label}</text>
+        </name>
+        <graphics>
+          <postition> x="${place.position.x}" y="${place.position.y}"/>
+        </graphics>
+      </place>`
         } else {
-return `<place id=${place.id}>'
+return       `      <place id=${place.id}>'
          <graphics>
            <postition> x="${place.position.x}" y="${place.position.y}"/>
          </graphics>
-        </place>`
+       </place>`
         }
 
     }
 
     getTransitionString(transition: Transition): string {
         if (transition.label) {
-return `<transition id=${transition.id}>
-          <name>
-            <text>${transition.label}</text>
-          </name>
-          <graphics>
-            <postition> x="${transition.position.x}" y="${transition.position.y}"/>
-          </graphics>
-        </transition>`
+return       `      <transition id=${transition.id}>
+        <name>
+          <text>${transition.label}</text>
+        </name>
+        <graphics>
+          <postition> x="${transition.position.x}" y="${transition.position.y}"/>
+        </graphics>
+      </transition>`
         } else {
-return `<transition id={transition.id}>'
-          <graphics>
-            <postition> x="${transition.position.x}" y="${transition.position.y}"/>
-          </graphics>
-        </transition>`
+return       `      <transition id=${transition.id}>
+        <graphics>
+          <postition> x="${transition.position.x}" y="${transition.position.y}"/>
+        </graphics>
+      </transition>`
         }
 
     }
 
     getArcString(arc: Arc): string {
-return `<arc id = ${arc.from.id},${arc.to.id} source=${arc.from.id} target = ${arc.to.id}></arc>`
+return       `      <arc id = ${arc.from.id},${arc.to.id} source=${arc.from.id} target = ${arc.to.id}></arc>`
         }
 
     private parsePnmlTransitions(list: Array<PnmlElement>): Transition[] {
