@@ -32,7 +32,7 @@ export class PetriNetComponent {
             this.dataService.actions = actions;
         });
 
-        // this.httpClient.get("assets/woped_reference_model.pnml", { responseType: "text" }).subscribe(data => {
+        // this.httpClient.get("assets/example.pnml", { responseType: "text" }).subscribe(data => {
         //     const [places, transitions, arcs] = pnmlService.parse(data);
         //     this.dataService.places = places;
         //     this.dataService.transitions = transitions;
