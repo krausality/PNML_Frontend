@@ -61,7 +61,7 @@ export class PnmlService {
 
             let point: Point;
             if (position?.attributes.x && position.attributes.y) {
-                point = new Point(position.attributes.x, position.attributes.y)
+                point = new Point(Number(position.attributes.x), Number(position.attributes.y))
             } else {
                 point = new Point(0, 0);
             }
@@ -152,7 +152,7 @@ return       `      <arc id = "${arc.from.id},${arc.to.id}" source="${arc.from.i
 
             let point: Point;
             if (position?.attributes.x && position.attributes.y) {
-                point = new Point(position.attributes.x, position.attributes.y)
+                point = new Point(Number(position.attributes.x), Number(position.attributes.y))
             } else {
                 point = new Point(0, 0);
             }
