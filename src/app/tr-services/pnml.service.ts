@@ -92,19 +92,25 @@ ${arcs.map(arc => this.getArcString(arc)).join('\n')}
 
     getPlaceString(place: Place): string {
         if (place.label) {
-return       `      <place id=${place.id}>
+return       `      <place id="${place.id}">
         <name>
           <text>${place.label}</text>
         </name>
         <graphics>
-          <postition> x="${place.position.x}" y="${place.position.y}"/>
+          <position x="${place.position.x}" y="${place.position.y}"/>
         </graphics>
+        <initialMarking>
+          <text>${place.token}</text>
+        </initialMarking>
       </place>`
         } else {
-return       `      <place id=${place.id}>'
+return       `      <place id="${place.id}">
          <graphics>
-           <postition> x="${place.position.x}" y="${place.position.y}"/>
+           <position x="${place.position.x}" y="${place.position.y}"/>
          </graphics>
+         <initialMarking>
+           <text>${place.token}</text>
+         </initialMarking>
        </place>`
         }
 
@@ -112,18 +118,18 @@ return       `      <place id=${place.id}>'
 
     getTransitionString(transition: Transition): string {
         if (transition.label) {
-return       `      <transition id=${transition.id}>
+return       `      <transition id="${transition.id}">
         <name>
           <text>${transition.label}</text>
         </name>
         <graphics>
-          <postition> x="${transition.position.x}" y="${transition.position.y}"/>
+          <position x="${transition.position.x}" y="${transition.position.y}"/>
         </graphics>
       </transition>`
         } else {
-return       `      <transition id=${transition.id}>
+return       `      <transition id="${transition.id}">
         <graphics>
-          <postition> x="${transition.position.x}" y="${transition.position.y}"/>
+          <position x="${transition.position.x}" y="${transition.position.y}"/>
         </graphics>
       </transition>`
         }
@@ -131,7 +137,7 @@ return       `      <transition id=${transition.id}>
     }
 
     getArcString(arc: Arc): string {
-return       `      <arc id = ${arc.from.id},${arc.to.id} source=${arc.from.id} target = ${arc.to.id}></arc>`
+return       `      <arc id = "${arc.from.id},${arc.to.id}" source="${arc.from.id}" target = "${arc.to.id}"></arc>`
         }
 
     private parsePnmlTransitions(list: Array<PnmlElement>): Transition[] {
@@ -165,7 +171,12 @@ return       `      <arc id = ${arc.from.id},${arc.to.id} source=${arc.from.id} 
             const targetNode = this.retrieveNode(places, transitions, targetId);
 
             if (sourceNode && targetNode) {
-                const arc = new Arc(sourceNode, targetNode)
+                const arc = new Arc(sourceNode, targetNode);
+                if(sourceNode instanceof Transition) {
+                    sourceNode.postArcs.push(arc);
+                } else if(targetNode instanceof Transition) {
+                    targetNode.preArcs.push(arc);
+                }
                 arcs.push(arc);
             }
         })
