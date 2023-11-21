@@ -8,6 +8,18 @@ import { Node } from '../tr-interfaces/petri-net/node';
 })
 export class LayoutSpringEmbedderService {
 
+    // parameters needed to make the spring embedder algorithm terminate
+    private epsilon = 0.01;
+    private maxIterations = 5000;
+
+    // constant repulsion force
+    private cRep = 20000;
+
+    // ideal length of arcs
+    private l = 150;
+    // constant spring force
+    private cSpring = 20;
+
     constructor(private dataService: DataService) { }
 
     // spring embedder adaptation for layouting our petri net
@@ -34,17 +46,13 @@ export class LayoutSpringEmbedderService {
             connectedNodeMap[n.id] = connectedNodes;
         });
 
-        // parameters needed to make the spring embedder algorithm terminate
-        const epsilon = 0.9;
-        const maxIterations = 500;
-
         let iterations = 1;
         // this is only needed for the first iteration
-        let maxForceVectorLength = epsilon + 1;
+        let maxForceVectorLength = this.epsilon + 1;
 
         // the algorithm terminates after the maximum iterations are reached
         // or if the maximum force applied in one iteration gets to small to really change much in the layout
-        while (iterations <= maxIterations && maxForceVectorLength > epsilon) {
+        while (iterations <= this.maxIterations && maxForceVectorLength > this.epsilon) {
             // keep track of force vectors to be applied in a map
             const forceVectors: { [id: string]: Point } = {};
 
@@ -104,20 +112,14 @@ export class LayoutSpringEmbedderService {
 
     // calculate repulsion vector between two nodes (points)
     private calculateRepulsionForce(u: Point, v: Point): Point {
-        // constant repulsion force
-        const c = 20000;
-        const factor = c / (this.calculateDistance(v, u) ** 2);
+        const factor = this.cRep / (this.calculateDistance(v, u) ** 2);
         const unitVector = this.calculateUnitVector(v, u);
         return new Point(unitVector.x * factor, unitVector.y * factor);
     }
 
     // calculation attraction vector between two points
     private calculateSpringForce(u: Point, v: Point): Point {
-        // ideal length of arcs --> sensible default value?
-        const l = 150;
-        // constant spring force
-        const c = 20;
-        const factor = c * Math.log10(this.calculateDistance(v, u) / l);
+        const factor = this.cSpring * Math.log10(this.calculateDistance(v, u) / this.l);
         const unitVector = this.calculateUnitVector(u, v);
         return new Point(unitVector.x * factor, unitVector.y * factor);
     }
