@@ -71,6 +71,52 @@ export class PnmlService {
         return places;
     }
 
+    private parsePnmlTransitions(list: Array<PnmlElement>): Transition[] {
+        const places: Transition[] = [];
+        list.forEach(pnmlTransition => {
+            const id = pnmlTransition.attributes.id;
+
+            const nameElement = pnmlTransition.elements.find(element => element.name === 'name');
+            const nameTextElement = nameElement?.elements.find(element => element.name === 'text');
+            const nameTextAttribute = nameTextElement?.elements.find(element => element.type === 'text');
+            const nameText = nameTextAttribute?.text;
+
+            const graphics = pnmlTransition.elements.find(element => element.name === 'graphics');
+            const position = graphics?.elements.find(element => element.name === 'position');
+
+            let point: Point;
+            if (position?.attributes.x && position.attributes.y) {
+                point = new Point(Number(position.attributes.x), Number(position.attributes.y))
+            } else {
+                point = new Point(0, 0);
+            }
+            const transition = new Transition(point, id, nameText);
+            places.push(transition);
+        })
+        return places;
+    }
+
+    private parsePnmlArcs(list: Array<PnmlElement>, places: Place[], transitions: Transition[]): Arc[] {
+        const arcs: Arc[] = [];
+        list.forEach(pnmlArc => {
+            const sourceId = pnmlArc.attributes.source;
+            const targetId = pnmlArc.attributes.target;
+            const sourceNode = this.retrieveNode(places, transitions, sourceId);
+            const targetNode = this.retrieveNode(places, transitions, targetId);
+
+            if (sourceNode && targetNode) {
+                const arc = new Arc(sourceNode, targetNode);
+                if(sourceNode instanceof Transition) {
+                    sourceNode.postArcs.push(arc);
+                } else if(targetNode instanceof Transition) {
+                    targetNode.preArcs.push(arc);
+                }
+                arcs.push(arc);
+            }
+        })
+        return arcs;
+    }
+
     writePNML(places: Place[], transitions: Transition[], arcs: Arc[]) {
         const fileName = "test.pnml"
         const pnmlContent = `<?xml version="1.0" encoding="UTF-8"?>
@@ -102,7 +148,7 @@ return       `      <place id="${place.id}">
         <initialMarking>
           <text>${place.token}</text>
         </initialMarking>
-      </place>`
+     </place>`
         } else {
 return       `      <place id="${place.id}">
          <graphics>
@@ -111,7 +157,7 @@ return       `      <place id="${place.id}">
          <initialMarking>
            <text>${place.token}</text>
          </initialMarking>
-       </place>`
+      </place>`
         }
 
     }
@@ -139,49 +185,6 @@ return       `      <transition id="${transition.id}">
     getArcString(arc: Arc): string {
 return       `      <arc id = "${arc.from.id},${arc.to.id}" source="${arc.from.id}" target = "${arc.to.id}"></arc>`
         }
-
-    private parsePnmlTransitions(list: Array<PnmlElement>): Transition[] {
-        const places: Transition[] = [];
-        list.forEach(pnmlTransition => {
-            const id = pnmlTransition.attributes.id;
-
-            const nameText = pnmlTransition.attributes.name;
-
-            const graphics = pnmlTransition.elements.find(element => element.name === 'graphics');
-            const position = graphics?.elements.find(element => element.name === 'position');
-
-            let point: Point;
-            if (position?.attributes.x && position.attributes.y) {
-                point = new Point(Number(position.attributes.x), Number(position.attributes.y))
-            } else {
-                point = new Point(0, 0);
-            }
-            const place = new Transition(point, id, nameText);
-            places.push(place);
-        })
-        return places;
-    }
-
-    private parsePnmlArcs(list: Array<PnmlElement>, places: Place[], transitions: Transition[]): Arc[] {
-        const arcs: Arc[] = [];
-        list.forEach(pnmlArc => {
-            const sourceId = pnmlArc.attributes.source;
-            const targetId = pnmlArc.attributes.target;
-            const sourceNode = this.retrieveNode(places, transitions, sourceId);
-            const targetNode = this.retrieveNode(places, transitions, targetId);
-
-            if (sourceNode && targetNode) {
-                const arc = new Arc(sourceNode, targetNode);
-                if(sourceNode instanceof Transition) {
-                    sourceNode.postArcs.push(arc);
-                } else if(targetNode instanceof Transition) {
-                    targetNode.preArcs.push(arc);
-                }
-                arcs.push(arc);
-            }
-        })
-        return arcs;
-    }
 
     private retrieveNode(places: Place[], transitions: Transition[], id: string): Node | undefined {
         const foundPlace = places.find(place => place.id === id);
