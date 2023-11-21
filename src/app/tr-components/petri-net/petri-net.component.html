@@ -1,9 +1,4 @@
-<!-- Preliminary place for menu buttons -->
-<div>
-    <app-layout-switch></app-layout-switch>
-</div>
-
-<svg #drawingArea class="canvas"
+<svg #drawingArea class="canvas" id="drawingArea"
     (drop)="processDropEvent($event)"
     (dragover)="prevent($event)"
 >
