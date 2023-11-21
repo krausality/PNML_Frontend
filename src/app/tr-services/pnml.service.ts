@@ -1,11 +1,11 @@
 import {Injectable} from '@angular/core';
 import {xml2js} from 'xml-js';
-import {PnmlElement, PnmlPetriNet} from "../tr-classes/petri-net/pnml-petri-net";
-import {Place} from "../tr-classes/petri-net/place";
-import {Point} from "../tr-classes/petri-net/point";
-import {Transition} from "../tr-classes/petri-net/transition";
-import {Node} from "../tr-interfaces/petri-net/node";
-import {Arc} from "../tr-classes/petri-net/arc";
+import {PnmlElement, PnmlPetriNet} from '../tr-classes/petri-net/pnml-petri-net';
+import {Place} from '../tr-classes/petri-net/place';
+import {Point} from '../tr-classes/petri-net/point';
+import {Transition} from '../tr-classes/petri-net/transition';
+import {Node} from '../tr-interfaces/petri-net/node';
+import {Arc} from '../tr-classes/petri-net/arc';
 
 @Injectable({
     providedIn: 'root'
@@ -19,11 +19,11 @@ export class PnmlService {
     parse(xmlString: string): [Array<Place>, Array<Transition>, Array<Arc>] {
         try {
             const result = xml2js(xmlString) as PnmlPetriNet;
-            const pnml = result.elements.find(element => element.name === "pnml");
-            const net = pnml?.elements.find(element => element.name === "net");
-            const pnmlPlaces = net?.elements.filter(element => element.name === "place");
-            const pnmlTransitions = net?.elements.filter(element => element.name === "transition");
-            const pnmlArcs = net?.elements.filter(element => element.name === "arc");
+            const pnml = result.elements.find(element => element.name === name_pnml);
+            const net = pnml?.elements.find(element => element.name === name_net);
+            const pnmlPlaces = net?.elements.filter(element => element.name === name_place);
+            const pnmlTransitions = net?.elements.filter(element => element.name === name_transition);
+            const pnmlArcs = net?.elements.filter(element => element.name === name_arc);
             let places: Place[] = [];
             let transitions: Transition[] = [];
             if (pnmlPlaces) {
@@ -49,9 +49,9 @@ export class PnmlService {
 
             const nameText = pnmlPlace.attributes.name;
 
-            const initialMarking = pnmlPlace?.elements.find(element => element.name === 'initialMarking');
-            const initialMarkingTextElement = initialMarking?.elements.find(element => element.name === 'text');
-            const initialMarkingText = initialMarkingTextElement?.elements.find(element => element.type === 'text')?.text;
+            const initialMarking = pnmlPlace?.elements.find(element => element.name === name_initialMarking);
+            const initialMarkingTextElement = initialMarking?.elements.find(element => element.name === text);
+            const initialMarkingText = initialMarkingTextElement?.elements.find(element => element.type === text)?.text;
             let initialMarkingNumber = 0;
             if (initialMarkingText) {
                 initialMarkingNumber = parseInt(initialMarkingText);
@@ -76,9 +76,9 @@ export class PnmlService {
         list.forEach(pnmlTransition => {
             const id = pnmlTransition.attributes.id;
 
-            const nameElement = pnmlTransition.elements.find(element => element.name === 'name');
-            const nameTextElement = nameElement?.elements.find(element => element.name === 'text');
-            const nameTextAttribute = nameTextElement?.elements.find(element => element.type === 'text');
+            const nameElement = pnmlTransition.elements.find(element => element.name === name);
+            const nameTextElement = nameElement?.elements.find(element => element.name === text);
+            const nameTextAttribute = nameTextElement?.elements.find(element => element.type === text);
             const nameText = nameTextAttribute?.text;
 
             const graphics = pnmlTransition.elements.find(element => element.name === 'graphics');
@@ -198,3 +198,17 @@ return       `      <arc id = "${arc.from.id},${arc.to.id}" source="${arc.from.i
         }
     }
 }
+
+const name_pnml = "pnml";
+const name_net = "net";
+
+const name_place = "place";
+const name_transition = "transition";
+const name_arc = "arc";
+
+const name_initialMarking = "initialMarking";
+
+const text = "text";
+const name = "name";
+
+
