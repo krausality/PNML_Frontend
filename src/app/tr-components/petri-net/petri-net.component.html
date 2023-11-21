@@ -1,3 +1,9 @@
+<!-- Preliminary place for menu buttons-->
+<div>
+    <button (click) = "exportJsonDataService.exportAsJson()"> Export as json ...</button>
+    <!-- Add your menu buttons -->
+</div>
+
 <svg #drawingArea class="canvas" id="drawingArea"
     (drop)="processDropEvent($event)"
     (dragover)="prevent($event)"
