@@ -19,9 +19,12 @@ export class CycleRemovalService {
     private _arcs: Arc[] = [];
 
     // Uitility variables
+    // keeps track of all nodes in the current branch
     private _stack: Node[] = [];
+    // keeps track of all nodes that have been visited in the whole run
     private _visited: Node[] = [];
 
+    // Saves arcs that are reversed to be able to re-reverse them later
     private _arcsToBeReversed: Arc[] = [];
 
     constructor(
@@ -45,36 +48,36 @@ export class CycleRemovalService {
         if (this._visited.includes(node)) {
             return;
         }
+        
         this._visited.push(node);
         this._stack.push(node);
 
         const postArcs = this.getPostArcsForNode(node);
         for (let arc of postArcs) {
             if (this._stack.includes(arc.to)) {
+                // If the node is already included in the stack
+                // this must be a circle and the arc needs to be reversed
                 this._arcsToBeReversed.push(arc);
                 // TODO: Check if it's possibly that a petrinet contains two arcs
                 // leading from and to the same node ?
             } else if (!this._visited.includes(arc.to)) {
+                // if this arc has not been visited before continue the dfs search
+                // starting with the arcs target node
                 this.depthFirstSearchRemove(arc.to);
             }
         }
         this._stack.pop();
     }
 
-    // Change the direction of the arcs to eliminate circles
+    // Changes the direction of the arcs to eliminate circles
     reverseArcs() {
         for (let arc of this._arcsToBeReversed) {
-            // Remove original arc
-            const index = this._arcs.indexOf(arc);
-            this._arcs.splice(index, 1);
-
-            // Reverse & add arc
+            // since we're working with references it's enough
+            // to just update the arcs to & from nodes
             const newTo = arc.from;
             const newFrom = arc.to;
             arc.to = newTo;
             arc.from = newFrom;
-
-            this._arcs.push(arc);
         }
     }
 

@@ -28,10 +28,9 @@ export class LayoutService {
 
     applySugyiamaLayout() {
         // copy initial state of datamodel to local datamodel
+        // the algorithm treats places & transitons the same
         this._arcs = [...this.dataService.getArcs()];
         this._nodes = [...this.dataService.getPlaces(), ...this.dataService.getTransitions()];
-
-        // console.log('[Sugyiama Layout:] Initial set of arcs and nodes', this._nodes, this._arcs);
 
         // TODO: There are some requirements for the layout to work correctly.
         // -> There cannot be orphaned nodes
@@ -55,6 +54,8 @@ export class LayoutService {
         const vertexOrderingService = new VertexOrderingService(layers, this._arcs, this._nodeInputMap, this._nodeOutputMap);
         vertexOrderingService.orderVertices();
 
+        // update arcs in the unterlying data-model before redrawing it
+        // this is needed to add the dummy arcs added in the previous step
         this.dataService.arcs = this._arcs;
 
         // Sugyiama Step 4: coordinate assignment

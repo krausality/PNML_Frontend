@@ -31,21 +31,25 @@ export class LayerAssignmentService {
         let layerId = 0;
         let counter = 0;
 
-        // TODO: Check if there is a more elegant way to check if two sets are equal
+        // Add nodes to layers until there are no unassigned nodes left
         while (this._assignedNodes.length < this._nodes.length && counter < 20) {
             counter++;
 
-            const parentLayer = this._layers[layerId - 1];
+            const previousLayer = this._layers[layerId - 1];
 
-            const choices = this.getNodeChoicesForLayer(parentLayer);
+            const choices = this.getNodeChoicesForLayer(previousLayer);
             const picked = choices.pop();
 
-
             if (picked) {
+                // Create empty array for layer if it doesn't exist yet
                 if (!this._layers[layerId]) this._layers[layerId] = [];
+
+                // Add the picked node both the layered graph
                 this._layers[layerId].push(picked);
                 this._assignedNodes.push(picked);
             } else {
+                // There are no nodes left that can be assigned to the current layer
+                // so we move up to the next layer
                 layerId++;
                 this._layers[layerId] = [];
             }
@@ -62,18 +66,25 @@ export class LayerAssignmentService {
     }
 
     // gets all nodes that have incoming edges from the given layer
-    getNodeChoicesForLayer(layer: Node[] | undefined): Node[]  {
+    getNodeChoicesForLayer(prevLayer: Node[] | undefined): Node[]  {
         const incomingNodes: Node[] = [];
 
-        for (const [node, parentNodes] of this._nodeInputMap.entries()) {
+        // Get the pre-nodes for each node form the graph map
+        // (map contains prenodes indexed by node)
+        for (const [node, preNode] of this._nodeInputMap.entries()) {
             if (this._assignedNodes.includes(node)) {
-                // this node has already been assigned, ignore
+                // ignore nodes that have already been assigned to a layer
                 continue;
             }
-            if (!layer || layer.length === 0) {
-                if (parentNodes.length === 0) incomingNodes.push(node);  
+
+            if (!prevLayer || prevLayer.length === 0) {
+                // If this is the first layer/the previous layer has no nodes
+                // all nodes are potential candidates for the layer 
+                if (preNode.length === 0) incomingNodes.push(node);  
             } else {
-                let intersection = [...parentNodes].filter(parentNode => layer.includes(parentNode));
+                // Otherwise only nodes that have prenodes coming from
+                // the previous layer are candidates for the current layer
+                let intersection = [...preNode].filter(preNode => prevLayer.includes(preNode));
                 if (intersection.length) {
                     incomingNodes.push(node);
                 }

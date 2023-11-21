@@ -50,7 +50,7 @@ export class VertexOrderingService {
             this.median(i, this._layers);
             this.transpose(this._layers);
 
-            console.log(this.totalCrossings(this._layers));
+            // console.log(this.totalCrossings(this._layers));
 
             // if (this.totalCrossings(currentOrder) > this.totalCrossings(best)) {
             //     best = currentOrder;
@@ -59,6 +59,8 @@ export class VertexOrderingService {
     }
 
     median(iteration: number, currentOrder: LayeredGraph) {
+        // Sweep through the tree
+        // Change direction top-to-bottom to bottom-to-top for each iteration
         if (iteration % 2 === 0) {
             for (const [layerId, nodes] of currentOrder.entries()) {
                 const median = new Map();
@@ -87,7 +89,7 @@ export class VertexOrderingService {
     transpose(currentOrder: LayeredGraph) {
         let improved = true;
 
-        // TODO: remove once sure that we're not creating any endless loops by accident
+        // TODO: remove counter once sure that we're not creating any endless loops by accident
         let failsafe = 0;
         while (improved && failsafe < 5) {
             failsafe++;
@@ -97,14 +99,16 @@ export class VertexOrderingService {
                     // console.log('Skipping Layer ' + layerId + ' which has only 1 node or it is the last one');
                     continue;
                 }
+
+                // Check for each pair of nodes if swapping them would reduce the # of crossings
                 for (let position = 0; position < layer.length - 1; position++) {
-                    console.log('Layer ' + layerId, layer);
                     const nodeA = layer[position];
                     const nodeB = layer[position + 1];
-                    //  console.log('Crossing between NodeA', nodeA, 'NodeB', nodeB, this.layerCrossings(nodeA, nodeB, layerId));
+                    
                     if (this.layerCrossings(nodeA, nodeB, layerId) > this.layerCrossings(nodeB, nodeA, layerId)) {
                         improved = true;
 
+                        // Swap the two nodes
                         const temp = nodeA;
                         layer[position] = nodeB;
                         layer[position+1] = temp;
@@ -114,39 +118,41 @@ export class VertexOrderingService {
         }
     }
 
+    // Traverse the whole graph and count all crossings
     totalCrossings(currentOrder: LayeredGraph) {
         let crossings = 0;
         for (const [layerId, layer] of currentOrder.entries()) {
             if (layer.length === 1 || !currentOrder[layerId + 1]) {
-                // console.log('Skipping Layer ' + layerId + ' which has only 1 node or it is the last one');
+                // the last layer or nodes with 1 node cannot have crossings
                 continue;
             }
+
+            // Check crossings for each neighbouring nodes
             for (let position = 0; position < layer.length - 1; position++) {
-                console.log('Layer ' + layerId, layer);
                 const nodeA = layer[position];
                 const nodeB = layer[position + 1];
                 crossings += this.layerCrossings(nodeA, nodeB, layerId);
             }
         }
-        console.log('TotalCrossings: ' + crossings);
+
         return crossings;
     }
 
+    // Find all crossings between two  nodes in a given layer
     layerCrossings(nodeA: Node, nodeB: Node, layerId: number) {
         if (this._layers[layerId + 1].length === 1) {
             // there is only one node in the next layer, there can be no crossings
-            console.log('Only one node in the next layer --> no crossings');
             return 0;
         }
         
         let crossings = 0;
 
-        // TODO: check which is better:
-        // - either iterate over nodes in the next layer and check for each node if the given node is node a or b
-        // - get adjacent nodes of nodeA and nodeB and check if they are in the next layer
+        // Find all connected nodes in the next layer and their positions within the layer
         let adjacentNodesIndexA = this.getConnectedNodes(nodeA).map((node) => this._layers[layerId +1].indexOf(node)).filter((item) => item !== -1);
         let adjacentNodesIndexB = this.getConnectedNodes(nodeB).map((node) => this._layers[layerId +1].indexOf(node)).filter((item) => item !== -1);
         
+        // For each pair check wether the index of the neighbouring node is bigger
+        // if so, then a crossing has been identified
         for (const indexA of adjacentNodesIndexA ) {
             for (const indexB of adjacentNodesIndexB) {
                 if (indexA > indexB) {
@@ -154,22 +160,18 @@ export class VertexOrderingService {
                 }
             }
         }
-        // console.log('Crossings:', adjacentNodesIndexA, adjacentNodesIndexB, crossings);
 
         return crossings;
     }
 
     getConnectedNodes(node: Node) {
+        const connectedNodes = [];
+
         const inputNodes = this._nodeInputMap.get(node);
         const outputNodes = this._nodeOutputMap.get(node);
 
-        const connectedNodes = [];
-        if (inputNodes) {
-            connectedNodes.push(...inputNodes);
-        }
-        if (outputNodes) {
-            connectedNodes.push(...outputNodes);
-        }
+        if (inputNodes) connectedNodes.push(...inputNodes);
+        if (outputNodes) connectedNodes.push(...outputNodes);
 
         return connectedNodes;
     }
@@ -177,7 +179,6 @@ export class VertexOrderingService {
 
     getMedianValueOfInputNodes(node: Node, layer: Node[]) {
         // console.log('[Vertex Ordering]: nodes in adjacent layer to node: ', node, layer);
-
         const inputNodes = this._nodeInputMap.get(node);
         if (!inputNodes || !inputNodes.length) {
             // nodes with no adjacent vertices are given a median of -1
@@ -221,18 +222,22 @@ export class VertexOrderingService {
     insertDummyNodes() {
         let dummyIndex = 0;
         for (const [layerId, nodes] of this._layers.entries()) {
-            const nextLayer = this._layers[+layerId + 1];
+            const nextLayer = this._layers[layerId + 1];
             if (!nextLayer) continue;
-
+            
+            // Check if there are connected nodes from a layer
+            // that is *not* the previous one.
+            // This has to be done seperately for input & output nodes
+            // so that we can ensure the correct direction of the inserted dummy arcs
             for (let node of nodes) {
-                // check if there are incoming edges from a vertex from a layer
-                // that is not the previous one
-                const inputNodes = this._nodeInputMap.get(node);
-                if (inputNodes) {
-                    for (let preNode of inputNodes) {
+                const preNodes = this._nodeInputMap.get(node);
+                if (preNodes) {
+                    for (let preNode of preNodes) {
                         const preNodeLayer = this.findLayerIdForNode(preNode);
 
-                        if (Math.abs(preNodeLayer) - +layerId > 1) {
+                        // If prenode is not on the previous layer
+                        // this is a long edge and a dummy node needs to be inserted
+                        if (Math.abs(preNodeLayer) - layerId > 1) {
                             this.addDummyNodeAndArcs(dummyIndex, nextLayer, preNode, node);
                             dummyIndex++;
                         }
@@ -241,12 +246,14 @@ export class VertexOrderingService {
 
                 const outputNodes = this._nodeOutputMap.get(node);
                 if (outputNodes) {
-                    // check if there are incoming edges from a vertex from a layer
-                    // that is not the next one
+                    // check if there are outgoing edges from a vertex from a layer
+                    // that is *not* the next one
                     for (let postNode of outputNodes) {
                         const postNodeLayer = this.findLayerIdForNode(postNode);
 
-                        if (Math.abs(postNodeLayer) - +layerId > 1) {
+                        // If postnode is not on the previous layer
+                        // this is a long edge and a dummy node needs to be inserted
+                        if (Math.abs(postNodeLayer) - layerId > 1) {
                             this.addDummyNodeAndArcs(dummyIndex, nextLayer, node, postNode);
                             dummyIndex++;
                         }
@@ -276,7 +283,7 @@ export class VertexOrderingService {
 
     findLayerIdForNode(node: Node): number {
         for (const [layerId, nodes] of this._layers.entries()) {
-            if (nodes.includes(node)) return layerId; // keys are turned to strings, but we need numbers
+            if (nodes.includes(node)) return layerId;
         }
         return 0;
     }
