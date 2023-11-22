@@ -14,6 +14,7 @@ import {
     transitionIdYOffset
 } from "../../tr-services/position.constants";
 import {PnmlService} from "../../tr-services/pnml.service";
+import { ExportJsonDataService } from 'src/app/tr-services/export-json-data.service';
 
 @Component({
     selector: 'app-petri-net',
@@ -24,6 +25,7 @@ export class PetriNetComponent {
     @Output('fileContent') fileContent: EventEmitter<string>;
 
     constructor(private parserService: ParserService, private httpClient: HttpClient, private fileReaderService: FileReaderService, protected dataService: DataService, private pnmlService: PnmlService) {
+    constructor(private parserService: ParserService, private httpClient: HttpClient, private fileReaderService: FileReaderService, protected dataService: DataService, protected exportJsonDataService: ExportJsonDataService) {
         this.httpClient.get("assets/example.json", { responseType: "text" }).subscribe(data => {
             const [places, transitions, arcs, actions] = parserService.parse(data);
             this.dataService.places = places;
