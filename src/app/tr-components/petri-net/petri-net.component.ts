@@ -13,6 +13,7 @@ import {
     transitionYOffset,
     transitionIdYOffset
 } from "../../tr-services/position.constants";
+import {PnmlService} from "../../tr-services/pnml.service";
 import { ExportJsonDataService } from 'src/app/tr-services/export-json-data.service';
 
 @Component({
@@ -23,7 +24,7 @@ import { ExportJsonDataService } from 'src/app/tr-services/export-json-data.serv
 export class PetriNetComponent {
     @Output('fileContent') fileContent: EventEmitter<string>;
 
-    constructor(private parserService: ParserService, private httpClient: HttpClient, private fileReaderService: FileReaderService, protected dataService: DataService, protected exportJsonDataService: ExportJsonDataService) {
+    constructor(private parserService: ParserService, private httpClient: HttpClient, private fileReaderService: FileReaderService, protected dataService: DataService, protected exportJsonDataService: ExportJsonDataService, protected pnmlService: PnmlService) {
         this.httpClient.get("assets/example.json", { responseType: "text" }).subscribe(data => {
             const [places, transitions, arcs, actions] = parserService.parse(data);
             this.dataService.places = places;
@@ -31,6 +32,13 @@ export class PetriNetComponent {
             this.dataService.arcs = arcs;
             this.dataService.actions = actions;
         });
+
+        // this.httpClient.get("assets/example.pnml", { responseType: "text" }).subscribe(data => {
+        //     const [places, transitions, arcs] = pnmlService.parse(data);
+        //     this.dataService.places = places;
+        //     this.dataService.transitions = transitions;
+        //     this.dataService.arcs = arcs;
+        // });
 
         this.fileContent = new EventEmitter<string>();
     }
