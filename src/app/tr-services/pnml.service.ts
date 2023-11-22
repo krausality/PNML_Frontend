@@ -6,6 +6,7 @@ import {Point} from '../tr-classes/petri-net/point';
 import {Transition} from '../tr-classes/petri-net/transition';
 import {Node} from '../tr-interfaces/petri-net/node';
 import {Arc} from '../tr-classes/petri-net/arc';
+import {DataService} from "./data.service";
 
 @Injectable({
     providedIn: 'root'
@@ -13,7 +14,7 @@ import {Arc} from '../tr-classes/petri-net/arc';
 export class PnmlService {
 
 
-    constructor() {
+    constructor(private dataServive: DataService) {
     }
 
     parse(xmlString: string): [Array<Place>, Array<Transition>, Array<Arc>] {
@@ -117,8 +118,11 @@ export class PnmlService {
         return arcs;
     }
 
-    writePNML(places: Place[], transitions: Transition[], arcs: Arc[]) {
-        const fileName = "test.pnml"
+    writePNML() {
+        const places = this.dataServive.getPlaces();
+        const transitions = this.dataServive.getTransitions();
+        const arcs = this.dataServive.getArcs();
+        const fileName = "petri-net-with-love.pnml"
         const pnmlContent = `<?xml version="1.0" encoding="UTF-8"?>
   <pnml xmlns="http://www.pnml.org/version-2009/grammar/pnml">
     <net id="net1" type="http://www.pnml.org/version-2009/grammar/ptnet">
@@ -128,11 +132,18 @@ ${arcs.map(arc => this.getArcString(arc)).join('\n')}
     </net>
   </pnml>`;
 
-        const a = document.createElement('a');
+        // Create Blob (Binary Large OBject)
         const file = new Blob([pnmlContent], {type: "'text/xml;charset=utf-8'"});
-        a.href = URL.createObjectURL(file);
-        a.download = fileName;
-        a.click();
+
+        // Create anchor element with url to the Blob object and programmatically
+        // trigger a click event on the anchor to initiate the download
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(file);
+        link.download = fileName;
+        link.click();
+
+        // Free up resources
+        URL.revokeObjectURL(link.href);
 
     }
 
