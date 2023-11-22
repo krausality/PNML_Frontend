@@ -45,14 +45,22 @@ export class PetriNetComponent {
         this.fileContent = new EventEmitter<string>();
     }
 
-    private parsePetrinetData(content: string | undefined) {
-        console.log('Parsing data');
+    private parsePetrinetData(content: string | undefined, contentType: string) {
         if (content) {
-            const [places, transitions, arcs, actions] = this.parserService.parse(content);
-            this.dataService.places = places;
-            this.dataService.transitions = transitions;
-            this.dataService.arcs = arcs;
-            this.dataService.actions = actions;
+            // Use pnml parser if file type is pnml
+            // we'll try the json parser for all other cases
+            if (contentType === 'pnml') {
+                const [places, transitions, arcs] = this.pnmlService.parse(content);
+                this.dataService.places = places;
+                this.dataService.transitions = transitions;
+                this.dataService.arcs = arcs;
+            } else {
+                const [places, transitions, arcs, actions] = this.parserService.parse(content);
+                this.dataService.places = places;
+                this.dataService.transitions = transitions;
+                this.dataService.arcs = arcs;
+                this.dataService.actions = actions;
+            }
         }
     }
 
@@ -79,7 +87,7 @@ export class PetriNetComponent {
             }),
             take(1)
         ).subscribe(content => {
-            this.parsePetrinetData(content);
+            this.parsePetrinetData(content, 'json');
             this.emitFileContent(content);
         })
     }
@@ -88,8 +96,23 @@ export class PetriNetComponent {
         if (files === undefined || files === null || files.length === 0) {
             return;
         }
+
+        const file = files[0];
+
+        // will be e.g. application/json for JSON files
+        // we only need the last section
+        let extension = file.type.split('/').pop();
+        let fileType = extension ? extension : '';
+
+        if (!fileType) {
+            // the file does not have a correct file type set,
+            // extract type from file name
+            const extension = file.name.split('.').pop();
+            fileType = extension ? extension : '';
+        }
+
         this.fileReaderService.readFile(files[0]).pipe(take(1)).subscribe(content => {
-            this.parsePetrinetData(content);
+            this.parsePetrinetData(content, fileType);
             this.emitFileContent(content);
         });
     }
