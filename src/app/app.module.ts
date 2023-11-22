@@ -17,6 +17,7 @@ import {HttpClientModule} from "@angular/common/http";
 import {ExampleButtonComponent} from "./components/example-button/example-button.component";
 import { PetriNetComponent } from './tr-components/petri-net/petri-net.component';
 import { LayoutSwitchComponent } from './tr-components/layout-switch/layout-switch.component';
+import { mathAbsPipe } from './tr-pipes/math-abs.pipe';
 
 @NgModule({
     declarations: [
@@ -26,7 +27,8 @@ import { LayoutSwitchComponent } from './tr-components/layout-switch/layout-swit
         ExampleFileComponent,
         ExampleButtonComponent,
         PetriNetComponent,
-        LayoutSwitchComponent
+        LayoutSwitchComponent,
+        mathAbsPipe,
     ],
     imports: [
         BrowserModule,
