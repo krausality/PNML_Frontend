@@ -4,6 +4,8 @@ import { ParserService } from 'src/app/tr-services/parser.service';
 import { catchError, of, take } from 'rxjs';
 import { FileReaderService } from "../../services/file-reader.service";
 import { DataService } from "../../tr-services/data.service";
+import { ExampleFileComponent } from "src/app/components/example-file/example-file.component";
+
 import {
     radius,
     placeIdYOffset,
@@ -56,10 +58,9 @@ export class PetriNetComponent {
 
     // Process Drag & Drop using Observables
     public processDropEvent(e: DragEvent) {
-        console.log('caught processDropEvent');
         e.preventDefault();
 
-        const fileLocation = e.dataTransfer?.getData("assets/example.json");
+        const fileLocation = e.dataTransfer?.getData(ExampleFileComponent.META_DATA_CODE);
 
         if (fileLocation) {
             this.fetchFile(fileLocation);
