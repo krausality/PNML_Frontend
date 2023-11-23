@@ -99,17 +99,10 @@ export class PetriNetComponent {
 
         const file = files[0];
 
-        // will be e.g. application/json for JSON files
-        // we only need the last section
-        let extension = file.type.split('/').pop();
-        let fileType = extension ? extension : '';
-
-        if (!fileType) {
-            // the file does not have a correct file type set,
-            // extract type from file name
-            const extension = file.name.split('.').pop();
-            fileType = extension ? extension : '';
-        }
+        // the file does not have a correct file type set,
+        // extract type from file name
+        const extension = file.name.split('.').pop();
+        const fileType = extension ? extension : '';
 
         this.fileReaderService.readFile(files[0]).pipe(take(1)).subscribe(content => {
             this.parsePetrinetData(content, fileType);
