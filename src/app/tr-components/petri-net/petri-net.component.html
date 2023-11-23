@@ -36,7 +36,7 @@
     <!-- Arcs -->
     <g *ngFor="let arc of dataService.getArcs()">
         <polyline class="arc" [attr.points]="arc.polyLinePoints" marker-end="url(#arrow)"></polyline>
-        <g *ngIf="arc.weight > 1">
+        <g *ngIf="arc.weight > 1 || arc.weight < -1">
             <!-- Weight at Arc without Anchorpoints - Middle of Polyline -->
             <!-- White Circle for Background -->
             <circle *ngIf="arc.anchors.length == 0" class="arc-weight-background" [attr.cx]="(arc.from.position.x + arc.to.position.x) / 2" [attr.cy]="(arc.from.position.y + arc.to.position.y) / 2" r="12" />
