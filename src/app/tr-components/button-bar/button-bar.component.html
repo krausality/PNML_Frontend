@@ -1,0 +1,31 @@
+<mat-tab-group (selectedTabChange)="tabClicked($event.tab.textLabel)">
+    <mat-tab label="build">
+        <ng-template mat-tab-label>
+            <mat-icon class="example-tab-icon">edit</mat-icon>
+            Build
+        </ng-template>
+        <!-- Buttons for Tab Build -->
+        <button mat-icon-button [attr.class]="uiService.button === 'blitz' ? 'user-button active' : 'user-button'">
+            <mat-icon>bolt</mat-icon>
+        </button>
+        <button mat-icon-button [attr.class]="uiService.button === 'place' ? 'user-button active' : 'user-button'">
+            <mat-icon>circle</mat-icon>
+        </button>
+    </mat-tab>
+    <mat-tab label="play">
+        <ng-template mat-tab-label>
+            <mat-icon class="example-tab-icon">play_arrow</mat-icon>
+            Play
+        </ng-template>
+        <!-- Buttons for Tab Play -->
+        Content 2
+    </mat-tab>
+    <mat-tab label="save">
+        <ng-template mat-tab-label>
+            <mat-icon class="example-tab-icon">download</mat-icon>
+            Save
+        </ng-template>
+        <!-- Buttons for Tab Save -->
+        Content 2
+    </mat-tab>
+</mat-tab-group>

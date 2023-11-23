@@ -1,0 +1,24 @@
+.example-tab-icon {
+    margin-right: 8px;
+}
+
+.user-button {
+    outline-style: solid;
+    border-radius: 0px;
+    outline-width: 2px;
+    outline-color: black;
+    margin: 5px;
+}
+
+.user-button.active {
+    color: red;
+    background-color: lightgrey;
+}
+
+.user-tab {
+    color: black
+}
+
+.user-tab.active {
+    color: red;
+}

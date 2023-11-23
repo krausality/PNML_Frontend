@@ -9,6 +9,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {MatSelectModule} from '@angular/material/select';
+import {MatTabsModule} from '@angular/material/tabs';
 import {ReactiveFormsModule} from '@angular/forms';
 import {FooterComponent} from './components/footer/footer.component';
 import {ExampleFileComponent} from './components/example-file/example-file.component';
@@ -17,6 +18,7 @@ import {HttpClientModule} from "@angular/common/http";
 import {ExampleButtonComponent} from "./components/example-button/example-button.component";
 import { PetriNetComponent } from './tr-components/petri-net/petri-net.component';
 import { LayoutSwitchComponent } from './tr-components/layout-switch/layout-switch.component';
+import { ButtonBarComponent } from './tr-components/button-bar/button-bar.component';
 
 @NgModule({
     declarations: [
@@ -26,7 +28,8 @@ import { LayoutSwitchComponent } from './tr-components/layout-switch/layout-swit
         ExampleFileComponent,
         ExampleButtonComponent,
         PetriNetComponent,
-        LayoutSwitchComponent
+        LayoutSwitchComponent,
+        ButtonBarComponent
     ],
     imports: [
         BrowserModule,
@@ -37,6 +40,7 @@ import { LayoutSwitchComponent } from './tr-components/layout-switch/layout-swit
         MatButtonModule,
         MatIconModule,
         MatSelectModule,
+        MatTabsModule,
         ReactiveFormsModule,
         HttpClientModule,
     ],
