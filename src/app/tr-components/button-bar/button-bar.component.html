@@ -5,10 +5,10 @@
             Build
         </ng-template>
         <!-- Buttons for Tab Build -->
-        <button mat-icon-button [attr.class]="uiService.button === 'blitz' ? 'user-button active' : 'user-button'">
+        <button mat-icon-button [color]="uiService.button === 'blitz' ? 'primary' : ''">
             <mat-icon>bolt</mat-icon>
         </button>
-        <button mat-icon-button [attr.class]="uiService.button === 'place' ? 'user-button active' : 'user-button'">
+        <button mat-icon-button [color]="uiService.button === 'place' ? 'primary' : ''">
             <mat-icon>circle</mat-icon>
         </button>
     </mat-tab>

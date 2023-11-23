@@ -10,7 +10,7 @@ export class UiService {
     tab: string = "build";
     // stores the active button inside the build tab
     // default is empty
-    button: string = "";
+    button: string = "blitz";
 
     constructor() { }
 }

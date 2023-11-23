@@ -14,10 +14,13 @@
 
         <app-example-button title="SVG Download" (click)="downloadSvg()"></app-example-button>
 
-        <app-layout-switch></app-layout-switch>
+        
     </div> -->
 
-    <app-button-bar class="padding full-size"></app-button-bar>
+    <div fxLayout="row">
+        <app-button-bar fxFlex></app-button-bar>
+        <app-layout-switch fxFlex></app-layout-switch>
+    </div>
 
     <app-petri-net class="padding full-size" (fileContent)="processSourceChange($event)"></app-petri-net>
 
