@@ -4,6 +4,8 @@ import { ParserService } from 'src/app/tr-services/parser.service';
 import { catchError, of, take } from 'rxjs';
 import { FileReaderService } from "../../services/file-reader.service";
 import { DataService } from "../../tr-services/data.service";
+import { ExampleFileComponent } from "src/app/components/example-file/example-file.component";
+
 import {
     radius,
     placeIdYOffset,
@@ -43,23 +45,30 @@ export class PetriNetComponent {
         this.fileContent = new EventEmitter<string>();
     }
 
-    private parsePetrinetData(content: string | undefined) {
-        console.log('Parsing data');
+    private parsePetrinetData(content: string | undefined, contentType: string) {
         if (content) {
-            const [places, transitions, arcs, actions] = this.parserService.parse(content);
-            this.dataService.places = places;
-            this.dataService.transitions = transitions;
-            this.dataService.arcs = arcs;
-            this.dataService.actions = actions;
+            // Use pnml parser if file type is pnml
+            // we'll try the json parser for all other cases
+            if (contentType === 'pnml') {
+                const [places, transitions, arcs] = this.pnmlService.parse(content);
+                this.dataService.places = places;
+                this.dataService.transitions = transitions;
+                this.dataService.arcs = arcs;
+            } else {
+                const [places, transitions, arcs, actions] = this.parserService.parse(content);
+                this.dataService.places = places;
+                this.dataService.transitions = transitions;
+                this.dataService.arcs = arcs;
+                this.dataService.actions = actions;
+            }
         }
     }
 
     // Process Drag & Drop using Observables
     public processDropEvent(e: DragEvent) {
-        console.log('caught processDropEvent');
         e.preventDefault();
 
-        const fileLocation = e.dataTransfer?.getData("assets/example.json");
+        const fileLocation = e.dataTransfer?.getData(ExampleFileComponent.META_DATA_CODE);
 
         if (fileLocation) {
             this.fetchFile(fileLocation);
@@ -78,7 +87,7 @@ export class PetriNetComponent {
             }),
             take(1)
         ).subscribe(content => {
-            this.parsePetrinetData(content);
+            this.parsePetrinetData(content, 'json');
             this.emitFileContent(content);
         })
     }
@@ -87,8 +96,16 @@ export class PetriNetComponent {
         if (files === undefined || files === null || files.length === 0) {
             return;
         }
+
+        const file = files[0];
+
+        // the file does not have a correct file type set,
+        // extract type from file name
+        const extension = file.name.split('.').pop();
+        const fileType = extension ? extension : '';
+
         this.fileReaderService.readFile(files[0]).pipe(take(1)).subscribe(content => {
-            this.parsePetrinetData(content);
+            this.parsePetrinetData(content, fileType);
             this.emitFileContent(content);
         });
     }
