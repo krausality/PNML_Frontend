@@ -4,28 +4,88 @@
             <mat-icon class="example-tab-icon">edit</mat-icon>
             Build
         </ng-template>
-        <!-- Buttons for Tab Build -->
-        <button mat-icon-button [color]="uiService.button === 'blitz' ? 'primary' : ''">
-            <mat-icon>bolt</mat-icon>
-        </button>
-        <button mat-icon-button [color]="uiService.button === 'place' ? 'primary' : ''">
-            <mat-icon>circle</mat-icon>
-        </button>
+
+        <!-- buttons for tab "build" -->
+        <div class="button-container">
+            <!-- blitz tool -->
+            <button mat-icon-button [color]="uiService.button === 'blitz' ? 'primary' : ''" (click)="buttonClicked('blitz')">
+                <mat-icon>bolt</mat-icon>
+            </button>
+
+            <!-- divider -->
+            <div class="divider"></div>
+            
+            <!-- places -->
+            <button mat-icon-button [color]="uiService.button === 'place' ? 'primary' : ''" (click)="buttonClicked('place')">
+                <mat-icon>circle</mat-icon>
+            </button>
+            
+            <!-- transitions -->
+            <button mat-icon-button [color]="uiService.button === 'transition' ? 'primary' : ''" (click)="buttonClicked('transition')">
+                <mat-icon>square</mat-icon>
+            </button>
+            
+            <!-- arcs -->
+            <button mat-icon-button [color]="uiService.button === 'arc' ? 'primary' : ''" (click)="buttonClicked('arc')">
+                <mat-icon>north_east</mat-icon>
+            </button>
+
+            <!-- divider -->
+            <div class="divider"></div>
+
+            <!-- move tool -->
+            <button mat-icon-button [color]="uiService.button === 'move' ? 'primary' : ''" (click)="buttonClicked('move')">
+                <mat-icon>open_with</mat-icon>
+            </button>
+
+            <!-- select tool -->
+            <button mat-icon-button [color]="uiService.button === 'select' ? 'primary' : ''" (click)="buttonClicked('select')">
+                <mat-icon>ads_click</mat-icon>
+            </button>
+        </div>
     </mat-tab>
+
     <mat-tab label="play">
         <ng-template mat-tab-label>
             <mat-icon class="example-tab-icon">play_arrow</mat-icon>
             Play
         </ng-template>
-        <!-- Buttons for Tab Play -->
-        Content 2
+
+        <!-- buttons for tab "play" -->
+        <div class="button-container">
+            <!-- rewind tool -->
+            <button mat-icon-button>
+                <mat-icon>fast_rewind</mat-icon>
+            </button>
+
+            <!-- restart tool -->
+            <button mat-icon-button>
+                <mat-icon>restart_alt</mat-icon>
+            </button> 
+        </div>
     </mat-tab>
     <mat-tab label="save">
         <ng-template mat-tab-label>
             <mat-icon class="example-tab-icon">download</mat-icon>
             Save
         </ng-template>
-        <!-- Buttons for Tab Save -->
-        Content 2
+
+        <!-- buttons for tab "save" -->
+        <div class="button-container">
+            <!-- export as json -->
+            <button mat-stroked-button class="text-button" (click)="exportJsonDataService.exportAsJson()">JSON</button>
+
+            <!-- export as pnml -->
+            <button mat-stroked-button class="text-button" (click)="pnmlService.writePNML()">PNML</button>
+
+            <!-- divider -->
+            <div class="divider"></div>
+
+            <!-- export as png -->
+            <button mat-stroked-button class="text-button" (click)="downloadImage('image/png', 'pngExport.png')">PNG</button>
+
+            <!-- export as svg -->
+            <button mat-stroked-button class="text-button" (click)="downloadSvg()">SVG</button>
+        </div>
     </mat-tab>
 </mat-tab-group>

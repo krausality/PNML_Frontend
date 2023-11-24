@@ -1,24 +1,14 @@
-.example-tab-icon {
-    margin-right: 8px;
+.button-container {
+    display: inline-flex;
+    height: 50px;
 }
 
-.user-button {
-    outline-style: solid;
-    border-radius: 0px;
-    outline-width: 2px;
-    outline-color: black;
-    margin: 5px;
+.divider {
+    border-right: 2px solid grey;
+    height: 30px;
+    margin: auto 10px;
 }
 
-.user-button.active {
-    color: red;
-    background-color: lightgrey;
-}
-
-.user-tab {
-    color: black
-}
-
-.user-tab.active {
-    color: red;
+.text-button {
+    margin: auto 5px;
 }
