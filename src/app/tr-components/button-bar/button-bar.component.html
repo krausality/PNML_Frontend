@@ -82,10 +82,10 @@
             <div class="divider"></div>
 
             <!-- export as png -->
-            <button mat-stroked-button class="text-button" (click)="downloadImage('image/png', 'pngExport.png')">PNG</button>
+            <button mat-stroked-button class="text-button" (click)="exportImageService.exportAsImage('image/png', 'pngExport.png')">PNG</button>
 
             <!-- export as svg -->
-            <button mat-stroked-button class="text-button" (click)="downloadSvg()">SVG</button>
+            <button mat-stroked-button class="text-button" (click)="exportSvgService.exportAsSvg()">SVG</button>
         </div>
     </mat-tab>
 </mat-tab-group>

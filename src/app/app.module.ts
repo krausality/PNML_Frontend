@@ -19,6 +19,7 @@ import {ExampleButtonComponent} from "./components/example-button/example-button
 import { PetriNetComponent } from './tr-components/petri-net/petri-net.component';
 import { LayoutSwitchComponent } from './tr-components/layout-switch/layout-switch.component';
 import { ButtonBarComponent } from './tr-components/button-bar/button-bar.component';
+import { mathAbsPipe } from './tr-pipes/math-abs.pipe';
 
 @NgModule({
     declarations: [
@@ -29,7 +30,8 @@ import { ButtonBarComponent } from './tr-components/button-bar/button-bar.compon
         ExampleButtonComponent,
         PetriNetComponent,
         LayoutSwitchComponent,
-        ButtonBarComponent
+        ButtonBarComponent,
+        mathAbsPipe,
     ],
     imports: [
         BrowserModule,

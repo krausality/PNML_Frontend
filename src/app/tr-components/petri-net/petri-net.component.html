@@ -29,26 +29,27 @@
     <!-- Arcs -->
     <g *ngFor="let arc of dataService.getArcs()">
         <polyline class="arc" [attr.points]="arc.polyLinePoints" marker-end="url(#arrow)"></polyline>
+        <g *ngIf="arc.weight > 1 || arc.weight < -1">
+            <!-- Weight at Arc without Anchorpoints - Middle of Polyline -->
+            <!-- White Circle for Background -->
+            <circle *ngIf="arc.anchors.length == 0" [attr.class]="uiService.tab === 'play' ? 'arc-weight-background play-mode' : 'arc-weight-background'" [attr.cx]="(arc.from.position.x + arc.to.position.x) / 2" [attr.cy]="(arc.from.position.y + arc.to.position.y) / 2" r="12" />
+            <text *ngIf="arc.anchors.length == 0" class="arc-weight" [attr.x]="(arc.from.position.x + arc.to.position.x) / 2" [attr.y]="(arc.from.position.y + arc.to.position.y) / 2" text-anchor="middle" dominant-baseline="central">{{arc.weight | mathAbs}}</text>
 
-        <!-- Weight at Arc without Anchorpoints - Middle of Polyline -->
-        <!-- White Circle for Background -->
-        <circle *ngIf="arc.anchors.length == 0" [attr.class]="uiService.tab === 'play' ? 'arc-weight-background play-mode' : 'arc-weight-background'" [attr.cx]="(arc.from.position.x + arc.to.position.x) / 2" [attr.cy]="(arc.from.position.y + arc.to.position.y) / 2" r="12" />
-        <text *ngIf="arc.anchors.length == 0" class="arc-weight" [attr.x]="(arc.from.position.x + arc.to.position.x) / 2" [attr.y]="(arc.from.position.y + arc.to.position.y) / 2" text-anchor="middle" dominant-baseline="central">{{arc.weight}}</text>
+            <!-- Weight at Arc with 1 Anchorpoint - At the Anchorpoint -->
+            <!-- White Circle for Background -->
+            <circle *ngIf="arc.anchors.length == 1" [attr.class]="uiService.tab === 'play' ? 'arc-weight-background play-mode' : 'arc-weight-background'" [attr.cx]="arc.anchors[0].x" [attr.cy]="arc.anchors[0].y" r="12" />
+            <text *ngIf="arc.anchors.length == 1" class="arc-weight" [attr.x]="arc.anchors[0].x" [attr.y]="arc.anchors[0].y" text-anchor="middle" dominant-baseline="central">{{arc.weight | mathAbs}}</text>
 
-        <!-- Weight at Arc with 1 Anchorpoint - At the Anchorpoint -->
-        <!-- White Circle for Background -->
-        <circle *ngIf="arc.anchors.length == 1" [attr.class]="uiService.tab === 'play' ? 'arc-weight-background play-mode' : 'arc-weight-background'" [attr.cx]="arc.anchors[0].x" [attr.cy]="arc.anchors[0].y" r="12" />
-        <text *ngIf="arc.anchors.length == 1" class="arc-weight" [attr.x]="arc.anchors[0].x" [attr.y]="arc.anchors[0].y" text-anchor="middle" dominant-baseline="central">{{arc.weight}}</text>
+            <!-- Weight at Arc with pair Anchorpoints - Middle of the middle Line -->
+            <!-- White Circle for Background -->
+            <circle *ngIf="arc.anchors.length % 2 === 0 && arc.anchors.length >= 2" [attr.class]="uiService.tab === 'play' ? 'arc-weight-background play-mode' : 'arc-weight-background'" [attr.cx]="(arc.anchors[0].x + arc.anchors[arc.anchors.length-1].x) / 2" [attr.cy]="(arc.anchors[0].y + arc.anchors[arc.anchors.length-1].y) / 2" r="12" />
+            <text *ngIf="arc.anchors.length % 2 === 0 && arc.anchors.length >= 2" class="arc-weight" [attr.x]="(arc.anchors[0].x + arc.anchors[1].x) / 2" [attr.y]="(arc.anchors[0].y + arc.anchors[1].y) / 2" text-anchor="middle" dominant-baseline="central">{{arc.weight | mathAbs}}</text>
 
-        <!-- Weight at Arc with pair Anchorpoints - Middle of the middle Line -->
-        <!-- White Circle for Background -->
-        <circle *ngIf="arc.anchors.length % 2 === 0 && arc.anchors.length >= 2" [attr.class]="uiService.tab === 'play' ? 'arc-weight-background play-mode' : 'arc-weight-background'" [attr.cx]="(arc.anchors[0].x + arc.anchors[arc.anchors.length-1].x) / 2" [attr.cy]="(arc.anchors[0].y + arc.anchors[arc.anchors.length-1].y) / 2" r="12" />
-        <text *ngIf="arc.anchors.length % 2 === 0 && arc.anchors.length >= 2" class="arc-weight" [attr.x]="(arc.anchors[0].x + arc.anchors[1].x) / 2" [attr.y]="(arc.anchors[0].y + arc.anchors[1].y) / 2" text-anchor="middle" dominant-baseline="central">{{arc.weight}}</text>
-
-        <!-- Weight at Arc with unpair Anchorpoints - At the middle Anchorpoint -->
-        <!-- White Circle for Background -->
-        <circle *ngIf="arc.anchors.length % 2 === 1 && arc.anchors.length >= 2" [attr.class]="uiService.tab === 'play' ? 'arc-weight-background play-mode' : 'arc-weight-background'" [attr.cx]="arc.anchors[arc.anchors.length / 2 - 0.5].x" [attr.cy]="arc.anchors[arc.anchors.length / 2 - 0.5].y" r="12" />
-        <text *ngIf="arc.anchors.length % 2 === 1 && arc.anchors.length >= 2" class="arc-weight" [attr.x]="arc.anchors[arc.anchors.length / 2 - 0.5].x" [attr.y]="arc.anchors[arc.anchors.length / 2 - 0.5].y" text-anchor="middle" dominant-baseline="central">{{arc.weight}}</text>
+            <!-- Weight at Arc with unpair Anchorpoints - At the middle Anchorpoint -->
+            <!-- White Circle for Background -->
+            <circle *ngIf="arc.anchors.length % 2 === 1 && arc.anchors.length >= 2" [attr.class]="uiService.tab === 'play' ? 'arc-weight-background play-mode' : 'arc-weight-background'" [attr.cx]="arc.anchors[arc.anchors.length / 2 - 0.5].x" [attr.cy]="arc.anchors[arc.anchors.length / 2 - 0.5].y" r="12" />
+            <text *ngIf="arc.anchors.length % 2 === 1 && arc.anchors.length >= 2" class="arc-weight" [attr.x]="arc.anchors[arc.anchors.length / 2 - 0.5].x" [attr.y]="arc.anchors[arc.anchors.length / 2 - 0.5].y" text-anchor="middle" dominant-baseline="central">{{arc.weight | mathAbs}}</text>
+        </g>
     </g>
 
 </svg>

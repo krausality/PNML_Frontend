@@ -17,6 +17,7 @@ import {
 } from "../../tr-services/position.constants";
 import {PnmlService} from "../../tr-services/pnml.service";
 import { ExportJsonDataService } from 'src/app/tr-services/export-json-data.service';
+import { mathAbsPipe } from 'src/app/tr-pipes/math-abs.pipe';
 import { UiService } from 'src/app/tr-services/ui.service';
 
 @Component({
