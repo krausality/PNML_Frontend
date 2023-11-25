@@ -1,7 +1,5 @@
 import {Component} from '@angular/core';
 import {FormControl} from '@angular/forms';
-import { ExportImageService } from './tr-services/export-image.service';
-import { ExportSvgService } from './tr-services/export-svg.service';
 
 @Component({
     selector: 'app-root',
@@ -12,8 +10,7 @@ export class AppComponent {
 
     public textareaFc: FormControl;
 
-    constructor(public exportImageService: ExportImageService,
-                public exportSvgService: ExportSvgService,) {
+    constructor() {
         this.textareaFc = new FormControl();
         this.textareaFc.disable();
     }
@@ -21,4 +18,5 @@ export class AppComponent {
     public processSourceChange(newSource: string) {
         this.textareaFc.setValue(newSource);
     }
+
 }

@@ -7,17 +7,14 @@
     </h2>
 
     <!--    Main content    -->
-    <div fxLayout="row" fxLayoutAlign="space-evenly start">
-        <!-- Preliminary place for menu buttons -->
-        <app-example-button title="Button"></app-example-button>
 
-        <app-example-button title="PNG Download" (click)="exportImageService.exportAsImage('image/png', 'pngExport.png')"></app-example-button>
-
-        <app-example-button title="SVG Download" (click)="exportSvgService.exportAsSvg()"></app-example-button>
-
-        <app-layout-switch></app-layout-switch>
+    <!-- button bar and layout switch -->
+    <div fxLayout="row">
+        <app-button-bar fxFlex></app-button-bar>
+        <app-layout-switch fxFlex></app-layout-switch>
     </div>
 
+    <!-- petri net component -->
     <app-petri-net class="padding full-size" (fileContent)="processSourceChange($event)"></app-petri-net>
 
     <div fxLayout="row" fxLayoutAlign="space-evenly start">
