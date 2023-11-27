@@ -19,6 +19,10 @@ import {PnmlService} from "../../tr-services/pnml.service";
 import { ExportJsonDataService } from 'src/app/tr-services/export-json-data.service';
 import { mathAbsPipe } from 'src/app/tr-pipes/math-abs.pipe';
 import { UiService } from 'src/app/tr-services/ui.service';
+import { Place } from 'src/app/tr-classes/petri-net/place';
+import { Point } from 'src/app/tr-classes/petri-net/point';
+import { Transition } from 'src/app/tr-classes/petri-net/transition';
+import { Arc } from 'src/app/tr-classes/petri-net/arc';
 
 @Component({
     selector: 'app-petri-net',
@@ -122,6 +126,72 @@ export class PetriNetComponent {
     public prevent(e: DragEvent) {
         // dragover must be prevented for drop to work
         e.preventDefault();
+    }
+
+    // Dispatch methods for display events ************************************
+
+    // SVG
+    dispatchSVGClick(event: MouseEvent, drawingArea: HTMLElement) {
+        if (this.uiService.button === "place") {
+            // example method: can be deleted/replaced with final implementation
+            this.addPlace(event, drawingArea);
+        }
+        if (this.uiService.button === "transition") {
+            // Method for adding transition
+        }
+    }
+
+    dispatchSVGMouseDown(event: MouseEvent, drawingArea: HTMLElement){
+
+    }
+
+    dispatchSVGMouseMove(event: MouseEvent, drawingArea: HTMLElement) {
+
+    }
+
+    dispatchSVGMouseUp(event: MouseEvent, drawingArea: HTMLElement) {
+
+    }
+
+    // Places
+    dispatchPlaceClick(event: MouseEvent, place: Place){
+
+    }
+
+    dispatchPlaceMouseDown(event: MouseEvent, place: Place){
+
+    }
+
+    dispatchPlaceMouseUp(event: MouseEvent, place: Place){
+
+    }
+
+    // Transitions
+    dispatchTransitionClick(event: MouseEvent, transition: Transition){
+
+    }
+
+    dispatchTransitionMouseDown(event: MouseEvent, transition: Transition){
+
+    }
+
+    dispatchTransitionMouseUp(event: MouseEvent, transition: Transition){
+
+    }
+
+    // Arcs
+    dispatchArcClick(event: MouseEvent, arc: Arc){
+
+    }
+
+    // ************************************************************************
+
+    // Example method: can be deleted
+    addPlace(event: MouseEvent, drawingArea: HTMLElement) {
+        const svgRect = drawingArea.getBoundingClientRect();
+        let x = event.clientX - svgRect.left;
+        let y = event.clientY - svgRect.top;
+        this.dataService.getPlaces().push(new Place(0, new Point(x, y), 'p' + x + y))
     }
 
     protected readonly radius = radius;
