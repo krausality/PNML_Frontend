@@ -70,7 +70,6 @@ export class Transition implements Node {
     };
 
     get isActive(): boolean{
-        if (this.preArcs.length === 0) return false;
         for (let preArc of this.preArcs) {
             if ((preArc.from as Place).token + preArc.weight < 0) {
                 return false;
