@@ -18,7 +18,7 @@
         <g>
             <circle class="place" [attr.cx]="place.position.x" [attr.cy]="place.position.y" [attr.r]="radius" />
             <text class="token-label" [attr.x]="place.position.x" [attr.y]="place.position.y" text-anchor="middle"
-                dominant-baseline="central">{{place.token}}</text>
+                dominant-baseline="central">{{place.token > 0 ? place.token : ''}}</text>
         </g>
         <text class="place-id" [attr.x]="place.position.x" [attr.y]="place.position.y + placeIdYOffset" text-anchor="middle">{{place.id}}</text>
     </g>
