@@ -16,21 +16,32 @@
     stroke-width: 2;
 }
 
+.place:hover {
+    stroke: orange;
+}
+
 .transition {
     fill: grey;
     stroke: black;
     stroke-width: 2;
 }
 
-.transition.active{
+.transition.active {
     fill: green;
 }
 
+.transition:hover {
+    stroke: orange;
+}
 
 .arc {
     fill: none;
     stroke: black;
     stroke-width: 2;
+}
+
+.arc:hover {
+    stroke: orange;
 }
 
 .place-id{

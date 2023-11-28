@@ -48,7 +48,6 @@ export class PetriNetComponent {
         //     this.dataService.transitions = transitions;
         //     this.dataService.arcs = arcs;
         // });
-
         this.fileContent = new EventEmitter<string>();
     }
 
@@ -138,7 +137,7 @@ export class PetriNetComponent {
             this.addPlace(event, drawingArea);
         }
         if (this.uiService.button === "transition") {
-            // Method for adding transition
+            this.addTransition(event, drawingArea);
         }
     }
 
@@ -156,7 +155,13 @@ export class PetriNetComponent {
 
     // Places
     dispatchPlaceClick(event: MouseEvent, place: Place) {
+        if (this.uiService.tab === 'build') {
+            let placeNode = place;
+            // hardcoded place for testing
+            // let placeNode = this.dataService.getPlaces()[0];
+            // this.dataService.getArcs().push(new Arc(transitionNode, placeNode))
 
+        }
     }
 
     dispatchPlaceMouseDown(event: MouseEvent, place: Place) {
@@ -172,6 +177,14 @@ export class PetriNetComponent {
         // Token game: fire transition
         if (this.uiService.tab === 'play') {
             this.tokenGameService.fire(transition);
+        }
+        // Add Arc:
+        if (this.uiService.tab === 'build') {
+            let transitionNode = transition;
+            // hardcoded place for testing
+            let placeNode = this.dataService.getPlaces()[0];
+            this.dataService.getArcs().push(new Arc(transitionNode, placeNode))
+
         }
     }
 
@@ -195,8 +208,25 @@ export class PetriNetComponent {
         const svgRect = drawingArea.getBoundingClientRect();
         let x = event.clientX - svgRect.left;
         let y = event.clientY - svgRect.top;
-        this.dataService.getPlaces().push(new Place(0, new Point(x, y), 'p' + x + y))
+        let id = ((this.dataService.getPlaces().length) + 1).toString();
+        this.dataService.getPlaces().push(new Place(0, new Point(x, y), "p" + id));
     }
+
+    addTransition(event: MouseEvent, drawingArea: HTMLElement) {
+        const svgRect = drawingArea.getBoundingClientRect();
+        let x = event.clientX - svgRect.left;
+        let y = event.clientY - svgRect.top;
+        let id = ((this.dataService.getTransitions().length) + 1).toString();
+        this.dataService.getTransitions().push(new Transition(new Point(x, y), "t" + id));
+    }
+
+    // addArc(event: MouseEvent, drawingArea: HTMLElement) {
+    //     const svgRect = drawingArea.getBoundingClientRect();
+    //     let x = event.clientX - svgRect.left;
+    //     let y = event.clientY - svgRect.top;
+    //     let id = ((this.dataService.getTransitions().length) + 1).toString();
+    //     this.dataService.getArcs().push(new Arc(new Point(x, y), "t" + id));
+    // }
 
     protected readonly radius = radius;
     protected readonly placeIdYOffset = placeIdYOffset;
