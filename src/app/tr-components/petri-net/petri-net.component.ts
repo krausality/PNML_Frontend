@@ -4,7 +4,7 @@ import { ParserService } from 'src/app/tr-services/parser.service';
 import { catchError, of, take } from 'rxjs';
 import { FileReaderService } from "../../services/file-reader.service";
 import { DataService } from "../../tr-services/data.service";
-import { LayoutService } from "../../tr-services/sugyiamaLayout.service";
+import { SugyiamaLayoutService } from "../../tr-services/sugyiamaLayout.service";
 import { ExampleFileComponent } from "src/app/components/example-file/example-file.component";
 
 import {
@@ -34,7 +34,17 @@ import { TokenGameService } from 'src/app/tr-services/token-game.service';
 export class PetriNetComponent {
     @Output('fileContent') fileContent: EventEmitter<string>;
 
-    constructor(private parserService: ParserService, private httpClient: HttpClient, private fileReaderService: FileReaderService, protected dataService: DataService, protected layoutService: LayoutService, protected exportJsonDataService: ExportJsonDataService, protected pnmlService: PnmlService, protected uiService: UiService, protected tokenGameService: TokenGameService) {
+    constructor(
+        private parserService: ParserService,
+        private httpClient: HttpClient,
+        private fileReaderService: FileReaderService,
+        protected dataService: DataService,
+        protected sugyiamalayoutService: SugyiamaLayoutService,
+        protected exportJsonDataService: ExportJsonDataService,
+        protected pnmlService: PnmlService, 
+        protected uiService: UiService,
+        protected tokenGameService: TokenGameService
+    ) {
         this.httpClient.get("assets/example.json", { responseType: "text" }).subscribe(data => {
             const [places, transitions, arcs, actions] = parserService.parse(data);
             this.dataService.places = places;
@@ -70,8 +80,6 @@ export class PetriNetComponent {
 
                 this.dataService.actions = actions;
             }
-
-            this.layoutService.applySugyiamaLayout();
         }
     }
 

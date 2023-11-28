@@ -14,7 +14,7 @@ import { CoordinateAssignmentService } from "./sugyiama/coordinateAssignment.ser
     providedIn: 'root'
 })
 
-export class LayoutService {
+export class SugyiamaLayoutService {
     private _nodes: Node[] = [];
     private _arcs: Arc[] = [];
 
