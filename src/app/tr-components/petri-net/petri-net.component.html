@@ -33,6 +33,8 @@
     <!-- Arcs -->
     <g *ngFor="let arc of dataService.getArcs()" (click)="dispatchArcClick($event, arc)">
         <polyline class="arc" [attr.points]="arc.polyLinePoints" marker-end="url(#arrow)"></polyline>
+        <!-- Anchor points -->
+        <circle *ngFor="let point of arc.anchors" [attr.cx]="point.x" [attr.cy]="point.y" [attr.r]="5" fill="black" (mousedown)="dispatchAnchorMouseDown($event, point)" />
         <g *ngIf="arc.weight > 1 || arc.weight < -1">
             <!-- Weight at Arc without Anchorpoints - Middle of Polyline -->
             <!-- White Circle for Background -->

@@ -23,6 +23,7 @@ import { Place } from 'src/app/tr-classes/petri-net/place';
 import { Point } from 'src/app/tr-classes/petri-net/point';
 import { Transition } from 'src/app/tr-classes/petri-net/transition';
 import { Arc } from 'src/app/tr-classes/petri-net/arc';
+import { EditMoveElementsService } from 'src/app/tr-services/edit-move-elements.service';
 
 @Component({
     selector: 'app-petri-net',
@@ -32,8 +33,8 @@ import { Arc } from 'src/app/tr-classes/petri-net/arc';
 export class PetriNetComponent {
     @Output('fileContent') fileContent: EventEmitter<string>;
 
-    constructor(private parserService: ParserService, private httpClient: HttpClient, private fileReaderService: FileReaderService, protected dataService: DataService, protected exportJsonDataService: ExportJsonDataService, protected pnmlService: PnmlService, protected uiService: UiService) {
-        this.httpClient.get("assets/example.json", { responseType: "text" }).subscribe(data => {
+    constructor(private parserService: ParserService, private httpClient: HttpClient, private fileReaderService: FileReaderService, protected dataService: DataService, protected exportJsonDataService: ExportJsonDataService, protected pnmlService: PnmlService, protected uiService: UiService, private editMoveElementsService: EditMoveElementsService) {
+        this.httpClient.get("assets/example_more_anchors.json", { responseType: "text" }).subscribe(data => {
             const [places, transitions, arcs, actions] = parserService.parse(data);
             this.dataService.places = places;
             this.dataService.transitions = transitions;
@@ -146,10 +147,16 @@ export class PetriNetComponent {
     }
 
     dispatchSVGMouseMove(event: MouseEvent, drawingArea: HTMLElement) {
-
+        if (this.uiService.button === 'move') {
+            this.editMoveElementsService.moveNodeByMousePositionChange(event);
+            this.editMoveElementsService.moveAnchorByMousePositionChange(event);
+        }
     }
 
     dispatchSVGMouseUp(event: MouseEvent, drawingArea: HTMLElement) {
+        if (this.uiService.button === 'move'){
+            this.editMoveElementsService.finalizeMove();
+        }
 
     }
 
@@ -159,7 +166,9 @@ export class PetriNetComponent {
     }
 
     dispatchPlaceMouseDown(event: MouseEvent, place: Place){
-
+        if (this.uiService.button === 'move'){
+           this.editMoveElementsService.initializeNodeMove(event, place);
+        }
     }
 
     dispatchPlaceMouseUp(event: MouseEvent, place: Place){
@@ -172,7 +181,9 @@ export class PetriNetComponent {
     }
 
     dispatchTransitionMouseDown(event: MouseEvent, transition: Transition){
-
+        if (this.uiService.button === 'move'){
+            this.editMoveElementsService.initializeNodeMove(event, transition);
+        }
     }
 
     dispatchTransitionMouseUp(event: MouseEvent, transition: Transition){
@@ -182,6 +193,14 @@ export class PetriNetComponent {
     // Arcs
     dispatchArcClick(event: MouseEvent, arc: Arc){
 
+    }
+
+    // Anchors
+    dispatchAnchorMouseDown(event: MouseEvent, anchor: Point){
+        if (this.uiService.button === 'move'){
+            console.log('anchor move intit call')
+            this.editMoveElementsService.initializeAnchorMove(event, anchor);
+        }
     }
 
     // ************************************************************************
