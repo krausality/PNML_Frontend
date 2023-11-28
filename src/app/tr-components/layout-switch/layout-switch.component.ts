@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { LayoutSpringEmbedderService } from 'src/app/tr-services/layout-spring-embedder.service';
-import { SugyiamaLayoutService } from 'src/app/tr-services/sugyiamaLayout.service';
+import { LayoutSugyiamaService } from 'src/app/tr-services/layout-sugyiama.service';
 
 @Component({
   selector: 'app-layout-switch',
@@ -12,7 +12,7 @@ export class LayoutSwitchComponent {
 
     constructor(
         private layoutSpringEmebdderService: LayoutSpringEmbedderService,
-        private sugyiamaLayoutService: SugyiamaLayoutService
+        private layoutSugyiamaService: LayoutSugyiamaService
     ) {}
 
     public layoutSwitchChanged() {
@@ -20,7 +20,7 @@ export class LayoutSwitchComponent {
             this.layoutSpringEmebdderService.layoutSpringEmbedder();
         } else if (this.selected == "sugiyama") {
             // call sugiyama layout service
-            this.sugyiamaLayoutService.applySugyiamaLayout();
+            this.layoutSugyiamaService.applySugyiamaLayout();
         }
         // do we need to do something if the user selects "free"?
     }

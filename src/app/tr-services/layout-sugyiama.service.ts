@@ -5,16 +5,16 @@ import { DataService } from "src/app/tr-services/data.service";
 
 import { LayeredGraph } from "src/app/tr-services/sugyiama/types";
 
-import { CycleRemovalService } from "./sugyiama/cycleRemoval.service";
-import { LayerAssignmentService } from "./sugyiama/layerAssignment.service";
-import { VertexOrderingService } from "./sugyiama/vertexOrdering.service";
-import { CoordinateAssignmentService } from "./sugyiama/coordinateAssignment.service";
+import { CycleRemovalService } from "./sugyiama/cycle-removal.service";
+import { LayerAssignmentService } from "./sugyiama/layer-assignment.service";
+import { VertexOrderingService } from "./sugyiama/vertex-ordering.service";
+import { CoordinateAssignmentService } from "./sugyiama/coordinate-assignment.service";
 
 @Injectable({
     providedIn: 'root'
 })
 
-export class SugyiamaLayoutService {
+export class LayoutSugyiamaService {
     private _nodes: Node[] = [];
     private _arcs: Arc[] = [];
 

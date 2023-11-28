@@ -4,7 +4,7 @@ import { ParserService } from 'src/app/tr-services/parser.service';
 import { catchError, of, take } from 'rxjs';
 import { FileReaderService } from "../../services/file-reader.service";
 import { DataService } from "../../tr-services/data.service";
-import { SugyiamaLayoutService } from "../../tr-services/sugyiamaLayout.service";
+import { LayoutSugyiamaService } from "../../tr-services/layout-sugyiama.service";
 import { ExampleFileComponent } from "src/app/components/example-file/example-file.component";
 
 import {
@@ -39,7 +39,7 @@ export class PetriNetComponent {
         private httpClient: HttpClient,
         private fileReaderService: FileReaderService,
         protected dataService: DataService,
-        protected sugyiamalayoutService: SugyiamaLayoutService,
+        protected LayoutSugyiamaService: LayoutSugyiamaService,
         protected exportJsonDataService: ExportJsonDataService,
         protected pnmlService: PnmlService, 
         protected uiService: UiService,
