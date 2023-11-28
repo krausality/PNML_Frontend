@@ -72,7 +72,6 @@ export class EditMoveElementsService {
     }
 
     initializeAnchorMove(event: MouseEvent, anchor: Point){
-        console.log('inititileAnchorMove')
         // Register anchor to be moved
         this.anchor = anchor;
 

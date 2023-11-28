@@ -198,7 +198,6 @@ export class PetriNetComponent {
     // Anchors
     dispatchAnchorMouseDown(event: MouseEvent, anchor: Point){
         if (this.uiService.button === 'move'){
-            console.log('anchor move intit call')
             this.editMoveElementsService.initializeAnchorMove(event, anchor);
         }
     }
