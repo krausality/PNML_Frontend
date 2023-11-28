@@ -36,7 +36,8 @@ export class CycleRemovalService {
     }
 
     removeCycles() {
-        // Find cycles
+        // Find cycles and assign one arc of each
+        // circle to arcsToBeReversed
         for (let node of this._nodes) {
             this.depthFirstSearchRemove(node);
         }
@@ -44,7 +45,7 @@ export class CycleRemovalService {
         this.reverseArcs();
     }
  
-    depthFirstSearchRemove(node: Node) {
+    private depthFirstSearchRemove(node: Node) {
         if (this._visited.includes(node)) {
             return;
         }
@@ -59,7 +60,8 @@ export class CycleRemovalService {
                 // this must be a circle and the arc needs to be reversed
                 this._arcsToBeReversed.push(arc);
                 // TODO: Check if it's possibly that a petrinet contains two arcs
-                // leading from and to the same node ?
+                // leading from and to the same node ? or at least if our data structure
+                // allows that
             } else if (!this._visited.includes(arc.to)) {
                 // if this arc has not been visited before continue the dfs search
                 // starting with the arcs target node
@@ -70,6 +72,8 @@ export class CycleRemovalService {
     }
 
     // Changes the direction of the arcs to eliminate circles
+    // needs to be public as it needs to be called again from
+    // the main class to return arcs to original states
     reverseArcs() {
         for (let arc of this._arcsToBeReversed) {
             // since we're working with references it's enough
@@ -81,7 +85,7 @@ export class CycleRemovalService {
         }
     }
 
-    getPostArcsForNode(node: Node): Arc[] {
+    private getPostArcsForNode(node: Node): Arc[] {
         return this._arcs.filter((arc) => arc.from === node);
     }
 }

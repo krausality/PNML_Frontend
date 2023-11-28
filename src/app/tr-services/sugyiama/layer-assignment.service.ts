@@ -38,6 +38,8 @@ export class LayerAssignmentService {
             const previousLayer = this._layers[layerId - 1];
 
             const choices = this.getNodeChoicesForLayer(previousLayer);
+
+            console.log(choices);
             const picked = choices.pop();
 
             if (picked) {
@@ -66,11 +68,12 @@ export class LayerAssignmentService {
     }
 
     // gets all nodes that have incoming edges from the given layer
-    getNodeChoicesForLayer(prevLayer: Node[] | undefined): Node[]  {
+    private getNodeChoicesForLayer(prevLayer: Node[] | undefined): Node[]  {
         const incomingNodes: Node[] = [];
 
         // Get the pre-nodes for each node form the graph map
         // (map contains prenodes indexed by node)
+        console.log(this._nodeInputMap);
         for (const [node, preNode] of this._nodeInputMap.entries()) {
             if (this._assignedNodes.includes(node)) {
                 // ignore nodes that have already been assigned to a layer

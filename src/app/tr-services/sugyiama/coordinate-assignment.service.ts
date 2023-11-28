@@ -13,8 +13,8 @@ export class CoordinateAssignmentService {
 
     // Default values to ensure a pleasing layout
     // TODO: maybe move these to the position constants?
-    private _canvasHeight = 400;
-    private _canvasWidth = 1140;
+    private _canvasHeight;
+    private _canvasWidth;
 
     private _maxColumnWidth = 300;
     private _maxRowHeight = 100;
@@ -30,6 +30,11 @@ export class CoordinateAssignmentService {
         this._layers = layers;
         this._arcs = arcs;
         this._nodes = nodes;
+
+        const drawingArea = document.getElementById("drawingArea");
+
+        this._canvasHeight = drawingArea?.scrollHeight ? drawingArea?.scrollHeight: 400;
+        this._canvasWidth = drawingArea?.scrollWidth ? drawingArea?.scrollWidth : 1140;
     }
     
     assignCoordinates() {
@@ -38,13 +43,14 @@ export class CoordinateAssignmentService {
 
         // Calculate spacings between nodes from the max values set above
         // and the number of nodes and layers in the graph
+        // this is really just for nicer layout and even spacing
         const columns = this._layers.length;
-        const columnSize = Math.max(Math.min((this._canvasWidth/columns), this._maxColumnWidth), this._minColumnWidth);
+        const columnSize = Math.max(Math.min((this._canvasWidth!/columns), this._maxColumnWidth), this._minColumnWidth);
         const maxRows = Math.max(...(this._layers.map((layer) => layer.length)));
-        const rowSize = Math.max(Math.min((this._canvasHeight/maxRows), this._maxRowHeight), this._minRowHeight);
+        const rowSize = Math.max(Math.min((this._canvasHeight!/maxRows), this._maxRowHeight), this._minRowHeight);
 
         // remove all anchorpoints as these will have to be re-calculated
-        this.clearArcAnchorpoints();
+        this._arcs.forEach(arc => arc.resetAnchors());
 
         // lay out each layer of the graph
         for (const [layerId, layer] of this._layers.entries()) {
@@ -54,7 +60,7 @@ export class CoordinateAssignmentService {
 
             // calculate the initial y position from the max number of nodes in the layer
             // this will be incremented for each node in the layer
-            currentY = this._canvasHeight/2 - (rowSize * (layer.length - 1)/2);
+            currentY = this._canvasHeight!/2 - (rowSize * (layer.length - 1)/2);
 
             for (const node of layer) {
                 const position = new Point(currentX, currentY);
@@ -72,13 +78,7 @@ export class CoordinateAssignmentService {
         }
     }
 
-    clearArcAnchorpoints() {
-        for (let arc of this._arcs) {
-            if (arc.anchors.length) arc.resetAnchors();            
-        }
-    }
-
-    replaceDummyNode(node: DummyNode, position: Point) {
+    private replaceDummyNode(node: DummyNode, position: Point) {
         const anchorpoints = [];
 
         // find the arcs that connect the dummy node to both sides
@@ -101,11 +101,11 @@ export class CoordinateAssignmentService {
         // create a new arc leading from the dummy nodes prenode to its postnode
         this._arcs.push(new Arc(inputArc.from, outputArc.to, inputArc.weight, anchorpoints));
 
-        // remove the dummy node
+        // remove the dummy node itself
         this.removeItemFromArray(node, this._nodes);
     }
 
-    removeItemFromArray(item: any, array: any[]) {
+    private removeItemFromArray(item: any, array: any[]) {
         const index = array.indexOf(item);
         const x = array.splice(index, 1);
 
