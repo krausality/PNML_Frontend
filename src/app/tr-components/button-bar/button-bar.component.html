@@ -33,6 +33,24 @@
             <!-- divider -->
             <div class="divider"></div>
 
+            <!-- add token tool -->
+            <button mat-icon-button [color]="uiService.button === 'tokenAdd' ? 'primary' : ''" (click)="buttonClicked('tokenAdd')">
+                <mat-icon>add</mat-icon>
+            </button>
+
+            <!-- remove token tool -->
+            <button mat-icon-button [color]="uiService.button === 'tokenRemove' ? 'primary' : ''" (click)="buttonClicked('tokenRemove')">
+                <mat-icon>remove</mat-icon>
+            </button>
+
+            <!-- delete tool -->
+            <button mat-icon-button [color]="uiService.button === 'delete' ? 'primary' : ''" (click)="buttonClicked('delete')">
+                <mat-icon>delete</mat-icon>
+            </button>
+
+            <!-- divider -->
+            <div class="divider"></div>
+
             <!-- move tool -->
             <button mat-icon-button [color]="uiService.button === 'move' ? 'primary' : ''" (click)="buttonClicked('move')">
                 <mat-icon>open_with</mat-icon>
@@ -42,6 +60,15 @@
             <button mat-icon-button [color]="uiService.button === 'select' ? 'primary' : ''" (click)="buttonClicked('select')">
                 <mat-icon>ads_click</mat-icon>
             </button>
+
+            <!-- divider -->
+            <div class="divider"></div>
+
+            <!-- customize actions tool -->
+            <button mat-icon-button>
+                <mat-icon>edit_note</mat-icon>
+            </button>
+
         </div>
     </mat-tab>
 
