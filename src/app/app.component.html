@@ -7,11 +7,18 @@
     </h2>
 
     <!--    Main content    -->
+
+    <!-- button bar and layout switch -->
+    <div fxLayout="row">
+        <app-button-bar fxFlex></app-button-bar>
+        <app-layout-switch fxFlex></app-layout-switch>
+    </div>
+
+    <!-- petri net component -->
     <app-petri-net class="padding full-size" (fileContent)="processSourceChange($event)"></app-petri-net>
 
-
     <div fxLayout="row" fxLayoutAlign="space-evenly start">
-        <app-example-button title="Button"></app-example-button>
+
 
         <app-example-file title="File" link="assets/example.json" description="An example .json Petri net"></app-example-file>
 
