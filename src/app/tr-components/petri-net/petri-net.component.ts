@@ -171,7 +171,7 @@ export class PetriNetComponent {
     // Transitions
     dispatchTransitionClick(event: MouseEvent, transition: Transition) {
         // Token game: fire transition
-        if (this.uiService.tab === 'play') {
+        if (this.uiService.tab === TabState.Play) {
             this.tokenGameService.fire(transition);
         }
     }
