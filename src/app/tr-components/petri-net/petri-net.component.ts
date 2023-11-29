@@ -23,6 +23,7 @@ import { Place } from 'src/app/tr-classes/petri-net/place';
 import { Point } from 'src/app/tr-classes/petri-net/point';
 import { Transition } from 'src/app/tr-classes/petri-net/transition';
 import { Arc } from 'src/app/tr-classes/petri-net/arc';
+import { ButtonState, TabState } from 'src/app/tr-enums/ui-state';
 
 @Component({
     selector: 'app-petri-net',
@@ -132,11 +133,11 @@ export class PetriNetComponent {
 
     // SVG
     dispatchSVGClick(event: MouseEvent, drawingArea: HTMLElement) {
-        if (this.uiService.button === "place") {
+        if (this.uiService.button === ButtonState.Place) {
             // example method: can be deleted/replaced with final implementation
             this.addPlace(event, drawingArea);
         }
-        if (this.uiService.button === "transition") {
+        if (this.uiService.button === ButtonState.Transition) {
             // Method for adding transition
         }
     }
@@ -202,5 +203,8 @@ export class PetriNetComponent {
     protected readonly transitionXOffset = transitionXOffset;
     protected readonly transitionYOffset = transitionYOffset;
     protected readonly transitionIdYOffset = transitionIdYOffset;
+
+    protected readonly TabState = TabState;
+    protected readonly ButtonState = ButtonState;
 
 }
