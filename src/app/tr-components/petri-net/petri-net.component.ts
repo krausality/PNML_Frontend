@@ -15,7 +15,7 @@ import {
     transitionYOffset,
     transitionIdYOffset
 } from "../../tr-services/position.constants";
-import {PnmlService} from "../../tr-services/pnml.service";
+import { PnmlService } from "../../tr-services/pnml.service";
 import { ExportJsonDataService } from 'src/app/tr-services/export-json-data.service';
 import { mathAbsPipe } from 'src/app/tr-pipes/math-abs.pipe';
 import { UiService } from 'src/app/tr-services/ui.service';
@@ -24,6 +24,7 @@ import { Point } from 'src/app/tr-classes/petri-net/point';
 import { Transition } from 'src/app/tr-classes/petri-net/transition';
 import { Arc } from 'src/app/tr-classes/petri-net/arc';
 import { ButtonState, TabState } from 'src/app/tr-enums/ui-state';
+import { TokenGameService } from 'src/app/tr-services/token-game.service';
 
 @Component({
     selector: 'app-petri-net',
@@ -33,7 +34,7 @@ import { ButtonState, TabState } from 'src/app/tr-enums/ui-state';
 export class PetriNetComponent {
     @Output('fileContent') fileContent: EventEmitter<string>;
 
-    constructor(private parserService: ParserService, private httpClient: HttpClient, private fileReaderService: FileReaderService, protected dataService: DataService, protected exportJsonDataService: ExportJsonDataService, protected pnmlService: PnmlService, protected uiService: UiService) {
+    constructor(private parserService: ParserService, private httpClient: HttpClient, private fileReaderService: FileReaderService, protected dataService: DataService, protected exportJsonDataService: ExportJsonDataService, protected pnmlService: PnmlService, protected uiService: UiService, protected tokenGameService: TokenGameService) {
         this.httpClient.get("assets/example.json", { responseType: "text" }).subscribe(data => {
             const [places, transitions, arcs, actions] = parserService.parse(data);
             this.dataService.places = places;
@@ -142,7 +143,7 @@ export class PetriNetComponent {
         }
     }
 
-    dispatchSVGMouseDown(event: MouseEvent, drawingArea: HTMLElement){
+    dispatchSVGMouseDown(event: MouseEvent, drawingArea: HTMLElement) {
 
     }
 
@@ -155,33 +156,36 @@ export class PetriNetComponent {
     }
 
     // Places
-    dispatchPlaceClick(event: MouseEvent, place: Place){
+    dispatchPlaceClick(event: MouseEvent, place: Place) {
 
     }
 
-    dispatchPlaceMouseDown(event: MouseEvent, place: Place){
+    dispatchPlaceMouseDown(event: MouseEvent, place: Place) {
 
     }
 
-    dispatchPlaceMouseUp(event: MouseEvent, place: Place){
+    dispatchPlaceMouseUp(event: MouseEvent, place: Place) {
 
     }
 
     // Transitions
-    dispatchTransitionClick(event: MouseEvent, transition: Transition){
+    dispatchTransitionClick(event: MouseEvent, transition: Transition) {
+        // Token game: fire transition
+        if (this.uiService.tab === 'play') {
+            this.tokenGameService.fire(transition);
+        }
+    }
+
+    dispatchTransitionMouseDown(event: MouseEvent, transition: Transition) {
 
     }
 
-    dispatchTransitionMouseDown(event: MouseEvent, transition: Transition){
-
-    }
-
-    dispatchTransitionMouseUp(event: MouseEvent, transition: Transition){
+    dispatchTransitionMouseUp(event: MouseEvent, transition: Transition) {
 
     }
 
     // Arcs
-    dispatchArcClick(event: MouseEvent, arc: Arc){
+    dispatchArcClick(event: MouseEvent, arc: Arc) {
 
     }
 
