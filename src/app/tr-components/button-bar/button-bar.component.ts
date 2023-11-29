@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { ExportJsonDataService } from 'src/app/tr-services/export-json-data.service';
 import { PnmlService } from 'src/app/tr-services/pnml.service';
 import { UiService } from 'src/app/tr-services/ui.service';
 import { ExportImageService } from 'src/app/tr-services/export-image.service';
 import { ExportSvgService } from 'src/app/tr-services/export-svg.service';
+
 
 @Component({
     selector: 'app-button-bar',
@@ -11,10 +12,19 @@ import { ExportSvgService } from 'src/app/tr-services/export-svg.service';
     styleUrls: ['./button-bar.component.css']
 })
 export class ButtonBarComponent {
+    @Output('tabChange') tabChange: EventEmitter<string>;
 
     public petrinetCss: string = '';
 
-    constructor(protected uiService: UiService, protected exportJsonDataService: ExportJsonDataService, protected pnmlService: PnmlService, protected exportImageService: ExportImageService, protected exportSvgService: ExportSvgService) {}
+    constructor(
+        protected uiService: UiService,
+        protected exportJsonDataService: ExportJsonDataService,
+        protected pnmlService: PnmlService,
+        protected exportImageService: ExportImageService,
+        protected exportSvgService: ExportSvgService
+    ) {
+        this.tabChange = new EventEmitter<string>();
+    }
 
     // gets called when a tab is clicked
     // sets the "tab" property in the uiService
@@ -22,6 +32,8 @@ export class ButtonBarComponent {
     tabClicked(tab: string) {
         this.uiService.tab = tab;
         this.uiService.button = "";
+
+        this.tabChange.emit(tab);
     }
 
     // gets called when a button is clicked that needs its state saved globally

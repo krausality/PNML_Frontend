@@ -10,7 +10,7 @@
 
     <!-- button bar and layout switch -->
     <div fxLayout="row">
-        <app-button-bar fxFlex></app-button-bar>
+        <app-button-bar fxFlex (tabChange)="onTabChange($event)"></app-button-bar>
         <app-layout-switch fxFlex></app-layout-switch>
     </div>
 

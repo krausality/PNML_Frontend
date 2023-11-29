@@ -2,12 +2,18 @@ import { Injectable } from '@angular/core';
 import { Transition } from '../tr-classes/petri-net/transition';
 import { Place } from '../tr-classes/petri-net/place';
 
+import { DataService } from "./data.service";
+
 @Injectable({
     providedIn: 'root'
 })
 export class TokenGameService {
 
-    constructor() { }
+    private _tokenHistory: Map<Place, number>[]= [];
+    constructor(
+        protected dataService: DataService,
+    ) {}
+
 
     // Method for token game
     fire(transition: Transition) {
@@ -21,6 +27,53 @@ export class TokenGameService {
             for (let arc of transition.postArcs) {
                 (arc.to as Place).token += arc.weight;
             }
+
+            this.saveCurrentGameState();
         }
+    }
+
+    saveCurrentGameState() {
+        this._tokenHistory.push(this.getGameState());
+        console.log(this._tokenHistory);
+    }
+
+    clearGameHistory() {
+        this._tokenHistory = [];
+    }
+    
+    private getGameState(): Map<Place, number> {
+        const tokenMapping = new Map<Place, number>();
+        for (let place of this.dataService.getPlaces()) {
+            tokenMapping.set(place, place.token);
+        }
+        return tokenMapping;
+    }
+    
+    private setGameState(state: Map<Place, number>) {
+        for (let place of this.dataService.places) {
+            const tokens = state.get(place);
+            place.setToken(tokens ? tokens : 0);
+        }
+    }
+    
+    private revertToPreviousState() {
+        // Takes the last/top item of the token history stack
+        // and resets the values accordingly
+        const state = this._tokenHistory.pop();
+        if (!state) return;
+
+        this.setGameState(state);
+    }
+    
+    private revertToOriginalState() {
+        // Takes the first/bottom item of the token history stack
+        // and resets the values accordingly
+        const state = this._tokenHistory.shift();
+        if (!state) return;
+
+        this.setGameState(state);
+
+        // clear history as we're starting from the beginning again
+        this.clearGameHistory();
     }
 }

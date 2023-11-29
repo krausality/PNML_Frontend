@@ -36,4 +36,11 @@ export class Place implements Node {
         const d = Math.sqrt((p.x - this.position.x)**2 + (p.y - this.position.y)**2);
         return d > radius;
     };
+
+    // This should probably be change to native JS setters
+    // set token() {}
+    // but to do so, the properties should be renamed to _propertyName
+    setToken(token: number) {
+        this.token = token;
+    }
 }

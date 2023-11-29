@@ -1,5 +1,6 @@
 import {Component} from '@angular/core';
 import {FormControl} from '@angular/forms';
+import { TokenGameService } from 'src/app/tr-services/token-game.service';
 
 @Component({
     selector: 'app-root',
@@ -10,9 +11,17 @@ export class AppComponent {
 
     public textareaFc: FormControl;
 
-    constructor() {
+    constructor(protected tokenGameService: TokenGameService) {
         this.textareaFc = new FormControl();
         this.textareaFc.disable();
+    }
+
+    public onTabChange(tabValue: string) {
+        if (tabValue === 'play') {
+            this.tokenGameService.saveCurrentGameState();
+        } else {
+            this.tokenGameService.clearGameHistory();
+        }
     }
 
     public processSourceChange(newSource: string) {
