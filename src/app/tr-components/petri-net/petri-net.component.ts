@@ -18,6 +18,7 @@ import {
 import { PnmlService } from "../../tr-services/pnml.service";
 import { ExportJsonDataService } from 'src/app/tr-services/export-json-data.service';
 import { mathAbsPipe } from 'src/app/tr-pipes/math-abs.pipe';
+import { Node } from '@angular/compiler';
 import { UiService } from 'src/app/tr-services/ui.service';
 import { Place } from 'src/app/tr-classes/petri-net/place';
 import { Point } from 'src/app/tr-classes/petri-net/point';
@@ -50,6 +51,9 @@ export class PetriNetComponent {
         // });
         this.fileContent = new EventEmitter<string>();
     }
+
+    startTransition: Transition | undefined;
+    startPlace: Place | undefined;
 
     private parsePetrinetData(content: string | undefined, contentType: string) {
         if (content) {
@@ -150,26 +154,31 @@ export class PetriNetComponent {
     }
 
     dispatchSVGMouseUp(event: MouseEvent, drawingArea: HTMLElement) {
-
+        // Reset StartNode when Drag&Drop is cancelled
+        if (this.uiService.button === 'arc') {
+            this.startTransition = undefined;
+            this.startPlace = undefined;
+        }
     }
 
     // Places
     dispatchPlaceClick(event: MouseEvent, place: Place) {
-        if (this.uiService.tab === 'build') {
-            let placeNode = place;
-            // hardcoded place for testing
-            // let placeNode = this.dataService.getPlaces()[0];
-            // this.dataService.getArcs().push(new Arc(transitionNode, placeNode))
 
-        }
     }
 
     dispatchPlaceMouseDown(event: MouseEvent, place: Place) {
-
+        // Set StartNode for Arc
+        if (this.uiService.button === 'arc') {
+            this.startPlace = place;
+        }
     }
 
     dispatchPlaceMouseUp(event: MouseEvent, place: Place) {
-
+        // Draw Arc with Place as EndNode
+        if (this.uiService.button === 'arc' && this.startTransition) {
+            this.dataService.getArcs().push(new Arc(this.startTransition, place, 5));
+            this.startTransition = undefined;
+        }
     }
 
     // Transitions
@@ -178,22 +187,22 @@ export class PetriNetComponent {
         if (this.uiService.tab === 'play') {
             this.tokenGameService.fire(transition);
         }
-        // Add Arc:
-        if (this.uiService.tab === 'build') {
-            let transitionNode = transition;
-            // hardcoded place for testing
-            let placeNode = this.dataService.getPlaces()[0];
-            this.dataService.getArcs().push(new Arc(transitionNode, placeNode))
 
-        }
     }
 
     dispatchTransitionMouseDown(event: MouseEvent, transition: Transition) {
-
+        // Set StartNode for Arc
+        if (this.uiService.button === 'arc') {
+            this.startTransition = transition;
+        }
     }
 
     dispatchTransitionMouseUp(event: MouseEvent, transition: Transition) {
-
+        // Draw Arc with Transition as EndNode
+        if (this.uiService.button === 'arc' && this.startPlace) {
+            this.dataService.getArcs().push(new Arc(this.startPlace, transition, 5));
+            this.startPlace = undefined;
+        }
     }
 
     // Arcs
@@ -203,13 +212,12 @@ export class PetriNetComponent {
 
     // ************************************************************************
 
-    // Example method: can be deleted
     addPlace(event: MouseEvent, drawingArea: HTMLElement) {
         const svgRect = drawingArea.getBoundingClientRect();
         let x = event.clientX - svgRect.left;
         let y = event.clientY - svgRect.top;
         let id = ((this.dataService.getPlaces().length) + 1).toString();
-        this.dataService.getPlaces().push(new Place(0, new Point(x, y), "p" + id));
+        this.dataService.getPlaces().push(new Place(0, new Point(x, y), this.getPlaceId()))
     }
 
     addTransition(event: MouseEvent, drawingArea: HTMLElement) {
@@ -217,16 +225,44 @@ export class PetriNetComponent {
         let x = event.clientX - svgRect.left;
         let y = event.clientY - svgRect.top;
         let id = ((this.dataService.getTransitions().length) + 1).toString();
-        this.dataService.getTransitions().push(new Transition(new Point(x, y), "t" + id));
+        this.dataService.getTransitions().push(new Transition(new Point(x, y), this.getTransitionId()));
     }
 
-    // addArc(event: MouseEvent, drawingArea: HTMLElement) {
-    //     const svgRect = drawingArea.getBoundingClientRect();
-    //     let x = event.clientX - svgRect.left;
-    //     let y = event.clientY - svgRect.top;
-    //     let id = ((this.dataService.getTransitions().length) + 1).toString();
-    //     this.dataService.getArcs().push(new Arc(new Point(x, y), "t" + id));
-    // }
+    getPlaceId(): string{
+        let i = 1;
+        let found = false;
+        let id: string = "";
+        let placeIds: string[] = [];
+        this.dataService.getPlaces().forEach(place => {
+            placeIds.push(place.id);
+        });
+        while(!found){
+            id = "p" + i;
+            if(placeIds.indexOf(id) === -1){
+                found = true;
+            }
+            i++;
+        }
+        return id;
+    }
+
+    getTransitionId(): string{
+        let i = 1;
+        let found = false;
+        let id: string = "";
+        let transitionIds: string[] = [];
+        this.dataService.getTransitions().forEach(transition => {
+            transitionIds.push(transition.id);
+        });
+        while(!found){
+            id = "t" + i;
+            if(transitionIds.indexOf(id) === -1){
+                found = true;
+            }
+            i++;
+        }
+        return id;
+    }
 
     protected readonly radius = radius;
     protected readonly placeIdYOffset = placeIdYOffset;
