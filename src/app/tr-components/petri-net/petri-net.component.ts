@@ -13,7 +13,8 @@ import {
     transitionHeight,
     transitionXOffset,
     transitionYOffset,
-    transitionIdYOffset
+    transitionIdYOffset,
+    anchorRadius
 } from "../../tr-services/position.constants";
 import { PnmlService } from "../../tr-services/pnml.service";
 import { ExportJsonDataService } from 'src/app/tr-services/export-json-data.service';
@@ -225,4 +226,5 @@ export class PetriNetComponent {
     protected readonly transitionYOffset = transitionYOffset;
     protected readonly transitionIdYOffset = transitionIdYOffset;
 
+    protected readonly anchorRadius = anchorRadius;
 }

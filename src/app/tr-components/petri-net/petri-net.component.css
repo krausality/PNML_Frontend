@@ -57,3 +57,11 @@
 .arc-weight-background.play-mode {
     fill: #c0bfbc;
 }
+
+.anchor{
+    fill:none;
+}
+
+.anchor.visible{
+    fill:black;
+}
