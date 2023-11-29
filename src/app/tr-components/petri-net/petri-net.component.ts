@@ -200,6 +200,12 @@ export class PetriNetComponent {
 
     }
 
+    dispatchArcMouseDown(event: MouseEvent, arc: Arc, drawingArea: HTMLElement) {
+        if (this.uiService.button === "anchor"){
+            this.editMoveElementsService.insertAnchorStart(event, arc, drawingArea);
+        }
+    }
+
     // Anchors
     dispatchAnchorMouseDown(event: MouseEvent, anchor: Point){
         if (this.uiService.button === 'move'){

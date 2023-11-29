@@ -31,10 +31,10 @@
     </g>
 
     <!-- Arcs -->
-    <g *ngFor="let arc of dataService.getArcs()" (click)="dispatchArcClick($event, arc)">
+    <g *ngFor="let arc of dataService.getArcs()" (click)="dispatchArcClick($event, arc)" (mousedown)="dispatchArcMouseDown($event, arc, drawingArea)">
         <polyline class="arc" [attr.points]="arc.polyLinePoints" marker-end="url(#arrow)"></polyline>
         <!-- Anchor points -->
-        <circle [attr.class]="uiService.button==='move' || uiService.button==='anchor' ? 'anchor visible' : 'anchor'" *ngFor="let point of arc.anchors" [attr.cx]="point.x" [attr.cy]="point.y" [attr.r]="anchorRadius" (mousedown)="dispatchAnchorMouseDown($event, point)" />
+        <!-- <circle [attr.class]="uiService.button==='move' || uiService.button==='anchor' ? 'anchor visible' : 'anchor'" *ngFor="let point of arc.anchors" [attr.cx]="point.x" [attr.cy]="point.y" [attr.r]="anchorRadius" (mousedown)="dispatchAnchorMouseDown($event, point)" /> -->
         <g *ngIf="arc.weight > 1 || arc.weight < -1">
             <!-- Weight at Arc without Anchorpoints - Middle of Polyline -->
             <!-- White Circle for Background -->
@@ -56,6 +56,7 @@
             <circle *ngIf="arc.anchors.length % 2 === 1 && arc.anchors.length >= 2" [attr.class]="uiService.tab === 'play' ? 'arc-weight-background play-mode' : 'arc-weight-background'" [attr.cx]="arc.anchors[arc.anchors.length / 2 - 0.5].x" [attr.cy]="arc.anchors[arc.anchors.length / 2 - 0.5].y" r="12" />
             <text *ngIf="arc.anchors.length % 2 === 1 && arc.anchors.length >= 2" class="arc-weight" [attr.x]="arc.anchors[arc.anchors.length / 2 - 0.5].x" [attr.y]="arc.anchors[arc.anchors.length / 2 - 0.5].y" text-anchor="middle" dominant-baseline="central">{{arc.weight | mathAbs}}</text>
         </g>
+        <circle [attr.class]="uiService.button==='move' || uiService.button==='anchor' ? 'anchor visible' : 'anchor'" *ngFor="let point of arc.anchors" [attr.cx]="point.x" [attr.cy]="point.y" [attr.r]="anchorRadius" (mousedown)="dispatchAnchorMouseDown($event, point)" />
     </g>
 
 </svg>

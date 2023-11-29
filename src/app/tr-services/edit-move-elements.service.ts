@@ -3,6 +3,7 @@ import { Point } from '../tr-classes/petri-net/point';
 import { Arc } from '../tr-classes/petri-net/arc';
 import { Node } from '../tr-interfaces/petri-net/node';
 import { DataService } from './data.service';
+import { UiService } from './ui.service';
 
 @Injectable({
     providedIn: 'root'
@@ -21,7 +22,10 @@ export class EditMoveElementsService {
     // For moving anchor points: Selected anchor that ist moved
     anchor: Point | null = null;
 
-    constructor(private dataService: DataService) { }
+    // For checking if moved anchor is old or just created
+    isNewAnchor: Boolean = false;
+
+    constructor(private dataService: DataService, private uiService: UiService) { }
 
     initializeNodeMove(event: MouseEvent, node: Node){
         // Register node to be moved
@@ -69,6 +73,10 @@ export class EditMoveElementsService {
         this.anchor = null;
 
         this.initialMousePos = {x:0, y:0};
+
+        // return to 'anchor' mode if it is a newly created anchor
+        if (this.isNewAnchor) this.uiService.button = 'anchor';
+        this.isNewAnchor = false;
     }
 
     initializeAnchorMove(event: MouseEvent, anchor: Point){
@@ -95,5 +103,21 @@ export class EditMoveElementsService {
             this.initialMousePos.x = event.clientX;
             this.initialMousePos.y = event.clientY;
         }
+    }
+
+    insertAnchorStart(event: MouseEvent, arc: Arc, drawingArea: HTMLElement){
+        const svgRect = drawingArea.getBoundingClientRect();
+        let x = event.clientX - svgRect.left;
+        let y = event.clientY - svgRect.top;
+
+        const anchor = new Point(x, y)
+
+        // TODO: refine insertion, so it is in the correct position
+        arc.anchors.push(anchor);
+
+        // Change to move mode
+        this.uiService.button = 'move';
+        this.isNewAnchor = true;
+        this.initializeAnchorMove(event, anchor);
     }
 }
