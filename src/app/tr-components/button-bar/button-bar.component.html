@@ -14,20 +14,25 @@
 
             <!-- divider -->
             <div class="divider"></div>
-            
+
             <!-- places -->
             <button mat-icon-button [color]="uiService.button === 'place' ? 'primary' : ''" (click)="buttonClicked('place')">
                 <mat-icon>circle</mat-icon>
             </button>
-            
+
             <!-- transitions -->
             <button mat-icon-button [color]="uiService.button === 'transition' ? 'primary' : ''" (click)="buttonClicked('transition')">
                 <mat-icon>square</mat-icon>
             </button>
-            
+
             <!-- arcs -->
             <button mat-icon-button [color]="uiService.button === 'arc' ? 'primary' : ''" (click)="buttonClicked('arc')">
                 <mat-icon>north_east</mat-icon>
+            </button>
+
+            <!-- anchor points -->
+            <button mat-icon-button [color]="uiService.button === 'anchor' ? 'primary' : ''" (click)="buttonClicked('anchor')">
+                <mat-icon>linear_scale</mat-icon>
             </button>
 
             <!-- divider -->
@@ -88,7 +93,7 @@
             <!-- restart tool -->
             <button mat-icon-button>
                 <mat-icon>restart_alt</mat-icon>
-            </button> 
+            </button>
         </div>
     </mat-tab>
     <mat-tab label="save">
