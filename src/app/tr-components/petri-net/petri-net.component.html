@@ -1,11 +1,7 @@
 <svg #drawingArea [attr.class]="uiService.tab === TabState.Play ? 'canvas play-mode' : 'canvas'" id="drawingArea"
-    (drop)="processDropEvent($event)"
-    (dragover)="prevent($event)"
-    (click)="dispatchSVGClick($event, drawingArea)"
-    (mousedown)="dispatchSVGMouseDown($event, drawingArea)"
-    (mousemove)="dispatchSVGMouseMove($event, drawingArea)"
-    (mouseup)="dispatchSVGMouseUp($event, drawingArea)"
->
+    (drop)="processDropEvent($event)" (dragover)="prevent($event)" (click)="dispatchSVGClick($event, drawingArea)"
+    (mousedown)="dispatchSVGMouseDown($event, drawingArea)" (mousemove)="dispatchSVGMouseMove($event, drawingArea)"
+    (mouseup)="dispatchSVGMouseUp($event, drawingArea)">
 
     <defs>
         <marker id="arrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
@@ -14,50 +10,91 @@
     </defs>
 
     <!-- Places -->
-    <g *ngFor="let place of dataService.getPlaces()" (click)="dispatchPlaceClick($event, place)" (mousedown)="dispatchPlaceMouseDown($event, place)" (mouseup)="dispatchPlaceMouseUp($event, place)">
+    <g *ngFor="let place of dataService.getPlaces()" (click)="dispatchPlaceClick($event, place)"
+        (mousedown)="dispatchPlaceMouseDown($event, place)" (mouseup)="dispatchPlaceMouseUp($event, place)">
         <g>
             <circle class="place" [attr.cx]="place.position.x" [attr.cy]="place.position.y" [attr.r]="radius" />
             <text class="token-label" [attr.x]="place.position.x" [attr.y]="place.position.y" text-anchor="middle"
                 dominant-baseline="central">{{place.token > 0 ? place.token : ''}}</text>
         </g>
-        <text class="place-id" [attr.x]="place.position.x" [attr.y]="place.position.y + placeIdYOffset" text-anchor="middle">{{place.id}}</text>
+        <text class="place-id" [attr.x]="place.position.x" [attr.y]="place.position.y + placeIdYOffset"
+            text-anchor="middle">{{place.id}}</text>
     </g>
 
     <!-- Transitions -->
-    <g *ngFor="let transition of dataService.getTransitions()" (click)="dispatchTransitionClick($event, transition)" (mousedown)="dispatchTransitionMouseDown($event, transition)" (mouseup)="dispatchTransitionMouseUp($event, transition)">
-        <rect [attr.class]="transition.isActive ? 'transition active' : 'transition'" [attr.x]="transition.position.x - transitionXOffset" [attr.y]="transition.position.y - transitionYOffset" [attr.width]="transitionWidth" [attr.height]="transitionHeight" />
-        <text [attr.x]="transition.position.x" [attr.y]="transition.position.y" text-anchor="middle" dominant-baseline="central">{{transition.label}}</text>
-        <text class="transition-id" [attr.x]="transition.position.x" [attr.y]="transition.position.y + transitionIdYOffset" text-anchor="middle">{{transition.id}}</text>
+    <g *ngFor="let transition of dataService.getTransitions()" (click)="dispatchTransitionClick($event, transition)"
+        (mousedown)="dispatchTransitionMouseDown($event, transition)"
+        (mouseup)="dispatchTransitionMouseUp($event, transition)">
+        <rect [attr.class]="transition.isActive ? 'transition active' : 'transition'"
+            [attr.x]="transition.position.x - transitionXOffset" [attr.y]="transition.position.y - transitionYOffset"
+            [attr.width]="transitionWidth" [attr.height]="transitionHeight" />
+        <text [attr.x]="transition.position.x" [attr.y]="transition.position.y" text-anchor="middle"
+            dominant-baseline="central">{{transition.label}}</text>
+        <text class="transition-id" [attr.x]="transition.position.x"
+            [attr.y]="transition.position.y + transitionIdYOffset" text-anchor="middle">{{transition.id}}</text>
     </g>
 
     <!-- Arcs -->
-    <g *ngFor="let arc of dataService.getArcs()" (click)="dispatchArcClick($event, arc)" (mousedown)="dispatchArcMouseDown($event, arc, drawingArea)">
+    <g *ngFor="let arc of dataService.getArcs()" (click)="dispatchArcClick($event, arc)"
+        (mousedown)="dispatchArcMouseDown($event, arc, drawingArea)">
         <polyline class="arc" [attr.points]="arc.polyLinePoints" marker-end="url(#arrow)"></polyline>
         <!-- Anchor points -->
         <!-- <circle [attr.class]="uiService.button==='move' || uiService.button==='anchor' ? 'anchor visible' : 'anchor'" *ngFor="let point of arc.anchors" [attr.cx]="point.x" [attr.cy]="point.y" [attr.r]="anchorRadius" (mousedown)="dispatchAnchorMouseDown($event, point)" /> -->
         <g *ngIf="arc.weight > 1 || arc.weight < -1">
             <!-- Weight at Arc without Anchorpoints - Middle of Polyline -->
             <!-- White Circle for Background -->
-            <circle *ngIf="arc.anchors.length == 0" [attr.class]="uiService.tab === TabState.Play ? 'arc-weight-background play-mode' : 'arc-weight-background'" [attr.cx]="(arc.from.position.x + arc.to.position.x) / 2" [attr.cy]="(arc.from.position.y + arc.to.position.y) / 2" r="12" />
-            <text *ngIf="arc.anchors.length == 0" class="arc-weight" [attr.x]="(arc.from.position.x + arc.to.position.x) / 2" [attr.y]="(arc.from.position.y + arc.to.position.y) / 2" text-anchor="middle" dominant-baseline="central">{{arc.weight | mathAbs}}</text>
+            <circle *ngIf="arc.anchors.length == 0"
+                [attr.class]="uiService.tab === TabState.Play ? 'arc-weight-background play-mode' : 'arc-weight-background'"
+                [attr.cx]="(arc.from.position.x + arc.to.position.x) / 2"
+                [attr.cy]="(arc.from.position.y + arc.to.position.y) / 2" r="12" />
+            <text *ngIf="arc.anchors.length == 0" class="arc-weight"
+                [attr.x]="(arc.from.position.x + arc.to.position.x) / 2"
+                [attr.y]="(arc.from.position.y + arc.to.position.y) / 2" text-anchor="middle"
+                dominant-baseline="central">{{arc.weight | mathAbs}}</text>
 
             <!-- Weight at Arc with 1 Anchorpoint - At the Anchorpoint -->
             <!-- White Circle for Background -->
-            <circle *ngIf="arc.anchors.length == 1" [attr.class]="uiService.tab === TabState.Play ? 'arc-weight-background play-mode' : 'arc-weight-background'" [attr.cx]="arc.anchors[0].x" [attr.cy]="arc.anchors[0].y" r="12" />
-            <text *ngIf="arc.anchors.length == 1" class="arc-weight" [attr.x]="arc.anchors[0].x" [attr.y]="arc.anchors[0].y" text-anchor="middle" dominant-baseline="central">{{arc.weight | mathAbs}}</text>
+            <circle *ngIf="arc.anchors.length == 1"
+                [attr.class]="uiService.tab === TabState.Play ? 'arc-weight-background play-mode' : 'arc-weight-background'"
+                [attr.cx]="arc.anchors[0].x" [attr.cy]="arc.anchors[0].y" r="12" />
+            <text *ngIf="arc.anchors.length == 1" class="arc-weight" [attr.x]="arc.anchors[0].x"
+                [attr.y]="arc.anchors[0].y" text-anchor="middle" dominant-baseline="central">{{arc.weight |
+                mathAbs}}</text>
 
             <!-- Weight at Arc with pair Anchorpoints - Middle of the middle Line -->
             <!-- White Circle for Background -->
-            <circle *ngIf="arc.anchors.length % 2 === 0 && arc.anchors.length >= 2" [attr.class]="uiService.tab === TabState.Play ? 'arc-weight-background play-mode' : 'arc-weight-background'" [attr.cx]="(arc.anchors[0].x + arc.anchors[arc.anchors.length-1].x) / 2" [attr.cy]="(arc.anchors[0].y + arc.anchors[arc.anchors.length-1].y) / 2" r="12" />
-            <text *ngIf="arc.anchors.length % 2 === 0 && arc.anchors.length >= 2" class="arc-weight" [attr.x]="(arc.anchors[0].x + arc.anchors[1].x) / 2" [attr.y]="(arc.anchors[0].y + arc.anchors[1].y) / 2" text-anchor="middle" dominant-baseline="central">{{arc.weight | mathAbs}}</text>
+            <circle *ngIf="arc.anchors.length % 2 === 0 && arc.anchors.length >= 2"
+                [attr.class]="uiService.tab === TabState.Play ? 'arc-weight-background play-mode' : 'arc-weight-background'"
+                [attr.cx]="(arc.anchors[0].x + arc.anchors[arc.anchors.length-1].x) / 2"
+                [attr.cy]="(arc.anchors[0].y + arc.anchors[arc.anchors.length-1].y) / 2" r="12" />
+            <text *ngIf="arc.anchors.length % 2 === 0 && arc.anchors.length >= 2" class="arc-weight"
+                [attr.x]="(arc.anchors[0].x + arc.anchors[1].x) / 2"
+                [attr.y]="(arc.anchors[0].y + arc.anchors[1].y) / 2" text-anchor="middle"
+                dominant-baseline="central">{{arc.weight | mathAbs}}</text>
 
             <!-- Weight at Arc with unpair Anchorpoints - At the middle Anchorpoint -->
             <!-- White Circle for Background -->
-            <circle *ngIf="arc.anchors.length % 2 === 1 && arc.anchors.length >= 2" [attr.class]="uiService.tab === TabState.Play ? 'arc-weight-background play-mode' : 'arc-weight-background'" [attr.cx]="arc.anchors[arc.anchors.length / 2 - 0.5].x" [attr.cy]="arc.anchors[arc.anchors.length / 2 - 0.5].y" r="12" />
-            <text *ngIf="arc.anchors.length % 2 === 1 && arc.anchors.length >= 2" class="arc-weight" [attr.x]="arc.anchors[arc.anchors.length / 2 - 0.5].x" [attr.y]="arc.anchors[arc.anchors.length / 2 - 0.5].y" text-anchor="middle" dominant-baseline="central">{{arc.weight | mathAbs}}</text>
+            <circle *ngIf="arc.anchors.length % 2 === 1 && arc.anchors.length >= 2"
+                [attr.class]="uiService.tab === TabState.Play ? 'arc-weight-background play-mode' : 'arc-weight-background'"
+                [attr.cx]="arc.anchors[arc.anchors.length / 2 - 0.5].x"
+                [attr.cy]="arc.anchors[arc.anchors.length / 2 - 0.5].y" r="12" />
+            <text *ngIf="arc.anchors.length % 2 === 1 && arc.anchors.length >= 2" class="arc-weight"
+                [attr.x]="arc.anchors[arc.anchors.length / 2 - 0.5].x"
+                [attr.y]="arc.anchors[arc.anchors.length / 2 - 0.5].y" text-anchor="middle"
+                dominant-baseline="central">{{arc.weight | mathAbs}}</text>
         </g>
-        <line *ngFor="let lineSegment of arc.lineSegments" [attr.x1]="lineSegment[0].x" [attr.y1]="lineSegment[0].y" [attr.x2]="lineSegment[1].x" [attr.y2]="lineSegment[1].y" style="stroke:red; stroke-width:6" (mousedown)="dispatchLineSegmentMouseDown($event, arc, lineSegment, drawingArea)" ></line>
-        <circle [attr.class]="uiService.button===ButtonState.Move || uiService.button===ButtonState.Anchor ? 'anchor visible' : 'anchor'" *ngFor="let point of arc.anchors" [attr.cx]="point.x" [attr.cy]="point.y" [attr.r]="anchorRadius" (mousedown)="dispatchAnchorMouseDown($event, point)" />
+        <!-- When in anchor insertion mode, render (invisible) anchor line
+            segments to capture mousedown events-->
+        <ng-container *ngIf="uiService.button===ButtonState.Anchor">
+            <line *ngFor="let lineSegment of arc.lineSegments" class="line-segment" [attr.x1]="lineSegment[0].x"
+                [attr.y1]="lineSegment[0].y" [attr.x2]="lineSegment[1].x" [attr.y2]="lineSegment[1].y"
+                (mousedown)="dispatchLineSegmentMouseDown($event, arc, lineSegment, drawingArea)"></line>
+        </ng-container>
+        <!-- Anchor points -->
+        <ng-container *ngIf="uiService.button===ButtonState.Move || uiService.button===ButtonState.Anchor">
+            <circle *ngFor="let point of arc.anchors" [attr.cx]="point.x" class="anchor" [attr.cy]="point.y"
+                [attr.r]="anchorRadius" (mousedown)="dispatchAnchorMouseDown($event, point)" />
+        </ng-container>
     </g>
 
 </svg>

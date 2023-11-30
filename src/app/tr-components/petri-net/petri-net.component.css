@@ -59,9 +59,10 @@
 }
 
 .anchor{
-    fill:none;
+    fill:black;
 }
 
-.anchor.visible{
-    fill:black;
+.line-segment{
+    stroke: transparent;
+    stroke-width: 10;
 }
