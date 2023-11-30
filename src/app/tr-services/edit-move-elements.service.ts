@@ -120,4 +120,28 @@ export class EditMoveElementsService {
         this.isNewAnchor = true;
         this.initializeAnchorMove(event, anchor);
     }
+
+    insertAnchorIntoLineSegmentStart(event: MouseEvent, arc: Arc, lineSegment: Point[], drawingArea: HTMLElement) {
+        const svgRect = drawingArea.getBoundingClientRect();
+        let x = event.clientX - svgRect.left;
+        let y = event.clientY - svgRect.top;
+
+        const anchor = new Point(x, y)
+
+        // Insert new anchor into the anchors array
+        if (arc.anchors.length === 0 || arc.anchors.indexOf(lineSegment[0]) === (arc.anchors.length - 1)) {
+            arc.anchors.push(anchor);
+        } else {
+            const indexLineEnd = arc.anchors.indexOf(lineSegment[1]);
+            if (indexLineEnd !== -1) {
+                arc.anchors.splice(indexLineEnd, 0, anchor);
+            }
+        }
+
+
+        // Change to move mode
+        this.uiService.button = 'move';
+        this.isNewAnchor = true;
+        this.initializeAnchorMove(event, anchor);
+    }
 }

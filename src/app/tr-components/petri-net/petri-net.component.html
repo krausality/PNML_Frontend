@@ -56,6 +56,7 @@
             <circle *ngIf="arc.anchors.length % 2 === 1 && arc.anchors.length >= 2" [attr.class]="uiService.tab === 'play' ? 'arc-weight-background play-mode' : 'arc-weight-background'" [attr.cx]="arc.anchors[arc.anchors.length / 2 - 0.5].x" [attr.cy]="arc.anchors[arc.anchors.length / 2 - 0.5].y" r="12" />
             <text *ngIf="arc.anchors.length % 2 === 1 && arc.anchors.length >= 2" class="arc-weight" [attr.x]="arc.anchors[arc.anchors.length / 2 - 0.5].x" [attr.y]="arc.anchors[arc.anchors.length / 2 - 0.5].y" text-anchor="middle" dominant-baseline="central">{{arc.weight | mathAbs}}</text>
         </g>
+        <line *ngFor="let lineSegment of arc.lineSegments" [attr.x1]="lineSegment[0].x" [attr.y1]="lineSegment[0].y" [attr.x2]="lineSegment[1].x" [attr.y2]="lineSegment[1].y" style="stroke:red; stroke-width:6" (mousedown)="dispatchLineSegmentMouseDown($event, arc, lineSegment, drawingArea)" ></line>
         <circle [attr.class]="uiService.button==='move' || uiService.button==='anchor' ? 'anchor visible' : 'anchor'" *ngFor="let point of arc.anchors" [attr.cx]="point.x" [attr.cy]="point.y" [attr.r]="anchorRadius" (mousedown)="dispatchAnchorMouseDown($event, point)" />
     </g>
 

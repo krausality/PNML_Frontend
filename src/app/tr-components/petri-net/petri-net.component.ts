@@ -201,8 +201,14 @@ export class PetriNetComponent {
     }
 
     dispatchArcMouseDown(event: MouseEvent, arc: Arc, drawingArea: HTMLElement) {
+        // if (this.uiService.button === "anchor"){
+        //     this.editMoveElementsService.insertAnchorStart(event, arc, drawingArea);
+        // }
+    }
+
+    dispatchLineSegmentMouseDown(event: MouseEvent, arc: Arc, lineSegment: Point[], drawingArea: HTMLElement) {
         if (this.uiService.button === "anchor"){
-            this.editMoveElementsService.insertAnchorStart(event, arc, drawingArea);
+            this.editMoveElementsService.insertAnchorIntoLineSegmentStart(event, arc, lineSegment, drawingArea);
         }
     }
 
