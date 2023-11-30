@@ -3,3 +3,8 @@
     width: 100%;
     margin: 5px 15px;
 }
+
+.action-text {
+    max-width: 50vw;
+    overflow: scroll;
+}
