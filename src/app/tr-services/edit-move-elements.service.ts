@@ -4,6 +4,7 @@ import { Arc } from '../tr-classes/petri-net/arc';
 import { Node } from '../tr-interfaces/petri-net/node';
 import { DataService } from './data.service';
 import { UiService } from './ui.service';
+import { ButtonState } from '../tr-enums/ui-state';
 
 @Injectable({
     providedIn: 'root'
@@ -75,7 +76,7 @@ export class EditMoveElementsService {
         this.initialMousePos = {x:0, y:0};
 
         // return to 'anchor' mode if it is a newly created anchor
-        if (this.isNewAnchor) this.uiService.button = 'anchor';
+        if (this.isNewAnchor) this.uiService.button = ButtonState.Anchor;
         this.isNewAnchor = false;
     }
 
@@ -116,7 +117,7 @@ export class EditMoveElementsService {
         arc.anchors.push(anchor);
 
         // Change to move mode
-        this.uiService.button = 'move';
+        this.uiService.button = ButtonState.Move;
         this.isNewAnchor = true;
         this.initializeAnchorMove(event, anchor);
     }
@@ -140,7 +141,7 @@ export class EditMoveElementsService {
 
 
         // Change to move mode
-        this.uiService.button = 'move';
+        this.uiService.button = ButtonState.Move;
         this.isNewAnchor = true;
         this.initializeAnchorMove(event, anchor);
     }

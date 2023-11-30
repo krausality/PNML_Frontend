@@ -25,6 +25,7 @@ import { Point } from 'src/app/tr-classes/petri-net/point';
 import { Transition } from 'src/app/tr-classes/petri-net/transition';
 import { Arc } from 'src/app/tr-classes/petri-net/arc';
 import { EditMoveElementsService } from 'src/app/tr-services/edit-move-elements.service';
+import { ButtonState, TabState } from 'src/app/tr-enums/ui-state';
 import { TokenGameService } from 'src/app/tr-services/token-game.service';
 
 @Component({
@@ -135,11 +136,11 @@ export class PetriNetComponent {
 
     // SVG
     dispatchSVGClick(event: MouseEvent, drawingArea: HTMLElement) {
-        if (this.uiService.button === "place") {
+        if (this.uiService.button === ButtonState.Place) {
             // example method: can be deleted/replaced with final implementation
             this.addPlace(event, drawingArea);
         }
-        if (this.uiService.button === "transition") {
+        if (this.uiService.button === ButtonState.Transition) {
             // Method for adding transition
         }
     }
@@ -149,14 +150,14 @@ export class PetriNetComponent {
     }
 
     dispatchSVGMouseMove(event: MouseEvent, drawingArea: HTMLElement) {
-        if (this.uiService.button === 'move') {
+        if (this.uiService.button === ButtonState.Move) {
             this.editMoveElementsService.moveNodeByMousePositionChange(event);
             this.editMoveElementsService.moveAnchorByMousePositionChange(event);
         }
     }
 
     dispatchSVGMouseUp(event: MouseEvent, drawingArea: HTMLElement) {
-        if (this.uiService.button === 'move'){
+        if (this.uiService.button === ButtonState.Move) {
             this.editMoveElementsService.finalizeMove();
         }
 
@@ -168,8 +169,8 @@ export class PetriNetComponent {
     }
 
     dispatchPlaceMouseDown(event: MouseEvent, place: Place) {
-        if (this.uiService.button === 'move'){
-           this.editMoveElementsService.initializeNodeMove(event, place);
+        if (this.uiService.button === ButtonState.Move) {
+            this.editMoveElementsService.initializeNodeMove(event, place);
         }
     }
 
@@ -180,13 +181,13 @@ export class PetriNetComponent {
     // Transitions
     dispatchTransitionClick(event: MouseEvent, transition: Transition) {
         // Token game: fire transition
-        if (this.uiService.tab === 'play') {
+        if (this.uiService.tab === TabState.Play) {
             this.tokenGameService.fire(transition);
         }
     }
 
-    dispatchTransitionMouseDown(event: MouseEvent, transition: Transition){
-        if (this.uiService.button === 'move'){
+    dispatchTransitionMouseDown(event: MouseEvent, transition: Transition) {
+        if (this.uiService.button === ButtonState.Move) {
             this.editMoveElementsService.initializeNodeMove(event, transition);
         }
     }
@@ -207,14 +208,14 @@ export class PetriNetComponent {
     }
 
     dispatchLineSegmentMouseDown(event: MouseEvent, arc: Arc, lineSegment: Point[], drawingArea: HTMLElement) {
-        if (this.uiService.button === "anchor"){
+        if (this.uiService.button === ButtonState.Anchor) {
             this.editMoveElementsService.insertAnchorIntoLineSegmentStart(event, arc, lineSegment, drawingArea);
         }
     }
 
     // Anchors
-    dispatchAnchorMouseDown(event: MouseEvent, anchor: Point){
-        if (this.uiService.button === 'move'){
+    dispatchAnchorMouseDown(event: MouseEvent, anchor: Point) {
+        if (this.uiService.button === ButtonState.Move) {
             this.editMoveElementsService.initializeAnchorMove(event, anchor);
         }
     }
@@ -239,4 +240,8 @@ export class PetriNetComponent {
     protected readonly transitionIdYOffset = transitionIdYOffset;
 
     protected readonly anchorRadius = anchorRadius;
+
+    protected readonly TabState = TabState;
+    protected readonly ButtonState = ButtonState;
+
 }
