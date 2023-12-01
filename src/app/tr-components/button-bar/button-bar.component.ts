@@ -4,6 +4,7 @@ import { PnmlService } from 'src/app/tr-services/pnml.service';
 import { UiService } from 'src/app/tr-services/ui.service';
 import { ExportImageService } from 'src/app/tr-services/export-image.service';
 import { ExportSvgService } from 'src/app/tr-services/export-svg.service';
+import { TokenGameService } from 'src/app/tr-services/token-game.service';
 import { ButtonState, TabState } from 'src/app/tr-enums/ui-state';
 
 
@@ -25,7 +26,8 @@ export class ButtonBarComponent {
         protected exportJsonDataService: ExportJsonDataService,
         protected pnmlService: PnmlService,
         protected exportImageService: ExportImageService,
-        protected exportSvgService: ExportSvgService
+        protected exportSvgService: ExportSvgService,
+        protected tokenGameService: TokenGameService
     ) {}
 
     // gets called when a tab is clicked

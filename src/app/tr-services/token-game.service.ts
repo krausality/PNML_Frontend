@@ -72,7 +72,7 @@ export class TokenGameService {
         }
     }
     
-    private revertToPreviousState() {
+    revertToPreviousState() {
         // Takes the last/top item of the token history stack
         // and resets the values accordingly
         const state = this._tokenHistory.pop();
@@ -81,7 +81,7 @@ export class TokenGameService {
         this.setGameState(state);
     }
     
-    private resetGame() {
+    resetGame() {
         // Takes the first/bottom item of the token history stack
         // and resets the values accordingly
         const state = this._tokenHistory.shift();
