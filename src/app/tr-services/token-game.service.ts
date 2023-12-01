@@ -3,7 +3,6 @@ import { Transition } from '../tr-classes/petri-net/transition';
 import { Place } from '../tr-classes/petri-net/place';
 
 import { DataService } from "./data.service";
-import { UiService } from "./ui.service";
 
 @Injectable({
     providedIn: 'root'
@@ -12,10 +11,7 @@ export class TokenGameService {
     
     private _tokenHistory: Map<Place, number>[]= [];
     
-    constructor(
-        protected dataService: DataService,
-        protected uiService: UiService
-    ) {}
+    constructor(protected dataService: DataService) {}
     
     // Method for token game
     fire(transition: Transition) {
@@ -38,7 +34,6 @@ export class TokenGameService {
 
     saveCurrentGameState() {
         this._tokenHistory.push(this.getGameState());
-        console.log(this._tokenHistory);
     }
 
     clearGameHistory() {
@@ -48,22 +43,7 @@ export class TokenGameService {
     isGameHistoryEmpty() {
         return this._tokenHistory.length === 0;
     }
-    
-    private getGameState(): Map<Place, number> {
-        const tokenMapping = new Map<Place, number>();
-        for (let place of this.dataService.getPlaces()) {
-            tokenMapping.set(place, place.token);
-        }
-        return tokenMapping;
-    }
-    
-    private setGameState(state: Map<Place, number>) {
-        for (let place of this.dataService.getPlaces()) {
-            const tokens = state.get(place);
-            place.setToken(tokens ? tokens : 0);
-        }
-    }
-    
+
     revertToPreviousState() {
         // Takes the last/top item of the token history stack
         // and resets the values accordingly
@@ -84,4 +64,20 @@ export class TokenGameService {
         // clear history as we're starting from the beginning again
         this.clearGameHistory();
     }
+
+    private getGameState(): Map<Place, number> {
+        const tokenMapping = new Map<Place, number>();
+        for (let place of this.dataService.getPlaces()) {
+            tokenMapping.set(place, place.token);
+        }
+        return tokenMapping;
+    }
+    
+    private setGameState(state: Map<Place, number>) {
+        for (let place of this.dataService.getPlaces()) {
+            const tokens = state.get(place);
+            place.setToken(tokens ? tokens : 0);
+        }
+    }
+    
 }

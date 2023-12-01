@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component } from '@angular/core';
 import { ExportJsonDataService } from 'src/app/tr-services/export-json-data.service';
 import { PnmlService } from 'src/app/tr-services/pnml.service';
 import { UiService } from 'src/app/tr-services/ui.service';
@@ -14,8 +14,6 @@ import { ButtonState, TabState } from 'src/app/tr-enums/ui-state';
     styleUrls: ['./button-bar.component.css']
 })
 export class ButtonBarComponent {
-    // @Output('tabChange') tabChange: EventEmitter<TabState> = new EventEmitter<TabState>();
-
     readonly TabState = TabState;
     readonly ButtonState = ButtonState;
 

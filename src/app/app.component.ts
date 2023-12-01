@@ -1,6 +1,5 @@
 import {Component} from '@angular/core';
 import {FormControl} from '@angular/forms';
-import { TokenGameService } from 'src/app/tr-services/token-game.service';
 
 @Component({
     selector: 'app-root',
@@ -11,7 +10,7 @@ export class AppComponent {
 
     public textareaFc: FormControl;
 
-    constructor(protected tokenGameService: TokenGameService) {
+    constructor() {
         this.textareaFc = new FormControl();
         this.textareaFc.disable();
     }
