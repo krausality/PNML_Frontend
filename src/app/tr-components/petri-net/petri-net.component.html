@@ -14,7 +14,7 @@
     </defs>
 
     <!-- Places -->
-    <g *ngFor="let place of dataService.getPlaces()" (click)="dispatchPlaceClick($event, place)" (mousedown)="dispatchPlaceMouseDown($event, place)" (mouseup)="dispatchPlaceMouseUp($event, place)">
+    <g *ngFor="let place of dataService.getPlaces()" (click)="dispatchPlaceClick($event, place)" (mousedown)="dispatchPlaceMouseDown($event, place)" (mouseup)="dispatchPlaceMouseUp($event, place)" (wheel)="onWheelEventPlace($event, place)">
         <g>
             <circle class="place" [attr.cx]="place.position.x" [attr.cy]="place.position.y" [attr.r]="radius" />
             <text class="token-label" [attr.x]="place.position.x" [attr.y]="place.position.y" text-anchor="middle"
@@ -31,7 +31,8 @@
     </g>
 
     <!-- Arcs -->
-    <g *ngFor="let arc of dataService.getArcs()" (click)="dispatchArcClick($event, arc)">
+    <g *ngFor="let arc of dataService.getArcs()" (click)="dispatchArcClick($event, arc)" (wheel)="onWheelEventArc($event, arc)">
+        <polyline class="background-arc" [attr.points]="arc.polyLinePoints"></polyline>
         <polyline class="arc" [attr.points]="arc.polyLinePoints" marker-end="url(#arrow)"></polyline>
         <g *ngIf="arc.weight > 1 || arc.weight < -1">
             <!-- Weight at Arc without Anchorpoints - Middle of Polyline -->
