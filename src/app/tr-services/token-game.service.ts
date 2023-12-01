@@ -3,21 +3,39 @@ import { Transition } from '../tr-classes/petri-net/transition';
 import { Place } from '../tr-classes/petri-net/place';
 
 import { DataService } from "./data.service";
+import { UiService } from "./ui.service";
+
+import { TabState } from '../tr-enums/ui-state';
 
 @Injectable({
     providedIn: 'root'
 })
 export class TokenGameService {
-
+    
     private _tokenHistory: Map<Place, number>[]= [];
+    
     constructor(
         protected dataService: DataService,
-    ) {}
-
-
+        protected uiService: UiService
+    ) {
+        // Add subscription to tab change event.
+        // This allows us to reset the game state on each
+        // switch to the play tab and basically open a new "game session"
+        // whenever the user visits the play tabs
+        this.uiService.tab$.subscribe(tab => {
+            if (tab !== TabState.Play) {
+                this.clearGameHistory();
+            }
+        })
+    }
+    
     // Method for token game
     fire(transition: Transition) {
         if (transition.isActive) {
+            // whenever a transition is fired the token distribution BEFORE the change
+            // is added to our game history stack, so we can later revisit it
+            this.saveCurrentGameState();
+
             // Decrease token numbers of pre-places (note: weights of pre-arcs
             // have a negative sign in the internal data representation)
             for (let arc of transition.preArcs) {
@@ -27,8 +45,6 @@ export class TokenGameService {
             for (let arc of transition.postArcs) {
                 (arc.to as Place).token += arc.weight;
             }
-
-            this.saveCurrentGameState();
         }
     }
 
@@ -50,7 +66,7 @@ export class TokenGameService {
     }
     
     private setGameState(state: Map<Place, number>) {
-        for (let place of this.dataService.places) {
+        for (let place of this.dataService.getPlaces()) {
             const tokens = state.get(place);
             place.setToken(tokens ? tokens : 0);
         }
@@ -65,7 +81,7 @@ export class TokenGameService {
         this.setGameState(state);
     }
     
-    private revertToOriginalState() {
+    private resetGame() {
         // Takes the first/bottom item of the token history stack
         // and resets the values accordingly
         const state = this._tokenHistory.shift();

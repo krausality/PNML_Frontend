@@ -16,14 +16,6 @@ export class AppComponent {
         this.textareaFc.disable();
     }
 
-    public onTabChange(tabValue: string) {
-        if (tabValue === 'play') {
-            this.tokenGameService.saveCurrentGameState();
-        } else {
-            this.tokenGameService.clearGameHistory();
-        }
-    }
-
     public processSourceChange(newSource: string) {
         this.textareaFc.setValue(newSource);
     }

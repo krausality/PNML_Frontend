@@ -13,7 +13,7 @@ import { ButtonState, TabState } from 'src/app/tr-enums/ui-state';
     styleUrls: ['./button-bar.component.css']
 })
 export class ButtonBarComponent {
-    @Output('tabChange') tabChange: EventEmitter<string>;
+    // @Output('tabChange') tabChange: EventEmitter<TabState> = new EventEmitter<TabState>();
 
     readonly TabState = TabState;
     readonly ButtonState = ButtonState;
@@ -26,9 +26,7 @@ export class ButtonBarComponent {
         protected pnmlService: PnmlService,
         protected exportImageService: ExportImageService,
         protected exportSvgService: ExportSvgService
-    ) {
-        this.tabChange = new EventEmitter<string>();
-    }
+    ) {}
 
     // gets called when a tab is clicked
     // sets the "tab" property in the uiService
