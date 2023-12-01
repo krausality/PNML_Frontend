@@ -81,12 +81,12 @@
         <!-- buttons for tab "play" -->
         <div class="button-container">
             <!-- rewind tool -->
-            <button mat-icon-button (click)="tokenGameService.revertToPreviousState()">
+            <button mat-icon-button [disabled]="tokenGameService.isGameHistoryEmpty()" (click)="tokenGameService.revertToPreviousState()">
                 <mat-icon>fast_rewind</mat-icon>
             </button>
 
             <!-- restart tool -->
-            <button mat-icon-button (click)="tokenGameService.resetGame()">
+            <button mat-icon-button [disabled]="tokenGameService.isGameHistoryEmpty()" (click)="tokenGameService.resetGame()">
                 <mat-icon>restart_alt</mat-icon>
             </button>
         </div>

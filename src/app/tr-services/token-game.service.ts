@@ -44,6 +44,10 @@ export class TokenGameService {
     clearGameHistory() {
         this._tokenHistory = [];
     }
+
+    isGameHistoryEmpty() {
+        return this._tokenHistory.length === 0;
+    }
     
     private getGameState(): Map<Place, number> {
         const tokenMapping = new Map<Place, number>();
