@@ -5,8 +5,6 @@ import { Place } from '../tr-classes/petri-net/place';
 import { DataService } from "./data.service";
 import { UiService } from "./ui.service";
 
-import { TabState } from '../tr-enums/ui-state';
-
 @Injectable({
     providedIn: 'root'
 })
@@ -17,17 +15,7 @@ export class TokenGameService {
     constructor(
         protected dataService: DataService,
         protected uiService: UiService
-    ) {
-        // Add subscription to tab change event.
-        // This allows us to reset the game state on each
-        // switch to the play tab and basically open a new "game session"
-        // whenever the user visits the play tabs
-        this.uiService.tab$.subscribe(tab => {
-            if (tab !== TabState.Play) {
-                this.clearGameHistory();
-            }
-        })
-    }
+    ) {}
     
     // Method for token game
     fire(transition: Transition) {

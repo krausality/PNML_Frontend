@@ -37,12 +37,14 @@ export class ButtonBarComponent {
         switch (tab) {
             case "build":
                 this.uiService.tab = this.TabState.Build;
+                this.tokenGameService.clearGameHistory();
                 break;
             case "play":
                 this.uiService.tab = this.TabState.Play;
                 break;
             case "save":
                 this.uiService.tab = this.TabState.Save;
+                this.tokenGameService.clearGameHistory();
                 break;
         }
         this.uiService.button = null;
