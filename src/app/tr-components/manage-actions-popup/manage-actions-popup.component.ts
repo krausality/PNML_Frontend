@@ -2,11 +2,11 @@ import { Component } from '@angular/core';
 import { DataService } from 'src/app/tr-services/data.service';
 
 @Component({
-  selector: 'app-action-popup',
-  templateUrl: './action-popup.component.html',
-  styleUrls: ['./action-popup.component.css']
+  selector: 'app-manage-actions-popup',
+  templateUrl: './manage-actions-popup.component.html',
+  styleUrls: ['./manage-actions-popup.component.css']
 })
-export class ActionPopupComponent {
+export class ManageActionsPopupComponent {
 
     constructor(protected dataService: DataService) {}
 

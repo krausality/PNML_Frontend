@@ -23,7 +23,8 @@ import { PetriNetComponent } from './tr-components/petri-net/petri-net.component
 import { LayoutSwitchComponent } from './tr-components/layout-switch/layout-switch.component';
 import { ButtonBarComponent } from './tr-components/button-bar/button-bar.component';
 import { mathAbsPipe } from './tr-pipes/math-abs.pipe';
-import { ActionPopupComponent } from './tr-components/action-popup/action-popup.component';
+import { ManageActionsPopupComponent } from './tr-components/manage-actions-popup/manage-actions-popup.component';
+import { SetActionPopupComponent } from './tr-components/set-action-popup/set-action-popup.component';
 
 @NgModule({
     declarations: [
@@ -36,7 +37,8 @@ import { ActionPopupComponent } from './tr-components/action-popup/action-popup.
         LayoutSwitchComponent,
         ButtonBarComponent,
         mathAbsPipe,
-        ActionPopupComponent,
+        ManageActionsPopupComponent,
+        SetActionPopupComponent,
     ],
     imports: [
         BrowserModule,

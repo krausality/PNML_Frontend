@@ -5,7 +5,7 @@ import { UiService } from 'src/app/tr-services/ui.service';
 import { ExportImageService } from 'src/app/tr-services/export-image.service';
 import { ExportSvgService } from 'src/app/tr-services/export-svg.service';
 import { MatDialog } from '@angular/material/dialog';
-import { ActionPopupComponent } from '../action-popup/action-popup.component';
+import { ManageActionsPopupComponent } from '../manage-actions-popup/manage-actions-popup.component';
 
 @Component({
     selector: 'app-button-bar',
@@ -33,7 +33,7 @@ export class ButtonBarComponent {
     }
 
     openActionDialog() {
-        this.matDialog.open(ActionPopupComponent);
+        this.matDialog.open(ManageActionsPopupComponent);
     }
 
 }
