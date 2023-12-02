@@ -18,13 +18,13 @@ import {
 import { PnmlService } from "../../tr-services/pnml.service";
 import { ExportJsonDataService } from 'src/app/tr-services/export-json-data.service';
 import { mathAbsPipe } from 'src/app/tr-pipes/math-abs.pipe';
-import { Node } from '@angular/compiler';
 import { UiService } from 'src/app/tr-services/ui.service';
 import { Place } from 'src/app/tr-classes/petri-net/place';
 import { Point } from 'src/app/tr-classes/petri-net/point';
 import { Transition } from 'src/app/tr-classes/petri-net/transition';
 import { Arc } from 'src/app/tr-classes/petri-net/arc';
 import { TokenGameService } from 'src/app/tr-services/token-game.service';
+import { Node } from "src/app/tr-interfaces/petri-net/node";
 
 @Component({
     selector: 'app-petri-net',
@@ -52,8 +52,8 @@ export class PetriNetComponent {
         this.fileContent = new EventEmitter<string>();
     }
 
-    startTransition: Transition | undefined;
-    startPlace: Place | undefined;
+    startTransition: Node | undefined;
+    startPlace: Node | undefined;
 
     private parsePetrinetData(content: string | undefined, contentType: string) {
         if (content) {
@@ -175,9 +175,11 @@ export class PetriNetComponent {
 
     dispatchPlaceMouseUp(event: MouseEvent, place: Place) {
         // Draw Arc with Place as EndNode
-        if (this.uiService.button === 'arc' && this.startTransition) {
-            this.dataService.getArcs().push(new Arc(this.startTransition, place, 5));
-            this.startTransition = undefined;
+        if(this.startTransition && !this.isArcExisting(this.startTransition, place)) {
+            if (this.uiService.button === 'arc' && this.startTransition) {
+                this.dataService.getArcs().push(new Arc(this.startTransition, place, 1));
+                this.startTransition = undefined;
+            }
         }
     }
 
@@ -199,9 +201,11 @@ export class PetriNetComponent {
 
     dispatchTransitionMouseUp(event: MouseEvent, transition: Transition) {
         // Draw Arc with Transition as EndNode
-        if (this.uiService.button === 'arc' && this.startPlace) {
-            this.dataService.getArcs().push(new Arc(this.startPlace, transition, 5));
-            this.startPlace = undefined;
+        if(this.startPlace && !this.isArcExisting(this.startPlace, transition)){
+            if (this.uiService.button === 'arc' && this.startPlace) {
+                this.dataService.getArcs().push(new Arc(this.startPlace, transition, 1));
+                this.startPlace = undefined;
+            }
         }
     }
 
@@ -262,6 +266,17 @@ export class PetriNetComponent {
             i++;
         }
         return id;
+    }
+
+    isArcExisting(startNode: Node, endNote: Node): boolean{
+        let arcExisting = false;
+        this.dataService.getArcs().forEach(arc => {
+            if(arc.from == startNode && arc.to == endNote)
+            {
+                arcExisting = true;
+            }
+        });
+        return arcExisting;
     }
 
     protected readonly radius = radius;
