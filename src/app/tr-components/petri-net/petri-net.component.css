@@ -58,11 +58,26 @@
     fill: #c0bfbc;
 }
 
-.anchor{
+.anchor {
     fill:black;
+    stroke: black;
+    stroke-width: 0px;
 }
 
-.line-segment{
+.line-segment {
     stroke: transparent;
     stroke-width: 10;
+}
+
+.editable, .insertable {
+    filter: drop-shadow(0 0 3px rgba(255, 0, 0, 1));
+}
+
+.editable:active, .anchor.active {
+    stroke: red;
+    stroke-width: 2;
+}
+
+.no-pointer-events {
+    pointer-events: none;
 }

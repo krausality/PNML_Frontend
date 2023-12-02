@@ -26,6 +26,9 @@ export class EditMoveElementsService {
     // For checking if moved anchor is old or just created
     isNewAnchor: Boolean = false;
 
+    // Temporary storage of new anchor
+    newAnchor: Point | undefined;
+
     constructor(private dataService: DataService, private uiService: UiService) { }
 
     initializeNodeMove(event: MouseEvent, node: Node){
@@ -78,6 +81,7 @@ export class EditMoveElementsService {
         // return to 'anchor' mode if it is a newly created anchor
         if (this.isNewAnchor) this.uiService.button = ButtonState.Anchor;
         this.isNewAnchor = false;
+        this.newAnchor = undefined;
     }
 
     initializeAnchorMove(event: MouseEvent, anchor: Point){
@@ -141,6 +145,7 @@ export class EditMoveElementsService {
 
 
         // Change to move mode
+        this.newAnchor = anchor;
         this.uiService.button = ButtonState.Move;
         this.isNewAnchor = true;
         this.initializeAnchorMove(event, anchor);

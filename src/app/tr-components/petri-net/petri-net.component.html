@@ -13,8 +13,8 @@
     <g *ngFor="let place of dataService.getPlaces()" (click)="dispatchPlaceClick($event, place)"
         (mousedown)="dispatchPlaceMouseDown($event, place)" (mouseup)="dispatchPlaceMouseUp($event, place)">
         <g>
-            <circle class="place" [attr.cx]="place.position.x" [attr.cy]="place.position.y" [attr.r]="radius" />
-            <text class="token-label" [attr.x]="place.position.x" [attr.y]="place.position.y" text-anchor="middle"
+            <circle [ngClass]="{place: true, editable: uiService.button===ButtonState.Move && !editMoveElementsService.isNewAnchor}" [attr.cx]="place.position.x" [attr.cy]="place.position.y" [attr.r]="radius" />
+            <text [ngClass]="{'token-label':true, 'no-pointer-events': uiService.button===ButtonState.Move}" [attr.x]="place.position.x" [attr.y]="place.position.y" text-anchor="middle"
                 dominant-baseline="central">{{place.token > 0 ? place.token : ''}}</text>
         </g>
         <text class="place-id" [attr.x]="place.position.x" [attr.y]="place.position.y + placeIdYOffset"
@@ -25,10 +25,10 @@
     <g *ngFor="let transition of dataService.getTransitions()" (click)="dispatchTransitionClick($event, transition)"
         (mousedown)="dispatchTransitionMouseDown($event, transition)"
         (mouseup)="dispatchTransitionMouseUp($event, transition)">
-        <rect [attr.class]="transition.isActive ? 'transition active' : 'transition'"
+        <rect [ngClass]="{transition:true, active: transition.isActive, editable: (uiService.button===ButtonState.Move && !editMoveElementsService.isNewAnchor)}"
             [attr.x]="transition.position.x - transitionXOffset" [attr.y]="transition.position.y - transitionYOffset"
             [attr.width]="transitionWidth" [attr.height]="transitionHeight" />
-        <text [attr.x]="transition.position.x" [attr.y]="transition.position.y" text-anchor="middle"
+        <text [ngClass]="{'no-pointer-events': uiService.button===ButtonState.Move}" [attr.x]="transition.position.x" [attr.y]="transition.position.y" text-anchor="middle"
             dominant-baseline="central">{{transition.label}}</text>
         <text class="transition-id" [attr.x]="transition.position.x"
             [attr.y]="transition.position.y + transitionIdYOffset" text-anchor="middle">{{transition.id}}</text>
@@ -37,7 +37,7 @@
     <!-- Arcs -->
     <g *ngFor="let arc of dataService.getArcs()" (click)="dispatchArcClick($event, arc)"
         (mousedown)="dispatchArcMouseDown($event, arc, drawingArea)">
-        <polyline class="arc" [attr.points]="arc.polyLinePoints" marker-end="url(#arrow)"></polyline>
+        <polyline [ngClass]="{arc, insertable: uiService.button===ButtonState.Anchor  || editMoveElementsService.isNewAnchor}" [attr.points]="arc.polyLinePoints" marker-end="url(#arrow)"></polyline>
         <!-- Anchor points -->
         <!-- <circle [attr.class]="uiService.button==='move' || uiService.button==='anchor' ? 'anchor visible' : 'anchor'" *ngFor="let point of arc.anchors" [attr.cx]="point.x" [attr.cy]="point.y" [attr.r]="anchorRadius" (mousedown)="dispatchAnchorMouseDown($event, point)" /> -->
         <g *ngIf="arc.weight > 1 || arc.weight < -1">
@@ -92,7 +92,7 @@
         </ng-container>
         <!-- Anchor points -->
         <ng-container *ngIf="uiService.button===ButtonState.Move || uiService.button===ButtonState.Anchor">
-            <circle *ngFor="let point of arc.anchors" [attr.cx]="point.x" class="anchor" [attr.cy]="point.y"
+            <circle *ngFor="let point of arc.anchors" [attr.cx]="point.x" [ngClass]="{anchor:true, active: point===editMoveElementsService.newAnchor, editable: uiService.button===ButtonState.Move && !editMoveElementsService.isNewAnchor}" [attr.cy]="point.y"
                 [attr.r]="anchorRadius" (mousedown)="dispatchAnchorMouseDown($event, point)" />
         </ng-container>
     </g>
