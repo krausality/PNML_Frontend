@@ -23,6 +23,7 @@ import { Place } from 'src/app/tr-classes/petri-net/place';
 import { Point } from 'src/app/tr-classes/petri-net/point';
 import { Transition } from 'src/app/tr-classes/petri-net/transition';
 import { Arc } from 'src/app/tr-classes/petri-net/arc';
+import { ButtonState, TabState } from 'src/app/tr-enums/ui-state';
 import { TokenGameService } from 'src/app/tr-services/token-game.service';
 import { Node } from "src/app/tr-interfaces/petri-net/node";
 
@@ -136,11 +137,11 @@ export class PetriNetComponent {
 
     // SVG
     dispatchSVGClick(event: MouseEvent, drawingArea: HTMLElement) {
-        if (this.uiService.button === "place") {
+        if (this.uiService.button === ButtonState.Place) {
             // example method: can be deleted/replaced with final implementation
             this.addPlace(event, drawingArea);
         }
-        if (this.uiService.button === "transition") {
+        if (this.uiService.button === ButtonState.Transition) {
             this.addTransition(event, drawingArea);
         }
     }
@@ -155,7 +156,7 @@ export class PetriNetComponent {
 
     dispatchSVGMouseUp(event: MouseEvent, drawingArea: HTMLElement) {
         // Reset StartNode when Drag&Drop is cancelled
-        if (this.uiService.button === 'arc') {
+        if (this.uiService.button === ButtonState.Arc) {
             this.startTransition = undefined;
             this.startPlace = undefined;
         }
@@ -168,7 +169,7 @@ export class PetriNetComponent {
 
     dispatchPlaceMouseDown(event: MouseEvent, place: Place) {
         // Set StartNode for Arc
-        if (this.uiService.button === 'arc') {
+        if (this.uiService.button === ButtonState.Arc) {
             this.startPlace = place;
         }
     }
@@ -176,7 +177,7 @@ export class PetriNetComponent {
     dispatchPlaceMouseUp(event: MouseEvent, place: Place) {
         // Draw Arc with Place as EndNode
         if(this.startTransition && !this.isArcExisting(this.startTransition, place)) {
-            if (this.uiService.button === 'arc' && this.startTransition) {
+            if (this.uiService.button === ButtonState.Arc && this.startTransition) {
                 this.dataService.getArcs().push(new Arc(this.startTransition, place, 1));
                 this.startTransition = undefined;
             }
@@ -186,7 +187,7 @@ export class PetriNetComponent {
     // Transitions
     dispatchTransitionClick(event: MouseEvent, transition: Transition) {
         // Token game: fire transition
-        if (this.uiService.tab === 'play') {
+        if (this.uiService.tab === TabState.Play) {
             this.tokenGameService.fire(transition);
         }
 
@@ -194,7 +195,7 @@ export class PetriNetComponent {
 
     dispatchTransitionMouseDown(event: MouseEvent, transition: Transition) {
         // Set StartNode for Arc
-        if (this.uiService.button === 'arc') {
+        if (this.uiService.button === ButtonState.Arc) {
             this.startTransition = transition;
         }
     }
@@ -202,7 +203,7 @@ export class PetriNetComponent {
     dispatchTransitionMouseUp(event: MouseEvent, transition: Transition) {
         // Draw Arc with Transition as EndNode
         if(this.startPlace && !this.isArcExisting(this.startPlace, transition)){
-            if (this.uiService.button === 'arc' && this.startPlace) {
+            if (this.uiService.button === ButtonState.Arc && this.startPlace) {
                 this.dataService.getArcs().push(new Arc(this.startPlace, transition, 1));
                 this.startPlace = undefined;
             }
@@ -287,5 +288,8 @@ export class PetriNetComponent {
     protected readonly transitionXOffset = transitionXOffset;
     protected readonly transitionYOffset = transitionYOffset;
     protected readonly transitionIdYOffset = transitionIdYOffset;
+
+    protected readonly TabState = TabState;
+    protected readonly ButtonState = ButtonState;
 
 }
