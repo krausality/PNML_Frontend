@@ -8,7 +8,7 @@
         <!-- buttons for tab "build" -->
         <div class="button-container">
             <!-- blitz tool -->
-            <button mat-icon-button [color]="uiService.button === 'blitz' ? 'primary' : ''" (click)="buttonClicked('blitz')">
+            <button mat-icon-button [color]="uiService.button === ButtonState.Blitz ? 'primary' : ''" (click)="buttonClicked(ButtonState.Blitz)">
                 <mat-icon>bolt</mat-icon>
             </button>
 
@@ -16,32 +16,59 @@
             <div class="divider"></div>
             
             <!-- places -->
-            <button mat-icon-button [color]="uiService.button === 'place' ? 'primary' : ''" (click)="buttonClicked('place')">
+            <button mat-icon-button [color]="uiService.button === ButtonState.Place ? 'primary' : ''" (click)="buttonClicked(ButtonState.Place)">
                 <mat-icon>circle</mat-icon>
             </button>
             
             <!-- transitions -->
-            <button mat-icon-button [color]="uiService.button === 'transition' ? 'primary' : ''" (click)="buttonClicked('transition')">
+            <button mat-icon-button [color]="uiService.button === ButtonState.Transition ? 'primary' : ''" (click)="buttonClicked(ButtonState.Transition)">
                 <mat-icon>square</mat-icon>
             </button>
             
             <!-- arcs -->
-            <button mat-icon-button [color]="uiService.button === 'arc' ? 'primary' : ''" (click)="buttonClicked('arc')">
+            <button mat-icon-button [color]="uiService.button === ButtonState.Arc ? 'primary' : ''" (click)="buttonClicked(ButtonState.Arc)">
                 <mat-icon>north_east</mat-icon>
             </button>
 
             <!-- divider -->
             <div class="divider"></div>
 
+            <!-- add token tool -->
+            <button mat-icon-button [color]="uiService.button === ButtonState.Add ? 'primary' : ''" (click)="buttonClicked(ButtonState.Add)">
+                <mat-icon>add</mat-icon>
+            </button>
+
+            <!-- remove token tool -->
+            <button mat-icon-button [color]="uiService.button === ButtonState.Remove ? 'primary' : ''" (click)="buttonClicked(ButtonState.Remove)">
+                <mat-icon>remove</mat-icon>
+            </button>
+
+            <!-- delete tool -->
+            <button mat-icon-button [color]="uiService.button === ButtonState.Delete ? 'primary' : ''" (click)="buttonClicked(ButtonState.Delete)">
+                <mat-icon>delete</mat-icon>
+            </button>
+
+            <!-- divider -->
+            <div class="divider"></div>
+
             <!-- move tool -->
-            <button mat-icon-button [color]="uiService.button === 'move' ? 'primary' : ''" (click)="buttonClicked('move')">
+            <button mat-icon-button [color]="uiService.button === ButtonState.Move ? 'primary' : ''" (click)="buttonClicked(ButtonState.Move)">
                 <mat-icon>open_with</mat-icon>
             </button>
 
             <!-- select tool -->
-            <button mat-icon-button [color]="uiService.button === 'select' ? 'primary' : ''" (click)="buttonClicked('select')">
+            <button mat-icon-button [color]="uiService.button === ButtonState.Select ? 'primary' : ''" (click)="buttonClicked(ButtonState.Select)">
                 <mat-icon>ads_click</mat-icon>
             </button>
+
+            <!-- divider -->
+            <div class="divider"></div>
+
+            <!-- customize actions tool -->
+            <button mat-icon-button>
+                <mat-icon>edit_note</mat-icon>
+            </button>
+
         </div>
     </mat-tab>
 

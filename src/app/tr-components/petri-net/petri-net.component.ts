@@ -24,6 +24,7 @@ import { Place } from 'src/app/tr-classes/petri-net/place';
 import { Point } from 'src/app/tr-classes/petri-net/point';
 import { Transition } from 'src/app/tr-classes/petri-net/transition';
 import { Arc } from 'src/app/tr-classes/petri-net/arc';
+import { ButtonState, TabState } from 'src/app/tr-enums/ui-state';
 import { TokenGameService } from 'src/app/tr-services/token-game.service';
 
 @Component({
@@ -145,11 +146,11 @@ export class PetriNetComponent {
 
     // SVG
     dispatchSVGClick(event: MouseEvent, drawingArea: HTMLElement) {
-        if (this.uiService.button === "place") {
+        if (this.uiService.button === ButtonState.Place) {
             // example method: can be deleted/replaced with final implementation
             this.addPlace(event, drawingArea);
         }
-        if (this.uiService.button === "transition") {
+        if (this.uiService.button === ButtonState.Transition) {
             // Method for adding transition
         }
     }
@@ -182,7 +183,7 @@ export class PetriNetComponent {
     // Transitions
     dispatchTransitionClick(event: MouseEvent, transition: Transition) {
         // Token game: fire transition
-        if (this.uiService.tab === 'play') {
+        if (this.uiService.tab === TabState.Play) {
             this.tokenGameService.fire(transition);
         }
     }
@@ -218,5 +219,8 @@ export class PetriNetComponent {
     protected readonly transitionXOffset = transitionXOffset;
     protected readonly transitionYOffset = transitionYOffset;
     protected readonly transitionIdYOffset = transitionIdYOffset;
+
+    protected readonly TabState = TabState;
+    protected readonly ButtonState = ButtonState;
 
 }
