@@ -25,7 +25,7 @@
     <g *ngFor="let transition of dataService.getTransitions()" (click)="dispatchTransitionClick($event, transition)"
         (mousedown)="dispatchTransitionMouseDown($event, transition)"
         (mouseup)="dispatchTransitionMouseUp($event, transition)">
-        <rect [ngClass]="{transition:true, active: transition.isActive, editable: (uiService.button===ButtonState.Move && !editMoveElementsService.newAnchor)}"
+        <rect [ngClass]="{transition:true, active: transition.isActive, editable: uiService.button===ButtonState.Move && !editMoveElementsService.newAnchor}"
             [attr.x]="transition.position.x - transitionXOffset" [attr.y]="transition.position.y - transitionYOffset"
             [attr.width]="transitionWidth" [attr.height]="transitionHeight" />
         <text [ngClass]="{'no-pointer-events': uiService.button===ButtonState.Move}" [attr.x]="transition.position.x" [attr.y]="transition.position.y" text-anchor="middle"
@@ -37,9 +37,10 @@
     <!-- Arcs -->
     <g *ngFor="let arc of dataService.getArcs()" (click)="dispatchArcClick($event, arc)"
         (mousedown)="dispatchArcMouseDown($event, arc, drawingArea)">
+
         <polyline [ngClass]="{arc, insertable: uiService.button===ButtonState.Anchor  || editMoveElementsService.newAnchor}" [attr.points]="arc.polyLinePoints" marker-end="url(#arrow)"></polyline>
+
         <!-- Anchor points -->
-        <!-- <circle [attr.class]="uiService.button==='move' || uiService.button==='anchor' ? 'anchor visible' : 'anchor'" *ngFor="let point of arc.anchors" [attr.cx]="point.x" [attr.cy]="point.y" [attr.r]="anchorRadius" (mousedown)="dispatchAnchorMouseDown($event, point)" /> -->
         <g *ngIf="arc.weight > 1 || arc.weight < -1">
             <!-- Weight at Arc without Anchorpoints - Middle of Polyline -->
             <!-- White Circle for Background -->
@@ -83,6 +84,7 @@
                 [attr.y]="arc.anchors[arc.anchors.length / 2 - 0.5].y" text-anchor="middle"
                 dominant-baseline="central">{{arc.weight | mathAbs}}</text>
         </g>
+
         <!-- Line segments -->
         <!-- When in anchor insertion mode, render invisible anchor line segments to capture mousedown events -->
         <ng-container *ngIf="uiService.button===ButtonState.Anchor">
@@ -90,9 +92,10 @@
                 [attr.y1]="lineSegment[0].y" [attr.x2]="lineSegment[1].x" [attr.y2]="lineSegment[1].y"
                 (mousedown)="dispatchLineSegmentMouseDown($event, arc, lineSegment, drawingArea)"></line>
         </ng-container>
+
         <!-- Anchor points -->
         <ng-container *ngIf="uiService.button===ButtonState.Move || uiService.button===ButtonState.Anchor">
-            <circle *ngFor="let point of arc.anchors" [attr.cx]="point.x" [ngClass]="{anchor:true, active: point===editMoveElementsService.newAnchor, editable: uiService.button===ButtonState.Move && !editMoveElementsService.newAnchor}" [attr.cy]="point.y"
+            <circle *ngFor="let point of arc.anchors" [ngClass]="{anchor:true, active: point===editMoveElementsService.newAnchor, editable: uiService.button===ButtonState.Move && !editMoveElementsService.newAnchor}" [attr.cx]="point.x" [attr.cy]="point.y"
                 [attr.r]="anchorRadius" (mousedown)="dispatchAnchorMouseDown($event, point)" />
         </ng-container>
     </g>
