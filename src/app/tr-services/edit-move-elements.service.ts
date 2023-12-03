@@ -130,7 +130,7 @@ export class EditMoveElementsService {
             }
         }
 
-        // Automatic change to move mode so that the newly created anchor can
+        // Automatic change to 'move' mode so that the newly created anchor can
         // be dragged to its final position
         this.newAnchor = anchor;
         this.uiService.button = ButtonState.Move;
