@@ -37,7 +37,7 @@ export class PetriNetComponent {
     @Output('fileContent') fileContent: EventEmitter<string>;
 
     constructor(private parserService: ParserService, private httpClient: HttpClient, private fileReaderService: FileReaderService, protected dataService: DataService, protected exportJsonDataService: ExportJsonDataService, protected pnmlService: PnmlService, protected uiService: UiService, protected tokenGameService: TokenGameService, protected editMoveElementsService: EditMoveElementsService) {
-        this.httpClient.get("assets/example_more_anchors.json", { responseType: "text" }).subscribe(data => {
+        this.httpClient.get("assets/example.json", { responseType: "text" }).subscribe(data => {
             const [places, transitions, arcs, actions] = parserService.parse(data);
             this.dataService.places = places;
             this.dataService.transitions = transitions;
