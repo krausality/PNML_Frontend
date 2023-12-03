@@ -81,3 +81,7 @@
 .no-pointer-events {
     pointer-events: none;
 }
+
+.editable:hover, .anchor.active, .line-segment:hover {
+    cursor: pointer;
+}
