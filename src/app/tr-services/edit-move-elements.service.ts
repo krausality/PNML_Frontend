@@ -110,22 +110,6 @@ export class EditMoveElementsService {
         }
     }
 
-    insertAnchorStart(event: MouseEvent, arc: Arc, drawingArea: HTMLElement){
-        const svgRect = drawingArea.getBoundingClientRect();
-        let x = event.clientX - svgRect.left;
-        let y = event.clientY - svgRect.top;
-
-        const anchor = new Point(x, y)
-
-        // TODO: refine insertion, so it is in the correct position
-        arc.anchors.push(anchor);
-
-        // Change to move mode
-        this.uiService.button = ButtonState.Move;
-        this.isNewAnchor = true;
-        this.initializeAnchorMove(event, anchor);
-    }
-
     insertAnchorIntoLineSegmentStart(event: MouseEvent, arc: Arc, lineSegment: Point[], drawingArea: HTMLElement) {
         const svgRect = drawingArea.getBoundingClientRect();
         let x = event.clientX - svgRect.left;
