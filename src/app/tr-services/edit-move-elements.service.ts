@@ -23,10 +23,9 @@ export class EditMoveElementsService {
     // For moving anchor points: Selected anchor that ist moved
     anchor: Point | null = null;
 
-    // For checking if moved anchor is old or just created
-    isNewAnchor: Boolean = false;
-
-    // Temporary storage of new anchor
+    // Temporary storage of new anchor.
+    // Also an indicator that a new anchor is moved instead of an existing one
+    // when automatic switch to move mode occurs.
     newAnchor: Point | undefined;
 
     constructor(private dataService: DataService, private uiService: UiService) { }
@@ -79,8 +78,7 @@ export class EditMoveElementsService {
         this.initialMousePos = {x:0, y:0};
 
         // return to 'anchor' mode if it is a newly created anchor
-        if (this.isNewAnchor) this.uiService.button = ButtonState.Anchor;
-        this.isNewAnchor = false;
+        if (this.newAnchor) this.uiService.button = ButtonState.Anchor;
         this.newAnchor = undefined;
     }
 
@@ -131,7 +129,6 @@ export class EditMoveElementsService {
         // Change to move mode
         this.newAnchor = anchor;
         this.uiService.button = ButtonState.Move;
-        this.isNewAnchor = true;
         this.initializeAnchorMove(event, anchor);
     }
 }
