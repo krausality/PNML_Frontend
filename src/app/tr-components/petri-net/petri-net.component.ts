@@ -210,6 +210,10 @@ export class PetriNetComponent {
                 place.token--;
             }
         }
+
+        if (this.uiService.button === ButtonState.Delete) {
+            this.dataService.removePlace(place);
+        }
     }
 
     dispatchPlaceMouseDown(event: MouseEvent, place: Place) {
@@ -225,6 +229,10 @@ export class PetriNetComponent {
         // Token game: fire transition
         if (this.uiService.tab === TabState.Play) {
             this.tokenGameService.fire(transition);
+        }
+
+        if (this.uiService.button === ButtonState.Delete) {
+            this.dataService.removeTransition(transition);
         }
     }
 
@@ -254,6 +262,10 @@ export class PetriNetComponent {
             } else if(arc.weight<-1) {
                 arc.weight++;
             }
+        }
+
+        if (this.uiService.button === ButtonState.Delete) {
+            this.dataService.removeArc(arc);
         }
     }
 
