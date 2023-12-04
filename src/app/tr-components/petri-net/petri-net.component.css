@@ -37,13 +37,14 @@
     stroke-width: 2;
 }
 
-.arc:hover {
+.arc:hover,
+.background-arc:hover + .arc {
     stroke: orange;
 }
 
 .background-arc {
     fill: none;
-    stroke: black;
+    stroke: transparent;
     opacity: 0;
     stroke-width: 12 !important;
 }
