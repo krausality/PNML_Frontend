@@ -7,10 +7,6 @@
     user-select: none;
 }
 
-.canvas.play-mode {
-    background-color: #c0bfbc;
-}
-
 .place {
     fill: white;
     stroke: black;
@@ -66,6 +62,26 @@
     transition: fill 1s;
 }
 
-.arc-weight-background.play-mode {
+/**** PLAY MODE  ****/
+/*
+ * Adjusted styles for play mode
+ * these take effect once the drawing area svg
+ * has the play-mode class
+ */
+.canvas.play-mode {
+    background-color: #c0bfbc;
+}
+
+.play-mode .arc-weight-background {
     fill: #c0bfbc;
+}
+
+.play-mode .transition.active {
+    cursor: pointer;
+}
+
+/* text nodes that follow transitions (rects within svg) should not have different cursors in play mode
+ * all interaction events should be caught in the wrapper group element */
+.play-mode .transition.active ~ text {
+    cursor: pointer;
 }
