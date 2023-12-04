@@ -42,7 +42,6 @@ export class ButtonBarComponent {
                 break;
             case "save":
                 this.uiService.tab = this.TabState.Save;
-                this.tokenGameService.clearGameHistory();
                 break;
         }
         this.uiService.button = null;

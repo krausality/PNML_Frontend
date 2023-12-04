@@ -76,7 +76,11 @@ export class TokenGameService {
     private setGameState(state: Map<Place, number>) {
         for (let place of this.dataService.getPlaces()) {
             const tokens = state.get(place);
-            place.setToken(tokens ? tokens : 0);
+            if (tokens === undefined) {
+                throw new Error('Tried retrieving tokens for a place that doesn\'t exist in saved state.');
+            } else {
+                place.token = tokens;
+            }
         }
     }
     
