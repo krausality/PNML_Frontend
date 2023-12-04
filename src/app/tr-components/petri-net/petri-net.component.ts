@@ -269,15 +269,8 @@ export class PetriNetComponent {
         return id;
     }
 
-    isArcExisting(startNode: Node, endNote: Node): boolean{
-        let arcExisting = false;
-        this.dataService.getArcs().forEach(arc => {
-            if(arc.from == startNode && arc.to == endNote)
-            {
-                arcExisting = true;
-            }
-        });
-        return arcExisting;
+    isArcExisting(startNode: Node, endNote: Node): boolean {
+        return this.dataService.getArcs().some(arc => arc.from === startNode && arc.to === endNote);
     }
 
     protected readonly radius = radius;

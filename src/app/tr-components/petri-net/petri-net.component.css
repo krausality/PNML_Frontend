@@ -4,6 +4,7 @@
     border-style: dotted;
     border-color: lightgrey;
     transition: background-color 1s;
+    user-select: none;
 }
 
 .canvas.play-mode {
