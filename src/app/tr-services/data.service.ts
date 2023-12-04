@@ -72,14 +72,14 @@ export class DataService {
 
 
     removePlace(deletablePlace: Place): Place[] {
-        const deletableArcs = this._arcs.filter(arc => !(arc.from === deletablePlace || arc.to === deletablePlace));
+        const deletableArcs = this._arcs.filter(arc => (arc.from === deletablePlace || arc.to === deletablePlace));
         deletableArcs.forEach(arc => this.removeArc(arc));
         this._places = this._places.filter(place => place !== deletablePlace);
         return this._places;
     }
 
     removeTransition(deletableTransition: Transition): Transition[] {
-        const deletableArcs = this._arcs.filter(arc => !(arc.from === deletableTransition || arc.to === deletableTransition));
+        const deletableArcs = this._arcs.filter(arc => (arc.from === deletableTransition || arc.to === deletableTransition));
         deletableArcs.forEach(arc => this.removeArc(arc));
         this._transitions = this._transitions.filter(transition => transition !== deletableTransition);
         return this._transitions;

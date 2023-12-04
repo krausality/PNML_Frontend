@@ -26,6 +26,7 @@ import { Transition } from 'src/app/tr-classes/petri-net/transition';
 import { Arc } from 'src/app/tr-classes/petri-net/arc';
 import { ButtonState, TabState } from 'src/app/tr-enums/ui-state';
 import { TokenGameService } from 'src/app/tr-services/token-game.service';
+import { Node } from "src/app/tr-interfaces/petri-net/node";
 
 @Component({
     selector: 'app-petri-net',
@@ -60,9 +61,11 @@ export class PetriNetComponent {
         //     this.dataService.transitions = transitions;
         //     this.dataService.arcs = arcs;
         // });
-
         this.fileContent = new EventEmitter<string>();
     }
+
+    startTransition: Node | undefined;
+    startPlace: Node | undefined;
 
     private parsePetrinetData(content: string | undefined, contentType: string) {
         if (content) {
@@ -142,6 +145,7 @@ export class PetriNetComponent {
         e.preventDefault();
     }
 
+
     // Dispatch methods for display events ************************************
 
     // SVG
@@ -151,7 +155,7 @@ export class PetriNetComponent {
             this.addPlace(event, drawingArea);
         }
         if (this.uiService.button === ButtonState.Transition) {
-            // Method for adding transition
+            this.addTransition(event, drawingArea);
         }
     }
 
@@ -164,20 +168,45 @@ export class PetriNetComponent {
     }
 
     dispatchSVGMouseUp(event: MouseEvent, drawingArea: HTMLElement) {
-
+        // Reset StartNode when Drag&Drop is cancelled
+        if (this.uiService.button === ButtonState.Arc) {
+            this.startTransition = undefined;
+            this.startPlace = undefined;
+        }
     }
 
     // Places
     dispatchPlaceClick(event: MouseEvent, place: Place) {
+        if (this.uiService.button === ButtonState.Add) {
+            place.token++;
+        }
 
+        if (this.uiService.button === ButtonState.Remove) {
+            if(place.token>0) {
+                place.token--;
+            }
+        }
+
+        if (this.uiService.button === ButtonState.Delete) {
+            this.dataService.removePlace(place);
+        }
     }
 
     dispatchPlaceMouseDown(event: MouseEvent, place: Place) {
-
+        // Set StartNode for Arc
+        if (this.uiService.button === ButtonState.Arc) {
+            this.startPlace = place;
+        }
     }
 
     dispatchPlaceMouseUp(event: MouseEvent, place: Place) {
-
+        // Draw Arc with Place as EndNode
+        if(this.startTransition && !this.isArcExisting(this.startTransition, place)) {
+            if (this.uiService.button === ButtonState.Arc && this.startTransition) {
+                this.dataService.getArcs().push(new Arc(this.startTransition, place, 1));
+                this.startTransition = undefined;
+            }
+        }
     }
 
     // Transitions
@@ -186,29 +215,111 @@ export class PetriNetComponent {
         if (this.uiService.tab === TabState.Play) {
             this.tokenGameService.fire(transition);
         }
+
+        if (this.uiService.button === ButtonState.Delete) {
+            this.dataService.removeTransition(transition);
+        }
+
     }
 
     dispatchTransitionMouseDown(event: MouseEvent, transition: Transition) {
-
+        // Set StartNode for Arc
+        if (this.uiService.button === ButtonState.Arc) {
+            this.startTransition = transition;
+        }
     }
 
     dispatchTransitionMouseUp(event: MouseEvent, transition: Transition) {
-
+        // Draw Arc with Transition as EndNode
+        if(this.startPlace && !this.isArcExisting(this.startPlace, transition)){
+            if (this.uiService.button === ButtonState.Arc && this.startPlace) {
+                this.dataService.getArcs().push(new Arc(this.startPlace, transition, 1));
+                this.startPlace = undefined;
+            }
+        }
     }
 
     // Arcs
     dispatchArcClick(event: MouseEvent, arc: Arc) {
+        // Add Weight to Arc
+        if (this.uiService.button === ButtonState.Add) {
+            if(arc.weight>0) {
+                arc.weight++;
+            } else if(arc.weight<0) {
+                arc.weight--;
+            }
+        }
 
+        // Remove Weight from Arc
+        if (this.uiService.button === ButtonState.Remove) {
+            if(arc.weight>1) {
+                arc.weight--;
+            } else if(arc.weight<-1) {
+                arc.weight++;
+            }
+        }
+
+        if (this.uiService.button === ButtonState.Delete) {
+            this.dataService.removeArc(arc);
+        }
     }
 
     // ************************************************************************
 
-    // Example method: can be deleted
     addPlace(event: MouseEvent, drawingArea: HTMLElement) {
         const svgRect = drawingArea.getBoundingClientRect();
         let x = event.clientX - svgRect.left;
         let y = event.clientY - svgRect.top;
-        this.dataService.getPlaces().push(new Place(0, new Point(x, y), 'p' + x + y))
+        let id = ((this.dataService.getPlaces().length) + 1).toString();
+        this.dataService.getPlaces().push(new Place(0, new Point(x, y), this.getPlaceId()))
+    }
+
+    addTransition(event: MouseEvent, drawingArea: HTMLElement) {
+        const svgRect = drawingArea.getBoundingClientRect();
+        let x = event.clientX - svgRect.left;
+        let y = event.clientY - svgRect.top;
+        let id = ((this.dataService.getTransitions().length) + 1).toString();
+        this.dataService.getTransitions().push(new Transition(new Point(x, y), this.getTransitionId()));
+    }
+
+    getPlaceId(): string{
+        let i = 1;
+        let found = false;
+        let id: string = "";
+        let placeIds: string[] = [];
+        this.dataService.getPlaces().forEach(place => {
+            placeIds.push(place.id);
+        });
+        while(!found){
+            id = "p" + i;
+            if(placeIds.indexOf(id) === -1){
+                found = true;
+            }
+            i++;
+        }
+        return id;
+    }
+
+    getTransitionId(): string{
+        let i = 1;
+        let found = false;
+        let id: string = "";
+        let transitionIds: string[] = [];
+        this.dataService.getTransitions().forEach(transition => {
+            transitionIds.push(transition.id);
+        });
+        while(!found){
+            id = "t" + i;
+            if(transitionIds.indexOf(id) === -1){
+                found = true;
+            }
+            i++;
+        }
+        return id;
+    }
+
+    isArcExisting(startNode: Node, endNote: Node): boolean {
+        return this.dataService.getArcs().some(arc => arc.from === startNode && arc.to === endNote);
     }
 
     protected readonly radius = radius;
