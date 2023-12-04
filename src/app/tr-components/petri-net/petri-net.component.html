@@ -32,6 +32,7 @@
 
     <!-- Arcs -->
     <g *ngFor="let arc of dataService.getArcs()" (click)="dispatchArcClick($event, arc)">
+        <polyline class="background-arc" [attr.points]="arc.polyLinePoints"></polyline>
         <polyline class="arc" [attr.points]="arc.polyLinePoints" marker-end="url(#arrow)"></polyline>
         <g *ngIf="arc.weight > 1 || arc.weight < -1">
             <!-- Weight at Arc without Anchorpoints - Middle of Polyline -->

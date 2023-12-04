@@ -133,6 +133,7 @@ export class PetriNetComponent {
         e.preventDefault();
     }
 
+
     // Dispatch methods for display events ************************************
 
     // SVG
@@ -164,7 +165,19 @@ export class PetriNetComponent {
 
     // Places
     dispatchPlaceClick(event: MouseEvent, place: Place) {
+        if (this.uiService.button === ButtonState.Add) {
+            place.token++;
+        }
 
+        if (this.uiService.button === ButtonState.Remove) {
+            if(place.token>0) {
+                place.token--;
+            }
+        }
+
+        if (this.uiService.button === ButtonState.Delete) {
+            this.dataService.removePlace(place);
+        }
     }
 
     dispatchPlaceMouseDown(event: MouseEvent, place: Place) {
@@ -191,6 +204,10 @@ export class PetriNetComponent {
             this.tokenGameService.fire(transition);
         }
 
+        if (this.uiService.button === ButtonState.Delete) {
+            this.dataService.removeTransition(transition);
+        }
+
     }
 
     dispatchTransitionMouseDown(event: MouseEvent, transition: Transition) {
@@ -212,7 +229,27 @@ export class PetriNetComponent {
 
     // Arcs
     dispatchArcClick(event: MouseEvent, arc: Arc) {
+        // Add Weight to Arc
+        if (this.uiService.button === ButtonState.Add) {
+            if(arc.weight>0) {
+                arc.weight++;
+            } else if(arc.weight<0) {
+                arc.weight--;
+            }
+        }
 
+        // Remove Weight from Arc
+        if (this.uiService.button === ButtonState.Remove) {
+            if(arc.weight>1) {
+                arc.weight--;
+            } else if(arc.weight<-1) {
+                arc.weight++;
+            }
+        }
+
+        if (this.uiService.button === ButtonState.Delete) {
+            this.dataService.removeArc(arc);
+        }
     }
 
     // ************************************************************************
