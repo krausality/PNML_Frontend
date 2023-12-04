@@ -4,12 +4,17 @@
     border-style: dotted;
     border-color: lightgrey;
     transition: background-color 1s;
+    user-select: none;
 }
 
 .place {
     fill: white;
     stroke: black;
     stroke-width: 2;
+}
+
+.place:hover {
+    stroke: orange;
 }
 
 .transition {
@@ -22,11 +27,18 @@
     fill: green;
 }
 
+.transition:hover {
+    stroke: orange;
+}
 
 .arc {
     fill: none;
     stroke: black;
     stroke-width: 2;
+}
+
+.arc:hover {
+    stroke: orange;
 }
 
 .place-id{
