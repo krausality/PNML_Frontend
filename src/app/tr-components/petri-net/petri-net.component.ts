@@ -246,7 +246,7 @@ export class PetriNetComponent {
 
     // Arcs
     dispatchArcClick(event: MouseEvent, arc: Arc) {
-        // Token game: fire transition
+        // Add Weight to Arc
         if (this.uiService.button === ButtonState.Add) {
             if(arc.weight>0) {
                 arc.weight++;
@@ -255,7 +255,7 @@ export class PetriNetComponent {
             }
         }
 
-        // Token game: fire transition
+        // Remove Weight from Arc
         if (this.uiService.button === ButtonState.Remove) {
             if(arc.weight>1) {
                 arc.weight--;
