@@ -25,6 +25,8 @@ import { Transition } from 'src/app/tr-classes/petri-net/transition';
 import { Arc } from 'src/app/tr-classes/petri-net/arc';
 import { ButtonState, TabState } from 'src/app/tr-enums/ui-state';
 import { TokenGameService } from 'src/app/tr-services/token-game.service';
+import { MatDialog } from '@angular/material/dialog';
+import { SetActionPopupComponent } from '../set-action-popup/set-action-popup.component';
 import { Node } from "src/app/tr-interfaces/petri-net/node";
 
 @Component({
@@ -35,7 +37,7 @@ import { Node } from "src/app/tr-interfaces/petri-net/node";
 export class PetriNetComponent {
     @Output('fileContent') fileContent: EventEmitter<string>;
 
-    constructor(private parserService: ParserService, private httpClient: HttpClient, private fileReaderService: FileReaderService, protected dataService: DataService, protected exportJsonDataService: ExportJsonDataService, protected pnmlService: PnmlService, protected uiService: UiService, protected tokenGameService: TokenGameService) {
+    constructor(private parserService: ParserService, private httpClient: HttpClient, private fileReaderService: FileReaderService, protected dataService: DataService, protected exportJsonDataService: ExportJsonDataService, protected pnmlService: PnmlService, protected uiService: UiService, protected tokenGameService: TokenGameService, private matDialog: MatDialog) {
         this.httpClient.get("assets/example.json", { responseType: "text" }).subscribe(data => {
             const [places, transitions, arcs, actions] = parserService.parse(data);
             this.dataService.places = places;
@@ -202,6 +204,8 @@ export class PetriNetComponent {
         // Token game: fire transition
         if (this.uiService.tab === TabState.Play) {
             this.tokenGameService.fire(transition);
+        } else if (this.uiService.tab === TabState.Build && this.uiService.button === ButtonState.Select) {
+            this.matDialog.open(SetActionPopupComponent, {data: {node: transition}});
         }
 
         if (this.uiService.button === ButtonState.Delete) {
