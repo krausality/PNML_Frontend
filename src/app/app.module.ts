@@ -13,6 +13,7 @@ import {MatTabsModule} from '@angular/material/tabs';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatListModule} from '@angular/material/list';
 import {MatMenuModule} from '@angular/material/menu';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {ReactiveFormsModule} from '@angular/forms';
 import {FooterComponent} from './components/footer/footer.component';
 import {ExampleFileComponent} from './components/example-file/example-file.component';
@@ -53,6 +54,7 @@ import { SetActionPopupComponent } from './tr-components/set-action-popup/set-ac
         MatDialogModule,
         MatListModule,
         MatMenuModule,
+        MatTooltipModule,
         ReactiveFormsModule,
         HttpClientModule,
     ],
