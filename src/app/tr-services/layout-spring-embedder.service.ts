@@ -20,11 +20,31 @@ export class LayoutSpringEmbedderService {
     // constant spring force
     private cSpring = 20;
 
+    // is true while the algorithm is running - will be used later when reapplying the spring embedder on performing an action
+    private springEmbedderRunning = false;
+
+    // determines if the spring embedder algorithm sould terminate before the next iteration of calculating and applying forces
+    private shouldTerminate = false;
+
     constructor(private dataService: DataService) { }
+
+    // stops the spring embedder algorithm before the next iteration
+    terminate() {
+        this.shouldTerminate = true;
+    }
 
     // spring embedder adaptation for layouting our petri net
     // based on Eades spring embedder algorithm
     async layoutSpringEmbedder() {
+        // if the algorithm is already running this method should stop and not run a second instance of the spring embedder algorithm
+        if (this.springEmbedderRunning) return;
+
+        // persist that the algorithm is running
+        this.springEmbedderRunning = true;
+
+        // set shouldTerminate to false -> we explicitly want the algorithm to run
+        this.shouldTerminate = false;
+
         // remove anchorpoints
         this.dataService.getArcs().forEach(arc => arc.anchors.length = 0);
 
@@ -52,7 +72,8 @@ export class LayoutSpringEmbedderService {
 
         // the algorithm terminates after the maximum iterations are reached
         // or if the maximum force applied in one iteration gets to small to really change much in the layout
-        while (iterations <= this.maxIterations && maxForceVectorLength > this.epsilon) {
+        // of if it should terminate as indicated by shouldTerminate
+        while (!this.shouldTerminate && iterations <= this.maxIterations && maxForceVectorLength > this.epsilon) {
             // keep track of force vectors to be applied in a map
             const forceVectors: { [id: string]: Point } = {};
 
@@ -79,6 +100,9 @@ export class LayoutSpringEmbedderService {
 
             iterations++;
         }
+
+        // persist that the spring embedder has terminated and is not running anymore
+        this.springEmbedderRunning = false;
     }
 
     private sleep(ms: number) {
