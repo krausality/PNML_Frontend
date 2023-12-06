@@ -135,6 +135,49 @@ export class PetriNetComponent {
         e.preventDefault();
     }
 
+    protected onWheelEventPlace(e: WheelEvent, place: Place) {
+        //Stops Page from scrolling
+        e.preventDefault();
+        e.stopPropagation();
+
+        //Scroll Down
+        if (e.deltaY > 0) {
+            if (place.token > 0) {
+                place.token--;
+            }
+        //Scroll Up
+        } else if (e.deltaY < 0) {
+            place.token++;
+        }
+    }
+
+    protected onWheelEventArc(e: WheelEvent, arc: Arc) {
+        //Stops Page from scrolling
+        e.preventDefault();
+        e.stopPropagation();
+
+        //Scroll Down
+        //Additional if-statement for negative arc-weight
+        if (e.deltaY > 0) {
+            // positives Gewicht verringern
+            if (arc.weight > 1) {
+                arc.weight--;
+            } // negatives Gewicht verringern
+            else if(arc.weight < -1) {
+                arc.weight++;
+            }
+            //Scroll Up
+        } else if (e.deltaY < 0) {
+            // positives Gewicht erhöhen
+            if (arc.weight > 0) {
+                arc.weight++;
+            } // negatives Gewicht erhöhren
+        else if(arc.weight < 0) {
+                arc.weight--;
+            }
+        }
+    }
+
 
     // Dispatch methods for display events ************************************
 
