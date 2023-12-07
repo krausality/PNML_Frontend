@@ -148,7 +148,7 @@ export class PetriNetComponent {
             e.preventDefault();
             e.stopPropagation();
 
-            if (place.token > 0) {
+            if (e.deltaY > 0) {
                 place.token--;
             }
         }
