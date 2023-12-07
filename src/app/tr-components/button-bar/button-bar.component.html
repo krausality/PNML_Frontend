@@ -14,17 +14,17 @@
 
             <!-- divider -->
             <div class="divider"></div>
-            
+
             <!-- places -->
             <button mat-icon-button [color]="uiService.button === ButtonState.Place ? 'primary' : ''" (click)="buttonClicked(ButtonState.Place)">
                 <mat-icon>circle</mat-icon>
             </button>
-            
+
             <!-- transitions -->
             <button mat-icon-button [color]="uiService.button === ButtonState.Transition ? 'primary' : ''" (click)="buttonClicked(ButtonState.Transition)">
                 <mat-icon>square</mat-icon>
             </button>
-            
+
             <!-- arcs -->
             <button mat-icon-button [color]="uiService.button === ButtonState.Arc ? 'primary' : ''" (click)="buttonClicked(ButtonState.Arc)">
                 <mat-icon>north_east</mat-icon>
@@ -46,6 +46,11 @@
             <!-- delete tool -->
             <button mat-icon-button [color]="uiService.button === ButtonState.Delete ? 'primary' : ''" (click)="buttonClicked(ButtonState.Delete)">
                 <mat-icon>delete</mat-icon>
+            </button>
+
+            <!-- clear all tool -->
+            <button mat-icon-button [color]="uiService.button === ButtonState.Clear ? 'primary' : ''" (click)="openClearDialog()">
+                <mat-icon>clear</mat-icon>
             </button>
 
             <!-- divider -->

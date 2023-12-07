@@ -111,6 +111,13 @@ export class DataService {
         return this._transitions.some(transition => transition.label === action);
     }
 
+    clearAll():void {
+        this.places = [];
+        this.transitions = [];
+        this.arcs = [];
+        this.actions = [];
+    }
+
     mockData() {
         this.places = [
             new Place(4, new Point(100, 200), "p1"),
