@@ -4,6 +4,7 @@ import {Place} from "../tr-classes/petri-net/place";
 import {Transition} from "../tr-classes/petri-net/transition";
 import {Point} from "../tr-classes/petri-net/point";
 import {Observable, of} from "rxjs";
+import {Node} from "../tr-interfaces/petri-net/node";
 
 @Injectable({
     providedIn: 'root'
@@ -109,6 +110,25 @@ export class DataService {
 
     checkActionUsed(action: string): boolean {
         return this._transitions.some(transition => transition.label === action);
+    }
+
+    connectNodes(from: Node, to:Node): void{
+        if(from instanceof Place && to instanceof Place) {
+            return;
+        }
+        if(from instanceof Transition && to instanceof Transition) {
+            return;
+        }
+        if(from instanceof Place && to instanceof  Transition) {
+            const arc = new Arc(from, to);
+            to.preArcs.push(arc)
+            this.getArcs().push(arc);
+        }
+        if(from instanceof Transition && to instanceof  Place) {
+            const arc = new Arc(from, to);
+            from.postArcs.push(arc)
+            this.getArcs().push(arc);
+        }
     }
 
     mockData() {

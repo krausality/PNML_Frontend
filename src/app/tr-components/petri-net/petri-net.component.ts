@@ -36,6 +36,7 @@ import { Node } from "src/app/tr-interfaces/petri-net/node";
 })
 export class PetriNetComponent {
     @Output('fileContent') fileContent: EventEmitter<string>;
+    lastNode: Node | null = null;
 
     constructor(private parserService: ParserService, private httpClient: HttpClient, private fileReaderService: FileReaderService, protected dataService: DataService, protected exportJsonDataService: ExportJsonDataService, protected pnmlService: PnmlService, protected uiService: UiService, protected tokenGameService: TokenGameService, private matDialog: MatDialog) {
         this.httpClient.get("assets/example.json", { responseType: "text" }).subscribe(data => {
@@ -146,6 +147,29 @@ export class PetriNetComponent {
         }
         if (this.uiService.button === ButtonState.Transition) {
             this.addTransition(event, drawingArea);
+        }
+
+        //Reset Blitz-Tool to start new with a new Place
+        if(this.uiService.button !== ButtonState.Blitz) {
+            this.lastNode = null;
+        }
+
+        if (this.uiService.button === ButtonState.Blitz) {
+            if (!this.lastNode){
+                const place = this.createPlace(event,drawingArea);
+                this.dataService.getPlaces().push(place);
+                this.lastNode = place;
+            } else if (this.lastNode instanceof Place) {
+                const transition = this.createTransition(event, drawingArea);
+                this.dataService.getTransitions().push(transition);
+                this.dataService.connectNodes(this.lastNode, transition);
+                this.lastNode = transition;
+            } else if (this.lastNode instanceof Transition) {
+                const place = this.createPlace(event,drawingArea);
+                this.dataService.getPlaces().push(place);
+                this.dataService.connectNodes(this.lastNode, place);
+                this.lastNode = place;
+            }
         }
     }
 
@@ -259,19 +283,27 @@ export class PetriNetComponent {
     // ************************************************************************
 
     addPlace(event: MouseEvent, drawingArea: HTMLElement) {
+        const place = this.createPlace(event, drawingArea);
+        this.dataService.getPlaces().push(place)
+    }
+
+    createPlace(event: MouseEvent, drawingArea: HTMLElement): Place {
         const svgRect = drawingArea.getBoundingClientRect();
         let x = event.clientX - svgRect.left;
         let y = event.clientY - svgRect.top;
-        let id = ((this.dataService.getPlaces().length) + 1).toString();
-        this.dataService.getPlaces().push(new Place(0, new Point(x, y), this.getPlaceId()))
+        return new Place(0, new Point(x, y), this.getPlaceId());
     }
 
     addTransition(event: MouseEvent, drawingArea: HTMLElement) {
+        const transition = this.createTransition(event, drawingArea);
+        this.dataService.getTransitions().push(transition);
+    }
+
+    createTransition(event: MouseEvent, drawingArea: HTMLElement): Transition {
         const svgRect = drawingArea.getBoundingClientRect();
         let x = event.clientX - svgRect.left;
         let y = event.clientY - svgRect.top;
-        let id = ((this.dataService.getTransitions().length) + 1).toString();
-        this.dataService.getTransitions().push(new Transition(new Point(x, y), this.getTransitionId()));
+        return new Transition(new Point(x, y), this.getTransitionId());
     }
 
     getPlaceId(): string{
