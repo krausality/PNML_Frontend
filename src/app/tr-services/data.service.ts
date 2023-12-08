@@ -112,6 +112,7 @@ export class DataService {
         return this._transitions.some(transition => transition.label === action);
     }
 
+    //The Nodes are not added to the Arrays during this function
     connectNodes(from: Node, to:Node): void{
         if(from instanceof Place && to instanceof Place) {
             return;
