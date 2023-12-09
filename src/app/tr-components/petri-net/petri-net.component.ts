@@ -135,6 +135,57 @@ export class PetriNetComponent {
         e.preventDefault();
     }
 
+    protected onWheelEventPlace(e: WheelEvent, place: Place) {
+
+        if(this.uiService.button === ButtonState.Add) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (e.deltaY < 0) {
+                place.token++;
+            }
+        } else if (this.uiService.button === ButtonState.Remove) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (e.deltaY > 0 && place.token > 0) {
+                place.token--;
+            }
+        }
+    }
+
+    protected onWheelEventArc(e: WheelEvent, arc: Arc) {
+
+        if (this.uiService.button === ButtonState.Add) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (e.deltaY < 0) {
+                // positives Gewicht erhöhen
+                if (arc.weight > 0) {
+                    arc.weight++;
+                } // negatives Gewicht erhöhren
+                else if (arc.weight < 0) {
+                    arc.weight--;
+                }
+            }
+        } else if (this.uiService.button === ButtonState.Remove) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (e.deltaY > 0) {
+                // positives Gewicht verringern
+                if (arc.weight > 1) {
+                    arc.weight--;
+                } // negatives Gewicht verringern
+                else if (arc.weight < -1) {
+                    arc.weight++;
+                }
+                //Scroll Up
+            }
+        }
+    }
+
 
     // Dispatch methods for display events ************************************
 
