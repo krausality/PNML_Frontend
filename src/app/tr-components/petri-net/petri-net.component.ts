@@ -29,6 +29,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { SetActionPopupComponent } from '../set-action-popup/set-action-popup.component';
 import { Node } from "src/app/tr-interfaces/petri-net/node";
 
+type SvgInHtml = HTMLElement & SVGElement;
+
 @Component({
     selector: 'app-petri-net',
     templateUrl: './petri-net.component.html',
@@ -57,6 +59,10 @@ export class PetriNetComponent {
 
     startTransition: Node | undefined;
     startPlace: Node | undefined;
+
+    dragStartPosition: Point | undefined;
+    dragInProcess: boolean = false;
+    startViewBox: number[] | undefined;
 
     private parsePetrinetData(content: string | undefined, contentType: string) {
         if (content) {
@@ -201,11 +207,46 @@ export class PetriNetComponent {
     }
 
     dispatchSVGMouseDown(event: MouseEvent, drawingArea: HTMLElement) {
+        // If the move button is activated and the canvas (not one of the elements on it!) 
+        // is drag & dropped the whole SVG should be panned
+        if (this.uiService.button === ButtonState.Move) {
+            this.dragStartPosition = this.getRelativeCoords(event, drawingArea);
+            this.dragInProcess = true;
 
+            if (drawingArea.getAttribute('viewBox')) {
+                // If the SVG has a viewBox Attribute,
+                // all drag & drop adjustments need to be relative
+                // to the values set there
+                const viewBox = drawingArea.getAttribute('viewBox');
+                const viewBoxValues = viewBox?.split(/\s+|,/);
+                this.startViewBox = viewBoxValues?.map((stringValue) => parseInt(stringValue));
+            }
+        }
     }
 
     dispatchSVGMouseMove(event: MouseEvent, drawingArea: HTMLElement) {
+        // If the move button is activated and the canvas (not one of the elements on it!) 
+        // is drag & dropped the whole SVG should be panned
+        if (this.uiService.button === ButtonState.Move && this.dragInProcess) {
+            const currentPosition = this.getRelativeCoords(event, drawingArea);
 
+            if (this.dragStartPosition) {
+                // Get dragged distance
+                const differenceY = this.dragStartPosition?.y - currentPosition.y;
+                const differenceX = this.dragStartPosition?.x - currentPosition.x;
+
+                // Add dragged distance either to the empty viewBox attribute
+                // or relative to the existing viewBox values
+                if (this.startViewBox) {
+                    const minX: number = this.startViewBox[0] + differenceX;
+                    const minY: number = this.startViewBox[1] + differenceY;
+
+                    drawingArea.setAttribute("viewBox", `${minX} ${minY} ${drawingArea.scrollWidth} ${drawingArea.scrollHeight}`); 
+                } else {
+                    drawingArea.setAttribute("viewBox", `${differenceX} ${differenceY} ${drawingArea.scrollWidth} ${drawingArea.scrollHeight}`); 
+                }
+            }
+        }
     }
 
     dispatchSVGMouseUp(event: MouseEvent, drawingArea: HTMLElement) {
@@ -213,6 +254,8 @@ export class PetriNetComponent {
         if (this.uiService.button === ButtonState.Arc) {
             this.startTransition = undefined;
             this.startPlace = undefined;
+        } else if (this.uiService.button === ButtonState.Move && this.dragInProcess) {
+            this.dragInProcess = false;
         }
     }
 
@@ -311,7 +354,7 @@ export class PetriNetComponent {
 
     addPlace(event: MouseEvent, drawingArea: HTMLElement) {
         const svgRect = drawingArea.getBoundingClientRect();
-        let x = event.clientX - svgRect.left;
+let x = event.clientX - svgRect.left;
         let y = event.clientY - svgRect.top;
         let id = ((this.dataService.getPlaces().length) + 1).toString();
         this.dataService.getPlaces().push(new Place(0, new Point(x, y), this.getPlaceId()))
@@ -319,7 +362,7 @@ export class PetriNetComponent {
 
     addTransition(event: MouseEvent, drawingArea: HTMLElement) {
         const svgRect = drawingArea.getBoundingClientRect();
-        let x = event.clientX - svgRect.left;
+let x = event.clientX - svgRect.left;
         let y = event.clientY - svgRect.top;
         let id = ((this.dataService.getTransitions().length) + 1).toString();
         this.dataService.getTransitions().push(new Transition(new Point(x, y), this.getTransitionId()));
@@ -363,6 +406,13 @@ export class PetriNetComponent {
 
     isArcExisting(startNode: Node, endNote: Node): boolean {
         return this.dataService.getArcs().some(arc => arc.from === startNode && arc.to === endNote);
+    }
+
+    getRelativeCoords(event: MouseEvent, drawingArea: HTMLElement): Point {
+        const svgRect = drawingArea.getBoundingClientRect();
+        let x = event.clientX - svgRect.left;
+        let y = event.clientY - svgRect.top;
+        return new Point(x, y);
     }
 
     protected readonly radius = radius;

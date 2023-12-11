@@ -1,4 +1,5 @@
 <svg #drawingArea [attr.class]="uiService.tab === TabState.Play ? 'canvas play-mode' : 'canvas'" id="drawingArea"
+    [ngClass]="{'dragging': dragInProcess}"
     (drop)="processDropEvent($event)"
     (dragover)="prevent($event)"
     (click)="dispatchSVGClick($event, drawingArea)"
@@ -56,5 +57,4 @@
             <text *ngIf="arc.anchors.length % 2 === 1 && arc.anchors.length >= 2" class="arc-weight" [attr.x]="arc.anchors[arc.anchors.length / 2 - 0.5].x" [attr.y]="arc.anchors[arc.anchors.length / 2 - 0.5].y" text-anchor="middle" dominant-baseline="central">{{arc.weight | mathAbs}}</text>
         </g>
     </g>
-
 </svg>

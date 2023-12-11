@@ -80,6 +80,10 @@
     background-color: #c0bfbc;
 }
 
+.canvas.dragging {
+    cursor: grab;
+}
+
 .play-mode .arc-weight-background {
     fill: #c0bfbc;
 }
