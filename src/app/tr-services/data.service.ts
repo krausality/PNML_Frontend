@@ -108,6 +108,10 @@ export class DataService {
         return this._actions;
     }
 
+    checkActionUsed(action: string): boolean {
+        return this._transitions.some(transition => transition.label === action);
+    }
+
     mockData() {
         this.places = [
             new Place(4, new Point(100, 200), "p1"),

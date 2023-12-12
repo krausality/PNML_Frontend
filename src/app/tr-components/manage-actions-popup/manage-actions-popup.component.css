@@ -1,0 +1,14 @@
+.add-action-input {
+    min-width: 400px;
+    width: 100%;
+    margin: 5px 15px;
+}
+
+.action-text {
+    max-width: 50vw;
+    overflow: scroll;
+}
+
+.close-button {
+    margin: 15px;
+}

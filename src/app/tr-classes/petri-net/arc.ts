@@ -24,6 +24,22 @@ export class Arc {
     }
 
     get polyLinePoints(): string {
+        return this.pointArrayToString(this.polyLinePointsArray);
+    }
+
+    get lineSegments(): Point[][] {
+        const polyLinePointsArray: Point[] = this.polyLinePointsArray;
+        if (polyLinePointsArray.length < 2) {
+            throw new Error("polyLinePointsArray must have at least two elements")
+        }
+        const lineSegments: Point[][] = [];
+        for (let i = 1; i < polyLinePointsArray.length; i++) {
+            lineSegments.push([polyLinePointsArray[i-1], polyLinePointsArray[i]]);
+        }
+        return lineSegments;
+    }
+
+    get polyLinePointsArray(): Point[] {
         // ToDo: the application should make sure that no anchor points lie
         // within the boundaries of the shapes associated with the from and
         // to nodes
@@ -54,7 +70,7 @@ export class Arc {
             end = this.to.position;
         }
 
-        return this.pointArrayToString([start, ...this.anchors, end]);
+        return [start, ...this.anchors, end]
     }
 
     private pointArrayToString(points: Point[]): string {

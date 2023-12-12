@@ -4,7 +4,6 @@ import { ParserService } from 'src/app/tr-services/parser.service';
 import { catchError, of, take } from 'rxjs';
 import { FileReaderService } from "../../services/file-reader.service";
 import { DataService } from "../../tr-services/data.service";
-import { LayoutSugyiamaService } from "../../tr-services/layout-sugyiama.service";
 import { ExampleFileComponent } from "src/app/components/example-file/example-file.component";
 
 import {
@@ -14,7 +13,8 @@ import {
     transitionHeight,
     transitionXOffset,
     transitionYOffset,
-    transitionIdYOffset
+    transitionIdYOffset,
+    anchorRadius
 } from "../../tr-services/position.constants";
 import { PnmlService } from "../../tr-services/pnml.service";
 import { ExportJsonDataService } from 'src/app/tr-services/export-json-data.service';
@@ -24,8 +24,11 @@ import { Place } from 'src/app/tr-classes/petri-net/place';
 import { Point } from 'src/app/tr-classes/petri-net/point';
 import { Transition } from 'src/app/tr-classes/petri-net/transition';
 import { Arc } from 'src/app/tr-classes/petri-net/arc';
+import { EditMoveElementsService } from 'src/app/tr-services/edit-move-elements.service';
 import { ButtonState, TabState } from 'src/app/tr-enums/ui-state';
 import { TokenGameService } from 'src/app/tr-services/token-game.service';
+import { MatDialog } from '@angular/material/dialog';
+import { SetActionPopupComponent } from '../set-action-popup/set-action-popup.component';
 import { Node } from "src/app/tr-interfaces/petri-net/node";
 
 @Component({
@@ -41,11 +44,12 @@ export class PetriNetComponent {
         private httpClient: HttpClient,
         private fileReaderService: FileReaderService,
         protected dataService: DataService,
-        protected LayoutSugyiamaService: LayoutSugyiamaService,
         protected exportJsonDataService: ExportJsonDataService,
         protected pnmlService: PnmlService, 
         protected uiService: UiService,
-        protected tokenGameService: TokenGameService
+        protected tokenGameService: TokenGameService,
+        private matDialog: MatDialog,
+        protected editMoveElementsService: EditMoveElementsService
     ) {
         this.httpClient.get("assets/example.json", { responseType: "text" }).subscribe(data => {
             const [places, transitions, arcs, actions] = parserService.parse(data);
@@ -145,6 +149,57 @@ export class PetriNetComponent {
         e.preventDefault();
     }
 
+    protected onWheelEventPlace(e: WheelEvent, place: Place) {
+
+        if(this.uiService.button === ButtonState.Add) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (e.deltaY < 0) {
+                place.token++;
+            }
+        } else if (this.uiService.button === ButtonState.Remove) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (e.deltaY > 0 && place.token > 0) {
+                place.token--;
+            }
+        }
+    }
+
+    protected onWheelEventArc(e: WheelEvent, arc: Arc) {
+
+        if (this.uiService.button === ButtonState.Add) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (e.deltaY < 0) {
+                // positives Gewicht erhöhen
+                if (arc.weight > 0) {
+                    arc.weight++;
+                } // negatives Gewicht erhöhren
+                else if (arc.weight < 0) {
+                    arc.weight--;
+                }
+            }
+        } else if (this.uiService.button === ButtonState.Remove) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (e.deltaY > 0) {
+                // positives Gewicht verringern
+                if (arc.weight > 1) {
+                    arc.weight--;
+                } // negatives Gewicht verringern
+                else if (arc.weight < -1) {
+                    arc.weight++;
+                }
+                //Scroll Up
+            }
+        }
+    }
+
 
     // Dispatch methods for display events ************************************
 
@@ -164,10 +219,17 @@ export class PetriNetComponent {
     }
 
     dispatchSVGMouseMove(event: MouseEvent, drawingArea: HTMLElement) {
-
+        if (this.uiService.button === ButtonState.Move) {
+            this.editMoveElementsService.moveNodeByMousePositionChange(event);
+            this.editMoveElementsService.moveAnchorByMousePositionChange(event);
+        }
     }
 
     dispatchSVGMouseUp(event: MouseEvent, drawingArea: HTMLElement) {
+        if (this.uiService.button === ButtonState.Move) {
+            this.editMoveElementsService.finalizeMove();
+        }
+
         // Reset StartNode when Drag&Drop is cancelled
         if (this.uiService.button === ButtonState.Arc) {
             this.startTransition = undefined;
@@ -193,6 +255,10 @@ export class PetriNetComponent {
     }
 
     dispatchPlaceMouseDown(event: MouseEvent, place: Place) {
+        if (this.uiService.button === ButtonState.Move) {
+            this.editMoveElementsService.initializeNodeMove(event, place);
+        }
+
         // Set StartNode for Arc
         if (this.uiService.button === ButtonState.Arc) {
             this.startPlace = place;
@@ -214,6 +280,8 @@ export class PetriNetComponent {
         // Token game: fire transition
         if (this.uiService.tab === TabState.Play) {
             this.tokenGameService.fire(transition);
+        } else if (this.uiService.tab === TabState.Build && this.uiService.button === ButtonState.Select) {
+            this.matDialog.open(SetActionPopupComponent, {data: {node: transition}});
         }
 
         if (this.uiService.button === ButtonState.Delete) {
@@ -223,6 +291,10 @@ export class PetriNetComponent {
     }
 
     dispatchTransitionMouseDown(event: MouseEvent, transition: Transition) {
+        if (this.uiService.button === ButtonState.Move) {
+            this.editMoveElementsService.initializeNodeMove(event, transition);
+        }
+
         // Set StartNode for Arc
         if (this.uiService.button === ButtonState.Arc) {
             this.startTransition = transition;
@@ -261,6 +333,23 @@ export class PetriNetComponent {
 
         if (this.uiService.button === ButtonState.Delete) {
             this.dataService.removeArc(arc);
+        }
+    }
+
+    dispatchArcMouseDown(event: MouseEvent, arc: Arc, drawingArea: HTMLElement) {
+
+    }
+
+    dispatchLineSegmentMouseDown(event: MouseEvent, arc: Arc, lineSegment: Point[], drawingArea: HTMLElement) {
+        if (this.uiService.button === ButtonState.Anchor) {
+            this.editMoveElementsService.insertAnchorIntoLineSegmentStart(event, arc, lineSegment, drawingArea);
+        }
+    }
+
+    // Anchors
+    dispatchAnchorMouseDown(event: MouseEvent, anchor: Point) {
+        if (this.uiService.button === ButtonState.Move) {
+            this.editMoveElementsService.initializeAnchorMove(event, anchor);
         }
     }
 
@@ -330,6 +419,8 @@ export class PetriNetComponent {
     protected readonly transitionXOffset = transitionXOffset;
     protected readonly transitionYOffset = transitionYOffset;
     protected readonly transitionIdYOffset = transitionIdYOffset;
+
+    protected readonly anchorRadius = anchorRadius;
 
     protected readonly TabState = TabState;
     protected readonly ButtonState = ButtonState;
