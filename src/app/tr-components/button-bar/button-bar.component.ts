@@ -8,6 +8,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { ManageActionsPopupComponent } from '../manage-actions-popup/manage-actions-popup.component';
 import { TokenGameService } from 'src/app/tr-services/token-game.service';
 import { ButtonState, TabState } from 'src/app/tr-enums/ui-state';
+import {ClearPopupComponent} from "../clear-popup/clear-popup.component";
+import {DataService} from "../../tr-services/data.service";
 
 
 @Component({
@@ -30,6 +32,7 @@ export class ButtonBarComponent {
         protected exportImageService: ExportImageService,
         protected exportSvgService: ExportSvgService,
         protected tokenGameService: TokenGameService,
+        private dataService: DataService,
         private matDialog: MatDialog
     ) {}
 
@@ -60,6 +63,12 @@ export class ButtonBarComponent {
 
     openActionDialog() {
         this.matDialog.open(ManageActionsPopupComponent);
+    }
+
+    openClearDialog() {
+        if(!this.dataService.isEmpty()){
+            this.matDialog.open(ClearPopupComponent);
+        }
     }
 
 }

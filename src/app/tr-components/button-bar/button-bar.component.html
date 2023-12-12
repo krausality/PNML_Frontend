@@ -53,6 +53,11 @@
                 <mat-icon>delete</mat-icon>
             </button>
 
+            <!-- clear all tool -->
+            <button mat-icon-button [color]="uiService.button === ButtonState.Clear ? 'primary' : ''" (click)="openClearDialog()">
+                <mat-icon>clear</mat-icon>
+            </button>
+
             <!-- divider -->
             <div class="divider"></div>
 
