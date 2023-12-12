@@ -16,7 +16,9 @@ export class LayoutSwitchComponent {
             this.layoutSpringEmebdderService.layoutSpringEmbedder();
         } else if (this.selected == "sugiyama") {
             // call sugiyama layout service
+            this.layoutSpringEmebdderService.terminate();
+        } else {
+            this.layoutSpringEmebdderService.terminate();
         }
-        // do we need to do something if the user selects "free"?
     }
 }

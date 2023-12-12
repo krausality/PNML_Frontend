@@ -4,10 +4,7 @@
     border-style: dotted;
     border-color: lightgrey;
     transition: background-color 1s;
-}
-
-.canvas.play-mode {
-    background-color: #c0bfbc;
+    user-select: none;
 }
 
 .place {
@@ -16,21 +13,40 @@
     stroke-width: 2;
 }
 
+/* .place:hover {
+    stroke: orange;
+} */
+
 .transition {
     fill: grey;
     stroke: black;
     stroke-width: 2;
 }
 
-.transition.active{
+.transition.active {
     fill: green;
 }
 
+/* .transition:hover {
+    stroke: orange;
+} */
 
 .arc {
     fill: none;
     stroke: black;
     stroke-width: 2;
+}
+
+/* .arc:hover,
+.background-arc:hover + .arc {
+    stroke: orange;
+} */
+
+.background-arc {
+    fill: none;
+    stroke: transparent;
+    opacity: 0;
+    stroke-width: 12 !important;
 }
 
 .place-id{
@@ -54,10 +70,30 @@
     transition: fill 1s;
 }
 
-.arc-weight-background.play-mode {
-    fill: #c0bfbc;
+/**** PLAY MODE  ****/
+/*
+ * Adjusted styles for play mode
+ * these take effect once the drawing area svg
+ * has the play-mode class
+ */
+.canvas.play-mode {
+    background-color: #c0bfbc;
 }
 
+.play-mode .arc-weight-background {
+    fill: #c0bfbc;
+}
+.play-mode .transition.active {
+    cursor: pointer;
+}
+
+/* text nodes that follow transitions (rects within svg) should not have different cursors in play mode
+ * all interaction events should be caught in the wrapper group element */
+.play-mode .transition.active ~ text {
+    cursor: pointer;
+}
+
+/* Styles for 'move' and 'anchor' mode */
 .anchor {
     fill:black;
     stroke: black;

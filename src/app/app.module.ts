@@ -10,6 +10,10 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {MatSelectModule} from '@angular/material/select';
 import {MatTabsModule} from '@angular/material/tabs';
+import {MatDialogModule} from '@angular/material/dialog';
+import {MatListModule} from '@angular/material/list';
+import {MatMenuModule} from '@angular/material/menu';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {ReactiveFormsModule} from '@angular/forms';
 import {FooterComponent} from './components/footer/footer.component';
 import {ExampleFileComponent} from './components/example-file/example-file.component';
@@ -20,6 +24,8 @@ import { PetriNetComponent } from './tr-components/petri-net/petri-net.component
 import { LayoutSwitchComponent } from './tr-components/layout-switch/layout-switch.component';
 import { ButtonBarComponent } from './tr-components/button-bar/button-bar.component';
 import { mathAbsPipe } from './tr-pipes/math-abs.pipe';
+import { ManageActionsPopupComponent } from './tr-components/manage-actions-popup/manage-actions-popup.component';
+import { SetActionPopupComponent } from './tr-components/set-action-popup/set-action-popup.component';
 
 @NgModule({
     declarations: [
@@ -32,6 +38,8 @@ import { mathAbsPipe } from './tr-pipes/math-abs.pipe';
         LayoutSwitchComponent,
         ButtonBarComponent,
         mathAbsPipe,
+        ManageActionsPopupComponent,
+        SetActionPopupComponent,
     ],
     imports: [
         BrowserModule,
@@ -43,6 +51,10 @@ import { mathAbsPipe } from './tr-pipes/math-abs.pipe';
         MatIconModule,
         MatSelectModule,
         MatTabsModule,
+        MatDialogModule,
+        MatListModule,
+        MatMenuModule,
+        MatTooltipModule,
         ReactiveFormsModule,
         HttpClientModule,
     ],
