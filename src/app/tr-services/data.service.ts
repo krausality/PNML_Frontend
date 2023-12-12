@@ -2,6 +2,7 @@ import {Injectable} from "@angular/core";
 import {Arc} from "../tr-classes/petri-net/arc";
 import {Place} from "../tr-classes/petri-net/place";
 import {Transition} from "../tr-classes/petri-net/transition";
+import { Node } from "src/app/tr-interfaces/petri-net/node";
 import {Point} from "../tr-classes/petri-net/point";
 import {Observable, of} from "rxjs";
 

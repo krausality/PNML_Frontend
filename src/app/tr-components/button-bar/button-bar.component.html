@@ -14,20 +14,25 @@
 
             <!-- divider -->
             <div class="divider"></div>
-            
+
             <!-- places -->
             <button mat-icon-button [color]="uiService.button === ButtonState.Place ? 'primary' : ''" (click)="buttonClicked(ButtonState.Place)">
                 <mat-icon>circle</mat-icon>
             </button>
-            
+
             <!-- transitions -->
             <button mat-icon-button [color]="uiService.button === ButtonState.Transition ? 'primary' : ''" (click)="buttonClicked(ButtonState.Transition)">
                 <mat-icon>square</mat-icon>
             </button>
-            
+
             <!-- arcs -->
             <button mat-icon-button [color]="uiService.button === ButtonState.Arc ? 'primary' : ''" (click)="buttonClicked(ButtonState.Arc)">
                 <mat-icon>north_east</mat-icon>
+            </button>
+
+            <!-- anchor points -->
+            <button mat-icon-button [color]="uiService.button === ButtonState.Anchor ? 'primary' : ''" (click)="buttonClicked(ButtonState.Anchor)">
+                <mat-icon>linear_scale</mat-icon>
             </button>
 
             <!-- divider -->

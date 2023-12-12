@@ -13,9 +13,9 @@
     stroke-width: 2;
 }
 
-.place:hover {
+/* .place:hover {
     stroke: orange;
-}
+} */
 
 .transition {
     fill: grey;
@@ -27,9 +27,9 @@
     fill: green;
 }
 
-.transition:hover {
+/* .transition:hover {
     stroke: orange;
-}
+} */
 
 .arc {
     fill: none;
@@ -37,10 +37,10 @@
     stroke-width: 2;
 }
 
-.arc:hover,
+/* .arc:hover,
 .background-arc:hover + .arc {
     stroke: orange;
-}
+} */
 
 .background-arc {
     fill: none;
@@ -87,7 +87,6 @@
 .play-mode .arc-weight-background {
     fill: #c0bfbc;
 }
-
 .play-mode .transition.active {
     cursor: pointer;
 }
@@ -95,5 +94,34 @@
 /* text nodes that follow transitions (rects within svg) should not have different cursors in play mode
  * all interaction events should be caught in the wrapper group element */
 .play-mode .transition.active ~ text {
+    cursor: pointer;
+}
+
+/* Styles for 'move' and 'anchor' mode */
+.anchor {
+    fill:black;
+    stroke: black;
+    stroke-width: 0px;
+}
+
+.line-segment {
+    stroke: transparent;
+    stroke-width: 10;
+}
+
+.editable, .insertable {
+    filter: drop-shadow(0 0 3px rgba(255, 0, 0, 1));
+}
+
+.editable:active, .anchor.active {
+    stroke: red;
+    stroke-width: 2;
+}
+
+.no-pointer-events {
+    pointer-events: none;
+}
+
+.editable:hover, .anchor.active, .line-segment:hover {
     cursor: pointer;
 }
