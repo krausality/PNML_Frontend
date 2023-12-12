@@ -1,42 +1,91 @@
-<svg #drawingArea [attr.class]="uiService.tab === TabState.Play ? 'canvas play-mode' : 'canvas'" id="drawingArea"
-    (drop)="processDropEvent($event)" (dragover)="prevent($event)" (click)="dispatchSVGClick($event, drawingArea)"
-    (mousedown)="dispatchSVGMouseDown($event, drawingArea)" (mousemove)="dispatchSVGMouseMove($event, drawingArea)"
+<svg
+    #drawingArea
+    [attr.class]="uiService.tab === TabState.Play ? 'canvas play-mode' : 'canvas'"
+    id="drawingArea"
+    (drop)="processDropEvent($event)"
+    (dragover)="prevent($event)"
+    (click)="dispatchSVGClick($event, drawingArea)"
+    (mousedown)="dispatchSVGMouseDown($event, drawingArea)"
+    (mousemove)="dispatchSVGMouseMove($event, drawingArea)"
     (mouseup)="dispatchSVGMouseUp($event, drawingArea)">
 
     <defs>
-        <marker id="arrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+        <marker
+            id="arrow"
+            markerWidth="10"
+            markerHeight="7"
+            refX="10"
+            refY="3.5"
+            orient="auto">
             <polygon points="0 0, 10 3.5, 0 7"></polygon>
         </marker>
     </defs>
 
     <!-- Places -->
-    <g *ngFor="let place of dataService.getPlaces()" (click)="dispatchPlaceClick($event, place)" (mousedown)="dispatchPlaceMouseDown($event, place)" (mouseup)="dispatchPlaceMouseUp($event, place)" (wheel)="onWheelEventPlace($event, place)">
+    <g
+        *ngFor="let place of dataService.getPlaces()"
+        (click)="dispatchPlaceClick($event, place)"
+        (mousedown)="dispatchPlaceMouseDown($event, place)"
+        (mouseup)="dispatchPlaceMouseUp($event, place)"
+        (wheel)="onWheelEventPlace($event, place)">
         <g>
-            <circle [ngClass]="{place: true, editable: uiService.button===ButtonState.Move && !editMoveElementsService.newAnchor}" [attr.cx]="place.position.x" [attr.cy]="place.position.y" [attr.r]="radius" />
-            <text [ngClass]="{'token-label':true, 'no-pointer-events': uiService.button===ButtonState.Move}" [attr.x]="place.position.x" [attr.y]="place.position.y" text-anchor="middle"
+            <circle
+                [ngClass]="{place: true, editable: uiService.button===ButtonState.Move && !editMoveElementsService.newAnchor}"
+                [attr.cx]="place.position.x"
+                [attr.cy]="place.position.y"
+                [attr.r]="radius" />
+            <text
+                [ngClass]="{'token-label':true, 'no-pointer-events': uiService.button===ButtonState.Move}"
+                [attr.x]="place.position.x"
+                [attr.y]="place.position.y"
+                text-anchor="middle"
                 dominant-baseline="central">{{place.token > 0 ? place.token : ''}}</text>
         </g>
-        <text class="place-id" [attr.x]="place.position.x" [attr.y]="place.position.y + placeIdYOffset"
+        <text
+            class="place-id"
+            [attr.x]="place.position.x"
+            [attr.y]="place.position.y + placeIdYOffset"
             text-anchor="middle">{{place.id}}</text>
     </g>
 
     <!-- Transitions -->
-    <g *ngFor="let transition of dataService.getTransitions()" (click)="dispatchTransitionClick($event, transition)"
+    <g
+        *ngFor="let transition of dataService.getTransitions()"
+        (click)="dispatchTransitionClick($event, transition)"
         (mousedown)="dispatchTransitionMouseDown($event, transition)"
         (mouseup)="dispatchTransitionMouseUp($event, transition)">
-        <rect [ngClass]="{transition:true, active: transition.isActive, editable: uiService.button===ButtonState.Move && !editMoveElementsService.newAnchor}"
-            [attr.x]="transition.position.x - transitionXOffset" [attr.y]="transition.position.y - transitionYOffset"
-            [attr.width]="transitionWidth" [attr.height]="transitionHeight" />
-        <text [ngClass]="{'no-pointer-events': uiService.button===ButtonState.Move}" [attr.x]="transition.position.x" [attr.y]="transition.position.y" text-anchor="middle"
+        <rect
+            [ngClass]="{transition:true, active: transition.isActive, editable: uiService.button===ButtonState.Move && !editMoveElementsService.newAnchor}"
+            [attr.x]="transition.position.x - transitionXOffset"
+            [attr.y]="transition.position.y - transitionYOffset"
+            [attr.width]="transitionWidth"
+            [attr.height]="transitionHeight" />
+        <text
+            [ngClass]="{'no-pointer-events': uiService.button===ButtonState.Move}"
+            [attr.x]="transition.position.x"
+            [attr.y]="transition.position.y"
+            text-anchor="middle"
             dominant-baseline="central">{{transition.label}}</text>
-        <text class="transition-id" [attr.x]="transition.position.x"
-            [attr.y]="transition.position.y + transitionIdYOffset" text-anchor="middle">{{transition.id}}</text>
+        <text
+            class="transition-id"
+            [attr.x]="transition.position.x"
+            [attr.y]="transition.position.y + transitionIdYOffset"
+            text-anchor="middle">{{transition.id}}</text>
     </g>
 
     <!-- Arcs -->
-    <g *ngFor="let arc of dataService.getArcs()" (click)="dispatchArcClick($event, arc)" (wheel)="onWheelEventArc($event, arc)" (mousedown)="dispatchArcMouseDown($event, arc, drawingArea)">
-        <polyline class="background-arc" [attr.points]="arc.polyLinePoints"></polyline>
-        <polyline [ngClass]="{arc, insertable: uiService.button===ButtonState.Anchor  || editMoveElementsService.newAnchor}" [attr.points]="arc.polyLinePoints" marker-end="url(#arrow)"></polyline>
+    <g
+        *ngFor="let arc of dataService.getArcs()"
+        (click)="dispatchArcClick($event, arc)"
+        (wheel)="onWheelEventArc($event, arc)"
+        (mousedown)="dispatchArcMouseDown($event, arc, drawingArea)">
+        <polyline
+            class="background-arc"
+            [attr.points]="arc.polyLinePoints"></polyline>
+        <polyline
+            [ngClass]="{arc, insertable: uiService.button===ButtonState.Anchor  || editMoveElementsService.newAnchor}"
+            [attr.points]="arc.polyLinePoints"
+            marker-end="url(#arrow)"></polyline>
         <g *ngIf="arc.weight > 1 || arc.weight < -1">
             <!-- Weight at Arc without Anchorpoints - Middle of Polyline -->
             <!-- White Circle for Background -->
@@ -105,15 +154,25 @@
         <!-- Line segments -->
         <!-- When in anchor insertion mode, render invisible anchor line segments to capture mousedown events -->
         <ng-container *ngIf="uiService.button===ButtonState.Anchor">
-            <line *ngFor="let lineSegment of arc.lineSegments" class="line-segment" [attr.x1]="lineSegment[0].x"
-                [attr.y1]="lineSegment[0].y" [attr.x2]="lineSegment[1].x" [attr.y2]="lineSegment[1].y"
+            <line
+                *ngFor="let lineSegment of arc.lineSegments"
+                class="line-segment"
+                [attr.x1]="lineSegment[0].x"
+                [attr.y1]="lineSegment[0].y"
+                [attr.x2]="lineSegment[1].x"
+                [attr.y2]="lineSegment[1].y"
                 (mousedown)="dispatchLineSegmentMouseDown($event, arc, lineSegment, drawingArea)"></line>
         </ng-container>
 
         <!-- Anchor points -->
         <ng-container *ngIf="uiService.button===ButtonState.Move || uiService.button===ButtonState.Anchor">
-            <circle *ngFor="let point of arc.anchors" [ngClass]="{anchor:true, active: point===editMoveElementsService.newAnchor, editable: uiService.button===ButtonState.Move && !editMoveElementsService.newAnchor}" [attr.cx]="point.x" [attr.cy]="point.y"
-                [attr.r]="anchorRadius" (mousedown)="dispatchAnchorMouseDown($event, point)" />
+            <circle
+                *ngFor="let point of arc.anchors"
+                [ngClass]="{anchor:true, active: point===editMoveElementsService.newAnchor, editable: uiService.button===ButtonState.Move && !editMoveElementsService.newAnchor}"
+                [attr.cx]="point.x"
+                [attr.cy]="point.y"
+                [attr.r]="anchorRadius"
+                (mousedown)="dispatchAnchorMouseDown($event, point)" />
         </ng-container>
     </g>
 
