@@ -68,8 +68,8 @@ export class PetriNetComponent {
         this.fileContent = new EventEmitter<string>();
     }
 
-    startTransition: Node | undefined;
-    startPlace: Node | undefined;
+    startTransition: Transition | undefined;
+    startPlace: Place | undefined;
 
     private parsePetrinetData(content: string | undefined, contentType: string) {
         if (content) {
@@ -267,11 +267,11 @@ export class PetriNetComponent {
 
     dispatchPlaceMouseUp(event: MouseEvent, place: Place) {
         // Draw Arc with Place as EndNode
-        if(this.startTransition && !this.isArcExisting(this.startTransition, place)) {
-            if (this.uiService.button === ButtonState.Arc && this.startTransition) {
-                this.dataService.getArcs().push(new Arc(this.startTransition, place, 1));
+        if(this.startTransition && !this.isArcExisting(this.startTransition, place) && this.uiService.button === ButtonState.Arc) {
+                const newArc: Arc = new Arc(this.startTransition, place, 1);
+                this.startTransition.appendPostArc(newArc);
+                this.dataService.getArcs().push(newArc);
                 this.startTransition = undefined;
-            }
         }
     }
 
@@ -303,11 +303,11 @@ export class PetriNetComponent {
 
     dispatchTransitionMouseUp(event: MouseEvent, transition: Transition) {
         // Draw Arc with Transition as EndNode
-        if(this.startPlace && !this.isArcExisting(this.startPlace, transition)){
-            if (this.uiService.button === ButtonState.Arc && this.startPlace) {
-                this.dataService.getArcs().push(new Arc(this.startPlace, transition, 1));
-                this.startPlace = undefined;
-            }
+        if(this.startPlace && !this.isArcExisting(this.startPlace, transition) && this.uiService.button === ButtonState.Arc){
+            const newArc: Arc = new Arc(this.startPlace, transition, 1);
+            transition.appendPreArc(newArc);
+            this.dataService.getArcs().push(newArc);
+            this.startPlace = undefined;
         }
     }
 
