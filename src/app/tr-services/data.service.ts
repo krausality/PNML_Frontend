@@ -118,6 +118,22 @@ export class DataService {
         this.actions = [];
     }
 
+    isEmpty(): boolean {
+        if(this.getPlaces().length != 0) {
+            return false
+        }
+        if(this.getTransitions().length != 0) {
+            return false
+        }
+        if(this.getArcs().length != 0) {
+            return false
+        }
+        if(this.getActions().length != 0) {
+            return false
+        }
+        return true;
+    }
+
     mockData() {
         this.places = [
             new Place(4, new Point(100, 200), "p1"),
