@@ -15,6 +15,7 @@ export class ClearPopupComponent {
     // Clear Petri-Net
     clear(): void {
         this.dataService.clearAll();
+        this.dialogRef.close();
     }
 
     closeDialog(){
