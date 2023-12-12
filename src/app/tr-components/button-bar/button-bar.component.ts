@@ -21,6 +21,8 @@ export class ButtonBarComponent {
 
     public petrinetCss: string = '';
 
+    showDelay = 800;
+
     constructor(
         protected uiService: UiService,
         protected exportJsonDataService: ExportJsonDataService,
