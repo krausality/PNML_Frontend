@@ -39,7 +39,18 @@ import { Node } from "src/app/tr-interfaces/petri-net/node";
 export class PetriNetComponent {
     @Output('fileContent') fileContent: EventEmitter<string>;
 
-    constructor(private parserService: ParserService, private httpClient: HttpClient, private fileReaderService: FileReaderService, protected dataService: DataService, protected exportJsonDataService: ExportJsonDataService, protected pnmlService: PnmlService, protected uiService: UiService, protected tokenGameService: TokenGameService, private matDialog: MatDialog, protected editMoveElementsService: EditMoveElementsService) {
+    constructor(
+        private parserService: ParserService,
+        private httpClient: HttpClient,
+        private fileReaderService: FileReaderService,
+        protected dataService: DataService,
+        protected exportJsonDataService: ExportJsonDataService,
+        protected pnmlService: PnmlService, 
+        protected uiService: UiService,
+        protected tokenGameService: TokenGameService,
+        private matDialog: MatDialog,
+        protected editMoveElementsService: EditMoveElementsService
+    ) {
         this.httpClient.get("assets/example.json", { responseType: "text" }).subscribe(data => {
             const [places, transitions, arcs, actions] = parserService.parse(data);
             this.dataService.places = places;
@@ -74,6 +85,7 @@ export class PetriNetComponent {
                 this.dataService.places = places;
                 this.dataService.transitions = transitions;
                 this.dataService.arcs = arcs;
+
                 this.dataService.actions = actions;
             }
         }
