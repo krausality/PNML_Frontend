@@ -121,16 +121,27 @@ export class DataService {
             return;
         }
         if(from instanceof Place && to instanceof  Transition) {
-            const arc = new Arc(from, to);
-            to.preArcs.push(arc)
-            this.getArcs().push(arc);
+            const preArcs = to.preArcs;
+            if(preArcs.find(arc => arc.from === from)){
+                return;
+            } else {
+                const arc = new Arc(from, to);
+                to.preArcs.push(arc)
+                this.getArcs().push(arc);
+            }
         }
         if(from instanceof Transition && to instanceof  Place) {
-            const arc = new Arc(from, to);
-            from.postArcs.push(arc)
-            this.getArcs().push(arc);
+            const postArcs = from.postArcs;
+            if(postArcs.find(arc => arc.to === to)){
+                return;
+            } else {
+                const arc = new Arc(from, to);
+                from.postArcs.push(arc)
+                this.getArcs().push(arc);
+            }
         }
     }
+
 
     mockData() {
         this.places = [

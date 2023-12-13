@@ -221,33 +221,37 @@ export class PetriNetComponent {
                 this.dataService.getPlaces().push(place);
                 this.lastNode = place;
             } else if (this.lastNode instanceof Place) {
-                let transition
                 if(this.nextNode instanceof Transition) {
-                    transition = this.nextNode;
+                    const transition = this.nextNode;
+                    this.dataService.getTransitions().push(transition);
+                    this.dataService.connectNodes(this.lastNode, transition);
+                    this.lastNode = null;
                 } else if(this.nextNode instanceof Place) {
+                    this.lastNode = this.nextNode;
                     this.nextNode = null;
-                    return;
-                } else {
-                    transition = this.createTransition(event, drawingArea);
+                } else if(!this.nextNode) {
+                    const transition = this.createTransition(event, drawingArea);
+                    this.dataService.getTransitions().push(transition);
+                    this.dataService.connectNodes(this.lastNode, transition);
+                    this.lastNode = transition;
                 }
-                this.dataService.getTransitions().push(transition);
-                this.dataService.connectNodes(this.lastNode, transition);
-                this.lastNode = transition;
-                this.nextNode = null;
             } else if (this.lastNode instanceof Transition) {
-                let place: Place;
                 if(this.nextNode instanceof Place) {
-                    place = this.nextNode;
+                    const place = this.nextNode;
+                    this.dataService.getPlaces().push(place);
+                    this.dataService.connectNodes(this.lastNode, place);
+                    this.lastNode = null
                 } else if(this.nextNode instanceof Transition) {
+                    this.lastNode = this.nextNode;
                     this.nextNode = null;
-                    return;
-                } else {
-                    place = this.createPlace(event,drawingArea);
+                } else if(!this.nextNode) {
+                    const place = this.createPlace(event,drawingArea);
+                    this.dataService.getPlaces().push(place);
+                    this.dataService.connectNodes(this.lastNode, place);
+                    this.lastNode = place;
                 }
-                this.dataService.getPlaces().push(place);
-                this.dataService.connectNodes(this.lastNode, place);
-                this.lastNode = place;
             }
+            this.nextNode = null;
         }
     }
 
