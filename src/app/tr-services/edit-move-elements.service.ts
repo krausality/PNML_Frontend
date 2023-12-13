@@ -5,6 +5,7 @@ import { Node } from '../tr-interfaces/petri-net/node';
 import { DataService } from './data.service';
 import { UiService } from './ui.service';
 import { ButtonState } from '../tr-enums/ui-state';
+import { SvgCoordinatesService } from './svg-coordinates-service';
 
 @Injectable({
     providedIn: 'root'
@@ -28,7 +29,11 @@ export class EditMoveElementsService {
     // when automatic switch to 'move' mode occurs.
     newAnchor: Point | undefined;
 
-    constructor(private dataService: DataService, private uiService: UiService) { }
+    constructor(
+        private dataService: DataService, 
+        private uiService: UiService,
+        private svgCoordinatesService: SvgCoordinatesService,
+    ) { }
 
     initializeNodeMove(event: MouseEvent, node: Node){
         // Register node to be moved
@@ -112,13 +117,8 @@ export class EditMoveElementsService {
     }
 
     insertAnchorIntoLineSegmentStart(event: MouseEvent, arc: Arc, lineSegment: Point[], drawingArea: HTMLElement) {
-        // Coordinates at which new anchor is created
-        const svgRect = drawingArea.getBoundingClientRect();
-        let x = event.clientX - svgRect.left;
-        let y = event.clientY - svgRect.top;
-
-        // Create new anchor
-        const anchor = new Point(x, y)
+        // Create new anchor at mouse coordinate
+        const anchor = this.svgCoordinatesService.getRelativeEventCoords(event, drawingArea);
 
         // Insert new anchor into the anchors array of the arc that was clicked on
         if (arc.anchors.length === 0 || arc.anchors.indexOf(lineSegment[0]) === (arc.anchors.length - 1)) {

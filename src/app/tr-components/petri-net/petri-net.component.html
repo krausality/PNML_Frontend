@@ -1,7 +1,7 @@
 <svg #drawingArea
     id="drawingArea"
     [attr.class]="uiService.tab === TabState.Play ? 'canvas play-mode' : 'canvas'"
-    [ngClass]="{'dragging': dragInProcess}"
+    [ngClass]="{'dragging': isCanvasDragInProcess}"
     (drop)="processDropEvent($event)"
     (dragover)="prevent($event)"
     (click)="dispatchSVGClick($event, drawingArea)"
