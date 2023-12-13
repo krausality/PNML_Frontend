@@ -29,7 +29,7 @@ import { TokenGameService } from 'src/app/tr-services/token-game.service';
 import { MatDialog } from '@angular/material/dialog';
 import { SetActionPopupComponent } from '../set-action-popup/set-action-popup.component';
 import { Node } from "src/app/tr-interfaces/petri-net/node";
-import {ButtonConstants} from "../../tr-enums/button-constants";
+import {MouseConstants} from "../../tr-enums/mouse-constants";
 
 @Component({
     selector: 'app-petri-net',
@@ -270,7 +270,7 @@ export class PetriNetComponent {
     }
 
     dispatchSVGMouseDown(event: MouseEvent, drawingArea: HTMLElement) {
-        if(this.uiService.button === ButtonState.Blitz && event.button == ButtonConstants.Right_Click) {
+        if(this.uiService.button === ButtonState.Blitz && event.button == MouseConstants.Right_Click) {
             this.lastNode = null;
             this.nextNode = null;
         }
