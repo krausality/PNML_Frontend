@@ -8,64 +8,74 @@
         <!-- buttons for tab "build" -->
         <div class="button-container">
             <!-- blitz tool -->
-            <button mat-icon-button [color]="uiService.button === ButtonState.Blitz ? 'primary' : ''" (click)="buttonClicked(ButtonState.Blitz)">
+            <button mat-icon-button [color]="uiService.button === ButtonState.Blitz ? 'primary' : ''" (click)="buttonClicked(ButtonState.Blitz)" matTooltip="Auto-Petrinet" [matTooltipShowDelay]="showDelay">
                 <mat-icon>bolt</mat-icon>
             </button>
 
             <!-- divider -->
             <div class="divider"></div>
-            
+
             <!-- places -->
-            <button mat-icon-button [color]="uiService.button === ButtonState.Place ? 'primary' : ''" (click)="buttonClicked(ButtonState.Place)">
+            <button mat-icon-button [color]="uiService.button === ButtonState.Place ? 'primary' : ''" (click)="buttonClicked(ButtonState.Place)" matTooltip="Add Place" [matTooltipShowDelay]="showDelay">
                 <mat-icon>circle</mat-icon>
             </button>
-            
+
             <!-- transitions -->
-            <button mat-icon-button [color]="uiService.button === ButtonState.Transition ? 'primary' : ''" (click)="buttonClicked(ButtonState.Transition)">
+            <button mat-icon-button [color]="uiService.button === ButtonState.Transition ? 'primary' : ''" (click)="buttonClicked(ButtonState.Transition)" matTooltip="Add transition" [matTooltipShowDelay]="showDelay">
                 <mat-icon>square</mat-icon>
             </button>
-            
+
             <!-- arcs -->
-            <button mat-icon-button [color]="uiService.button === ButtonState.Arc ? 'primary' : ''" (click)="buttonClicked(ButtonState.Arc)">
+            <button mat-icon-button [color]="uiService.button === ButtonState.Arc ? 'primary' : ''" (click)="buttonClicked(ButtonState.Arc)" matTooltip="Add arc" [matTooltipShowDelay]="showDelay">
                 <mat-icon>north_east</mat-icon>
+            </button>
+
+            <!-- anchor points -->
+            <button mat-icon-button [color]="uiService.button === ButtonState.Anchor ? 'primary' : ''" (click)="buttonClicked(ButtonState.Anchor)">
+                <mat-icon>linear_scale</mat-icon>
             </button>
 
             <!-- divider -->
             <div class="divider"></div>
 
             <!-- add token tool -->
-            <button mat-icon-button [color]="uiService.button === ButtonState.Add ? 'primary' : ''" (click)="buttonClicked(ButtonState.Add)">
+            <button mat-icon-button [color]="uiService.button === ButtonState.Add ? 'primary' : ''" (click)="buttonClicked(ButtonState.Add)" matTooltip="Increase tokens or weight" [matTooltipShowDelay]="showDelay">
                 <mat-icon>add</mat-icon>
             </button>
 
             <!-- remove token tool -->
-            <button mat-icon-button [color]="uiService.button === ButtonState.Remove ? 'primary' : ''" (click)="buttonClicked(ButtonState.Remove)">
+            <button mat-icon-button [color]="uiService.button === ButtonState.Remove ? 'primary' : ''" (click)="buttonClicked(ButtonState.Remove)" matTooltip="Decrease tokens or weight" [matTooltipShowDelay]="showDelay">
                 <mat-icon>remove</mat-icon>
             </button>
 
             <!-- delete tool -->
-            <button mat-icon-button [color]="uiService.button === ButtonState.Delete ? 'primary' : ''" (click)="buttonClicked(ButtonState.Delete)">
+            <button mat-icon-button [color]="uiService.button === ButtonState.Delete ? 'primary' : ''" (click)="buttonClicked(ButtonState.Delete)" matTooltip="Delete element" [matTooltipShowDelay]="showDelay">
                 <mat-icon>delete</mat-icon>
+            </button>
+
+            <!-- clear all tool -->
+            <button mat-icon-button [color]="uiService.button === ButtonState.Clear ? 'primary' : ''" (click)="openClearDialog()">
+                <mat-icon>clear</mat-icon>
             </button>
 
             <!-- divider -->
             <div class="divider"></div>
 
             <!-- move tool -->
-            <button mat-icon-button [color]="uiService.button === ButtonState.Move ? 'primary' : ''" (click)="buttonClicked(ButtonState.Move)">
+            <button mat-icon-button [color]="uiService.button === ButtonState.Move ? 'primary' : ''" (click)="buttonClicked(ButtonState.Move)" matTooltip="Move element" [matTooltipShowDelay]="showDelay">
                 <mat-icon>open_with</mat-icon>
-            </button>
-
-            <!-- select tool -->
-            <button mat-icon-button [color]="uiService.button === ButtonState.Select ? 'primary' : ''" (click)="buttonClicked(ButtonState.Select)">
-                <mat-icon>ads_click</mat-icon>
             </button>
 
             <!-- divider -->
             <div class="divider"></div>
 
+            <!-- select tool -->
+            <button mat-icon-button [color]="uiService.button === ButtonState.Select ? 'primary' : ''" (click)="buttonClicked(ButtonState.Select)" matTooltip="Add action label to a transition" [matTooltipShowDelay]="showDelay">
+                <mat-icon>ads_click</mat-icon>
+            </button>
+
             <!-- customize actions tool -->
-            <button mat-icon-button (click)="openActionDialog()">
+            <button mat-icon-button (click)="openActionDialog()" matTooltip="Edit action label options" [matTooltipShowDelay]="showDelay">
                 <mat-icon>edit_note</mat-icon>
             </button>
 
@@ -81,12 +91,12 @@
         <!-- buttons for tab "play" -->
         <div class="button-container">
             <!-- restart tool -->
-            <button mat-icon-button [disabled]="tokenGameService.isGameHistoryEmpty()" (click)="tokenGameService.resetGame()">
+            <button mat-icon-button [disabled]="tokenGameService.isGameHistoryEmpty()" (click)="tokenGameService.resetGame()" matTooltip="Reset to start" [matTooltipShowDelay]="showDelay">
                 <mat-icon>restart_alt</mat-icon>
             </button>
 
             <!-- rewind tool -->
-            <button mat-icon-button [disabled]="tokenGameService.isGameHistoryEmpty()" (click)="tokenGameService.revertToPreviousState()">
+            <button mat-icon-button [disabled]="tokenGameService.isGameHistoryEmpty()" (click)="tokenGameService.revertToPreviousState()" matTooltip="Go back one step" [matTooltipShowDelay]="showDelay">
                 <mat-icon>fast_rewind</mat-icon>
             </button>
         </div>
@@ -100,19 +110,19 @@
         <!-- buttons for tab "save" -->
         <div class="button-container">
             <!-- export as json -->
-            <button mat-stroked-button class="text-button" (click)="exportJsonDataService.exportAsJson()">JSON</button>
+            <button mat-stroked-button class="text-button" (click)="exportJsonDataService.exportAsJson()" matTooltip="Export petrinet as JSON" [matTooltipShowDelay]="showDelay">JSON</button>
 
             <!-- export as pnml -->
-            <button mat-stroked-button class="text-button" (click)="pnmlService.writePNML()">PNML</button>
+            <button mat-stroked-button class="text-button" (click)="pnmlService.writePNML()" matTooltip="Export petrinet as PNML" [matTooltipShowDelay]="showDelay">PNML</button>
 
             <!-- divider -->
             <div class="divider"></div>
 
             <!-- export as png -->
-            <button mat-stroked-button class="text-button" (click)="exportImageService.exportAsImage('image/png', 'pngExport.png')">PNG</button>
+            <button mat-stroked-button class="text-button" (click)="exportImageService.exportAsImage('image/png', 'pngExport.png')" matTooltip="Save petrinet as PNG image" [matTooltipShowDelay]="showDelay">PNG</button>
 
             <!-- export as svg -->
-            <button mat-stroked-button class="text-button" (click)="exportSvgService.exportAsSvg()">SVG</button>
+            <button mat-stroked-button class="text-button" (click)="exportSvgService.exportAsSvg()" matTooltip="Save petrinet as SVG image" [matTooltipShowDelay]="showDelay">SVG</button>
         </div>
     </mat-tab>
 </mat-tab-group>

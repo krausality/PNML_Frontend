@@ -2,6 +2,7 @@ import {Injectable} from "@angular/core";
 import {Arc} from "../tr-classes/petri-net/arc";
 import {Place} from "../tr-classes/petri-net/place";
 import {Transition} from "../tr-classes/petri-net/transition";
+import { Node } from "src/app/tr-interfaces/petri-net/node";
 import {Point} from "../tr-classes/petri-net/point";
 import {Observable, of} from "rxjs";
 import {Node} from "../tr-interfaces/petri-net/node";
@@ -142,6 +143,29 @@ export class DataService {
         }
     }
 
+
+    clearAll():void {
+        this.places = [];
+        this.transitions = [];
+        this.arcs = [];
+        this.actions = [];
+    }
+
+    isEmpty(): boolean {
+        if(this.getPlaces().length != 0) {
+            return false
+        }
+        if(this.getTransitions().length != 0) {
+            return false
+        }
+        if(this.getArcs().length != 0) {
+            return false
+        }
+        if(this.getActions().length != 0) {
+            return false
+        }
+        return true;
+    }
 
     mockData() {
         this.places = [

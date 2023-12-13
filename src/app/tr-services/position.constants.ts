@@ -8,3 +8,6 @@ export const transitionHeight = 2 * radius;
 export const transitionXOffset = transitionWidth / 2;
 export const transitionYOffset = transitionHeight / 2;
 export const transitionIdYOffset = placeIdYOffset;
+
+// Anchors
+export const anchorRadius = 5;

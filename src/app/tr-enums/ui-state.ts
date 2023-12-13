@@ -9,9 +9,11 @@ export enum ButtonState {
     Place,
     Transition,
     Arc,
+    Anchor,
     Add,
     Remove,
     Delete,
+    Clear,
     Move,
     Select
 }
