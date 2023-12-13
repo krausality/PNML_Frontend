@@ -5,7 +5,6 @@ import {Transition} from "../tr-classes/petri-net/transition";
 import { Node } from "src/app/tr-interfaces/petri-net/node";
 import {Point} from "../tr-classes/petri-net/point";
 import {Observable, of} from "rxjs";
-import {Node} from "../tr-interfaces/petri-net/node";
 
 @Injectable({
     providedIn: 'root'
