@@ -5,6 +5,7 @@
     (mousedown)="dispatchSVGMouseDown($event, drawingArea)"
     (mousemove)="dispatchSVGMouseMove($event, drawingArea)"
     (mouseup)="dispatchSVGMouseUp($event, drawingArea)"
+    (contextmenu)="onContextMenu($event)"
 >
 
     <defs>

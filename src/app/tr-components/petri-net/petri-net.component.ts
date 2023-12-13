@@ -17,7 +17,6 @@ import {
 } from "../../tr-services/position.constants";
 import { PnmlService } from "../../tr-services/pnml.service";
 import { ExportJsonDataService } from 'src/app/tr-services/export-json-data.service';
-import { mathAbsPipe } from 'src/app/tr-pipes/math-abs.pipe';
 import { UiService } from 'src/app/tr-services/ui.service';
 import { Place } from 'src/app/tr-classes/petri-net/place';
 import { Point } from 'src/app/tr-classes/petri-net/point';
@@ -144,6 +143,7 @@ export class PetriNetComponent {
 
     // SVG
     dispatchSVGClick(event: MouseEvent, drawingArea: HTMLElement) {
+        event.preventDefault()
         if (this.uiService.button === ButtonState.Place) {
             // example method: can be deleted/replaced with final implementation
             this.addPlace(event, drawingArea);
@@ -315,6 +315,12 @@ export class PetriNetComponent {
 
         if (this.uiService.button === ButtonState.Delete) {
             this.dataService.removeArc(arc);
+        }
+    }
+
+    onContextMenu(event: MouseEvent): void {
+        if (this.uiService.button === ButtonState.Blitz) {
+            event.preventDefault();
         }
     }
 
