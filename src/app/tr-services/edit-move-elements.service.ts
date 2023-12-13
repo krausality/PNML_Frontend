@@ -29,11 +29,21 @@ export class EditMoveElementsService {
     // when automatic switch to 'move' mode occurs.
     newAnchor: Point | undefined;
 
+    isCanvasDragInProcess: Boolean = false;
+
     constructor(
         private dataService: DataService, 
         private uiService: UiService,
         private svgCoordinatesService: SvgCoordinatesService,
     ) { }
+
+    initializePetrinetPanning(event: MouseEvent) {
+        // Register initial mouse position
+        this.initialMousePos.x = event.clientX;
+        this.initialMousePos.y = event.clientY;
+
+        this.isCanvasDragInProcess = true;
+    }
 
     initializeNodeMove(event: MouseEvent, node: Node){
         // Register node to be moved
@@ -100,6 +110,28 @@ export class EditMoveElementsService {
         }
     }
 
+    movePetrinetPositionByMousePositionChange(event: MouseEvent) {
+        const deltaX = event.clientX - this.initialMousePos.x;
+        const deltaY = event.clientY - this.initialMousePos.y;
+
+        console.log(deltaX, deltaY);
+
+        [...this.dataService.getPlaces(), ...this.dataService.getTransitions()].forEach((node) => {
+            node.position.x += deltaX;
+            node.position.y += deltaY;
+        });
+
+        this.dataService.getArcs().forEach((arc) => {
+            arc.anchors.forEach(point => {
+                point.x += deltaX;
+                point.y += deltaY;
+            })
+        });
+
+        // Update initialMousePos for next move increment
+        this.initialMousePos = { x: event.clientX, y: event.clientY };
+    }
+
     finalizeMove(){
         // Finalizes move of both nodes and anchors
 
@@ -107,6 +139,8 @@ export class EditMoveElementsService {
         this.node = null;
         this.nodeArcs = [];
         this.anchor = null;
+
+        this.isCanvasDragInProcess = false;
 
         this.initialMousePos = {x:0, y:0};
 

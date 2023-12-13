@@ -75,10 +75,6 @@ export class PetriNetComponent {
     startTransition: Transition | undefined;
     startPlace: Place | undefined;
 
-    canvasDragStartPosition: Point | undefined;
-    isCanvasDragInProcess: boolean = false;
-    startViewBox: number[] | undefined;
-
     private parsePetrinetData(content: string | undefined, contentType: string) {
         if (content) {
             // Use pnml parser if file type is pnml
@@ -213,8 +209,6 @@ export class PetriNetComponent {
 
     // SVG
     dispatchSVGClick(event: MouseEvent, drawingArea: HTMLElement) {
-        this.isCanvasDragInProcess = false;
-
         if (this.uiService.button === ButtonState.Place) {
             // example method: can be deleted/replaced with final implementation
             this.addPlace(event, drawingArea);
@@ -225,48 +219,23 @@ export class PetriNetComponent {
     }
 
     dispatchSVGMouseDown(event: MouseEvent, drawingArea: HTMLElement) {
-        this.isCanvasDragInProcess = false;
-
         // If the move button is activated and the canvas (not one of the elements on it!) 
         // is drag & dropped the whole SVG should be panned
         if (this.uiService.button === ButtonState.Move) {
-            this.canvasDragStartPosition = this.svgCoordinatesService.getAbsoluteEventCoords(event, drawingArea);
-            this.isCanvasDragInProcess = true;
-
-            if (drawingArea.getAttribute('viewBox')) {
-                // If the SVG has a viewBox Attribute,
-                // all drag & drop adjustments need to be relative
-                // to the values set there
-                this.startViewBox = this.svgCoordinatesService.getSVGViewBox(drawingArea);
-            }
+            this.editMoveElementsService.initializePetrinetPanning(event);
         }
     }
 
     dispatchSVGMouseMove(event: MouseEvent, drawingArea: HTMLElement) {
-        // If the move button is activated and the canvas (not one of the elements on it!) 
-        // is drag & dropped the whole SVG should be panned
-        if (this.uiService.button === ButtonState.Move && this.isCanvasDragInProcess) {
-            const currentPosition = this.svgCoordinatesService.getAbsoluteEventCoords(event, drawingArea);
-
-            if (this.canvasDragStartPosition) {
-                // Get dragged distance
-                const differenceY = this.canvasDragStartPosition?.y - currentPosition.y;
-                const differenceX = this.canvasDragStartPosition?.x - currentPosition.x;
-
-                // Add dragged distance either to the empty viewBox attribute
-                // or relative to the existing viewBox values
-                if (this.startViewBox) {
-                    const minX: number = this.startViewBox[0] + differenceX;
-                    const minY: number = this.startViewBox[1] + differenceY;
-
-                    drawingArea.setAttribute("viewBox", `${minX} ${minY} ${drawingArea.scrollWidth} ${drawingArea.scrollHeight}`); 
-                } else {
-                    drawingArea.setAttribute("viewBox", `${differenceX} ${differenceY} ${drawingArea.scrollWidth} ${drawingArea.scrollHeight}`); 
-                }
+        if (this.uiService.button === ButtonState.Move) {
+            // If the move button is activated and the canvas (not one of the elements on it!) 
+            // is drag & dropped the whole SVG should be panned
+            if (this.editMoveElementsService.isCanvasDragInProcess) {
+                this.editMoveElementsService.movePetrinetPositionByMousePositionChange(event);
+            } else {
+                this.editMoveElementsService.moveNodeByMousePositionChange(event);
+                this.editMoveElementsService.moveAnchorByMousePositionChange(event);
             }
-        } else if (this.uiService.button === ButtonState.Move) {
-            this.editMoveElementsService.moveNodeByMousePositionChange(event);
-            this.editMoveElementsService.moveAnchorByMousePositionChange(event);
         }
     }
 
@@ -279,8 +248,6 @@ export class PetriNetComponent {
         if (this.uiService.button === ButtonState.Arc) {
             this.startTransition = undefined;
             this.startPlace = undefined;
-        } else if (this.uiService.button === ButtonState.Move && this.isCanvasDragInProcess) {
-            this.isCanvasDragInProcess = false;
         }
     }
 
