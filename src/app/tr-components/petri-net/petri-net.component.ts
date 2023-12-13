@@ -28,6 +28,7 @@ import { TokenGameService } from 'src/app/tr-services/token-game.service';
 import { MatDialog } from '@angular/material/dialog';
 import { SetActionPopupComponent } from '../set-action-popup/set-action-popup.component';
 import { Node } from "src/app/tr-interfaces/petri-net/node";
+import {ButtonConstants} from "../../tr-enums/button-constants";
 
 @Component({
     selector: 'app-petri-net',
@@ -36,7 +37,9 @@ import { Node } from "src/app/tr-interfaces/petri-net/node";
 })
 export class PetriNetComponent {
     @Output('fileContent') fileContent: EventEmitter<string>;
+
     lastNode: Node | null = null;
+    nextNode: Node | null = null;
 
     constructor(private parserService: ParserService, private httpClient: HttpClient, private fileReaderService: FileReaderService, protected dataService: DataService, protected exportJsonDataService: ExportJsonDataService, protected pnmlService: PnmlService, protected uiService: UiService, protected tokenGameService: TokenGameService, private matDialog: MatDialog) {
         this.httpClient.get("assets/example.json", { responseType: "text" }).subscribe(data => {
@@ -155,17 +158,41 @@ export class PetriNetComponent {
         }
 
         if (this.uiService.button === ButtonState.Blitz) {
+            if(this.nextNode) {
+                if(!this.lastNode){
+                    this.lastNode = this.nextNode;
+                    this.nextNode = null;
+                    return;
+                }
+            }
             if (!this.lastNode){
                 const place = this.createPlace(event,drawingArea);
                 this.dataService.getPlaces().push(place);
                 this.lastNode = place;
             } else if (this.lastNode instanceof Place) {
-                const transition = this.createTransition(event, drawingArea);
+                let transition
+                if(this.nextNode instanceof Transition) {
+                    transition = this.nextNode;
+                } else if(this.nextNode instanceof Place) {
+                    this.nextNode = null;
+                    return;
+                } else {
+                    transition = this.createTransition(event, drawingArea);
+                }
                 this.dataService.getTransitions().push(transition);
                 this.dataService.connectNodes(this.lastNode, transition);
                 this.lastNode = transition;
+                this.nextNode = null;
             } else if (this.lastNode instanceof Transition) {
-                const place = this.createPlace(event,drawingArea);
+                let place: Place;
+                if(this.nextNode instanceof Place) {
+                    place = this.nextNode;
+                } else if(this.nextNode instanceof Transition) {
+                    this.nextNode = null;
+                    return;
+                } else {
+                    place = this.createPlace(event,drawingArea);
+                }
                 this.dataService.getPlaces().push(place);
                 this.dataService.connectNodes(this.lastNode, place);
                 this.lastNode = place;
@@ -174,7 +201,10 @@ export class PetriNetComponent {
     }
 
     dispatchSVGMouseDown(event: MouseEvent, drawingArea: HTMLElement) {
-
+        if(this.uiService.button === ButtonState.Blitz && event.button == ButtonConstants.Right_Click) {
+            this.lastNode = null;
+            this.nextNode = null;
+        }
     }
 
     dispatchSVGMouseMove(event: MouseEvent, drawingArea: HTMLElement) {
@@ -191,6 +221,10 @@ export class PetriNetComponent {
 
     // Places
     dispatchPlaceClick(event: MouseEvent, place: Place) {
+        if(this.uiService.button === ButtonState.Blitz) {
+                this.nextNode = place;
+        }
+
         if (this.uiService.button === ButtonState.Add) {
             place.token++;
         }
@@ -225,6 +259,10 @@ export class PetriNetComponent {
 
     // Transitions
     dispatchTransitionClick(event: MouseEvent, transition: Transition) {
+        if(this.uiService.button === ButtonState.Blitz) {
+                this.nextNode = transition;
+        }
+
         // Token game: fire transition
         if (this.uiService.tab === TabState.Play) {
             this.tokenGameService.fire(transition);
