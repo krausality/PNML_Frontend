@@ -26,6 +26,7 @@ import { ButtonBarComponent } from './tr-components/button-bar/button-bar.compon
 import { mathAbsPipe } from './tr-pipes/math-abs.pipe';
 import { ManageActionsPopupComponent } from './tr-components/manage-actions-popup/manage-actions-popup.component';
 import { SetActionPopupComponent } from './tr-components/set-action-popup/set-action-popup.component';
+import {ClearPopupComponent} from "./tr-components/clear-popup/clear-popup.component";
 
 @NgModule({
     declarations: [
@@ -40,6 +41,7 @@ import { SetActionPopupComponent } from './tr-components/set-action-popup/set-ac
         mathAbsPipe,
         ManageActionsPopupComponent,
         SetActionPopupComponent,
+        ClearPopupComponent,
     ],
     imports: [
         BrowserModule,

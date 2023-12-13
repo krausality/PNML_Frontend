@@ -13,6 +13,7 @@ export enum ButtonState {
     Add,
     Remove,
     Delete,
+    Clear,
     Move,
     Select
 }
