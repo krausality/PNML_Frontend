@@ -114,8 +114,6 @@ export class EditMoveElementsService {
         const deltaX = event.clientX - this.initialMousePos.x;
         const deltaY = event.clientY - this.initialMousePos.y;
 
-        console.log(deltaX, deltaY);
-
         [...this.dataService.getPlaces(), ...this.dataService.getTransitions()].forEach((node) => {
             node.position.x += deltaX;
             node.position.y += deltaY;
