@@ -45,7 +45,7 @@ export class PetriNetComponent {
         private fileReaderService: FileReaderService,
         protected dataService: DataService,
         protected exportJsonDataService: ExportJsonDataService,
-        protected pnmlService: PnmlService, 
+        protected pnmlService: PnmlService,
         protected uiService: UiService,
         protected tokenGameService: TokenGameService,
         private matDialog: MatDialog,
@@ -331,7 +331,7 @@ export class PetriNetComponent {
             }
         }
 
-        if (this.uiService.button === ButtonState.Delete) {
+        if (this.uiService.button === ButtonState.Delete && !this.anchorDelete) {
             this.dataService.removeArc(arc);
         }
     }
@@ -347,10 +347,31 @@ export class PetriNetComponent {
     }
 
     // Anchors
+    anchorDelete: boolean = false;
     dispatchAnchorMouseDown(event: MouseEvent, anchor: Point) {
         if (this.uiService.button === ButtonState.Move) {
             this.editMoveElementsService.initializeAnchorMove(event, anchor);
         }
+
+        if (this.uiService.button === ButtonState.Delete){
+            // set flag
+            this.anchorDelete = true;
+            const arcs: Arc[] = this.dataService.getArcs();
+            for (let arc of arcs) {
+                for (let arcAnchor of arc.anchors) {
+                    if (anchor === arcAnchor) {
+                        const index = arc.anchors.indexOf(anchor);
+                        arc.anchors.splice(index, 1);
+                    }
+                }
+            }
+            // remove flag
+            this.anchorDelete = false;
+        }
+    }
+
+    dispatchAnchorClick(event: MouseEvent, anchor: Point) {
+
     }
 
     // ************************************************************************

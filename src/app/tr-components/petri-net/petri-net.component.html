@@ -165,14 +165,15 @@
         </ng-container>
 
         <!-- Anchor points -->
-        <ng-container *ngIf="uiService.button===ButtonState.Move || uiService.button===ButtonState.Anchor">
+        <ng-container *ngIf="uiService.button===ButtonState.Move || uiService.button===ButtonState.Anchor || uiService.button===ButtonState.Delete">
             <circle
                 *ngFor="let point of arc.anchors"
                 [ngClass]="{anchor:true, active: point===editMoveElementsService.newAnchor, editable: uiService.button===ButtonState.Move && !editMoveElementsService.newAnchor}"
                 [attr.cx]="point.x"
                 [attr.cy]="point.y"
                 [attr.r]="anchorRadius"
-                (mousedown)="dispatchAnchorMouseDown($event, point)" />
+                (mousedown)="dispatchAnchorMouseDown($event, point)"
+                (click)="dispatchAnchorClick($event, point)" />
         </ng-container>
     </g>
 
