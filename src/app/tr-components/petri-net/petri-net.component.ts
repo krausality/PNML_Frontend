@@ -430,7 +430,7 @@ export class PetriNetComponent {
 
     // returns true if the provided arc can be edited and should be highlighted
     isArcEditable(arc: Arc): boolean {
-        return (this.uiService.button === ButtonState.Anchor  || this.editMoveElementsService.newAnchor !== undefined)
+        return (this.uiService.button === ButtonState.Anchor || this.editMoveElementsService.newAnchor !== undefined)
             || this.uiService.button === ButtonState.Add
             || (this.uiService.button === ButtonState.Remove && Math.abs(arc.weight) > 1) // arc weights can only be decreased if the absolute value is > 1
             || this.uiService.button === ButtonState.Delete;
