@@ -173,7 +173,7 @@
                 [attr.cy]="point.y"
                 [attr.r]="anchorRadius"
                 (mousedown)="dispatchAnchorMouseDown($event, point)"
-                (click)="dispatchAnchorClick($event, point)" />
+                (mouseup)="dispatchAnchorMouseUp($event, point)" />
         </ng-container>
     </g>
 

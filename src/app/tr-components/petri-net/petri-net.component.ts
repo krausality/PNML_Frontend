@@ -235,6 +235,12 @@ export class PetriNetComponent {
             this.startTransition = undefined;
             this.startPlace = undefined;
         }
+
+        // Resed anchorToDelete
+        if (this.anchorToDelete) {
+            this.anchorToDelete = undefined;
+            console.log("Reset anchorToDelet on SVGMouseUp");
+        }
     }
 
     // Places
@@ -331,7 +337,7 @@ export class PetriNetComponent {
             }
         }
 
-        if (this.uiService.button === ButtonState.Delete && !this.anchorDelete) {
+        if (this.uiService.button === ButtonState.Delete && !this.anchorToDelete) {
             this.dataService.removeArc(arc);
         }
     }
@@ -347,7 +353,7 @@ export class PetriNetComponent {
     }
 
     // Anchors
-    anchorDelete: boolean = false;
+    anchorToDelete: Point | undefined;
     dispatchAnchorMouseDown(event: MouseEvent, anchor: Point) {
         if (this.uiService.button === ButtonState.Move) {
             this.editMoveElementsService.initializeAnchorMove(event, anchor);
@@ -355,7 +361,12 @@ export class PetriNetComponent {
 
         if (this.uiService.button === ButtonState.Delete){
             // set flag
-            this.anchorDelete = true;
+            this.anchorToDelete = anchor;
+        }
+    }
+
+    dispatchAnchorMouseUp(event: MouseEvent, anchor: Point) {
+        if (this.uiService.button === ButtonState.Delete && this.anchorToDelete === anchor) {
             const arcs: Arc[] = this.dataService.getArcs();
             for (let arc of arcs) {
                 for (let arcAnchor of arc.anchors) {
@@ -365,13 +376,7 @@ export class PetriNetComponent {
                     }
                 }
             }
-            // remove flag
-            this.anchorDelete = false;
         }
-    }
-
-    dispatchAnchorClick(event: MouseEvent, anchor: Point) {
-
     }
 
     // ************************************************************************
