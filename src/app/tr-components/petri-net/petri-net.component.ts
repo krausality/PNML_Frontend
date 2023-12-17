@@ -70,6 +70,7 @@ export class PetriNetComponent {
 
     startTransition: Transition | undefined;
     startPlace: Place | undefined;
+    anchorToDelete: Point | undefined;
 
     private parsePetrinetData(content: string | undefined, contentType: string) {
         if (content) {
@@ -236,10 +237,14 @@ export class PetriNetComponent {
             this.startPlace = undefined;
         }
 
-        // Resed anchorToDelete
+        // Resed anchorToDelete after both:
+        // * A successfull deletion of an anchor: mouse up on the anchor element
+        //   bubbles up to the svg element and triggers dispatchSVGMouseUp().
+        // * An aborted anchor deletion: mouse up does not occur on the original
+        //   anchor but somewhere else on the display area --> the event is captuered
+        //   here as well.
         if (this.anchorToDelete) {
             this.anchorToDelete = undefined;
-            console.log("Reset anchorToDelet on SVGMouseUp");
         }
     }
 
@@ -337,6 +342,9 @@ export class PetriNetComponent {
             }
         }
 
+        // Remove Arc
+        // Check of the field anchorToDelete prevents arc deletion when
+        // only an anchor should be deleted.
         if (this.uiService.button === ButtonState.Delete && !this.anchorToDelete) {
             this.dataService.removeArc(arc);
         }
@@ -353,29 +361,20 @@ export class PetriNetComponent {
     }
 
     // Anchors
-    anchorToDelete: Point | undefined;
     dispatchAnchorMouseDown(event: MouseEvent, anchor: Point) {
         if (this.uiService.button === ButtonState.Move) {
             this.editMoveElementsService.initializeAnchorMove(event, anchor);
         }
 
         if (this.uiService.button === ButtonState.Delete){
-            // set flag
+            // Register the anchor to be deleted
             this.anchorToDelete = anchor;
         }
     }
 
     dispatchAnchorMouseUp(event: MouseEvent, anchor: Point) {
-        if (this.uiService.button === ButtonState.Delete && this.anchorToDelete === anchor) {
-            const arcs: Arc[] = this.dataService.getArcs();
-            for (let arc of arcs) {
-                for (let arcAnchor of arc.anchors) {
-                    if (anchor === arcAnchor) {
-                        const index = arc.anchors.indexOf(anchor);
-                        arc.anchors.splice(index, 1);
-                    }
-                }
-            }
+        if (this.anchorToDelete === anchor) {
+            this.dataService.removeAnchor(anchor);
         }
     }
 

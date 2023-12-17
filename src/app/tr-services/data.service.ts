@@ -108,6 +108,17 @@ export class DataService {
         return this._actions;
     }
 
+    removeAnchor(deletableAnchor: Point) {
+        for (let arc of this._arcs) {
+            for (let arcAnchor of arc.anchors) {
+                if (deletableAnchor === arcAnchor) {
+                    const index = arc.anchors.indexOf(deletableAnchor);
+                    arc.anchors.splice(index, 1);
+                }
+            }
+        }
+    }
+
     checkActionUsed(action: string): boolean {
         return this._transitions.some(transition => transition.label === action);
     }
