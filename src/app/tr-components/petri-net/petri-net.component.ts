@@ -54,7 +54,7 @@ export class PetriNetComponent {
         private matDialog: MatDialog,
         protected editMoveElementsService: EditMoveElementsService
     ) {
-        this.httpClient.get("assets/example.json", { responseType: "text" }).subscribe(data => {
+        this.httpClient.get("assets/example.json", {responseType: "text"}).subscribe(data => {
             const [places, transitions, arcs, actions] = parserService.parse(data);
             this.dataService.places = places;
             this.dataService.transitions = transitions;
@@ -153,7 +153,9 @@ export class PetriNetComponent {
     }
 
     protected onWheelEventPlace(e: WheelEvent, place: Place) {
-        if(this.uiService.button === ButtonState.Blitz) {
+
+        //Scrolling is allowed in Both Directions with the Blitz-Tool
+        if (this.uiService.button === ButtonState.Blitz) {
             e.preventDefault();
             e.stopPropagation();
 
@@ -164,7 +166,7 @@ export class PetriNetComponent {
                 place.token--;
             }
         }
-        if(this.uiService.button === ButtonState.Add) {
+        if (this.uiService.button === ButtonState.Add) {
             e.preventDefault();
             e.stopPropagation();
 
@@ -183,7 +185,8 @@ export class PetriNetComponent {
 
     protected onWheelEventArc(e: WheelEvent, arc: Arc) {
 
-        if(this.uiService.button === ButtonState.Blitz) {
+        //Scrolling is allowed in Both Directions with the Blitz-Tool
+        if (this.uiService.button === ButtonState.Blitz) {
             e.preventDefault();
             e.stopPropagation();
 
@@ -252,46 +255,58 @@ export class PetriNetComponent {
         }
 
         //Reset Blitz-Tool to start new with a new Place
-        if(this.uiService.button !== ButtonState.Blitz) {
+        if (this.uiService.button !== ButtonState.Blitz) {
             this.lastNode = null;
         }
 
         if (this.uiService.button === ButtonState.Blitz) {
-            if(this.nextNode) {
-                if(!this.lastNode){
+            if (this.nextNode) {
+                // Initialising Blitz-Tool by clickling on an existing Node
+                if (!this.lastNode) {
                     this.lastNode = this.nextNode;
                     this.nextNode = null;
                     return;
                 }
             }
-            if (!this.lastNode){
-                const place = this.createPlace(event,drawingArea);
+
+            if (!this.lastNode) {
+                // Initialising Blitz-Tool by clickling on the Canvas
+                const place = this.createPlace(event, drawingArea);
                 this.dataService.getPlaces().push(place);
                 this.lastNode = place;
             } else if (this.lastNode instanceof Place) {
-                if(this.nextNode instanceof Transition) {
+                // Last Node was a Place
+                if (this.nextNode instanceof Transition) {
+                    // Connecting the Place to an existing Transition
                     const transition = this.nextNode;
                     this.dataService.getTransitions().push(transition);
                     this.dataService.connectNodes(this.lastNode, transition);
                     this.lastNode = this.nextNode;
-                } else if(this.nextNode instanceof Place) {
+                } else if (this.nextNode instanceof Place) {
+                    // If a Place is clicked the selected Node is changed
                     this.lastNode = this.nextNode;
-                } else if(!this.nextNode) {
+                } else if (!this.nextNode) {
+                    // Click on the Canvas
                     const transition = this.createTransition(event, drawingArea);
                     this.dataService.getTransitions().push(transition);
                     this.dataService.connectNodes(this.lastNode, transition);
                     this.lastNode = transition;
                 }
+
             } else if (this.lastNode instanceof Transition) {
-                if(this.nextNode instanceof Place) {
+                // Last Node was a Transition
+                if (this.nextNode instanceof Place) {
+                    // Connecting the Transition to an existing Place
                     const place = this.nextNode;
                     this.dataService.getPlaces().push(place);
                     this.dataService.connectNodes(this.lastNode, place);
                     this.lastNode = this.nextNode;
-                } else if(this.nextNode instanceof Transition) {
+                } else if (this.nextNode instanceof Transition) {
+                    // If a Transition is clicked the selected Node is changed
                     this.lastNode = this.nextNode;
-                } else if(!this.nextNode) {
-                    const place = this.createPlace(event,drawingArea);
+                } else if (!this.nextNode) {
+                    // Click on the Canvas
+                    const place = this.createPlace(event, drawingArea);
                     this.dataService.getPlaces().push(place);
                     this.dataService.connectNodes(this.lastNode, place);
                     this.lastNode = place;
@@ -302,15 +317,15 @@ export class PetriNetComponent {
     }
 
     dispatchSVGMouseDown(event: MouseEvent, drawingArea: HTMLElement) {
-        if(this.uiService.button === ButtonState.Blitz && event.button == MouseConstants.Right_Click) {
+        if (this.uiService.button === ButtonState.Blitz && event.button == MouseConstants.Right_Click) {
             this.lastNode = null;
             this.nextNode = null;
         }
-        if(this.uiService.button === ButtonState.Blitz
+        if (this.uiService.button === ButtonState.Blitz
             && event.button == MouseConstants.Mouse_Wheel_Click
             && !this.lastNode) {
             event.preventDefault();
-            const transition = this.createTransition(event,drawingArea);
+            const transition = this.createTransition(event, drawingArea);
             this.dataService.getTransitions().push(transition);
             this.lastNode = transition;
         }
@@ -337,8 +352,9 @@ export class PetriNetComponent {
 
     // Places
     dispatchPlaceClick(event: MouseEvent, place: Place) {
-        if(this.uiService.button === ButtonState.Blitz) {
-                this.nextNode = place;
+        //Existing Place is selected as the next Node. Method is called before dispatchSVGClick
+        if (this.uiService.button === ButtonState.Blitz) {
+            this.nextNode = place;
         }
 
         if (this.uiService.button === ButtonState.Add) {
@@ -346,7 +362,7 @@ export class PetriNetComponent {
         }
 
         if (this.uiService.button === ButtonState.Remove) {
-            if(place.token>0) {
+            if (place.token > 0) {
                 place.token--;
             }
         }
@@ -369,18 +385,19 @@ export class PetriNetComponent {
 
     dispatchPlaceMouseUp(event: MouseEvent, place: Place) {
         // Draw Arc with Place as EndNode
-        if(this.startTransition && !this.isArcExisting(this.startTransition, place) && this.uiService.button === ButtonState.Arc) {
-                const newArc: Arc = new Arc(this.startTransition, place, 1);
-                this.startTransition.appendPostArc(newArc);
-                this.dataService.getArcs().push(newArc);
-                this.startTransition = undefined;
+        if (this.startTransition && !this.isArcExisting(this.startTransition, place) && this.uiService.button === ButtonState.Arc) {
+            const newArc: Arc = new Arc(this.startTransition, place, 1);
+            this.startTransition.appendPostArc(newArc);
+            this.dataService.getArcs().push(newArc);
+            this.startTransition = undefined;
         }
     }
 
     // Transitions
     dispatchTransitionClick(event: MouseEvent, transition: Transition) {
-        if(this.uiService.button === ButtonState.Blitz) {
-                this.nextNode = transition;
+        //Existing Transition is selected as the next Node. Method is called before dispatchSVGClick
+        if (this.uiService.button === ButtonState.Blitz) {
+            this.nextNode = transition;
         }
 
         // Token game: fire transition
@@ -421,18 +438,18 @@ export class PetriNetComponent {
     dispatchArcClick(event: MouseEvent, arc: Arc) {
         // Add Weight to Arc
         if (this.uiService.button === ButtonState.Add) {
-            if(arc.weight>0) {
+            if (arc.weight > 0) {
                 arc.weight++;
-            } else if(arc.weight<0) {
+            } else if (arc.weight < 0) {
                 arc.weight--;
             }
         }
 
         // Remove Weight from Arc
         if (this.uiService.button === ButtonState.Remove) {
-            if(arc.weight>1) {
+            if (arc.weight > 1) {
                 arc.weight--;
-            } else if(arc.weight<-1) {
+            } else if (arc.weight < -1) {
                 arc.weight++;
             }
         }
