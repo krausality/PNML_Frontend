@@ -1,34 +1,34 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, EventEmitter, Output } from '@angular/core';
-import { ParserService } from 'src/app/tr-services/parser.service';
-import { catchError, of, take } from 'rxjs';
-import { FileReaderService } from "../../services/file-reader.service";
-import { DataService } from "../../tr-services/data.service";
-import { ExampleFileComponent } from "src/app/components/example-file/example-file.component";
+import {HttpClient} from '@angular/common/http';
+import {Component, EventEmitter, Output} from '@angular/core';
+import {ParserService} from 'src/app/tr-services/parser.service';
+import {catchError, of, take} from 'rxjs';
+import {FileReaderService} from "../../services/file-reader.service";
+import {DataService} from "../../tr-services/data.service";
+import {ExampleFileComponent} from "src/app/components/example-file/example-file.component";
 
 import {
-    radius,
+    anchorRadius,
     placeIdYOffset,
-    transitionWidth,
+    radius,
     transitionHeight,
-    transitionXOffset,
-    transitionYOffset,
     transitionIdYOffset,
-    anchorRadius
+    transitionWidth,
+    transitionXOffset,
+    transitionYOffset
 } from "../../tr-services/position.constants";
-import { PnmlService } from "../../tr-services/pnml.service";
-import { ExportJsonDataService } from 'src/app/tr-services/export-json-data.service';
-import { UiService } from 'src/app/tr-services/ui.service';
-import { Place } from 'src/app/tr-classes/petri-net/place';
-import { Point } from 'src/app/tr-classes/petri-net/point';
-import { Transition } from 'src/app/tr-classes/petri-net/transition';
-import { Arc } from 'src/app/tr-classes/petri-net/arc';
-import { EditMoveElementsService } from 'src/app/tr-services/edit-move-elements.service';
-import { ButtonState, TabState } from 'src/app/tr-enums/ui-state';
-import { TokenGameService } from 'src/app/tr-services/token-game.service';
-import { MatDialog } from '@angular/material/dialog';
-import { SetActionPopupComponent } from '../set-action-popup/set-action-popup.component';
-import { Node } from "src/app/tr-interfaces/petri-net/node";
+import {PnmlService} from "../../tr-services/pnml.service";
+import {ExportJsonDataService} from 'src/app/tr-services/export-json-data.service';
+import {UiService} from 'src/app/tr-services/ui.service';
+import {Place} from 'src/app/tr-classes/petri-net/place';
+import {Point} from 'src/app/tr-classes/petri-net/point';
+import {Transition} from 'src/app/tr-classes/petri-net/transition';
+import {Arc} from 'src/app/tr-classes/petri-net/arc';
+import {EditMoveElementsService} from 'src/app/tr-services/edit-move-elements.service';
+import {ButtonState, TabState} from 'src/app/tr-enums/ui-state';
+import {TokenGameService} from 'src/app/tr-services/token-game.service';
+import {MatDialog} from '@angular/material/dialog';
+import {SetActionPopupComponent} from '../set-action-popup/set-action-popup.component';
+import {Node} from "src/app/tr-interfaces/petri-net/node";
 import {MouseConstants} from "../../tr-enums/mouse-constants";
 
 @Component({
@@ -153,7 +153,17 @@ export class PetriNetComponent {
     }
 
     protected onWheelEventPlace(e: WheelEvent, place: Place) {
+        if(this.uiService.button === ButtonState.Blitz) {
+            e.preventDefault();
+            e.stopPropagation();
 
+            if (e.deltaY < 0) {
+                place.token++;
+            }
+            if (e.deltaY > 0 && place.token > 0) {
+                place.token--;
+            }
+        }
         if(this.uiService.button === ButtonState.Add) {
             e.preventDefault();
             e.stopPropagation();
@@ -173,6 +183,30 @@ export class PetriNetComponent {
 
     protected onWheelEventArc(e: WheelEvent, arc: Arc) {
 
+        if(this.uiService.button === ButtonState.Blitz) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (e.deltaY < 0) {
+                // positives Gewicht erhöhen
+                if (arc.weight > 0) {
+                    arc.weight++;
+                } // negatives Gewicht erhöhren
+                else if (arc.weight < 0) {
+                    arc.weight--;
+                }
+            }
+            if (e.deltaY > 0) {
+                // positives Gewicht verringern
+                if (arc.weight > 1) {
+                    arc.weight--;
+                } // negatives Gewicht verringern
+                else if (arc.weight < -1) {
+                    arc.weight++;
+                }
+                //Scroll Up
+            }
+        }
         if (this.uiService.button === ButtonState.Add) {
             e.preventDefault();
             e.stopPropagation();
@@ -239,10 +273,9 @@ export class PetriNetComponent {
                     const transition = this.nextNode;
                     this.dataService.getTransitions().push(transition);
                     this.dataService.connectNodes(this.lastNode, transition);
-                    this.lastNode = null;
+                    this.lastNode = this.nextNode;
                 } else if(this.nextNode instanceof Place) {
                     this.lastNode = this.nextNode;
-                    this.nextNode = null;
                 } else if(!this.nextNode) {
                     const transition = this.createTransition(event, drawingArea);
                     this.dataService.getTransitions().push(transition);
@@ -254,10 +287,9 @@ export class PetriNetComponent {
                     const place = this.nextNode;
                     this.dataService.getPlaces().push(place);
                     this.dataService.connectNodes(this.lastNode, place);
-                    this.lastNode = null
+                    this.lastNode = this.nextNode;
                 } else if(this.nextNode instanceof Transition) {
                     this.lastNode = this.nextNode;
-                    this.nextNode = null;
                 } else if(!this.nextNode) {
                     const place = this.createPlace(event,drawingArea);
                     this.dataService.getPlaces().push(place);
@@ -273,6 +305,14 @@ export class PetriNetComponent {
         if(this.uiService.button === ButtonState.Blitz && event.button == MouseConstants.Right_Click) {
             this.lastNode = null;
             this.nextNode = null;
+        }
+        if(this.uiService.button === ButtonState.Blitz
+            && event.button == MouseConstants.Mouse_Wheel_Click
+            && !this.lastNode) {
+            event.preventDefault();
+            const transition = this.createTransition(event,drawingArea);
+            this.dataService.getTransitions().push(transition);
+            this.lastNode = transition;
         }
     }
 
