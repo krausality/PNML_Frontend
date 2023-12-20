@@ -411,6 +411,31 @@ export class PetriNetComponent {
         return this.dataService.getArcs().some(arc => arc.from === startNode && arc.to === endNote);
     }
 
+    // returns true if the provided place can be edited and should be highlighted
+    isPlaceEditable(place: Place): boolean {
+        return (this.uiService.button === ButtonState.Move && !this.editMoveElementsService.newAnchor)
+            || this.uiService.button === ButtonState.Add
+            || (this.uiService.button === ButtonState.Remove && place.token > 0) // tokens can only be removed if the number of tokens in a place is > 0
+            || this.uiService.button === ButtonState.Delete
+            || (this.uiService.button === ButtonState.Arc && !this.startPlace); // if the user starts dragging an arc from a place he can only finish on a transition --> places are no longer editable
+    }
+
+    // returns true if transitions can be edited and should be highlighted
+    isTransitionEditable(): boolean {
+        return (this.uiService.button === ButtonState.Move && !this.editMoveElementsService.newAnchor)
+            || this.uiService.button === ButtonState.Select
+            || this.uiService.button === ButtonState.Delete
+            || (this.uiService.button === ButtonState.Arc && !this.startTransition); // if the user starts dragging an arc from a transition he can only finish on a place --> transitions no longer editable
+    }
+
+    // returns true if the provided arc can be edited and should be highlighted
+    isArcEditable(arc: Arc): boolean {
+        return (this.uiService.button === ButtonState.Anchor || this.editMoveElementsService.newAnchor !== undefined)
+            || this.uiService.button === ButtonState.Add
+            || (this.uiService.button === ButtonState.Remove && Math.abs(arc.weight) > 1) // arc weights can only be decreased if the absolute value is > 1
+            || this.uiService.button === ButtonState.Delete;
+    }
+
     protected readonly radius = radius;
     protected readonly placeIdYOffset = placeIdYOffset;
 
