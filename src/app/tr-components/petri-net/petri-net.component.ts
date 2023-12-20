@@ -505,16 +505,19 @@ export class PetriNetComponent {
     }
 
     dispatchLineSegmentMouseDown(event: MouseEvent, arc: Arc, lineSegment: Point[], drawingArea: HTMLElement) {
-        event.stopPropagation();
         if (this.uiService.button === ButtonState.Anchor) {
             this.editMoveElementsService.insertAnchorIntoLineSegmentStart(event, arc, lineSegment, drawingArea);
+        }
+
+        if (this.uiService.button === ButtonState.Anchor) {
+            event.stopPropagation();
         }
     }
 
     // Anchors
     dispatchAnchorMouseDown(event: MouseEvent, anchor: Point) {
-        event.stopPropagation();
         if (this.uiService.button === ButtonState.Move) {
+            event.stopPropagation();
             this.editMoveElementsService.initializeAnchorMove(event, anchor);
         }
 
