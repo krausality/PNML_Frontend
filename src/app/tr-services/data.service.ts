@@ -123,6 +123,37 @@ export class DataService {
         return this._transitions.some(transition => transition.label === action);
     }
 
+    //The Nodes are not added to the Arrays during this function
+    connectNodes(from: Node, to:Node): void{
+        if(from instanceof Place && to instanceof Place) {
+            return;
+        }
+        if(from instanceof Transition && to instanceof Transition) {
+            return;
+        }
+        if(from instanceof Place && to instanceof  Transition) {
+            const preArcs = to.preArcs;
+            if(preArcs.find(arc => arc.from === from)){
+                return;
+            } else {
+                const arc = new Arc(from, to);
+                to.preArcs.push(arc)
+                this.getArcs().push(arc);
+            }
+        }
+        if(from instanceof Transition && to instanceof  Place) {
+            const postArcs = from.postArcs;
+            if(postArcs.find(arc => arc.to === to)){
+                return;
+            } else {
+                const arc = new Arc(from, to);
+                from.postArcs.push(arc)
+                this.getArcs().push(arc);
+            }
+        }
+    }
+
+
     clearAll():void {
         this.places = [];
         this.transitions = [];
