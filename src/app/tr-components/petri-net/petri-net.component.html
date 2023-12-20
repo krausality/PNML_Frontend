@@ -8,6 +8,7 @@
     (mousedown)="dispatchSVGMouseDown($event, drawingArea)"
     (mousemove)="dispatchSVGMouseMove($event, drawingArea)"
     (mouseup)="dispatchSVGMouseUp($event, drawingArea)"
+    (contextmenu)="onContextMenu($event)"
 >
 
     <defs>
@@ -31,7 +32,7 @@
         (wheel)="onWheelEventPlace($event, place)">
         <g>
             <circle
-                [ngClass]="{place: true, editable: uiService.button===ButtonState.Move && !editMoveElementsService.newAnchor}"
+                [ngClass]="{place: true, editable: isPlaceEditable(place)}"
                 [attr.cx]="place.position.x"
                 [attr.cy]="place.position.y"
                 [attr.r]="radius" />
@@ -56,7 +57,7 @@
         (mousedown)="dispatchTransitionMouseDown($event, transition)"
         (mouseup)="dispatchTransitionMouseUp($event, transition)">
         <rect
-            [ngClass]="{transition:true, active: transition.isActive, editable: uiService.button===ButtonState.Move && !editMoveElementsService.newAnchor}"
+            [ngClass]="{transition:true, active: transition.isActive, editable: isTransitionEditable()}"
             [attr.x]="transition.position.x - transitionXOffset"
             [attr.y]="transition.position.y - transitionYOffset"
             [attr.width]="transitionWidth"
@@ -84,7 +85,7 @@
             class="background-arc"
             [attr.points]="arc.polyLinePoints"></polyline>
         <polyline
-            [ngClass]="{arc, insertable: uiService.button===ButtonState.Anchor  || editMoveElementsService.newAnchor}"
+            [ngClass]="{arc, editable: isArcEditable(arc)}"
             [attr.points]="arc.polyLinePoints"
             marker-end="url(#arrow)"></polyline>
         <g *ngIf="arc.weight > 1 || arc.weight < -1">
@@ -166,14 +167,15 @@
         </ng-container>
 
         <!-- Anchor points -->
-        <ng-container *ngIf="uiService.button===ButtonState.Move || uiService.button===ButtonState.Anchor">
+        <ng-container *ngIf="uiService.button===ButtonState.Move || uiService.button===ButtonState.Anchor || uiService.button===ButtonState.Delete">
             <circle
                 *ngFor="let point of arc.anchors"
                 [ngClass]="{anchor:true, active: point===editMoveElementsService.newAnchor, editable: uiService.button===ButtonState.Move && !editMoveElementsService.newAnchor}"
                 [attr.cx]="point.x"
                 [attr.cy]="point.y"
                 [attr.r]="anchorRadius"
-                (mousedown)="dispatchAnchorMouseDown($event, point)" />
+                (mousedown)="dispatchAnchorMouseDown($event, point)"
+                (mouseup)="dispatchAnchorMouseUp($event, point)" />
         </ng-container>
     </g>
 </svg>
