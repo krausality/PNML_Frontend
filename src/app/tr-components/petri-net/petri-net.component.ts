@@ -45,7 +45,7 @@ export class PetriNetComponent {
         private fileReaderService: FileReaderService,
         protected dataService: DataService,
         protected exportJsonDataService: ExportJsonDataService,
-        protected pnmlService: PnmlService, 
+        protected pnmlService: PnmlService,
         protected uiService: UiService,
         protected tokenGameService: TokenGameService,
         private matDialog: MatDialog,
@@ -70,6 +70,7 @@ export class PetriNetComponent {
 
     startTransition: Transition | undefined;
     startPlace: Place | undefined;
+    anchorToDelete: Point | undefined;
 
     private parsePetrinetData(content: string | undefined, contentType: string) {
         if (content) {
@@ -235,6 +236,16 @@ export class PetriNetComponent {
             this.startTransition = undefined;
             this.startPlace = undefined;
         }
+
+        // Resed anchorToDelete after both:
+        // * A successfull deletion of an anchor: mouse up on the anchor element
+        //   bubbles up to the svg element and triggers dispatchSVGMouseUp().
+        // * An aborted anchor deletion: mouse up does not occur on the original
+        //   anchor but somewhere else on the display area --> the event is captuered
+        //   here as well.
+        if (this.anchorToDelete) {
+            this.anchorToDelete = undefined;
+        }
     }
 
     // Places
@@ -331,7 +342,10 @@ export class PetriNetComponent {
             }
         }
 
-        if (this.uiService.button === ButtonState.Delete) {
+        // Remove Arc
+        // Check of the field anchorToDelete prevents arc deletion when
+        // only an anchor should be deleted.
+        if (this.uiService.button === ButtonState.Delete && !this.anchorToDelete) {
             this.dataService.removeArc(arc);
         }
     }
@@ -350,6 +364,17 @@ export class PetriNetComponent {
     dispatchAnchorMouseDown(event: MouseEvent, anchor: Point) {
         if (this.uiService.button === ButtonState.Move) {
             this.editMoveElementsService.initializeAnchorMove(event, anchor);
+        }
+
+        if (this.uiService.button === ButtonState.Delete){
+            // Register the anchor to be deleted
+            this.anchorToDelete = anchor;
+        }
+    }
+
+    dispatchAnchorMouseUp(event: MouseEvent, anchor: Point) {
+        if (this.anchorToDelete === anchor) {
+            this.dataService.removeAnchor(anchor);
         }
     }
 
