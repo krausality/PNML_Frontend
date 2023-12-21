@@ -1,5 +1,9 @@
 <mat-form-field id="layout-switch">
-    <mat-select placeholder="Layout" [(value)]="selected" (selectionChange)="layoutSwitchChanged()">
+    <mat-select
+        placeholder="Layout"
+        [(value)]="selected"
+        (selectionChange)="layoutSwitchChanged()"
+    >
         <mat-option value="free">Frei</mat-option>
         <mat-option value="spring-embedder">Spring Embedder</mat-option>
         <mat-option value="sugiyama">Sugiyama</mat-option>

@@ -12,11 +12,12 @@
         <!-- the value is two way bound directly to the transitions label => is this bad? -->
         <mat-select [(value)]="data.node.label">
             <!-- empty option at the top to be able to remove labels -->
-            <mat-option>
-                -
-            </mat-option>
+            <mat-option> - </mat-option>
             <!-- all other actions -->
-            <mat-option *ngFor="let action of dataService.getActions()" [value]="action">
+            <mat-option
+                *ngFor="let action of dataService.getActions()"
+                [value]="action"
+            >
                 {{ action }}
             </mat-option>
         </mat-select>

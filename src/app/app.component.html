@@ -1,9 +1,12 @@
 <div fxLayout="column" fxLayoutAlign="start stretch">
     <!--  Header  -->
-    <a href="https://www.fernuni-hagen.de/ilovepetrinets/"><h1>I <span class="red">❤</span> Petri Nets</h1></a>
+    <a href="https://www.fernuni-hagen.de/ilovepetrinets/"
+        ><h1>I <span class="red">❤</span> Petri Nets</h1></a
+    >
     <h2>
-        Fachpraktikum Programmiersysteme WiSe23/24 by<br>
-        Adrian Koder-Horsten, Marcel Tenié, Martin Morawietz, Philipp Alber and Sonja Hartl
+        Fachpraktikum Programmiersysteme WiSe23/24 by<br />
+        Adrian Koder-Horsten, Marcel Tenié, Martin Morawietz, Philipp Alber and
+        Sonja Hartl
     </h2>
 
     <!--    Main content    -->
@@ -15,25 +18,31 @@
     </div>
 
     <!-- petri net component -->
-    <app-petri-net class="padding full-size" (fileContent)="processSourceChange($event)"></app-petri-net>
+    <app-petri-net
+        class="padding full-size"
+        (fileContent)="processSourceChange($event)"
+    ></app-petri-net>
 
     <div fxLayout="row" fxLayoutAlign="space-evenly start">
+        <app-example-file
+            title="File"
+            link="assets/example.json"
+            description="An example .json Petri net"
+        ></app-example-file>
 
-
-        <app-example-file title="File" link="assets/example.json" description="An example .json Petri net"></app-example-file>
-
-        <mat-form-field appearance="outline"
-                        class="textarea">
+        <mat-form-field appearance="outline" class="textarea">
             <mat-label>File content</mat-label>
-            <textarea matInput
-                      cdkTextareaAutosize
-                      cdkAutosizeMinRows="10"
-                      cdkAutosizeMaxRows="20"
-                      [formControl]="textareaFc"></textarea>
+            <textarea
+                matInput
+                cdkTextareaAutosize
+                cdkAutosizeMinRows="10"
+                cdkAutosizeMaxRows="20"
+                [formControl]="textareaFc"
+            ></textarea>
         </mat-form-field>
     </div>
 
     <!--  Footer  -->
-    <hr>
+    <hr />
     <app-footer></app-footer>
 </div>
