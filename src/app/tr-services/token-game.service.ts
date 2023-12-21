@@ -2,17 +2,16 @@ import { Injectable } from '@angular/core';
 import { Transition } from '../tr-classes/petri-net/transition';
 import { Place } from '../tr-classes/petri-net/place';
 
-import { DataService } from "./data.service";
+import { DataService } from './data.service';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class TokenGameService {
-    
-    private _tokenHistory: Map<Place, number>[]= [];
-    
+    private _tokenHistory: Map<Place, number>[] = [];
+
     constructor(protected dataService: DataService) {}
-    
+
     // Method for token game
     fire(transition: Transition) {
         if (transition.isActive) {
@@ -52,7 +51,7 @@ export class TokenGameService {
 
         this.setGameState(state);
     }
-    
+
     resetGame() {
         // Takes the first/bottom item of the token history stack
         // and resets the values accordingly
@@ -72,16 +71,17 @@ export class TokenGameService {
         }
         return tokenMapping;
     }
-    
+
     private setGameState(state: Map<Place, number>) {
         for (let place of this.dataService.getPlaces()) {
             const tokens = state.get(place);
             if (tokens === undefined) {
-                throw new Error('Tried retrieving tokens for a place that doesn\'t exist in saved state.');
+                throw new Error(
+                    "Tried retrieving tokens for a place that doesn't exist in saved state.",
+                );
             } else {
                 place.token = tokens;
             }
         }
     }
-    
 }

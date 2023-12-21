@@ -1,7 +1,7 @@
 export enum TabState {
     Build,
     Play,
-    Save
+    Save,
 }
 
 export enum ButtonState {
@@ -15,5 +15,5 @@ export enum ButtonState {
     Delete,
     Clear,
     Move,
-    Select
+    Select,
 }

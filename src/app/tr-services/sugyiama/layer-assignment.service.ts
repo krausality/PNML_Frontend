@@ -1,27 +1,24 @@
-import { LayeredGraph } from "src/app/tr-services/sugyiama/types";
-import { Node } from "src/app/tr-interfaces/petri-net/node";
+import { LayeredGraph } from 'src/app/tr-services/sugyiama/types';
+import { Node } from 'src/app/tr-interfaces/petri-net/node';
 
-/** 
+/**
  * Layer Assignment Service
  *
  * Loops through a graph and assigns its nodes to layers.
  * This implementation follows the Longest Path Algorithm proposed by
  * Tamassia et al., Handbook of Graph Drawing and Visualization, 2010
- * 
+ *
  */
 export class LayerAssignmentService {
     // Initial set of nodes and arcs
     private _nodes: Node[] = [];
     private _nodeInputMap: Map<Node, Node[]> = new Map();
-    
-    private _assignedNodes: Node[] = []; 
-    
+
+    private _assignedNodes: Node[] = [];
+
     private _layers: LayeredGraph = [];
 
-    constructor(
-        nodes: Node[],
-        nodeInputMap: Map<Node, Node[]>
-    ) {
+    constructor(nodes: Node[], nodeInputMap: Map<Node, Node[]>) {
         this._nodes = nodes;
         this._nodeInputMap = nodeInputMap;
     }
@@ -32,7 +29,10 @@ export class LayerAssignmentService {
         let counter = 0;
 
         // Add nodes to layers until there are no unassigned nodes left
-        while (this._assignedNodes.length < this._nodes.length && counter < 20) {
+        while (
+            this._assignedNodes.length < this._nodes.length &&
+            counter < 20
+        ) {
             counter++;
 
             const previousLayer = this._layers[layerId - 1];
@@ -68,7 +68,7 @@ export class LayerAssignmentService {
     }
 
     // gets all nodes that have incoming edges from the given layer
-    private getNodeChoicesForLayer(prevLayer: Node[] | undefined): Node[]  {
+    private getNodeChoicesForLayer(prevLayer: Node[] | undefined): Node[] {
         const incomingNodes: Node[] = [];
 
         // Get the pre-nodes for each node form the graph map
@@ -82,12 +82,14 @@ export class LayerAssignmentService {
 
             if (!prevLayer || prevLayer.length === 0) {
                 // If this is the first layer/the previous layer has no nodes
-                // all nodes are potential candidates for the layer 
-                if (preNode.length === 0) incomingNodes.push(node);  
+                // all nodes are potential candidates for the layer
+                if (preNode.length === 0) incomingNodes.push(node);
             } else {
                 // Otherwise only nodes that have prenodes coming from
                 // the previous layer are candidates for the current layer
-                let intersection = [...preNode].filter(preNode => prevLayer.includes(preNode));
+                let intersection = [...preNode].filter((preNode) =>
+                    prevLayer.includes(preNode),
+                );
                 if (intersection.length) {
                     incomingNodes.push(node);
                 }

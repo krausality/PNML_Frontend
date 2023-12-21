@@ -49,23 +49,23 @@
     stroke-width: 12 !important;
 }
 
-.place-id{
+.place-id {
     fill: black;
 }
 
-.token-label{
+.token-label {
     fill: black;
 }
 
-.tansition-id{
+.tansition-id {
     fill: grey;
 }
 
-.arc-weight{
+.arc-weight {
     fill: black;
 }
 
-.arc-weight-background{
+.arc-weight-background {
     fill: white;
     transition: fill 1s;
 }
@@ -99,7 +99,7 @@
 
 /* Styles for 'move' and 'anchor' mode */
 .anchor {
-    fill:black;
+    fill: black;
     stroke: black;
     stroke-width: 0px;
 }
@@ -109,11 +109,13 @@
     stroke-width: 10;
 }
 
-.editable, .insertable {
+.editable,
+.insertable {
     filter: drop-shadow(0 0 3px rgba(255, 0, 0, 1));
 }
 
-.editable:active, .anchor.active {
+.editable:active,
+.anchor.active {
     stroke: red;
     stroke-width: 2;
 }
@@ -122,6 +124,8 @@
     pointer-events: none;
 }
 
-.editable:hover, .anchor.active, .line-segment:hover {
+.editable:hover,
+.anchor.active,
+.line-segment:hover {
     cursor: pointer;
 }

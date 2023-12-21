@@ -1,5 +1,5 @@
-import { Node } from "src/app/tr-interfaces/petri-net/node";
-import { Point } from "./point";
+import { Node } from 'src/app/tr-interfaces/petri-net/node';
+import { Point } from './point';
 
 export class DummyNode implements Node {
     position: Point;
@@ -19,5 +19,5 @@ export class DummyNode implements Node {
 
     pLiesOutsideNodeShapeBoudary(p: Point): boolean {
         return true;
-    };
+    }
 }

@@ -2,12 +2,11 @@ export interface PnmlPetriNet {
     elements: Array<PnmlElement>;
 }
 
-
 export interface PnmlElement {
     type: string;
     name: string;
     text: string;
-    attributes:attribute
+    attributes: attribute;
     elements: Array<PnmlElement>;
 }
 
@@ -17,5 +16,5 @@ interface attribute {
     source: string;
     target: string;
     x: number;
-    y: number
+    y: number;
 }

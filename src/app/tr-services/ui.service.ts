@@ -2,10 +2,9 @@ import { Injectable } from '@angular/core';
 import { ButtonState, TabState } from '../tr-enums/ui-state';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class UiService {
-
     // stores the active tab
     // starting value is "TabState.Build", meaning we always start on the build tab
     tab: TabState = TabState.Build;
@@ -13,5 +12,5 @@ export class UiService {
     // default is empty
     button: ButtonState | null = null;
 
-    constructor() { }
+    constructor() {}
 }

@@ -1,14 +1,18 @@
 import { Injectable } from '@angular/core';
 import { DataService } from './data.service';
 import { JsonPetriNet } from '../classes/json-petri-net';
-import { Formatter, CommentPolicy, FracturedJsonOptions, EolStyle } from 'fracturedjsonjs';
+import {
+    Formatter,
+    CommentPolicy,
+    FracturedJsonOptions,
+    EolStyle,
+} from 'fracturedjsonjs';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class ExportJsonDataService {
-
-    constructor(private dataService: DataService) { }
+    constructor(private dataService: DataService) {}
 
     public exportAsJson() {
         const jsonObj: JsonPetriNet = this.generateJsonObject();
@@ -27,9 +31,9 @@ export class ExportJsonDataService {
         // Instantiate Formatter and serialize JsonPetriNet object
         const formatter = new Formatter();
         formatter.Options = options;
-        serializedJsonObj= formatter.Serialize(jsonObj);
+        serializedJsonObj = formatter.Serialize(jsonObj);
         if (serializedJsonObj === undefined) {
-            throw new Error("Json data could not be serialized")
+            throw new Error('Json data could not be serialized');
         }
 
         // Alternative serializations with JSON.stringify(data, replacer, space):
@@ -57,13 +61,15 @@ export class ExportJsonDataService {
         // ******************************************************************
 
         // Create Blob (Binary Large OBject)
-        const file = new Blob([serializedJsonObj], { type: 'application/json' });
+        const file = new Blob([serializedJsonObj], {
+            type: 'application/json',
+        });
 
         // Create anchor element with url to the Blob object and programmatically
         // trigger a click event on the anchor to initiate the download
-        const link = document.createElement("a");
+        const link = document.createElement('a');
         link.href = URL.createObjectURL(file);
-        link.download = "petri-net-with-love.json";
+        link.download = 'petri-net-with-love.json';
         link.click();
 
         // Free up resources
@@ -82,7 +88,7 @@ export class ExportJsonDataService {
             actions: undefined,
             labels: undefined,
             marking: undefined,
-            layout: undefined
+            layout: undefined,
         };
 
         // In the application, places and transitions always have coordinates,
@@ -116,10 +122,10 @@ export class ExportJsonDataService {
         // Parse Arcs[]
         for (let arc of this.dataService.getArcs()) {
             if (!jsonObj.arcs) jsonObj.arcs = {};
-            jsonObj.arcs[arc.from.id + "," + arc.to.id] = Math.abs(arc.weight);
+            jsonObj.arcs[arc.from.id + ',' + arc.to.id] = Math.abs(arc.weight);
 
             if (arc.anchors.length != 0) {
-                jsonObj.layout[arc.from.id + "," + arc.to.id] = arc.anchors;
+                jsonObj.layout[arc.from.id + ',' + arc.to.id] = arc.anchors;
             }
         }
 

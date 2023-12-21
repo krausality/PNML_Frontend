@@ -8,12 +8,11 @@ import { ButtonState } from '../tr-enums/ui-state';
 import { SvgCoordinatesService } from './svg-coordinates-service';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class EditMoveElementsService {
-
     // Mouse position before next drag step
-    initialMousePos: Point = {x:0, y:0};
+    initialMousePos: Point = { x: 0, y: 0 };
 
     // For moving nodes: Node which will be moved
     node: Node | null = null;
@@ -32,10 +31,10 @@ export class EditMoveElementsService {
     isCanvasDragInProcess: Boolean = false;
 
     constructor(
-        private dataService: DataService, 
+        private dataService: DataService,
         private uiService: UiService,
         private svgCoordinatesService: SvgCoordinatesService,
-    ) { }
+    ) {}
 
     initializePetrinetPanning(event: MouseEvent) {
         // Register initial mouse position
@@ -45,21 +44,21 @@ export class EditMoveElementsService {
         this.isCanvasDragInProcess = true;
     }
 
-    initializeNodeMove(event: MouseEvent, node: Node){
+    initializeNodeMove(event: MouseEvent, node: Node) {
         // Register node to be moved
         this.node = node;
 
         // Register arcs connected to the node
-        this.dataService.getArcs().forEach(arc => {
+        this.dataService.getArcs().forEach((arc) => {
             if (arc.from === node || arc.to === node) this.nodeArcs.push(arc);
-        })
+        });
 
         // Register mouse position
         this.initialMousePos.x = event.clientX;
         this.initialMousePos.y = event.clientY;
     }
 
-    initializeAnchorMove(event: MouseEvent, anchor: Point){
+    initializeAnchorMove(event: MouseEvent, anchor: Point) {
         // Register anchor to be moved
         this.anchor = anchor;
 
@@ -68,7 +67,7 @@ export class EditMoveElementsService {
         this.initialMousePos.y = event.clientY;
     }
 
-    moveNodeByMousePositionChange(event: MouseEvent){
+    moveNodeByMousePositionChange(event: MouseEvent) {
         // If a node is registered, this node will be moved
         if (this.node) {
             // Shift increment in x and y direction
@@ -81,11 +80,12 @@ export class EditMoveElementsService {
 
             // Update position of anchor points of arcs connected to the node.
             // They are shifted by halv the position change of the node.
-            this.nodeArcs.forEach(arc =>
-                arc.anchors.forEach(point => {
-                    point.x += deltaX/2;
-                    point.y +=deltaY/2;
-                }));
+            this.nodeArcs.forEach((arc) =>
+                arc.anchors.forEach((point) => {
+                    point.x += deltaX / 2;
+                    point.y += deltaY / 2;
+                }),
+            );
 
             // Update initialMousePos for next move increment
             this.initialMousePos.x = event.clientX;
@@ -93,7 +93,7 @@ export class EditMoveElementsService {
         }
     }
 
-    moveAnchorByMousePositionChange(event: MouseEvent){
+    moveAnchorByMousePositionChange(event: MouseEvent) {
         // If an anchor is registered, this anchor will be moved
         if (this.anchor) {
             // Shift increment in x and y direction
@@ -114,23 +114,26 @@ export class EditMoveElementsService {
         const deltaX = event.clientX - this.initialMousePos.x;
         const deltaY = event.clientY - this.initialMousePos.y;
 
-        [...this.dataService.getPlaces(), ...this.dataService.getTransitions()].forEach((node) => {
+        [
+            ...this.dataService.getPlaces(),
+            ...this.dataService.getTransitions(),
+        ].forEach((node) => {
             node.position.x += deltaX;
             node.position.y += deltaY;
         });
 
         this.dataService.getArcs().forEach((arc) => {
-            arc.anchors.forEach(point => {
+            arc.anchors.forEach((point) => {
                 point.x += deltaX;
                 point.y += deltaY;
-            })
+            });
         });
 
         // Update initialMousePos for next move increment
         this.initialMousePos = { x: event.clientX, y: event.clientY };
     }
 
-    finalizeMove(){
+    finalizeMove() {
         // Finalizes move of both nodes and anchors
 
         // Un-register elements of move of existing nodes/anchors
@@ -140,7 +143,7 @@ export class EditMoveElementsService {
 
         this.isCanvasDragInProcess = false;
 
-        this.initialMousePos = {x:0, y:0};
+        this.initialMousePos = { x: 0, y: 0 };
 
         // return to 'anchor' mode if a newly created anchor was moved
         if (this.newAnchor) this.uiService.button = ButtonState.Anchor;
@@ -148,12 +151,23 @@ export class EditMoveElementsService {
         this.newAnchor = undefined;
     }
 
-    insertAnchorIntoLineSegmentStart(event: MouseEvent, arc: Arc, lineSegment: Point[], drawingArea: HTMLElement) {
+    insertAnchorIntoLineSegmentStart(
+        event: MouseEvent,
+        arc: Arc,
+        lineSegment: Point[],
+        drawingArea: HTMLElement,
+    ) {
         // Create new anchor at mouse coordinate
-        const anchor = this.svgCoordinatesService.getRelativeEventCoords(event, drawingArea);
+        const anchor = this.svgCoordinatesService.getRelativeEventCoords(
+            event,
+            drawingArea,
+        );
 
         // Insert new anchor into the anchors array of the arc that was clicked on
-        if (arc.anchors.length === 0 || arc.anchors.indexOf(lineSegment[0]) === (arc.anchors.length - 1)) {
+        if (
+            arc.anchors.length === 0 ||
+            arc.anchors.indexOf(lineSegment[0]) === arc.anchors.length - 1
+        ) {
             arc.anchors.push(anchor);
         } else {
             const indexLineEnd = arc.anchors.indexOf(lineSegment[1]);

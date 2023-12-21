@@ -1,6 +1,6 @@
-import { Node } from "src/app/tr-interfaces/petri-net/node";
-import { Point } from "./point";
-import { radius } from "src/app/tr-services/position.constants";
+import { Node } from 'src/app/tr-interfaces/petri-net/node';
+import { Point } from './point';
+import { radius } from 'src/app/tr-services/position.constants';
 
 export class Place implements Node {
     token: number;
@@ -18,8 +18,10 @@ export class Place implements Node {
     intersectionOfBoundaryWithLineTo(p: Point): Point {
         const r = radius;
 
-        if (! this.pLiesOutsideNodeShapeBoudary(p)){
-            throw new Error('Point p for calculating intersection with node shape must lie outside of the node shape boundary.')
+        if (!this.pLiesOutsideNodeShapeBoudary(p)) {
+            throw new Error(
+                'Point p for calculating intersection with node shape must lie outside of the node shape boundary.',
+            );
         }
 
         const m = this.position;
@@ -33,7 +35,9 @@ export class Place implements Node {
     }
 
     pLiesOutsideNodeShapeBoudary(p: Point): boolean {
-        const d = Math.sqrt((p.x - this.position.x)**2 + (p.y - this.position.y)**2);
+        const d = Math.sqrt(
+            (p.x - this.position.x) ** 2 + (p.y - this.position.y) ** 2,
+        );
         return d > radius;
-    };
+    }
 }

@@ -1,9 +1,13 @@
-import { Node } from "src/app/tr-interfaces/petri-net/node";
-import { Arc } from "src/app/tr-classes/petri-net/arc";
+import { Node } from 'src/app/tr-interfaces/petri-net/node';
+import { Arc } from 'src/app/tr-classes/petri-net/arc';
 
 // updates nodeInputMap and nodeOutputMap in place
 // assigns the pre/post nodes for each individual node
-export function generateAdjacentNodeMaps(arcs: Arc[], nodeInputMap: Map<Node, Node[]>, nodeOutputMap: Map<Node, Node[]>) {
+export function generateAdjacentNodeMaps(
+    arcs: Arc[],
+    nodeInputMap: Map<Node, Node[]>,
+    nodeOutputMap: Map<Node, Node[]>,
+) {
     nodeInputMap.clear();
     nodeOutputMap.clear();
 

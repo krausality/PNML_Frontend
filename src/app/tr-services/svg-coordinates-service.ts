@@ -1,11 +1,9 @@
-import {Injectable} from "@angular/core";
-import {Point} from "../tr-classes/petri-net/point";
+import { Injectable } from '@angular/core';
+import { Point } from '../tr-classes/petri-net/point';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
-
-
 export class SvgCoordinatesService {
     constructor() {}
 
@@ -17,5 +15,4 @@ export class SvgCoordinatesService {
 
         return new Point(x, y);
     }
-
 }

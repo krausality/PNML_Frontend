@@ -7,20 +7,21 @@ import { Arc } from '../tr-classes/petri-net/arc';
 import { Node } from '../tr-interfaces/petri-net/node';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class ParserService {
-
-    constructor() { }
+    constructor() {}
 
     // TODO specify correct return type
-    parse(text: string): [Array<Place>, Array<Transition>, Array<Arc>, Array<string>] {
+    parse(
+        text: string,
+    ): [Array<Place>, Array<Transition>, Array<Arc>, Array<string>] {
         let rawData: JsonPetriNet;
         try {
             rawData = JSON.parse(text) as JsonPetriNet;
         } catch (e) {
             // TODO error handling
-            console.error("Cannot parse JSON", e, text);
+            console.error('Cannot parse JSON', e, text);
             return [[], [], [], []];
         }
 
@@ -30,19 +31,32 @@ export class ParserService {
         let actions: string[] = [];
 
         // parse Places
-        rawData.places.forEach(placeId => {
-            places.push(new Place(this.retrieveTokens(rawData, placeId), this.retrievePosition(rawData, placeId), placeId, this.retrieveLabel(rawData, placeId)));
+        rawData.places.forEach((placeId) => {
+            places.push(
+                new Place(
+                    this.retrieveTokens(rawData, placeId),
+                    this.retrievePosition(rawData, placeId),
+                    placeId,
+                    this.retrieveLabel(rawData, placeId),
+                ),
+            );
         });
 
         // parse Transitions
-        rawData.transitions.forEach(transitionId => {
-            transitions.push(new Transition(this.retrievePosition(rawData, transitionId), transitionId, this.retrieveLabel(rawData, transitionId)));
+        rawData.transitions.forEach((transitionId) => {
+            transitions.push(
+                new Transition(
+                    this.retrievePosition(rawData, transitionId),
+                    transitionId,
+                    this.retrieveLabel(rawData, transitionId),
+                ),
+            );
         });
 
         // parse Arcs and append Arcs to Transitions
         if (rawData.arcs) {
             Object.entries(rawData.arcs).forEach(([arcId, weight]) => {
-                const [fromId, toId]: string[] = arcId.split(",");
+                const [fromId, toId]: string[] = arcId.split(',');
                 const fromNode = this.retrieveNode(places, transitions, fromId);
                 const toNode = this.retrieveNode(places, transitions, toId);
                 // TODO error handling
@@ -57,8 +71,8 @@ export class ParserService {
         }
 
         // parse actions
-        if (rawData.actions){
-            rawData.actions.forEach((action:string) => {
+        if (rawData.actions) {
+            rawData.actions.forEach((action: string) => {
                 actions.push(action);
             });
         }
@@ -95,9 +109,15 @@ export class ParserService {
         }
     }
 
-    private retrieveNode(places: Place[], transitions: Transition[], id: string): Node | undefined {
-        const foundPlace = places.find(place => place.id === id);
-        const foundTransition = transitions.find(transition => transition.id === id);
+    private retrieveNode(
+        places: Place[],
+        transitions: Transition[],
+        id: string,
+    ): Node | undefined {
+        const foundPlace = places.find((place) => place.id === id);
+        const foundTransition = transitions.find(
+            (transition) => transition.id === id,
+        );
         if (foundPlace) {
             return foundPlace;
         } else if (foundTransition) {
@@ -111,9 +131,9 @@ export class ParserService {
         const points: Point[] = [];
         if (data.layout && data.layout[id]) {
             // TODO implement checks to allow for both single anchorpoints and arrays
-            (data.layout[id] as Coords[]).forEach(position => {
+            (data.layout[id] as Coords[]).forEach((position) => {
                 points.push(new Point(position.x, position.y));
-            })
+            });
         }
         return points;
     }
