@@ -16,20 +16,22 @@ import {
     transitionXOffset,
     transitionYOffset
 } from "../../tr-services/position.constants";
-import {PnmlService} from "../../tr-services/pnml.service";
-import {ExportJsonDataService} from 'src/app/tr-services/export-json-data.service';
-import {UiService} from 'src/app/tr-services/ui.service';
-import {Place} from 'src/app/tr-classes/petri-net/place';
-import {Point} from 'src/app/tr-classes/petri-net/point';
-import {Transition} from 'src/app/tr-classes/petri-net/transition';
-import {Arc} from 'src/app/tr-classes/petri-net/arc';
-import {EditMoveElementsService} from 'src/app/tr-services/edit-move-elements.service';
-import {ButtonState, TabState} from 'src/app/tr-enums/ui-state';
-import {TokenGameService} from 'src/app/tr-services/token-game.service';
-import {MatDialog} from '@angular/material/dialog';
-import {SetActionPopupComponent} from '../set-action-popup/set-action-popup.component';
-import {Node} from "src/app/tr-interfaces/petri-net/node";
-import {MouseConstants} from "../../tr-enums/mouse-constants";
+
+import { PnmlService } from "../../tr-services/pnml.service";
+import { ExportJsonDataService } from 'src/app/tr-services/export-json-data.service';
+import { UiService } from 'src/app/tr-services/ui.service';
+import { Place } from 'src/app/tr-classes/petri-net/place';
+import { Point } from 'src/app/tr-classes/petri-net/point';
+import { Transition } from 'src/app/tr-classes/petri-net/transition';
+import { Arc } from 'src/app/tr-classes/petri-net/arc';
+import { EditMoveElementsService } from 'src/app/tr-services/edit-move-elements.service';
+import { ButtonState, TabState } from 'src/app/tr-enums/ui-state';
+import { TokenGameService } from 'src/app/tr-services/token-game.service';
+import { MatDialog } from '@angular/material/dialog';
+import { SetActionPopupComponent } from '../set-action-popup/set-action-popup.component';
+import { Node } from "src/app/tr-interfaces/petri-net/node";
+import { MouseConstants } from "../../tr-enums/mouse-constants";
+import { SvgCoordinatesService } from 'src/app/tr-services/svg-coordinates-service';
 
 @Component({
     selector: 'app-petri-net',
@@ -52,7 +54,8 @@ export class PetriNetComponent {
         protected uiService: UiService,
         protected tokenGameService: TokenGameService,
         private matDialog: MatDialog,
-        protected editMoveElementsService: EditMoveElementsService
+        protected editMoveElementsService: EditMoveElementsService,
+        protected svgCoordinatesService: SvgCoordinatesService,
     ) {
         this.httpClient.get("assets/example.json", {responseType: "text"}).subscribe(data => {
             const [places, transitions, arcs, actions] = parserService.parse(data);
@@ -280,7 +283,7 @@ export class PetriNetComponent {
                 if (this.nextNode instanceof Transition) {
                     // Connecting the Place to an existing Transition
                     const transition = this.nextNode;
-                    this.dataService.getTransitions().push(transition);
+                    // this.dataService.getTransitions().push(transition);
                     this.dataService.connectNodes(this.lastNode, transition);
                     this.lastNode = this.nextNode;
                 } else if (this.nextNode instanceof Place) {
@@ -299,7 +302,7 @@ export class PetriNetComponent {
                 if (this.nextNode instanceof Place) {
                     // Connecting the Transition to an existing Place
                     const place = this.nextNode;
-                    this.dataService.getPlaces().push(place);
+                    // this.dataService.getPlaces().push(place);
                     this.dataService.connectNodes(this.lastNode, place);
                     this.lastNode = this.nextNode;
                 } else if (this.nextNode instanceof Transition) {
@@ -318,6 +321,12 @@ export class PetriNetComponent {
     }
 
     dispatchSVGMouseDown(event: MouseEvent, drawingArea: HTMLElement) {
+        // If the move button is activated and the canvas (not one of the elements on it!)
+        // is drag & dropped the whole SVG should be panned
+        if (this.uiService.button === ButtonState.Move) {
+            this.editMoveElementsService.initializePetrinetPanning(event);
+        }
+
         if (this.uiService.button === ButtonState.Blitz && event.button == MouseConstants.Right_Click) {
             this.lastNode = null;
             this.nextNode = null;
@@ -334,8 +343,14 @@ export class PetriNetComponent {
 
     dispatchSVGMouseMove(event: MouseEvent, drawingArea: HTMLElement) {
         if (this.uiService.button === ButtonState.Move) {
-            this.editMoveElementsService.moveNodeByMousePositionChange(event);
-            this.editMoveElementsService.moveAnchorByMousePositionChange(event);
+            // If the move button is activated and the canvas (not one of the elements on it!)
+            // is drag & dropped the whole SVG should be panned
+            if (this.editMoveElementsService.isCanvasDragInProcess) {
+                this.editMoveElementsService.movePetrinetPositionByMousePositionChange(event);
+            } else {
+                this.editMoveElementsService.moveNodeByMousePositionChange(event);
+                this.editMoveElementsService.moveAnchorByMousePositionChange(event);
+            }
         }
     }
 
@@ -385,6 +400,9 @@ export class PetriNetComponent {
 
     dispatchPlaceMouseDown(event: MouseEvent, place: Place) {
         if (this.uiService.button === ButtonState.Move) {
+            // Keep event from bubbling up to canvas and e.g. trigger canvas drag & drop
+            event.stopPropagation();
+
             this.editMoveElementsService.initializeNodeMove(event, place);
         }
 
@@ -426,6 +444,9 @@ export class PetriNetComponent {
 
     dispatchTransitionMouseDown(event: MouseEvent, transition: Transition) {
         if (this.uiService.button === ButtonState.Move) {
+            // Keep event from bubbling up to canvas and e.g. trigger canvas drag & drop
+            event.stopPropagation();
+
             this.editMoveElementsService.initializeNodeMove(event, transition);
         }
 
@@ -487,11 +508,16 @@ export class PetriNetComponent {
         if (this.uiService.button === ButtonState.Anchor) {
             this.editMoveElementsService.insertAnchorIntoLineSegmentStart(event, arc, lineSegment, drawingArea);
         }
+
+        if (this.uiService.button === ButtonState.Move) {
+            event.stopPropagation();
+        }
     }
 
     // Anchors
     dispatchAnchorMouseDown(event: MouseEvent, anchor: Point) {
         if (this.uiService.button === ButtonState.Move) {
+            event.stopPropagation();
             this.editMoveElementsService.initializeAnchorMove(event, anchor);
         }
 
@@ -515,10 +541,8 @@ export class PetriNetComponent {
     }
 
     createPlace(event: MouseEvent, drawingArea: HTMLElement): Place {
-        const svgRect = drawingArea.getBoundingClientRect();
-        let x = event.clientX - svgRect.left;
-        let y = event.clientY - svgRect.top;
-        return new Place(0, new Point(x, y), this.getPlaceId());
+        const point = this.svgCoordinatesService.getRelativeEventCoords(event, drawingArea);
+        return new Place(0, point, this.getPlaceId());
     }
 
     addTransition(event: MouseEvent, drawingArea: HTMLElement) {
@@ -527,10 +551,8 @@ export class PetriNetComponent {
     }
 
     createTransition(event: MouseEvent, drawingArea: HTMLElement): Transition {
-        const svgRect = drawingArea.getBoundingClientRect();
-        let x = event.clientX - svgRect.left;
-        let y = event.clientY - svgRect.top;
-        return new Transition(new Point(x, y), this.getTransitionId());
+        const point = this.svgCoordinatesService.getRelativeEventCoords(event, drawingArea);
+        return new Transition(point, this.getTransitionId());
     }
 
     getPlaceId(): string{

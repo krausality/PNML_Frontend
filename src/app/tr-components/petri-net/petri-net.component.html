@@ -1,7 +1,10 @@
-<svg
-    #drawingArea
-    [attr.class]="uiService.tab === TabState.Play ? 'canvas play-mode' : 'canvas'"
+<svg #drawingArea
     id="drawingArea"
+    class="canvas"
+    [ngClass]="{
+        'dragging': editMoveElementsService.isCanvasDragInProcess,
+        'play-mode': uiService.tab === TabState.Play
+    }"
     (drop)="processDropEvent($event)"
     (dragover)="prevent($event)"
     (click)="dispatchSVGClick($event, drawingArea)"
@@ -178,5 +181,4 @@
                 (mouseup)="dispatchAnchorMouseUp($event, point)" />
         </ng-container>
     </g>
-
 </svg>
