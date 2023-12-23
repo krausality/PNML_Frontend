@@ -1,5 +1,5 @@
-import { Node } from "../petri-net/node";
+import { Node } from '../petri-net/node';
 
 export interface SetActionDialogData {
-    node: Node
+    node: Node;
 }

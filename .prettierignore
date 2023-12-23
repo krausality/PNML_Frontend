@@ -1,0 +1,18 @@
+# Ignore code we received as template
+src/app/classes/*
+src/app/components/*
+src/app/services/*
+src/app/reference-models/*
+
+# Ignore environments config
+src/environments/*.ts
+
+# Ignore example petrinets
+src/assets/*.json
+src/assets/*.pnml
+
+# Ignore json config files on root level
+*.json
+
+# Ignore readme
+README.md

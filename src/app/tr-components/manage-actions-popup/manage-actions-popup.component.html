@@ -10,15 +10,29 @@
     <mat-list>
         <!-- create one list item and divider for each action in dataService.getActions() -->
         <div *ngFor="let action of dataService.getActions(); let last = last">
-            <mat-list-item >
-                <div fxLayout="row" fxLayoutAlign="space-between center" class="action-list-row">
+            <mat-list-item>
+                <div
+                    fxLayout="row"
+                    fxLayoutAlign="space-between center"
+                    class="action-list-row"
+                >
                     <span class="action-text">
                         {{ action }}
                     </span>
 
                     <!-- only allow deleting an action that is not currently used as transition label -->
-                    <div matTooltip="Cannot delete actions that are set as labels" [matTooltipDisabled]="!dataService.checkActionUsed(action)" matTooltipPosition="right">
-                        <button [disabled]="dataService.checkActionUsed(action)" mat-icon-button (click)="dataService.removeAction(action)">
+                    <div
+                        matTooltip="Cannot delete actions that are set as labels"
+                        [matTooltipDisabled]="
+                            !dataService.checkActionUsed(action)
+                        "
+                        matTooltipPosition="right"
+                    >
+                        <button
+                            [disabled]="dataService.checkActionUsed(action)"
+                            mat-icon-button
+                            (click)="dataService.removeAction(action)"
+                        >
                             <mat-icon>delete</mat-icon>
                         </button>
                     </div>
@@ -34,7 +48,13 @@
 <div mat-dialog-actions>
     <mat-form-field class="add-action-input">
         <mat-label>Action</mat-label>
-        <input matInput #newActionInput type="text" placeholder="New Action" (keyup.enter)="addAction(newActionInput)" >
+        <input
+            matInput
+            #newActionInput
+            type="text"
+            placeholder="New Action"
+            (keyup.enter)="addAction(newActionInput)"
+        />
         <button mat-icon-button matSuffix (click)="addAction(newActionInput)">
             <mat-icon>add_task</mat-icon>
         </button>

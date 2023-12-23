@@ -1,17 +1,17 @@
-import { Node } from "src/app/tr-interfaces/petri-net/node";
-import { Arc } from "src/app/tr-classes/petri-net/arc";
+import { Node } from 'src/app/tr-interfaces/petri-net/node';
+import { Arc } from 'src/app/tr-classes/petri-net/arc';
 
-/** 
+/**
  * Cycle removal service
  *
  * Loops through a graph and performs a depth first search on each node.
  * If a node is found that is already on stack a cycle has been identified.
- * To remove the cycle, one its edges are removed and replaced with a 
+ * To remove the cycle, one its edges are removed and replaced with a
  * reversed arc.
- * 
+ *
  * The arcs array is modified in place.
  * Reversed arcs are kept in memory (arcsToBeReversed) for re-reversal later on.
- * 
+ *
  */
 export class CycleRemovalService {
     // Initial set of nodes and arcs
@@ -27,10 +27,7 @@ export class CycleRemovalService {
     // Saves arcs that are reversed to be able to re-reverse them later
     private _arcsToBeReversed: Arc[] = [];
 
-    constructor(
-        nodes: Node[],
-        arcs: Arc[],
-    ) {
+    constructor(nodes: Node[], arcs: Arc[]) {
         this._nodes = nodes;
         this._arcs = arcs;
     }
@@ -41,15 +38,15 @@ export class CycleRemovalService {
         for (let node of this._nodes) {
             this.depthFirstSearchRemove(node);
         }
-        // Reverse arcs 
+        // Reverse arcs
         this.reverseArcs();
     }
- 
+
     private depthFirstSearchRemove(node: Node) {
         if (this._visited.includes(node)) {
             return;
         }
-        
+
         this._visited.push(node);
         this._stack.push(node);
 

@@ -1,10 +1,9 @@
-import { Node } from "src/app/tr-interfaces/petri-net/node";
-import { DummyNode } from "src/app/tr-classes/petri-net/dummyNode";
-import { Arc } from "src/app/tr-classes/petri-net/arc";
-import { Point } from "src/app/tr-classes/petri-net/point";
+import { Node } from 'src/app/tr-interfaces/petri-net/node';
+import { DummyNode } from 'src/app/tr-classes/petri-net/dummyNode';
+import { Arc } from 'src/app/tr-classes/petri-net/arc';
+import { Point } from 'src/app/tr-classes/petri-net/point';
 
-import { LayeredGraph } from "src/app/tr-services/sugyiama/types";
-
+import { LayeredGraph } from 'src/app/tr-services/sugyiama/types';
 
 export class VertexOrderingService {
     // Initial set of nodes and arcs
@@ -14,14 +13,14 @@ export class VertexOrderingService {
     // Maps of adjacent nodes
     private _nodeInputMap: Map<Node, Node[]> = new Map();
     private _nodeOutputMap: Map<Node, Node[]> = new Map();
-    
+
     private _layers: LayeredGraph = [];
 
     constructor(
         layers: LayeredGraph,
         arcs: Arc[],
         nodeInputMap: Map<Node, Node[]>,
-        nodeOutputMap: Map<Node, Node[]>
+        nodeOutputMap: Map<Node, Node[]>,
     ) {
         this._layers = layers;
         this._arcs = arcs;
@@ -46,7 +45,7 @@ export class VertexOrderingService {
         // 24 iterations is the number taken from paper by Ganser et al.,
         // for testing we'll use less for now
         const maxIterations = 4;
-        for (let i = 0; i < maxIterations; i++) {   
+        for (let i = 0; i < maxIterations; i++) {
             this.median(i, this._layers);
             this.transpose(this._layers);
 
@@ -67,7 +66,13 @@ export class VertexOrderingService {
                 for (const node of nodes) {
                     const adjacentLayer = currentOrder[layerId - 1];
                     if (adjacentLayer) {
-                        median.set(node, this.getMedianValueOfInputNodes(node, adjacentLayer));
+                        median.set(
+                            node,
+                            this.getMedianValueOfInputNodes(
+                                node,
+                                adjacentLayer,
+                            ),
+                        );
                     }
                 }
                 nodes.sort((a, b) => median.get(a) - median.get(b));
@@ -78,7 +83,13 @@ export class VertexOrderingService {
                 for (const node of nodes) {
                     const adjacentLayer = currentOrder[layerId + 1];
                     if (adjacentLayer) {
-                        median.set(node, this.getMedianValueOfOutputNodes(node, adjacentLayer));
+                        median.set(
+                            node,
+                            this.getMedianValueOfOutputNodes(
+                                node,
+                                adjacentLayer,
+                            ),
+                        );
                     }
                 }
                 nodes.sort((a, b) => median.get(a) - median.get(b));
@@ -101,17 +112,24 @@ export class VertexOrderingService {
                 }
 
                 // Check for each pair of nodes if swapping them would reduce the # of crossings
-                for (let position = 0; position < layer.length - 1; position++) {
+                for (
+                    let position = 0;
+                    position < layer.length - 1;
+                    position++
+                ) {
                     const nodeA = layer[position];
                     const nodeB = layer[position + 1];
-                    
-                    if (this.layerCrossings(nodeA, nodeB, layerId) > this.layerCrossings(nodeB, nodeA, layerId)) {
+
+                    if (
+                        this.layerCrossings(nodeA, nodeB, layerId) >
+                        this.layerCrossings(nodeB, nodeA, layerId)
+                    ) {
                         improved = true;
 
                         // Swap the two nodes
                         const temp = nodeA;
                         layer[position] = nodeB;
-                        layer[position+1] = temp;
+                        layer[position + 1] = temp;
                     }
                 }
             }
@@ -144,16 +162,20 @@ export class VertexOrderingService {
             // there is only one node in the next layer, there can be no crossings
             return 0;
         }
-        
+
         let crossings = 0;
 
         // Find all connected nodes in the next layer and their positions within the layer
-        let adjacentNodesIndexA = this.getConnectedNodes(nodeA).map((node) => this._layers[layerId +1].indexOf(node)).filter((item) => item !== -1);
-        let adjacentNodesIndexB = this.getConnectedNodes(nodeB).map((node) => this._layers[layerId +1].indexOf(node)).filter((item) => item !== -1);
-        
+        let adjacentNodesIndexA = this.getConnectedNodes(nodeA)
+            .map((node) => this._layers[layerId + 1].indexOf(node))
+            .filter((item) => item !== -1);
+        let adjacentNodesIndexB = this.getConnectedNodes(nodeB)
+            .map((node) => this._layers[layerId + 1].indexOf(node))
+            .filter((item) => item !== -1);
+
         // For each pair check wether the index of the neighbouring node is bigger
         // if so, then a crossing has been identified
-        for (const indexA of adjacentNodesIndexA ) {
+        for (const indexA of adjacentNodesIndexA) {
             for (const indexB of adjacentNodesIndexB) {
                 if (indexA > indexB) {
                     crossings++;
@@ -176,7 +198,6 @@ export class VertexOrderingService {
         return connectedNodes;
     }
 
-
     private getMedianValueOfInputNodes(node: Node, layer: Node[]) {
         // console.log('[Vertex Ordering]: nodes in adjacent layer to node: ', node, layer);
         const inputNodes = this._nodeInputMap.get(node);
@@ -185,17 +206,21 @@ export class VertexOrderingService {
             return -1;
         } else {
             const adjacentValues = [];
-            for(const index in layer) {
-                if (inputNodes.find(inputNode => inputNode === layer[index])) {
+            for (const index in layer) {
+                if (
+                    inputNodes.find((inputNode) => inputNode === layer[index])
+                ) {
                     adjacentValues.push(+index);
                 }
             }
- 
+
             // console.log('[Vertex Ordering]: adjacent values', adjacentValues);
 
             const mid = Math.floor(adjacentValues.length / 2);
             // TODO: implemented weighted median
-            return adjacentValues.length % 2 !== 0 ? adjacentValues[mid] : (adjacentValues[mid - 1] + adjacentValues[mid]) / 2;
+            return adjacentValues.length % 2 !== 0
+                ? adjacentValues[mid]
+                : (adjacentValues[mid - 1] + adjacentValues[mid]) / 2;
         }
     }
 
@@ -207,15 +232,21 @@ export class VertexOrderingService {
             return -1;
         } else {
             const adjacentValues = [];
-            for(const index in layer) {
-                if (outputNodes.find(outputNode => outputNode === layer[index])) {
+            for (const index in layer) {
+                if (
+                    outputNodes.find(
+                        (outputNode) => outputNode === layer[index],
+                    )
+                ) {
                     adjacentValues.push(+index);
                 }
             }
 
             const mid = Math.floor(adjacentValues.length / 2);
             // TODO: implemented weighted median
-            return adjacentValues.length % 2 !== 0 ? adjacentValues[mid] : (adjacentValues[mid - 1] + adjacentValues[mid]) / 2;
+            return adjacentValues.length % 2 !== 0
+                ? adjacentValues[mid]
+                : (adjacentValues[mid - 1] + adjacentValues[mid]) / 2;
         }
     }
 
@@ -224,7 +255,7 @@ export class VertexOrderingService {
         for (const [layerId, nodes] of this._layers.entries()) {
             const nextLayer = this._layers[layerId + 1];
             if (!nextLayer) continue;
-            
+
             // Check if there are connected nodes from a layer
             // that is *not* the previous one.
             // This has to be done seperately for input & output nodes
@@ -238,7 +269,12 @@ export class VertexOrderingService {
                         // If prenode is not on the previous layer
                         // this is a long edge and a dummy node needs to be inserted
                         if (Math.abs(preNodeLayer) - layerId > 1) {
-                            this.addDummyNodeAndArcs(dummyIndex, nextLayer, preNode, node);
+                            this.addDummyNodeAndArcs(
+                                dummyIndex,
+                                nextLayer,
+                                preNode,
+                                node,
+                            );
                             dummyIndex++;
                         }
                     }
@@ -254,7 +290,12 @@ export class VertexOrderingService {
                         // If postnode is not on the previous layer
                         // this is a long edge and a dummy node needs to be inserted
                         if (Math.abs(postNodeLayer) - layerId > 1) {
-                            this.addDummyNodeAndArcs(dummyIndex, nextLayer, node, postNode);
+                            this.addDummyNodeAndArcs(
+                                dummyIndex,
+                                nextLayer,
+                                node,
+                                postNode,
+                            );
                             dummyIndex++;
                         }
                     }
@@ -266,13 +307,24 @@ export class VertexOrderingService {
         }
     }
 
-    private addDummyNodeAndArcs(index: number, layer: Node[], from: Node, to: Node) {
+    private addDummyNodeAndArcs(
+        index: number,
+        layer: Node[],
+        from: Node,
+        to: Node,
+    ) {
         // console.log('[Vertex Ordering]: Create dummy for  ' , from, 'to: ', to);
-        const dummy = new DummyNode(new Point(1, 1), `dummyNode-${index}`, `DummyNode ${index}`);
+        const dummy = new DummyNode(
+            new Point(1, 1),
+            `dummyNode-${index}`,
+            `DummyNode ${index}`,
+        );
         layer.push(dummy);
 
         // Remove original arc
-        const arcIndex = this._arcs.findIndex((arc) => arc.equals(new Arc(from, to)));
+        const arcIndex = this._arcs.findIndex((arc) =>
+            arc.equals(new Arc(from, to)),
+        );
         const weight = this._arcs[arcIndex].weight;
         this._arcs.splice(arcIndex, 1);
 

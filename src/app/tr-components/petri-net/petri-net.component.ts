@@ -1,10 +1,10 @@
-import {HttpClient} from '@angular/common/http';
-import {Component, EventEmitter, Output} from '@angular/core';
-import {ParserService} from 'src/app/tr-services/parser.service';
-import {catchError, of, take} from 'rxjs';
-import {FileReaderService} from "../../services/file-reader.service";
-import {DataService} from "../../tr-services/data.service";
-import {ExampleFileComponent} from "src/app/components/example-file/example-file.component";
+import { HttpClient } from '@angular/common/http';
+import { Component, EventEmitter, Output } from '@angular/core';
+import { ParserService } from 'src/app/tr-services/parser.service';
+import { catchError, of, take } from 'rxjs';
+import { FileReaderService } from '../../services/file-reader.service';
+import { DataService } from '../../tr-services/data.service';
+import { ExampleFileComponent } from 'src/app/components/example-file/example-file.component';
 
 import {
     anchorRadius,
@@ -14,10 +14,10 @@ import {
     transitionIdYOffset,
     transitionWidth,
     transitionXOffset,
-    transitionYOffset
-} from "../../tr-services/position.constants";
+    transitionYOffset,
+} from '../../tr-services/position.constants';
 
-import { PnmlService } from "../../tr-services/pnml.service";
+import { PnmlService } from '../../tr-services/pnml.service';
 import { ExportJsonDataService } from 'src/app/tr-services/export-json-data.service';
 import { UiService } from 'src/app/tr-services/ui.service';
 import { Place } from 'src/app/tr-classes/petri-net/place';
@@ -29,14 +29,14 @@ import { ButtonState, TabState } from 'src/app/tr-enums/ui-state';
 import { TokenGameService } from 'src/app/tr-services/token-game.service';
 import { MatDialog } from '@angular/material/dialog';
 import { SetActionPopupComponent } from '../set-action-popup/set-action-popup.component';
-import { Node } from "src/app/tr-interfaces/petri-net/node";
-import { MouseConstants } from "../../tr-enums/mouse-constants";
+import { Node } from 'src/app/tr-interfaces/petri-net/node';
+import { MouseConstants } from '../../tr-enums/mouse-constants';
 import { SvgCoordinatesService } from 'src/app/tr-services/svg-coordinates-service';
 
 @Component({
     selector: 'app-petri-net',
     templateUrl: './petri-net.component.html',
-    styleUrls: ['./petri-net.component.css']
+    styleUrls: ['./petri-net.component.css'],
 })
 export class PetriNetComponent {
     @Output('fileContent') fileContent: EventEmitter<string>;
@@ -57,13 +57,16 @@ export class PetriNetComponent {
         protected editMoveElementsService: EditMoveElementsService,
         protected svgCoordinatesService: SvgCoordinatesService,
     ) {
-        this.httpClient.get("assets/example.json", {responseType: "text"}).subscribe(data => {
-            const [places, transitions, arcs, actions] = parserService.parse(data);
-            this.dataService.places = places;
-            this.dataService.transitions = transitions;
-            this.dataService.arcs = arcs;
-            this.dataService.actions = actions;
-        });
+        this.httpClient
+            .get('assets/example.json', { responseType: 'text' })
+            .subscribe((data) => {
+                const [places, transitions, arcs, actions] =
+                    parserService.parse(data);
+                this.dataService.places = places;
+                this.dataService.transitions = transitions;
+                this.dataService.arcs = arcs;
+                this.dataService.actions = actions;
+            });
 
         // this.httpClient.get("assets/example.pnml", { responseType: "text" }).subscribe(data => {
         //     const [places, transitions, arcs] = pnmlService.parse(data);
@@ -78,17 +81,22 @@ export class PetriNetComponent {
     startPlace: Place | undefined;
     anchorToDelete: Point | undefined;
 
-    private parsePetrinetData(content: string | undefined, contentType: string) {
+    private parsePetrinetData(
+        content: string | undefined,
+        contentType: string,
+    ) {
         if (content) {
             // Use pnml parser if file type is pnml
             // we'll try the json parser for all other cases
             if (contentType === 'pnml') {
-                const [places, transitions, arcs] = this.pnmlService.parse(content);
+                const [places, transitions, arcs] =
+                    this.pnmlService.parse(content);
                 this.dataService.places = places;
                 this.dataService.transitions = transitions;
                 this.dataService.arcs = arcs;
             } else {
-                const [places, transitions, arcs, actions] = this.parserService.parse(content);
+                const [places, transitions, arcs, actions] =
+                    this.parserService.parse(content);
                 this.dataService.places = places;
                 this.dataService.transitions = transitions;
                 this.dataService.arcs = arcs;
@@ -102,7 +110,9 @@ export class PetriNetComponent {
     public processDropEvent(e: DragEvent) {
         e.preventDefault();
 
-        const fileLocation = e.dataTransfer?.getData(ExampleFileComponent.META_DATA_CODE);
+        const fileLocation = e.dataTransfer?.getData(
+            ExampleFileComponent.META_DATA_CODE,
+        );
 
         if (fileLocation) {
             this.fetchFile(fileLocation);
@@ -112,18 +122,25 @@ export class PetriNetComponent {
     }
 
     private fetchFile(link: string) {
-        this.httpClient.get(link, {
-            responseType: 'text'
-        }).pipe(
-            catchError(err => {
-                console.error('Error while fetching file from link', link, err);
-                return of(undefined);
-            }),
-            take(1)
-        ).subscribe(content => {
-            this.parsePetrinetData(content, 'json');
-            this.emitFileContent(content);
-        })
+        this.httpClient
+            .get(link, {
+                responseType: 'text',
+            })
+            .pipe(
+                catchError((err) => {
+                    console.error(
+                        'Error while fetching file from link',
+                        link,
+                        err,
+                    );
+                    return of(undefined);
+                }),
+                take(1),
+            )
+            .subscribe((content) => {
+                this.parsePetrinetData(content, 'json');
+                this.emitFileContent(content);
+            });
     }
 
     private readFile(files: FileList | undefined | null) {
@@ -138,10 +155,13 @@ export class PetriNetComponent {
         const extension = file.name.split('.').pop();
         const fileType = extension ? extension : '';
 
-        this.fileReaderService.readFile(files[0]).pipe(take(1)).subscribe(content => {
-            this.parsePetrinetData(content, fileType);
-            this.emitFileContent(content);
-        });
+        this.fileReaderService
+            .readFile(files[0])
+            .pipe(take(1))
+            .subscribe((content) => {
+                this.parsePetrinetData(content, fileType);
+                this.emitFileContent(content);
+            });
     }
 
     private emitFileContent(content: string | undefined) {
@@ -157,7 +177,6 @@ export class PetriNetComponent {
     }
 
     protected onWheelEventPlace(e: WheelEvent, place: Place) {
-
         //Scrolling is allowed in Both Directions with the Blitz-Tool
         if (this.uiService.button === ButtonState.Blitz) {
             e.preventDefault();
@@ -188,7 +207,6 @@ export class PetriNetComponent {
     }
 
     protected onWheelEventArc(e: WheelEvent, arc: Arc) {
-
         //Scrolling is allowed in Both Directions with the Blitz-Tool
         if (this.uiService.button === ButtonState.Blitz) {
             e.preventDefault();
@@ -244,12 +262,11 @@ export class PetriNetComponent {
         }
     }
 
-
     // Dispatch methods for display events ************************************
 
     // SVG
     dispatchSVGClick(event: MouseEvent, drawingArea: HTMLElement) {
-        event.preventDefault()
+        event.preventDefault();
         if (this.uiService.button === ButtonState.Place) {
             // example method: can be deleted/replaced with final implementation
             this.addPlace(event, drawingArea);
@@ -291,12 +308,14 @@ export class PetriNetComponent {
                     this.lastNode = this.nextNode;
                 } else if (!this.nextNode) {
                     // Click on the Canvas
-                    const transition = this.createTransition(event, drawingArea);
+                    const transition = this.createTransition(
+                        event,
+                        drawingArea,
+                    );
                     this.dataService.getTransitions().push(transition);
                     this.dataService.connectNodes(this.lastNode, transition);
                     this.lastNode = transition;
                 }
-
             } else if (this.lastNode instanceof Transition) {
                 // Last Node was a Transition
                 if (this.nextNode instanceof Place) {
@@ -327,13 +346,18 @@ export class PetriNetComponent {
             this.editMoveElementsService.initializePetrinetPanning(event);
         }
 
-        if (this.uiService.button === ButtonState.Blitz && event.button == MouseConstants.Right_Click) {
+        if (
+            this.uiService.button === ButtonState.Blitz &&
+            event.button == MouseConstants.Right_Click
+        ) {
             this.lastNode = null;
             this.nextNode = null;
         }
-        if (this.uiService.button === ButtonState.Blitz
-            && event.button == MouseConstants.Mouse_Wheel_Click
-            && !this.lastNode) {
+        if (
+            this.uiService.button === ButtonState.Blitz &&
+            event.button == MouseConstants.Mouse_Wheel_Click &&
+            !this.lastNode
+        ) {
             event.preventDefault();
             const transition = this.createTransition(event, drawingArea);
             this.dataService.getTransitions().push(transition);
@@ -346,10 +370,16 @@ export class PetriNetComponent {
             // If the move button is activated and the canvas (not one of the elements on it!)
             // is drag & dropped the whole SVG should be panned
             if (this.editMoveElementsService.isCanvasDragInProcess) {
-                this.editMoveElementsService.movePetrinetPositionByMousePositionChange(event);
+                this.editMoveElementsService.movePetrinetPositionByMousePositionChange(
+                    event,
+                );
             } else {
-                this.editMoveElementsService.moveNodeByMousePositionChange(event);
-                this.editMoveElementsService.moveAnchorByMousePositionChange(event);
+                this.editMoveElementsService.moveNodeByMousePositionChange(
+                    event,
+                );
+                this.editMoveElementsService.moveAnchorByMousePositionChange(
+                    event,
+                );
             }
         }
     }
@@ -414,7 +444,11 @@ export class PetriNetComponent {
 
     dispatchPlaceMouseUp(event: MouseEvent, place: Place) {
         // Draw Arc with Place as EndNode
-        if (this.startTransition && !this.isArcExisting(this.startTransition, place) && this.uiService.button === ButtonState.Arc) {
+        if (
+            this.startTransition &&
+            !this.isArcExisting(this.startTransition, place) &&
+            this.uiService.button === ButtonState.Arc
+        ) {
             const newArc: Arc = new Arc(this.startTransition, place, 1);
             this.startTransition.appendPostArc(newArc);
             this.dataService.getArcs().push(newArc);
@@ -432,14 +466,18 @@ export class PetriNetComponent {
         // Token game: fire transition
         if (this.uiService.tab === TabState.Play) {
             this.tokenGameService.fire(transition);
-        } else if (this.uiService.tab === TabState.Build && this.uiService.button === ButtonState.Select) {
-            this.matDialog.open(SetActionPopupComponent, {data: {node: transition}});
+        } else if (
+            this.uiService.tab === TabState.Build &&
+            this.uiService.button === ButtonState.Select
+        ) {
+            this.matDialog.open(SetActionPopupComponent, {
+                data: { node: transition },
+            });
         }
 
         if (this.uiService.button === ButtonState.Delete) {
             this.dataService.removeTransition(transition);
         }
-
     }
 
     dispatchTransitionMouseDown(event: MouseEvent, transition: Transition) {
@@ -458,7 +496,11 @@ export class PetriNetComponent {
 
     dispatchTransitionMouseUp(event: MouseEvent, transition: Transition) {
         // Draw Arc with Transition as EndNode
-        if(this.startPlace && !this.isArcExisting(this.startPlace, transition) && this.uiService.button === ButtonState.Arc){
+        if (
+            this.startPlace &&
+            !this.isArcExisting(this.startPlace, transition) &&
+            this.uiService.button === ButtonState.Arc
+        ) {
             const newArc: Arc = new Arc(this.startPlace, transition, 1);
             transition.appendPreArc(newArc);
             this.dataService.getArcs().push(newArc);
@@ -489,7 +531,10 @@ export class PetriNetComponent {
         // Remove Arc
         // Check of the field anchorToDelete prevents arc deletion when
         // only an anchor should be deleted.
-        if (this.uiService.button === ButtonState.Delete && !this.anchorToDelete) {
+        if (
+            this.uiService.button === ButtonState.Delete &&
+            !this.anchorToDelete
+        ) {
             this.dataService.removeArc(arc);
         }
     }
@@ -500,13 +545,25 @@ export class PetriNetComponent {
         }
     }
 
-    dispatchArcMouseDown(event: MouseEvent, arc: Arc, drawingArea: HTMLElement) {
+    dispatchArcMouseDown(
+        event: MouseEvent,
+        arc: Arc,
+        drawingArea: HTMLElement,
+    ) {}
 
-    }
-
-    dispatchLineSegmentMouseDown(event: MouseEvent, arc: Arc, lineSegment: Point[], drawingArea: HTMLElement) {
+    dispatchLineSegmentMouseDown(
+        event: MouseEvent,
+        arc: Arc,
+        lineSegment: Point[],
+        drawingArea: HTMLElement,
+    ) {
         if (this.uiService.button === ButtonState.Anchor) {
-            this.editMoveElementsService.insertAnchorIntoLineSegmentStart(event, arc, lineSegment, drawingArea);
+            this.editMoveElementsService.insertAnchorIntoLineSegmentStart(
+                event,
+                arc,
+                lineSegment,
+                drawingArea,
+            );
         }
 
         if (this.uiService.button === ButtonState.Move) {
@@ -521,7 +578,7 @@ export class PetriNetComponent {
             this.editMoveElementsService.initializeAnchorMove(event, anchor);
         }
 
-        if (this.uiService.button === ButtonState.Delete){
+        if (this.uiService.button === ButtonState.Delete) {
             // Register the anchor to be deleted
             this.anchorToDelete = anchor;
         }
@@ -537,11 +594,14 @@ export class PetriNetComponent {
 
     addPlace(event: MouseEvent, drawingArea: HTMLElement) {
         const place = this.createPlace(event, drawingArea);
-        this.dataService.getPlaces().push(place)
+        this.dataService.getPlaces().push(place);
     }
 
     createPlace(event: MouseEvent, drawingArea: HTMLElement): Place {
-        const point = this.svgCoordinatesService.getRelativeEventCoords(event, drawingArea);
+        const point = this.svgCoordinatesService.getRelativeEventCoords(
+            event,
+            drawingArea,
+        );
         return new Place(0, point, this.getPlaceId());
     }
 
@@ -551,21 +611,24 @@ export class PetriNetComponent {
     }
 
     createTransition(event: MouseEvent, drawingArea: HTMLElement): Transition {
-        const point = this.svgCoordinatesService.getRelativeEventCoords(event, drawingArea);
+        const point = this.svgCoordinatesService.getRelativeEventCoords(
+            event,
+            drawingArea,
+        );
         return new Transition(point, this.getTransitionId());
     }
 
-    getPlaceId(): string{
+    getPlaceId(): string {
         let i = 1;
         let found = false;
-        let id: string = "";
+        let id: string = '';
         let placeIds: string[] = [];
-        this.dataService.getPlaces().forEach(place => {
+        this.dataService.getPlaces().forEach((place) => {
             placeIds.push(place.id);
         });
-        while(!found){
-            id = "p" + i;
-            if(placeIds.indexOf(id) === -1){
+        while (!found) {
+            id = 'p' + i;
+            if (placeIds.indexOf(id) === -1) {
                 found = true;
             }
             i++;
@@ -573,17 +636,17 @@ export class PetriNetComponent {
         return id;
     }
 
-    getTransitionId(): string{
+    getTransitionId(): string {
         let i = 1;
         let found = false;
-        let id: string = "";
+        let id: string = '';
         let transitionIds: string[] = [];
-        this.dataService.getTransitions().forEach(transition => {
+        this.dataService.getTransitions().forEach((transition) => {
             transitionIds.push(transition.id);
         });
-        while(!found){
-            id = "t" + i;
-            if(transitionIds.indexOf(id) === -1){
+        while (!found) {
+            id = 't' + i;
+            if (transitionIds.indexOf(id) === -1) {
                 found = true;
             }
             i++;
@@ -592,32 +655,44 @@ export class PetriNetComponent {
     }
 
     isArcExisting(startNode: Node, endNote: Node): boolean {
-        return this.dataService.getArcs().some(arc => arc.from === startNode && arc.to === endNote);
+        return this.dataService
+            .getArcs()
+            .some((arc) => arc.from === startNode && arc.to === endNote);
     }
 
     // returns true if the provided place can be edited and should be highlighted
     isPlaceEditable(place: Place): boolean {
-        return (this.uiService.button === ButtonState.Move && !this.editMoveElementsService.newAnchor)
-            || this.uiService.button === ButtonState.Add
-            || (this.uiService.button === ButtonState.Remove && place.token > 0) // tokens can only be removed if the number of tokens in a place is > 0
-            || this.uiService.button === ButtonState.Delete
-            || (this.uiService.button === ButtonState.Arc && !this.startPlace); // if the user starts dragging an arc from a place he can only finish on a transition --> places are no longer editable
+        return (
+            (this.uiService.button === ButtonState.Move &&
+                !this.editMoveElementsService.newAnchor) ||
+            this.uiService.button === ButtonState.Add ||
+            (this.uiService.button === ButtonState.Remove && place.token > 0) || // tokens can only be removed if the number of tokens in a place is > 0
+            this.uiService.button === ButtonState.Delete ||
+            (this.uiService.button === ButtonState.Arc && !this.startPlace)
+        ); // if the user starts dragging an arc from a place he can only finish on a transition --> places are no longer editable
     }
 
     // returns true if transitions can be edited and should be highlighted
     isTransitionEditable(): boolean {
-        return (this.uiService.button === ButtonState.Move && !this.editMoveElementsService.newAnchor)
-            || this.uiService.button === ButtonState.Select
-            || this.uiService.button === ButtonState.Delete
-            || (this.uiService.button === ButtonState.Arc && !this.startTransition); // if the user starts dragging an arc from a transition he can only finish on a place --> transitions no longer editable
+        return (
+            (this.uiService.button === ButtonState.Move &&
+                !this.editMoveElementsService.newAnchor) ||
+            this.uiService.button === ButtonState.Select ||
+            this.uiService.button === ButtonState.Delete ||
+            (this.uiService.button === ButtonState.Arc && !this.startTransition)
+        ); // if the user starts dragging an arc from a transition he can only finish on a place --> transitions no longer editable
     }
 
     // returns true if the provided arc can be edited and should be highlighted
     isArcEditable(arc: Arc): boolean {
-        return (this.uiService.button === ButtonState.Anchor || this.editMoveElementsService.newAnchor !== undefined)
-            || this.uiService.button === ButtonState.Add
-            || (this.uiService.button === ButtonState.Remove && Math.abs(arc.weight) > 1) // arc weights can only be decreased if the absolute value is > 1
-            || this.uiService.button === ButtonState.Delete;
+        return (
+            this.uiService.button === ButtonState.Anchor ||
+            this.editMoveElementsService.newAnchor !== undefined ||
+            this.uiService.button === ButtonState.Add ||
+            (this.uiService.button === ButtonState.Remove &&
+                Math.abs(arc.weight) > 1) || // arc weights can only be decreased if the absolute value is > 1
+            this.uiService.button === ButtonState.Delete
+        );
     }
 
     protected readonly radius = radius;
@@ -633,5 +708,4 @@ export class PetriNetComponent {
 
     protected readonly TabState = TabState;
     protected readonly ButtonState = ButtonState;
-
 }

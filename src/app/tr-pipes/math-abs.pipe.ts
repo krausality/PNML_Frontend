@@ -6,12 +6,12 @@ import { Pipe, PipeTransform } from '@angular/core';
  * Example:
  *   {{ -2 | mathAbs }}
  *   formats to: 2
-*/
+ */
 @Pipe({
-  name: 'mathAbs'
+    name: 'mathAbs',
 })
 export class mathAbsPipe implements PipeTransform {
-  transform(value: number): number {
-    return Math.abs(value);
-  }
+    transform(value: number): number {
+        return Math.abs(value);
+    }
 }

@@ -8,14 +8,13 @@ import { MatDialog } from '@angular/material/dialog';
 import { ManageActionsPopupComponent } from '../manage-actions-popup/manage-actions-popup.component';
 import { TokenGameService } from 'src/app/tr-services/token-game.service';
 import { ButtonState, TabState } from 'src/app/tr-enums/ui-state';
-import {ClearPopupComponent} from "../clear-popup/clear-popup.component";
-import {DataService} from "../../tr-services/data.service";
-
+import { ClearPopupComponent } from '../clear-popup/clear-popup.component';
+import { DataService } from '../../tr-services/data.service';
 
 @Component({
     selector: 'app-button-bar',
     templateUrl: './button-bar.component.html',
-    styleUrls: ['./button-bar.component.css']
+    styleUrls: ['./button-bar.component.css'],
 })
 export class ButtonBarComponent {
     readonly TabState = TabState;
@@ -33,7 +32,7 @@ export class ButtonBarComponent {
         protected exportSvgService: ExportSvgService,
         protected tokenGameService: TokenGameService,
         private dataService: DataService,
-        private matDialog: MatDialog
+        private matDialog: MatDialog,
     ) {}
 
     // gets called when a tab is clicked
@@ -41,14 +40,14 @@ export class ButtonBarComponent {
     // empties the "button" property in the uiService
     tabClicked(tab: string) {
         switch (tab) {
-            case "build":
+            case 'build':
                 this.uiService.tab = this.TabState.Build;
                 this.tokenGameService.clearGameHistory();
                 break;
-            case "play":
+            case 'play':
                 this.uiService.tab = this.TabState.Play;
                 break;
-            case "save":
+            case 'save':
                 this.uiService.tab = this.TabState.Save;
                 break;
         }
@@ -66,9 +65,8 @@ export class ButtonBarComponent {
     }
 
     openClearDialog() {
-        if(!this.dataService.isEmpty()){
+        if (!this.dataService.isEmpty()) {
             this.matDialog.open(ClearPopupComponent);
         }
     }
-
 }

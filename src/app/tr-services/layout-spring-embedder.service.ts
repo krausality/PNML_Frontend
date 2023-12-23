@@ -4,10 +4,9 @@ import { Point } from '../tr-classes/petri-net/point';
 import { Node } from '../tr-interfaces/petri-net/node';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class LayoutSpringEmbedderService {
-
     // parameters needed to make the spring embedder algorithm terminate
     private epsilon = 0.01;
     private maxIterations = 5000;
@@ -26,7 +25,7 @@ export class LayoutSpringEmbedderService {
     // determines if the spring embedder algorithm sould terminate before the next iteration of calculating and applying forces
     private shouldTerminate = false;
 
-    constructor(private dataService: DataService) { }
+    constructor(private dataService: DataService) {}
 
     // stops the spring embedder algorithm before the next iteration
     terminate() {
@@ -46,17 +45,20 @@ export class LayoutSpringEmbedderService {
         this.shouldTerminate = false;
 
         // remove anchorpoints
-        this.dataService.getArcs().forEach(arc => arc.anchors.length = 0);
+        this.dataService.getArcs().forEach((arc) => (arc.anchors.length = 0));
 
         // combining places and transitions into one array because we don't need to handle them differently in this algorithm
-        const nodes: Node[] = [...this.dataService.getPlaces(), ...this.dataService.getTransitions()];
+        const nodes: Node[] = [
+            ...this.dataService.getPlaces(),
+            ...this.dataService.getTransitions(),
+        ];
 
         // discover the connected nodes of each node once and keep the map in memory
         // instead of doing it every iteration
         const connectedNodeMap: { [id: string]: Node[] } = {};
-        nodes.forEach(n => {
+        nodes.forEach((n) => {
             const connectedNodes: Node[] = [];
-            this.dataService.getArcs().forEach(arc => {
+            this.dataService.getArcs().forEach((arc) => {
                 if (arc.from.id === n.id) {
                     connectedNodes.push(arc.to);
                 } else if (arc.to.id === n.id) {
@@ -73,23 +75,35 @@ export class LayoutSpringEmbedderService {
         // the algorithm terminates after the maximum iterations are reached
         // or if the maximum force applied in one iteration gets to small to really change much in the layout
         // of if it should terminate as indicated by shouldTerminate
-        while (!this.shouldTerminate && iterations <= this.maxIterations && maxForceVectorLength > this.epsilon) {
+        while (
+            !this.shouldTerminate &&
+            iterations <= this.maxIterations &&
+            maxForceVectorLength > this.epsilon
+        ) {
             // keep track of force vectors to be applied in a map
             const forceVectors: { [id: string]: Point } = {};
 
             // calculate force vector to be applied for every node
-            nodes.forEach(n => forceVectors[n.id] = this.calculateForceVector(n, nodes, connectedNodeMap[n.id]))
+            nodes.forEach(
+                (n) =>
+                    (forceVectors[n.id] = this.calculateForceVector(
+                        n,
+                        nodes,
+                        connectedNodeMap[n.id],
+                    )),
+            );
 
             // add the calculated force vectors to the places and transitions
             // and calculate the maximum force applied while iterating
             maxForceVectorLength = 0;
-            nodes.forEach(n => {
+            nodes.forEach((n) => {
                 const forceVector = forceVectors[n.id];
                 // TODO?: ((maxIterations - iterations) / maxIterations) is the cooling factor delta(t)
                 n.position.x += forceVector.x;
                 n.position.y += forceVector.y;
                 // set the max force vector length if it's greater than the current highest one
-                const forceVectorLength = this.calculateVectorLength(forceVector);
+                const forceVectorLength =
+                    this.calculateVectorLength(forceVector);
                 if (forceVectorLength > maxForceVectorLength) {
                     maxForceVectorLength = forceVectorLength;
                 }
@@ -106,18 +120,25 @@ export class LayoutSpringEmbedderService {
     }
 
     private sleep(ms: number) {
-        return new Promise(r => setTimeout(r, ms));
+        return new Promise((r) => setTimeout(r, ms));
     }
 
     // calculate the force vector that should be applied to the node in one iteration of the algorithm
-    private calculateForceVector(node: Node, nodes: Node[], connectedNodes: Node[]): Point {
+    private calculateForceVector(
+        node: Node,
+        nodes: Node[],
+        connectedNodes: Node[],
+    ): Point {
         // initialize force vector
         const forceVector = new Point(0, 0);
 
         // calculate repulsion force from all other nodes
-        nodes.forEach(n => {
+        nodes.forEach((n) => {
             if (n.id !== node.id) {
-                const repulsionForce = this.calculateRepulsionForce(node.position, n.position);
+                const repulsionForce = this.calculateRepulsionForce(
+                    node.position,
+                    n.position,
+                );
                 // add the calculated repulsion force to the force vector
                 forceVector.x += repulsionForce.x;
                 forceVector.y += repulsionForce.y;
@@ -125,8 +146,11 @@ export class LayoutSpringEmbedderService {
         });
 
         // calculate the spring force from all connected nodes
-        connectedNodes.forEach(cn => {
-            const attractionForce = this.calculateSpringForce(node.position, cn.position);
+        connectedNodes.forEach((cn) => {
+            const attractionForce = this.calculateSpringForce(
+                node.position,
+                cn.position,
+            );
             forceVector.x += attractionForce.x;
             forceVector.y += attractionForce.y;
         });
@@ -136,14 +160,15 @@ export class LayoutSpringEmbedderService {
 
     // calculate repulsion vector between two nodes (points)
     private calculateRepulsionForce(u: Point, v: Point): Point {
-        const factor = this.cRep / (this.calculateDistance(v, u) ** 2);
+        const factor = this.cRep / this.calculateDistance(v, u) ** 2;
         const unitVector = this.calculateUnitVector(v, u);
         return new Point(unitVector.x * factor, unitVector.y * factor);
     }
 
     // calculation attraction vector between two points
     private calculateSpringForce(u: Point, v: Point): Point {
-        const factor = this.cSpring * Math.log10(this.calculateDistance(v, u) / this.l);
+        const factor =
+            this.cSpring * Math.log10(this.calculateDistance(v, u) / this.l);
         const unitVector = this.calculateUnitVector(u, v);
         return new Point(unitVector.x * factor, unitVector.y * factor);
     }
@@ -164,5 +189,4 @@ export class LayoutSpringEmbedderService {
         const length = this.calculateVectorLength(v);
         return new Point(v.x / length, v.y / length);
     }
-
 }

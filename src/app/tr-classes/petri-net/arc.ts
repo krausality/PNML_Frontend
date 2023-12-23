@@ -1,7 +1,7 @@
-import { Node } from "src/app/tr-interfaces/petri-net/node";
-import { Point } from "./point";
-import { Place } from "./place";
-import { Transition } from "./transition";
+import { Node } from 'src/app/tr-interfaces/petri-net/node';
+import { Point } from './point';
+import { Place } from './place';
+import { Transition } from './transition';
 
 export class Arc {
     from: Node;
@@ -9,7 +9,12 @@ export class Arc {
     weight: number;
     anchors: Point[];
 
-    constructor(from: Node, to: Node, weight: number = 1, anchors: Point[] = []){
+    constructor(
+        from: Node,
+        to: Node,
+        weight: number = 1,
+        anchors: Point[] = [],
+    ) {
         // if (typeof from === typeof to){
         //     throw new Error("Mach mal nicht!");
         // }
@@ -30,11 +35,16 @@ export class Arc {
     get lineSegments(): Point[][] {
         const polyLinePointsArray: Point[] = this.polyLinePointsArray;
         if (polyLinePointsArray.length < 2) {
-            throw new Error("polyLinePointsArray must have at least two elements")
+            throw new Error(
+                'polyLinePointsArray must have at least two elements',
+            );
         }
         const lineSegments: Point[][] = [];
         for (let i = 1; i < polyLinePointsArray.length; i++) {
-            lineSegments.push([polyLinePointsArray[i-1], polyLinePointsArray[i]]);
+            lineSegments.push([
+                polyLinePointsArray[i - 1],
+                polyLinePointsArray[i],
+            ]);
         }
         return lineSegments;
     }
@@ -49,7 +59,7 @@ export class Arc {
 
         // Determine start point of the line
         const pForStartCalc: Point = [...this.anchors, this.to.position][0];
-        if (this.from.pLiesOutsideNodeShapeBoudary(pForStartCalc)){
+        if (this.from.pLiesOutsideNodeShapeBoudary(pForStartCalc)) {
             start = this.from.intersectionOfBoundaryWithLineTo(pForStartCalc);
         } else {
             // Fall back solution: if pForStartCalc lies within the boundaries
@@ -61,22 +71,22 @@ export class Arc {
         }
 
         // Determine end point of the line
-        const anchorsPlusFrom: Point[] = [this.from.position, ...this.anchors]
-        const pForEndCalc: Point = anchorsPlusFrom[anchorsPlusFrom.length - 1]
-        if (this.to.pLiesOutsideNodeShapeBoudary(pForEndCalc)){
+        const anchorsPlusFrom: Point[] = [this.from.position, ...this.anchors];
+        const pForEndCalc: Point = anchorsPlusFrom[anchorsPlusFrom.length - 1];
+        if (this.to.pLiesOutsideNodeShapeBoudary(pForEndCalc)) {
             end = this.to.intersectionOfBoundaryWithLineTo(pForEndCalc);
         } else {
             // Fall back solution as above
             end = this.to.position;
         }
 
-        return [start, ...this.anchors, end]
+        return [start, ...this.anchors, end];
     }
 
     private pointArrayToString(points: Point[]): string {
         let s = '';
-        for (let point of points){
-          s = s + point.x + ',' + point.y + ' ';
+        for (let point of points) {
+            s = s + point.x + ',' + point.y + ' ';
         }
         return s;
     }
@@ -92,9 +102,8 @@ export class Arc {
     resetAnchors() {
         this.anchors = [];
     }
-    
+
     equals(arc: Arc): boolean {
-        return this.from === arc.from
-            && this.to === arc.to;
+        return this.from === arc.from && this.to === arc.to;
     }
 }
