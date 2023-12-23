@@ -29,10 +29,7 @@ export class LayerAssignmentService {
         let counter = 0;
 
         // Add nodes to layers until there are no unassigned nodes left
-        while (
-            this._assignedNodes.length < this._nodes.length &&
-            counter < 20
-        ) {
+        while (this._assignedNodes.length < this._nodes.length) {
             counter++;
 
             const previousLayer = this._layers[layerId - 1];
