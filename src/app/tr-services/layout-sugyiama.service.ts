@@ -26,12 +26,18 @@ export class LayoutSugyiamaService {
     }
 
     applySugyiamaLayout() {
+        // reset to make sure there are no interferences from
+        // previous runs of the algorithm
+        this._nodeInputMap = new Map();
+        this._nodeOutputMap = new Map();
+        let layers: LayeredGraph = [];
+
         // copy initial state of datamodel to local datamodel
         // the algorithm treats places & transitons the same
         this._arcs = [...this.dataService.getArcs()];
         this._nodes = [
-            ...this.dataService.getPlaces(),
             ...this.dataService.getTransitions(),
+            ...this.dataService.getPlaces(),
         ];
 
         // TODO: There are some requirements for the layout to work correctly.
@@ -51,7 +57,7 @@ export class LayoutSugyiamaService {
             this._nodes,
             this._nodeInputMap,
         );
-        const layers = layerAssignmentService.assignLayers();
+        layers = layerAssignmentService.assignLayers();
 
         // Arcs that have been reversed for layer assignment can now to be re-reversed
         cycleRemovalService.reverseArcs();
