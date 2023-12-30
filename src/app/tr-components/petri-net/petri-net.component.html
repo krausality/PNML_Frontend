@@ -77,11 +77,12 @@
             [ngClass]="{
                 transition: true,
                 active: transition.isActive,
-                editable: isTransitionEditable()
+                editable: isTransitionEditable(),
+                silent: !(transition.label)
             }"
-            [attr.x]="transition.position.x - transitionXOffset"
+            [attr.x]="transition.position.x - (transition.label ? transitionXOffset : transSilentXOffset)"
             [attr.y]="transition.position.y - transitionYOffset"
-            [attr.width]="transitionWidth"
+            [attr.width]="transition.label ? transitionWidth : transSilentWidth"
             [attr.height]="transitionHeight"
         />
         <text

@@ -23,6 +23,10 @@
     stroke-width: 2;
 }
 
+.transition.silent {
+    fill: black;
+}
+
 /* .transition:hover {
     stroke: orange;
 } */

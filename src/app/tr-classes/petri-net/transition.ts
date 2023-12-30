@@ -5,6 +5,7 @@ import { Place } from './place';
 import {
     transitionWidth,
     transitionHeight,
+    transSilentWidth,
 } from 'src/app/tr-services/position.constants';
 
 export class Transition implements Node {
@@ -21,7 +22,7 @@ export class Transition implements Node {
     }
 
     intersectionOfBoundaryWithLineTo(p: Point): Point {
-        const width = transitionWidth;
+        const width = this.label ? transitionWidth : transSilentWidth;
         const height = transitionHeight;
 
         if (!this.pLiesOutsideNodeShapeBoudary(p)) {

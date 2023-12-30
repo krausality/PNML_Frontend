@@ -15,6 +15,8 @@ import {
     transitionWidth,
     transitionXOffset,
     transitionYOffset,
+    transSilentWidth,
+    transSilentXOffset,
 } from '../../tr-services/position.constants';
 
 import { PnmlService } from '../../tr-services/pnml.service';
@@ -703,6 +705,8 @@ export class PetriNetComponent {
     protected readonly transitionXOffset = transitionXOffset;
     protected readonly transitionYOffset = transitionYOffset;
     protected readonly transitionIdYOffset = transitionIdYOffset;
+    protected readonly transSilentWidth = transSilentWidth;
+    protected readonly transSilentXOffset = transSilentXOffset;
 
     protected readonly anchorRadius = anchorRadius;
 
