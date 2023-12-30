@@ -39,6 +39,8 @@ export class ButtonBarComponent {
     // sets the "tab" property in the uiService
     // empties the "button" property in the uiService
     tabClicked(tab: string) {
+        this.uiService.tabTransitioning = true;
+
         switch (tab) {
             case 'build':
                 this.uiService.tab = this.TabState.Build;
@@ -52,6 +54,10 @@ export class ButtonBarComponent {
                 break;
         }
         this.uiService.button = null;
+
+        setTimeout(() => {
+            this.uiService.tabTransitioning = false;
+        }, 1100);
     }
 
     // gets called when a button is clicked that needs its state saved globally

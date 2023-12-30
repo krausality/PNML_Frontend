@@ -126,3 +126,7 @@
 .line-segment:hover {
     cursor: pointer;
 }
+
+.tab-transitioning .transition {
+    transition: fill 1s;
+}

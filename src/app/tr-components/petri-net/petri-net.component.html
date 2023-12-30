@@ -4,7 +4,8 @@
     class="canvas"
     [ngClass]="{
         dragging: editMoveElementsService.isCanvasDragInProcess,
-        'play-mode': uiService.tab === TabState.Play
+        'play-mode': uiService.tab === TabState.Play,
+        'tab-transitioning': uiService.tabTransitioning
     }"
     (drop)="processDropEvent($event)"
     (dragover)="prevent($event)"
