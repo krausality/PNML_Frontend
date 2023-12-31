@@ -3,7 +3,7 @@ export const radius = 25;
 export const placeIdYOffset = 45;
 
 // Transitions
-const transSilentWidthFactor = 0.80;
+const transSilentWidthFactor = 0.8;
 export const transitionWidth = 4 * radius;
 export const transitionHeight = 2 * radius;
 export const transSilentWidth = transSilentWidthFactor * radius;

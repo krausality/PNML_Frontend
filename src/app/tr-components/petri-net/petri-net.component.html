@@ -78,9 +78,12 @@
                 transition: true,
                 active: transition.isActive,
                 editable: isTransitionEditable(),
-                silent: !(transition.label)
+                silent: !transition.label
             }"
-            [attr.x]="transition.position.x - (transition.label ? transitionXOffset : transSilentXOffset)"
+            [attr.x]="
+                transition.position.x -
+                (transition.label ? transitionXOffset : transSilentXOffset)
+            "
             [attr.y]="transition.position.y - transitionYOffset"
             [attr.width]="transition.label ? transitionWidth : transSilentWidth"
             [attr.height]="transitionHeight"
@@ -88,7 +91,7 @@
         <g *ngIf="transition.label">
             <!--Single line label-->
             <text
-                *ngIf="!(transition.label.includes(lineSeparator))"
+                *ngIf="!transition.label.includes(lineSeparator)"
                 [ngClass]="{
                     label: true,
                     'no-pointer-events': uiService.button === ButtonState.Move
@@ -101,25 +104,27 @@
             <!--Double line label-->
             <g *ngIf="transition.label.includes(lineSeparator)">
                 <text
-                [ngClass]="{
-                    label: true,
-                    'no-pointer-events': uiService.button === ButtonState.Move
-                }"
-                [attr.x]="transition.position.x"
-                [attr.y]="transition.position.y - 9"
-            >
-                {{ transition.label.split(lineSeparator)[0] }}
-            </text>
-            <text
-                [ngClass]="{
-                    label: true,
-                    'no-pointer-events': uiService.button === ButtonState.Move
-                }"
-                [attr.x]="transition.position.x"
-                [attr.y]="transition.position.y + 9"
-            >
-                {{ transition.label.split(lineSeparator)[1] }}
-            </text>
+                    [ngClass]="{
+                        label: true,
+                        'no-pointer-events':
+                            uiService.button === ButtonState.Move
+                    }"
+                    [attr.x]="transition.position.x"
+                    [attr.y]="transition.position.y - 9"
+                >
+                    {{ transition.label.split(lineSeparator)[0] }}
+                </text>
+                <text
+                    [ngClass]="{
+                        label: true,
+                        'no-pointer-events':
+                            uiService.button === ButtonState.Move
+                    }"
+                    [attr.x]="transition.position.x"
+                    [attr.y]="transition.position.y + 9"
+                >
+                    {{ transition.label.split(lineSeparator)[1] }}
+                </text>
             </g>
         </g>
         <text
