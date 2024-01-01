@@ -36,7 +36,7 @@ export class LayerAssignmentService {
 
             const choices = this.getNodeChoicesForLayer(previousLayer);
 
-            console.log(choices);
+            // console.log(choices);
             const picked = choices.pop();
 
             if (picked) {
@@ -70,7 +70,7 @@ export class LayerAssignmentService {
 
         // Get the pre-nodes for each node form the graph map
         // (map contains prenodes indexed by node)
-        console.log(this._nodeInputMap);
+        // console.log(this._nodeInputMap);
         for (const [node, preNode] of this._nodeInputMap.entries()) {
             if (this._assignedNodes.includes(node)) {
                 // ignore nodes that have already been assigned to a layer
