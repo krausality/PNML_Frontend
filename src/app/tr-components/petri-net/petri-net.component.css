@@ -23,10 +23,6 @@
     stroke-width: 2;
 }
 
-.transition.active {
-    fill: green;
-}
-
 /* .transition:hover {
     stroke: orange;
 } */
@@ -89,6 +85,7 @@
 }
 .play-mode .transition.active {
     cursor: pointer;
+    fill: green;
 }
 
 /* text nodes that follow transitions (rects within svg) should not have different cursors in play mode
@@ -128,4 +125,8 @@
 .anchor.active,
 .line-segment:hover {
     cursor: pointer;
+}
+
+.tab-transitioning .transition {
+    transition: fill 1s;
 }
