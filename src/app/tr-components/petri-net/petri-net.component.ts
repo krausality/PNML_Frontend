@@ -17,6 +17,7 @@ import {
     transitionYOffset,
     transSilentWidth,
     transSilentXOffset,
+    lineSeparator,
 } from '../../tr-services/position.constants';
 
 import { PnmlService } from '../../tr-services/pnml.service';
@@ -709,6 +710,8 @@ export class PetriNetComponent {
     protected readonly transSilentXOffset = transSilentXOffset;
 
     protected readonly anchorRadius = anchorRadius;
+
+    protected readonly lineSeparator = lineSeparator;
 
     protected readonly TabState = TabState;
     protected readonly ButtonState = ButtonState;
