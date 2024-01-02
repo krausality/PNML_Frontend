@@ -80,6 +80,7 @@ export class PetriNetComponent {
     startTransition: Transition | undefined;
     startPlace: Place | undefined;
     anchorToDelete: Point | undefined;
+    dummyArc: Point[] = [];
 
     private parsePetrinetData(
         content: string | undefined,
@@ -382,6 +383,11 @@ export class PetriNetComponent {
                 );
             }
         }
+        if (this.uiService.button === ButtonState.Arc && this.dummyArc.length > 0) {
+            // Drawing the drag & drop DummyArc
+            this.dummyArc[1] = this.svgCoordinatesService.getRelativeEventCoords(event, drawingArea);
+            console.log(this.dummyArc);
+        }
     }
 
     dispatchSVGMouseUp(event: MouseEvent, drawingArea: HTMLElement) {
@@ -393,6 +399,7 @@ export class PetriNetComponent {
         if (this.uiService.button === ButtonState.Arc) {
             this.startTransition = undefined;
             this.startPlace = undefined;
+            this.dummyArc = [];
         }
 
         // Resed anchorToDelete after both:
@@ -439,6 +446,7 @@ export class PetriNetComponent {
         // Set StartNode for Arc
         if (this.uiService.button === ButtonState.Arc) {
             this.startPlace = place;
+            this.dummyArc.push(place.position);
         }
     }
 
@@ -693,6 +701,14 @@ export class PetriNetComponent {
                 Math.abs(arc.weight) > 1) || // arc weights can only be decreased if the absolute value is > 1
             this.uiService.button === ButtonState.Delete
         );
+    }
+
+    dummyArcPointArrayToString(): string {
+        let s = '';
+        for (let point of this.dummyArc) {
+            s = s + point.x + ',' + point.y + ' ';
+        }
+        return s;
     }
 
     protected readonly radius = radius;

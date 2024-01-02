@@ -63,6 +63,21 @@
         >
             {{ place.id }}
         </text>
+        <!-- DummyArc -->
+        <g
+            *ngIf="dummyArc.length > 0"
+            (mousedown)="dispatchPlaceMouseDown($event, place)"
+        >
+            <polyline
+                class="arc"
+                [attr.points]="dummyArcPointArrayToString()"
+            ></polyline>
+            <polyline
+                class="arc"
+                [attr.points]="dummyArcPointArrayToString()"
+                marker-end="url(#arrow)"
+            ></polyline>
+        </g>
     </g>
 
     <!-- Transitions -->
