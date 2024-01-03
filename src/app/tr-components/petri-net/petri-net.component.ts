@@ -32,6 +32,7 @@ import { SetActionPopupComponent } from '../set-action-popup/set-action-popup.co
 import { Node } from 'src/app/tr-interfaces/petri-net/node';
 import { MouseConstants } from '../../tr-enums/mouse-constants';
 import { SvgCoordinatesService } from 'src/app/tr-services/svg-coordinates-service';
+import { DummyArc } from 'src/app/tr-classes/petri-net/dummyArc';
 
 @Component({
     selector: 'app-petri-net',
@@ -80,7 +81,7 @@ export class PetriNetComponent {
     startTransition: Transition | undefined;
     startPlace: Place | undefined;
     anchorToDelete: Point | undefined;
-    dummyArc: Point[] = [];
+    dummyArc = new DummyArc([]);
 
     private parsePetrinetData(
         content: string | undefined,
@@ -383,10 +384,10 @@ export class PetriNetComponent {
                 );
             }
         }
-        if (this.uiService.button === ButtonState.Arc && this.dummyArc.length > 0) {
+        if (this.uiService.button === ButtonState.Arc && this.dummyArc?.points.length > 0) {
             // Drawing the drag & drop DummyArc
-            this.dummyArc[1] = this.svgCoordinatesService.getRelativeEventCoords(event, drawingArea);
-            console.log(this.dummyArc);
+            this.dummyArc.points[1] = this.svgCoordinatesService.getRelativeEventCoords(event, drawingArea);
+            // this.dummyArc[0] = this
         }
     }
 
@@ -399,7 +400,7 @@ export class PetriNetComponent {
         if (this.uiService.button === ButtonState.Arc) {
             this.startTransition = undefined;
             this.startPlace = undefined;
-            this.dummyArc = [];
+            this.dummyArc.points = [];
         }
 
         // Resed anchorToDelete after both:
@@ -446,7 +447,7 @@ export class PetriNetComponent {
         // Set StartNode for Arc
         if (this.uiService.button === ButtonState.Arc) {
             this.startPlace = place;
-            this.dummyArc.push(place.position);
+            this.dummyArc?.points.push(place.position);
         }
     }
 
@@ -461,6 +462,7 @@ export class PetriNetComponent {
             this.startTransition.appendPostArc(newArc);
             this.dataService.getArcs().push(newArc);
             this.startTransition = undefined;
+            this.dummyArc.points = [];
         }
     }
 
@@ -499,6 +501,7 @@ export class PetriNetComponent {
         // Set StartNode for Arc
         if (this.uiService.button === ButtonState.Arc) {
             this.startTransition = transition;
+            this.dummyArc?.points.push(transition.position);
         }
     }
 
@@ -513,6 +516,7 @@ export class PetriNetComponent {
             transition.appendPreArc(newArc);
             this.dataService.getArcs().push(newArc);
             this.startPlace = undefined;
+            this.dummyArc.points = [];
         }
     }
 
@@ -701,14 +705,6 @@ export class PetriNetComponent {
                 Math.abs(arc.weight) > 1) || // arc weights can only be decreased if the absolute value is > 1
             this.uiService.button === ButtonState.Delete
         );
-    }
-
-    dummyArcPointArrayToString(): string {
-        let s = '';
-        for (let point of this.dummyArc) {
-            s = s + point.x + ',' + point.y + ' ';
-        }
-        return s;
     }
 
     protected readonly radius = radius;

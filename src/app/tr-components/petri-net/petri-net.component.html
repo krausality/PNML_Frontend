@@ -65,16 +65,16 @@
         </text>
         <!-- DummyArc -->
         <g
-            *ngIf="dummyArc.length > 0"
+            *ngIf="dummyArc.points.length > 0"
             (mousedown)="dispatchPlaceMouseDown($event, place)"
         >
             <polyline
                 class="arc"
-                [attr.points]="dummyArcPointArrayToString()"
+                [attr.points]="dummyArc.polyLinePoints"
             ></polyline>
             <polyline
                 class="arc"
-                [attr.points]="dummyArcPointArrayToString()"
+                [attr.points]="dummyArc.polyLinePoints"
                 marker-end="url(#arrow)"
             ></polyline>
         </g>
@@ -117,6 +117,21 @@
         >
             {{ transition.id }}
         </text>
+        <!-- DummyArc -->
+        <g
+            *ngIf="dummyArc.points.length > 0"
+            (mousedown)="dispatchTransitionMouseDown($event, transition)"
+        >
+            <polyline
+                class="arc"
+                [attr.points]="dummyArc.polyLinePoints"
+            ></polyline>
+            <polyline
+                class="arc"
+                [attr.points]="dummyArc.polyLinePoints"
+                marker-end="url(#arrow)"
+            ></polyline>
+        </g>
     </g>
 
     <!-- Arcs -->
