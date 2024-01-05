@@ -387,7 +387,6 @@ export class PetriNetComponent {
         if (this.uiService.button === ButtonState.Arc && this.dummyArc?.points.length > 0) {
             // Drawing the drag & drop DummyArc
             this.dummyArc.points[1] = this.svgCoordinatesService.getRelativeEventCoords(event, drawingArea);
-            // this.dummyArc[0] = this
         }
     }
 

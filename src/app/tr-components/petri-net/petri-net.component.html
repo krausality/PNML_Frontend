@@ -63,21 +63,6 @@
         >
             {{ place.id }}
         </text>
-        <!-- DummyArc -->
-        <g
-            *ngIf="dummyArc.points.length > 0"
-            (mousedown)="dispatchPlaceMouseDown($event, place)"
-        >
-            <polyline
-                class="arc"
-                [attr.points]="dummyArc.polyLinePoints"
-            ></polyline>
-            <polyline
-                class="arc"
-                [attr.points]="dummyArc.polyLinePoints"
-                marker-end="url(#arrow)"
-            ></polyline>
-        </g>
     </g>
 
     <!-- Transitions -->
@@ -117,21 +102,6 @@
         >
             {{ transition.id }}
         </text>
-        <!-- DummyArc -->
-        <g
-            *ngIf="dummyArc.points.length > 0"
-            (mousedown)="dispatchTransitionMouseDown($event, transition)"
-        >
-            <polyline
-                class="arc"
-                [attr.points]="dummyArc.polyLinePoints"
-            ></polyline>
-            <polyline
-                class="arc"
-                [attr.points]="dummyArc.polyLinePoints"
-                marker-end="url(#arrow)"
-            ></polyline>
-        </g>
     </g>
 
     <!-- Arcs -->
@@ -293,5 +263,18 @@
                 (mouseup)="dispatchAnchorMouseUp($event, point)"
             />
         </ng-container>
+    </g>
+
+    <!-- DummyArc -->
+    <g *ngIf="dummyArc.points.length > 0">
+        <polyline
+            class="arc"
+            [attr.points]="dummyArc.polyLinePoints"
+        ></polyline>
+        <polyline
+            class="arc"
+            [attr.points]="dummyArc.polyLinePoints"
+            marker-end="url(#arrow)"
+        ></polyline>
     </g>
 </svg>
