@@ -268,11 +268,11 @@
     <!-- DummyArc -->
     <g *ngIf="dummyArc.points.length > 0">
         <polyline
-            class="arc"
+            class="arc no-pointer-events"
             [attr.points]="dummyArc.polyLinePoints"
         ></polyline>
         <polyline
-            class="arc"
+            class="arc no-pointer-events"
             [attr.points]="dummyArc.polyLinePoints"
             marker-end="url(#arrow)"
         ></polyline>
