@@ -391,12 +391,14 @@ export class PetriNetComponent {
     }
 
     dispatchSVGMouseUp(event: MouseEvent, drawingArea: HTMLElement) {
+        console.log('dispatchSVGMouseUp');
         if (this.uiService.button === ButtonState.Move) {
             this.editMoveElementsService.finalizeMove();
         }
 
         // Reset StartNode when Drag&Drop is cancelled
         if (this.uiService.button === ButtonState.Arc) {
+            console.log('dispatchSVGMouseUp: Reset StartNode');
             this.startTransition = undefined;
             this.startPlace = undefined;
             this.dummyArc.points = [];
@@ -506,11 +508,13 @@ export class PetriNetComponent {
 
     dispatchTransitionMouseUp(event: MouseEvent, transition: Transition) {
         // Draw Arc with Transition as EndNode
+        console.log('dispatchTransitionMouseUp: before if Statement')
         if (
             this.startPlace &&
             !this.isArcExisting(this.startPlace, transition) &&
             this.uiService.button === ButtonState.Arc
         ) {
+            console.log('dispatchTransitionMouseUp: if Statement true')
             const newArc: Arc = new Arc(this.startPlace, transition, 1);
             transition.appendPreArc(newArc);
             this.dataService.getArcs().push(newArc);
