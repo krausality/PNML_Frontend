@@ -92,6 +92,10 @@
     fill: green;
 }
 
+.play-mode .transition.active:hover {
+    filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.5));
+}
+
 /* text nodes that follow transitions (rects within svg) should not have different cursors in play mode
  * all interaction events should be caught in the wrapper group element */
 .play-mode .transition.active ~ text {
