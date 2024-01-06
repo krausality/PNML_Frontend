@@ -27,38 +27,55 @@ export class VertexOrderingService {
     orderVertices() {
         this.insertDummyNodes();
 
-        // TODO:
-        // We should create a deep copy of the layers
-        // then use median & transpose algorithms to sort layer-copy
-        // then always continue on with wichever order has the least crossings (--> best)
-        // Problem: the current data structure doesn't allow this since our
-        // we always have to iterate over the original layers to be able to use our node maps
-
-        // const currentOrder = this._layers;
-        // let best = currentOrder;
+        let best = [...this._layers];
+        let bestCrossingsNumber = this.totalCrossings(best);
 
         // 24 iterations is the number taken from paper by Ganser et al.,
-        // for testing we'll use less for now
-        const maxIterations = 4;
+        // they suggest checking wether the algorithm has actually improved anything
+        const maxIterations = 24;
+        const maxRoundsNoImprovement = 6;
+        let roundsWithNoImprovement = 0;
         for (let i = 0; i < maxIterations; i++) {
+            // Change direction of sweep for every other iteration
+            if (i % 2 !== 0) {
+                this._layers.reverse();
+            }
             this.median(i, this._layers);
             this.transpose(this._layers);
+            if (i % 2 !== 0) {
+                this._layers.reverse();
+            }
 
-            // console.log(this.totalCrossings(this._layers));
+            const currentCrossingNumber = this.totalCrossings(this._layers);
 
-            // if (this.totalCrossings(currentOrder) > this.totalCrossings(best)) {
-            //     best = currentOrder;
-            // }
+            if (currentCrossingNumber < bestCrossingsNumber) {
+                best = [...this._layers];
+                bestCrossingsNumber = currentCrossingNumber;
+            } else {
+                roundsWithNoImprovement++;
+            }
+
+            // If the optimum (0 crossings) has been reached
+            // or X rounds have passed without any improvements, we'll stop the algorithm early
+            if (
+                bestCrossingsNumber === 0 ||
+                roundsWithNoImprovement > maxRoundsNoImprovement
+            ) {
+                break;
+            }
         }
+
+        this._layers = best;
     }
 
     private median(iteration: number, currentOrder: LayeredGraph) {
         // Sweep through the tree
         // Change direction top-to-bottom to bottom-to-top for each iteration
-        if (iteration % 2 === 0) {
-            for (const [layerId, nodes] of currentOrder.entries()) {
-                const median = new Map();
-                for (const node of nodes) {
+        for (const [layerId, nodes] of currentOrder.entries()) {
+            const median = new Map();
+            for (const node of nodes) {
+                // Direction changes top-to-bottom to bottom-to-top for every other iteration
+                if (iteration % 2 === 0) {
                     const adjacentLayer = currentOrder[layerId - 1];
                     if (adjacentLayer) {
                         median.set(
@@ -69,13 +86,7 @@ export class VertexOrderingService {
                             ),
                         );
                     }
-                }
-                nodes.sort((a, b) => median.get(a) - median.get(b));
-            }
-        } else {
-            for (const [layerId, nodes] of currentOrder.reverse().entries()) {
-                const median = new Map();
-                for (const node of nodes) {
+                } else {
                     const adjacentLayer = currentOrder[layerId + 1];
                     if (adjacentLayer) {
                         median.set(
@@ -87,8 +98,8 @@ export class VertexOrderingService {
                         );
                     }
                 }
-                nodes.sort((a, b) => median.get(a) - median.get(b));
             }
+            nodes.sort((a, b) => median.get(a) - median.get(b));
         }
     }
 
@@ -97,7 +108,7 @@ export class VertexOrderingService {
 
         // TODO: remove counter once sure that we're not creating any endless loops by accident
         let failsafe = 0;
-        while (improved && failsafe < 5) {
+        while (improved && failsafe < 20) {
             failsafe++;
             improved = false;
             for (const [layerId, layer] of currentOrder.entries()) {
@@ -136,15 +147,21 @@ export class VertexOrderingService {
         let crossings = 0;
         for (const [layerId, layer] of currentOrder.entries()) {
             if (layer.length === 1 || !currentOrder[layerId + 1]) {
-                // the last layer or nodes with 1 node cannot have crossings
+                // the last layer or layers with only one node cannot have crossings
                 continue;
             }
 
-            // Check crossings for each neighbouring nodes
-            for (let position = 0; position < layer.length - 1; position++) {
-                const nodeA = layer[position];
-                const nodeB = layer[position + 1];
-                crossings += this.layerCrossings(nodeA, nodeB, layerId);
+            // Check crossings for each pair of nodes in the layer
+            for (let positionA = 0; positionA < layer.length; positionA++) {
+                for (
+                    let positionB = positionA + 1;
+                    positionB < layer.length;
+                    positionB++
+                ) {
+                    const nodeA = layer[positionA];
+                    const nodeB = layer[positionB];
+                    crossings += this.layerCrossings(nodeA, nodeB, layerId);
+                }
             }
         }
 
