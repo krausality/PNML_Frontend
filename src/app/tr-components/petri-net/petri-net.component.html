@@ -285,8 +285,9 @@
                     anchor: true,
                     active: point === editMoveElementsService.newAnchor,
                     editable:
-                        uiService.button === ButtonState.Move &&
-                        !editMoveElementsService.newAnchor
+                        (uiService.button === ButtonState.Move &&
+                            !editMoveElementsService.newAnchor) ||
+                        uiService.button === ButtonState.Delete
                 }"
                 [attr.cx]="point.x"
                 [attr.cy]="point.y"
