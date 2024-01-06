@@ -46,7 +46,7 @@
             <text
                 [ngClass]="{
                     'token-label': true,
-                    'no-pointer-events': uiService.button === ButtonState.Move
+                    'no-pointer-events': true
                 }"
                 [attr.x]="place.position.x"
                 [attr.y]="place.position.y"
@@ -94,7 +94,7 @@
                 *ngIf="!transition.label.includes(lineSeparator)"
                 [ngClass]="{
                     label: true,
-                    'no-pointer-events': uiService.button === ButtonState.Move
+                    'no-pointer-events': true
                 }"
                 [attr.x]="transition.position.x"
                 [attr.y]="transition.position.y"
@@ -106,8 +106,7 @@
                 <text
                     [ngClass]="{
                         label: true,
-                        'no-pointer-events':
-                            uiService.button === ButtonState.Move
+                        'no-pointer-events': true
                     }"
                     [attr.x]="transition.position.x"
                     [attr.y]="transition.position.y - 9"
@@ -117,8 +116,7 @@
                 <text
                     [ngClass]="{
                         label: true,
-                        'no-pointer-events':
-                            uiService.button === ButtonState.Move
+                        'no-pointer-events': true
                     }"
                     [attr.x]="transition.position.x"
                     [attr.y]="transition.position.y + 9"
@@ -159,14 +157,14 @@
             <!-- White Circle for Background -->
             <circle
                 *ngIf="arc.anchors.length == 0"
-                class="arc-weight-background"
+                class="arc-weight-background no-pointer-events"
                 [attr.cx]="(arc.from.position.x + arc.to.position.x) / 2"
                 [attr.cy]="(arc.from.position.y + arc.to.position.y) / 2"
                 r="12"
             />
             <text
                 *ngIf="arc.anchors.length == 0"
-                class="arc-weight"
+                class="arc-weight no-pointer-events"
                 [attr.x]="(arc.from.position.x + arc.to.position.x) / 2"
                 [attr.y]="(arc.from.position.y + arc.to.position.y) / 2"
                 text-anchor="middle"
@@ -179,14 +177,14 @@
             <!-- White Circle for Background -->
             <circle
                 *ngIf="arc.anchors.length == 1"
-                class="arc-weight-background"
+                class="arc-weight-background no-pointer-events"
                 [attr.cx]="arc.anchors[0].x"
                 [attr.cy]="arc.anchors[0].y"
                 r="12"
             />
             <text
                 *ngIf="arc.anchors.length == 1"
-                class="arc-weight"
+                class="arc-weight no-pointer-events"
                 [attr.x]="arc.anchors[0].x"
                 [attr.y]="arc.anchors[0].y"
                 text-anchor="middle"
@@ -214,7 +212,7 @@
             />
             <text
                 *ngIf="arc.anchors.length % 2 === 0 && arc.anchors.length >= 2"
-                class="arc-weight"
+                class="arc-weight no-pointer-events"
                 [attr.x]="
                     (arc.anchors[arc.anchors.length / 2 - 1].x +
                         arc.anchors[arc.anchors.length / 2].x) /
@@ -235,14 +233,14 @@
             <!-- White Circle for Background -->
             <circle
                 *ngIf="arc.anchors.length % 2 === 1 && arc.anchors.length >= 2"
-                class="arc-weight-background"
+                class="arc-weight-background no-pointer-events"
                 [attr.cx]="arc.anchors[arc.anchors.length / 2 - 0.5].x"
                 [attr.cy]="arc.anchors[arc.anchors.length / 2 - 0.5].y"
                 r="12"
             />
             <text
                 *ngIf="arc.anchors.length % 2 === 1 && arc.anchors.length >= 2"
-                class="arc-weight"
+                class="arc-weight no-pointer-events"
                 [attr.x]="arc.anchors[arc.anchors.length / 2 - 0.5].x"
                 [attr.y]="arc.anchors[arc.anchors.length / 2 - 0.5].y"
                 text-anchor="middle"
