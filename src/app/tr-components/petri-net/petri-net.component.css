@@ -125,10 +125,18 @@
     pointer-events: none;
 }
 
+.background-arc.editable:hover {
+    cursor: pointer;
+}
+
 .editable:hover,
 .anchor.active,
-.line-segment:hover {
+.line-segment:hover,
+.background-arc:hover + .editable {
     cursor: pointer;
+    /* stronger drop shadow to visible highlight the hovered element */
+    filter: drop-shadow(0 0 2px rgba(255, 0, 0, 1))
+        drop-shadow(0 0 3px rgba(255, 0, 0, 1));
 }
 
 .tab-transitioning .transition {
