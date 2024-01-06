@@ -27,6 +27,7 @@ import { mathAbsPipe } from './tr-pipes/math-abs.pipe';
 import { ManageActionsPopupComponent } from './tr-components/manage-actions-popup/manage-actions-popup.component';
 import { SetActionPopupComponent } from './tr-components/set-action-popup/set-action-popup.component';
 import { ClearPopupComponent } from './tr-components/clear-popup/clear-popup.component';
+import { CodeEditorComponent } from './tr-components/code-editor/code-editor.component';
 
 @NgModule({
     declarations: [
@@ -42,6 +43,7 @@ import { ClearPopupComponent } from './tr-components/clear-popup/clear-popup.com
         ManageActionsPopupComponent,
         SetActionPopupComponent,
         ClearPopupComponent,
+        CodeEditorComponent,
     ],
     imports: [
         BrowserModule,

@@ -195,6 +195,7 @@
             </button>
         </div>
     </mat-tab>
+
     <mat-tab label="save">
         <ng-template mat-tab-label>
             <mat-icon class="example-tab-icon">download</mat-icon>
@@ -253,6 +254,25 @@
                 [matTooltipShowDelay]="showDelay"
             >
                 SVG
+            </button>
+        </div>
+    </mat-tab>
+
+    <mat-tab label="code">
+        <ng-template mat-tab-label>
+            <mat-icon class="example-tab-icon">data_object</mat-icon>
+            Code
+        </ng-template>
+
+        <!-- buttons for tab "code" -->
+        <div class="button-container">
+            <!-- reset button -->
+            <button
+                mat-icon-button
+                matTooltip="Reset code editor to the current petrinet state"
+                [matTooltipShowDelay]="showDelay"
+            >
+                <mat-icon>restart_alt</mat-icon>
             </button>
         </div>
     </mat-tab>

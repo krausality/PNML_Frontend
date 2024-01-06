@@ -12,16 +12,27 @@
     <!--    Main content    -->
 
     <!-- button bar and layout switch -->
-    <div fxLayout="row">
-        <app-button-bar fxFlex></app-button-bar>
-        <app-layout-switch fxFlex></app-layout-switch>
-    </div>
+    <!-- <div fxLayout="row"> -->
+    <app-button-bar></app-button-bar>
+        <!-- <app-layout-switch fxFlex></app-layout-switch> -->
+    <!-- </div> -->
 
-    <!-- petri net component -->
-    <app-petri-net
-        class="padding full-size"
-        (fileContent)="processSourceChange($event)"
-    ></app-petri-net>
+    <div class="petri-net-container"  fxLayout="row">
+        <!-- petri net component -->
+        <app-petri-net
+            [ngClass]="{
+                'petri-net': true,
+                'active': uiService.tab === TabState.Code,
+            }"
+            (fileContent)="processSourceChange($event)"
+        ></app-petri-net>
+        <app-code-editor
+            [ngClass]="{
+                'code-editor': true,
+                'active': uiService.tab === TabState.Code,
+            }"
+        ></app-code-editor>
+    </div>
 
     <div fxLayout="row" fxLayoutAlign="space-evenly start">
         <app-example-file
@@ -30,7 +41,7 @@
             description="An example .json Petri net"
         ></app-example-file>
 
-        <mat-form-field appearance="outline" class="textarea">
+        <!-- <mat-form-field appearance="outline" class="textarea">
             <mat-label>File content</mat-label>
             <textarea
                 matInput
@@ -39,7 +50,7 @@
                 cdkAutosizeMaxRows="20"
                 [formControl]="textareaFc"
             ></textarea>
-        </mat-form-field>
+        </mat-form-field> -->
     </div>
 
     <!--  Footer  -->

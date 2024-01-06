@@ -52,6 +52,8 @@ export class ButtonBarComponent {
             case 'save':
                 this.uiService.tab = this.TabState.Save;
                 break;
+            case 'code':
+                this.uiService.tab = this.TabState.Code;
         }
         this.uiService.button = null;
 
