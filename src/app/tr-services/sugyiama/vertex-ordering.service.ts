@@ -11,22 +11,17 @@ export class VertexOrderingService {
     private _arcs: Arc[] = [];
 
     // Maps of adjacent nodes
-    private _nodeInputMap: Map<Node, Node[]> = new Map();
-    private _nodeOutputMap: Map<Node, Node[]> = new Map();
+    private _nodeInputIdMap: Map<string, Node[]> = new Map();
+    private _nodeOutputIdMap: Map<string, Node[]> = new Map();
 
     private _layers: LayeredGraph = [];
 
-    constructor(
-        layers: LayeredGraph,
-        arcs: Arc[],
-        nodeInputMap: Map<Node, Node[]>,
-        nodeOutputMap: Map<Node, Node[]>,
-    ) {
+    constructor(layers: LayeredGraph, nodes: Node[], arcs: Arc[]) {
         this._layers = layers;
+        this._nodes = nodes;
         this._arcs = arcs;
 
-        this._nodeInputMap = nodeInputMap;
-        this._nodeOutputMap = nodeOutputMap;
+        this.generateAdjacentNodeMaps();
     }
 
     orderVertices() {
@@ -189,8 +184,8 @@ export class VertexOrderingService {
     private getConnectedNodes(node: Node) {
         const connectedNodes = [];
 
-        const inputNodes = this._nodeInputMap.get(node);
-        const outputNodes = this._nodeOutputMap.get(node);
+        const inputNodes = this._nodeInputIdMap.get(node.id);
+        const outputNodes = this._nodeOutputIdMap.get(node.id);
 
         if (inputNodes) connectedNodes.push(...inputNodes);
         if (outputNodes) connectedNodes.push(...outputNodes);
@@ -200,7 +195,7 @@ export class VertexOrderingService {
 
     private getMedianValueOfInputNodes(node: Node, layer: Node[]) {
         // console.log('[Vertex Ordering]: nodes in adjacent layer to node: ', node, layer);
-        const inputNodes = this._nodeInputMap.get(node);
+        const inputNodes = this._nodeInputIdMap.get(node.id);
         if (!inputNodes || !inputNodes.length) {
             // nodes with no adjacent vertices are given a median of -1
             return -1;
@@ -226,7 +221,7 @@ export class VertexOrderingService {
 
     private getMedianValueOfOutputNodes(node: Node, layer: Node[]) {
         // console.log('[Vertex Ordering]: nodes in adjacent layer to node: ', node, layer);
-        const outputNodes = this._nodeOutputMap.get(node);
+        const outputNodes = this._nodeOutputIdMap.get(node.id);
         if (!outputNodes || !outputNodes.length) {
             // nodes with no adjacent vertices are given a median of -1
             return -1;
@@ -261,7 +256,7 @@ export class VertexOrderingService {
             // This has to be done seperately for input & output nodes
             // so that we can ensure the correct direction of the inserted dummy arcs
             for (let node of nodes) {
-                const preNodes = this._nodeInputMap.get(node);
+                const preNodes = this._nodeInputIdMap.get(node.id);
                 if (preNodes) {
                     for (let preNode of preNodes) {
                         const preNodeLayer = this.findLayerIdForNode(preNode);
@@ -280,7 +275,7 @@ export class VertexOrderingService {
                     }
                 }
 
-                const outputNodes = this._nodeOutputMap.get(node);
+                const outputNodes = this._nodeOutputIdMap.get(node.id);
                 if (outputNodes) {
                     // check if there are outgoing edges from a vertex from a layer
                     // that is *not* the next one
@@ -341,20 +336,20 @@ export class VertexOrderingService {
     }
 
     private generateAdjacentNodeMaps() {
-        this._nodeInputMap.clear();
-        this._nodeOutputMap.clear();
+        this._nodeInputIdMap.clear();
+        this._nodeOutputIdMap.clear();
 
         this._arcs.forEach((arc) => {
-            if (this._nodeInputMap.get(arc.to)) {
-                this._nodeInputMap.get(arc.to)?.push(arc.from);
+            if (this._nodeInputIdMap.get(arc.to.id)) {
+                this._nodeInputIdMap.get(arc.to.id)?.push(arc.from);
             } else {
-                this._nodeInputMap.set(arc.to, [arc.from]);
+                this._nodeInputIdMap.set(arc.to.id, [arc.from]);
             }
 
-            if (this._nodeOutputMap.get(arc.from)) {
-                this._nodeOutputMap.get(arc.from)?.push(arc.to);
+            if (this._nodeOutputIdMap.get(arc.from.id)) {
+                this._nodeOutputIdMap.get(arc.from.id)?.push(arc.to);
             } else {
-                this._nodeOutputMap.set(arc.from, [arc.to]);
+                this._nodeOutputIdMap.set(arc.from.id, [arc.to]);
             }
         });
     }
