@@ -255,6 +255,25 @@ ${arcs.map((arc) => this.getArcString(arc)).join('\n')}
             return undefined;
         }
     }
+
+    public getPNML(): string {
+        const places = this.dataServive.getPlaces();
+        const transitions = this.dataServive.getTransitions();
+        const arcs = this.dataServive.getArcs();
+        const fileName = 'petri-net-with-love.pnml';
+        const pnmlContent = `<?xml version="1.0" encoding="UTF-8"?>
+  <pnml xmlns="http://www.pnml.org/version-2009/grammar/pnml">
+    <net id="net1" type="http://www.pnml.org/version-2009/grammar/ptnet">
+${places.map((place) => this.getPlaceString(place)).join('\n')}
+${transitions
+    .map((transition) => this.getTransitionString(transition))
+    .join('\n')}
+${arcs.map((arc) => this.getArcString(arc)).join('\n')}
+    </net>
+  </pnml>`;
+
+        return pnmlContent;
+    }
 }
 
 const name_pnml = 'pnml';

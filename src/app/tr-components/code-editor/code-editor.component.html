@@ -1,4 +1,18 @@
-<mat-form-field style="width: 100%;">
-    <mat-label>Source code</mat-label>
-    <textarea matInput style="height: 50vh" placeholder="Enter petrinet source code..."></textarea>
-</mat-form-field>
+<div class="code-container">
+    <mat-form-field class="code-form-field">
+        <mat-label>Source code</mat-label>
+        <textarea rows="45" [formControl]="textareaControl" matInput class="code-textarea"></textarea>
+    </mat-form-field>
+
+    <mat-form-field class="language-switch">
+        <mat-label>Language</mat-label>
+        <mat-select
+            placeholder="Language"
+            [(value)]="languageSelected"
+            (selectionChange)="languageSwitchChanged()"
+        >
+            <mat-option value="json">JSON</mat-option>
+            <mat-option value="pnml">PNML</mat-option>
+        </mat-select>
+    </mat-form-field>
+</div>
