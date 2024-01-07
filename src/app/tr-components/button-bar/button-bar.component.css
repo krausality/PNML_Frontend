@@ -3,6 +3,10 @@
     height: 50px;
 }
 
+.float-right {
+    float: right;
+}
+
 .divider {
     border-right: 2px solid grey;
     height: 30px;
