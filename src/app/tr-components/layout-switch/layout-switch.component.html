@@ -1,11 +1,27 @@
-<mat-form-field id="layout-switch">
-    <mat-select
-        placeholder="Layout"
-        [(value)]="selected"
-        (selectionChange)="layoutSwitchChanged()"
-    >
-        <mat-option value="free">Frei</mat-option>
-        <mat-option value="spring-embedder">Spring Embedder</mat-option>
-        <mat-option value="sugiyama">Sugiyama</mat-option>
-    </mat-select>
-</mat-form-field>
+<div class="layout-switch">
+    <p>Apply layout algorithm:</p>
+
+    <div class="button-container">
+        <!-- apply spring embedder layout (once) -->
+        <button
+            mat-stroked-button
+            class="text-button"
+            (click)="applyLayout('spring-embedder')"
+            matTooltip="Apply spring embedder layout to current petrinet"
+            [matTooltipShowDelay]="showTooltipDelay"
+        >
+            Spring Embedder
+        </button>
+
+        <!-- apply sugyiama layout (once) -->
+        <button
+            mat-stroked-button
+            class="text-button"
+            (click)="applyLayout('sugyiama')"
+            matTooltip="Apply sugyiama layout to current petrinet"
+            [matTooltipShowDelay]="showTooltipDelay"
+        >
+            Sugyiama
+        </button>
+    </div>
+</div>

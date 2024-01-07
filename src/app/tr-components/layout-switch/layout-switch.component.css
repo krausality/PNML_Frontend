@@ -1,3 +1,21 @@
-#layout-switch {
+.layout-switch {
     float: right;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+}
+
+.layout-switch p {
+    margin-bottom: 0.5em;
+}
+
+.button-container {
+    display: inline-flex;
+    height: 50px;
+}
+
+.button-container button + button {
+    margin-left: 10px;
 }
