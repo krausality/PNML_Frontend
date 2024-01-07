@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ButtonState, TabState } from '../tr-enums/ui-state';
+import { Subject } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
@@ -21,6 +22,11 @@ export class UiService {
     // for petri net transitions during the token game are still displayed
     // instantaneously.
     tabTransitioning: boolean = false;
+
+    // also stores the active tab and notifies components that have subscribed
+    // currently used only for the "code" tab in order to update the source
+    // code automatically, every time the code tab is opened
+    tabSubject = new Subject<TabState>();
 
     constructor() {}
 }
