@@ -11,6 +11,8 @@ import { ButtonState, TabState } from 'src/app/tr-enums/ui-state';
 import { ClearPopupComponent } from '../clear-popup/clear-popup.component';
 import { DataService } from '../../tr-services/data.service';
 
+import { showTooltipDelay } from 'src/app/tr-services/position.constants';
+
 @Component({
     selector: 'app-button-bar',
     templateUrl: './button-bar.component.html',
@@ -20,9 +22,9 @@ export class ButtonBarComponent {
     readonly TabState = TabState;
     readonly ButtonState = ButtonState;
 
-    public petrinetCss: string = '';
+    readonly showTooltipDelay = showTooltipDelay;
 
-    showDelay = 800;
+    public petrinetCss: string = '';
 
     constructor(
         protected uiService: UiService,

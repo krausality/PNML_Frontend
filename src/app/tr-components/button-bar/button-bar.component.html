@@ -15,7 +15,7 @@
                 "
                 (click)="buttonClicked(ButtonState.Blitz)"
                 matTooltip="Auto-Petrinet"
-                [matTooltipShowDelay]="showDelay"
+                [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>bolt</mat-icon>
             </button>
@@ -31,7 +31,7 @@
                 "
                 (click)="buttonClicked(ButtonState.Place)"
                 matTooltip="Add Place"
-                [matTooltipShowDelay]="showDelay"
+                [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>circle</mat-icon>
             </button>
@@ -44,7 +44,7 @@
                 "
                 (click)="buttonClicked(ButtonState.Transition)"
                 matTooltip="Add transition"
-                [matTooltipShowDelay]="showDelay"
+                [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>square</mat-icon>
             </button>
@@ -55,7 +55,7 @@
                 [color]="uiService.button === ButtonState.Arc ? 'primary' : ''"
                 (click)="buttonClicked(ButtonState.Arc)"
                 matTooltip="Add arc"
-                [matTooltipShowDelay]="showDelay"
+                [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>north_east</mat-icon>
             </button>
@@ -80,7 +80,7 @@
                 [color]="uiService.button === ButtonState.Add ? 'primary' : ''"
                 (click)="buttonClicked(ButtonState.Add)"
                 matTooltip="Increase tokens or weight"
-                [matTooltipShowDelay]="showDelay"
+                [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>add</mat-icon>
             </button>
@@ -93,7 +93,7 @@
                 "
                 (click)="buttonClicked(ButtonState.Remove)"
                 matTooltip="Decrease tokens or weight"
-                [matTooltipShowDelay]="showDelay"
+                [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>remove</mat-icon>
             </button>
@@ -106,7 +106,7 @@
                 "
                 (click)="buttonClicked(ButtonState.Delete)"
                 matTooltip="Delete element"
-                [matTooltipShowDelay]="showDelay"
+                [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>delete</mat-icon>
             </button>
@@ -131,7 +131,7 @@
                 [color]="uiService.button === ButtonState.Move ? 'primary' : ''"
                 (click)="buttonClicked(ButtonState.Move)"
                 matTooltip="Move element"
-                [matTooltipShowDelay]="showDelay"
+                [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>open_with</mat-icon>
             </button>
@@ -147,7 +147,7 @@
                 "
                 (click)="buttonClicked(ButtonState.Select)"
                 matTooltip="Add action label to a transition"
-                [matTooltipShowDelay]="showDelay"
+                [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>ads_click</mat-icon>
             </button>
@@ -157,7 +157,7 @@
                 mat-icon-button
                 (click)="openActionDialog()"
                 matTooltip="Edit action label options"
-                [matTooltipShowDelay]="showDelay"
+                [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>edit_note</mat-icon>
             </button>
@@ -178,7 +178,7 @@
                 [disabled]="tokenGameService.isGameHistoryEmpty()"
                 (click)="tokenGameService.resetGame()"
                 matTooltip="Reset to start"
-                [matTooltipShowDelay]="showDelay"
+                [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>restart_alt</mat-icon>
             </button>
@@ -189,7 +189,7 @@
                 [disabled]="tokenGameService.isGameHistoryEmpty()"
                 (click)="tokenGameService.revertToPreviousState()"
                 matTooltip="Go back one step"
-                [matTooltipShowDelay]="showDelay"
+                [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>fast_rewind</mat-icon>
             </button>
@@ -209,7 +209,7 @@
                 class="text-button"
                 (click)="exportJsonDataService.exportAsJson()"
                 matTooltip="Export petrinet as JSON"
-                [matTooltipShowDelay]="showDelay"
+                [matTooltipShowDelay]="showTooltipDelay"
             >
                 JSON
             </button>
@@ -220,7 +220,7 @@
                 class="text-button"
                 (click)="pnmlService.writePNML()"
                 matTooltip="Export petrinet as PNML"
-                [matTooltipShowDelay]="showDelay"
+                [matTooltipShowDelay]="showTooltipDelay"
             >
                 PNML
             </button>
@@ -239,7 +239,7 @@
                     )
                 "
                 matTooltip="Save petrinet as PNG image"
-                [matTooltipShowDelay]="showDelay"
+                [matTooltipShowDelay]="showTooltipDelay"
             >
                 PNG
             </button>
@@ -250,7 +250,7 @@
                 class="text-button"
                 (click)="exportSvgService.exportAsSvg()"
                 matTooltip="Save petrinet as SVG image"
-                [matTooltipShowDelay]="showDelay"
+                [matTooltipShowDelay]="showTooltipDelay"
             >
                 SVG
             </button>
