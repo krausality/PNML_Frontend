@@ -67,6 +67,8 @@
                     uiService.button === ButtonState.Anchor ? 'primary' : ''
                 "
                 (click)="buttonClicked(ButtonState.Anchor)"
+                matTooltip="Add anchorpoint"
+                [matTooltipShowDelay]="showDelay"
             >
                 <mat-icon>linear_scale</mat-icon>
             </button>
@@ -105,7 +107,7 @@
                     uiService.button === ButtonState.Delete ? 'primary' : ''
                 "
                 (click)="buttonClicked(ButtonState.Delete)"
-                matTooltip="Delete element"
+                matTooltip="Delete single element"
                 [matTooltipShowDelay]="showDelay"
             >
                 <mat-icon>delete</mat-icon>
@@ -118,6 +120,8 @@
                     uiService.button === ButtonState.Clear ? 'primary' : ''
                 "
                 (click)="openClearDialog()"
+                matTooltip="Delete the whole petrinet"
+                [matTooltipShowDelay]="showDelay"
             >
                 <mat-icon>clear</mat-icon>
             </button>
