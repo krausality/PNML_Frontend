@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { Component, ViewChild } from '@angular/core';
 import { UiService } from './tr-services/ui.service';
 import { TabState } from './tr-enums/ui-state';
+import { CodeEditorComponent } from './tr-components/code-editor/code-editor.component';
 
 @Component({
     selector: 'app-root',
@@ -9,16 +9,9 @@ import { TabState } from './tr-enums/ui-state';
     styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-    // public textareaFc: FormControl;
+    @ViewChild(CodeEditorComponent) protected codeEditor!: CodeEditorComponent;
 
-    constructor(public uiService: UiService) {
-        // this.textareaFc = new FormControl();
-        // this.textareaFc.disable();
-    }
-
-    public processSourceChange(newSource: string) {
-        // this.textareaFc.setValue(newSource);
-    }
+    constructor(protected uiService: UiService) {}
 
     protected readonly TabState = TabState;
 }

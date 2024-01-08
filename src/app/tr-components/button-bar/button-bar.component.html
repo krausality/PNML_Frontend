@@ -271,6 +271,7 @@
                 mat-icon-button
                 matTooltip="Reset code editor to the current petrinet state"
                 [matTooltipShowDelay]="showDelay"
+                (click)="reloadCodeEditorEvent.emit()"
             >
                 <mat-icon>restart_alt</mat-icon>
             </button>

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { ExportJsonDataService } from 'src/app/tr-services/export-json-data.service';
 import { PnmlService } from 'src/app/tr-services/pnml.service';
 import { UiService } from 'src/app/tr-services/ui.service';
@@ -17,6 +17,8 @@ import { DataService } from '../../tr-services/data.service';
     styleUrls: ['./button-bar.component.css'],
 })
 export class ButtonBarComponent {
+    @Output() reloadCodeEditorEvent = new EventEmitter();
+
     readonly TabState = TabState;
     readonly ButtonState = ButtonState;
 
@@ -44,20 +46,18 @@ export class ButtonBarComponent {
         switch (tab) {
             case 'build':
                 this.uiService.tab = this.TabState.Build;
-                this.uiService.tabSubject.next(TabState.Build);
                 this.tokenGameService.clearGameHistory();
                 break;
             case 'play':
                 this.uiService.tab = this.TabState.Play;
-                this.uiService.tabSubject.next(TabState.Play);
                 break;
             case 'save':
                 this.uiService.tab = this.TabState.Save;
-                this.uiService.tabSubject.next(TabState.Save);
                 break;
             case 'code':
                 this.uiService.tab = this.TabState.Code;
-                this.uiService.tabSubject.next(TabState.Code);
+                this.reloadCodeEditorEvent.emit();
+                break;
         }
         this.uiService.button = null;
 

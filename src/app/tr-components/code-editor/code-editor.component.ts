@@ -11,27 +11,14 @@ import { UiService } from 'src/app/tr-services/ui.service';
   templateUrl: './code-editor.component.html',
   styleUrls: ['./code-editor.component.css']
 })
-export class CodeEditorComponent implements OnInit {
+export class CodeEditorComponent {
     languageSelected = "json";
-    // @ViewChild("textarea") textarea;
     textareaControl = new FormControl('');
 
     constructor(
         private exportJsonDataService: ExportJsonDataService,
-        private pnmlService: PnmlService,
-        private uiService: UiService
+        private pnmlService: PnmlService
     ) {}
-
-    // subscribe to the tabSubject on initialisation
-    // allows us to reload the source code every time
-    // the "code" tab is opened
-    ngOnInit() {
-        this.uiService.tabSubject.subscribe(tab => {
-            if (tab === TabState.Code) {
-                this.loadSourceCode();
-            }
-        });
-    }
 
     // loads the source code in json or pnml depending on 
     // which language is selected in the language switch

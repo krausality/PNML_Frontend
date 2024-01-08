@@ -23,10 +23,5 @@ export class UiService {
     // instantaneously.
     tabTransitioning: boolean = false;
 
-    // also stores the active tab and notifies components that have subscribed
-    // currently used only for the "code" tab in order to update the source
-    // code automatically, every time the code tab is opened
-    tabSubject = new Subject<TabState>();
-
     constructor() {}
 }
