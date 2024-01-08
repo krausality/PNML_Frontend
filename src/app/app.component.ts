@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import {ButtonState} from "./tr-enums/ui-state";
 
 @Component({
     selector: 'app-root',
@@ -8,6 +9,7 @@ import { FormControl } from '@angular/forms';
 })
 export class AppComponent {
     public textareaFc: FormControl;
+    public buttonState: ButtonState | undefined;
 
     constructor() {
         this.textareaFc = new FormControl();
@@ -16,5 +18,9 @@ export class AppComponent {
 
     public processSourceChange(newSource: string) {
         this.textareaFc.setValue(newSource);
+    }
+
+    public updateButtonState(buttonState: ButtonState) {
+        this.buttonState = buttonState;
     }
 }
