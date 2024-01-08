@@ -49,12 +49,15 @@ hr {
 
 .code-editor {
     margin-left: 10px;
-    transition: max-width 500ms;
+    transition: width 500ms, min-width 500ms, max-width 500ms;
+    width: 0px;
     max-width: 0px;
+    min-width: 0px;
     overflow: hidden;
 }
 
 .code-editor.active {
     width: 50%;
     max-width: 50%;
+    min-width: 50%;
 }
