@@ -13,8 +13,10 @@ export class ManageActionsPopupComponent {
 
     // check that the action is not already present and add it to the dataService
     addAction(action: HTMLInputElement) {
-        if (!this.isActionEmpty(action.value) &&
-            !this.dataService.getActions().includes(action.value)) {
+        if (
+            !this.isActionEmpty(action.value) &&
+            !this.dataService.getActions().includes(action.value)
+        ) {
             this.dataService.getActions().push(action.value);
         }
         action.value = '';

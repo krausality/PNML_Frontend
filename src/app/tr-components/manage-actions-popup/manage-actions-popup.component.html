@@ -64,7 +64,10 @@
 <!-- only show this error message if the user tries submitting an empty action -->
 <div
     class="action-error"
-    *ngIf="(newActionInput.value.length > 0 || actionSubmittedOnce) && isActionEmpty(newActionInput.value)"
+    *ngIf="
+        (newActionInput.value.length > 0 || actionSubmittedOnce) &&
+        isActionEmpty(newActionInput.value)
+    "
 >
     Action cannot be empty
 </div>
