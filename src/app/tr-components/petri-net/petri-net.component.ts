@@ -365,6 +365,12 @@ export class PetriNetComponent {
             this.dataService.getTransitions().push(transition);
             this.lastNode = transition;
         }
+        if (
+            this.uiService.button === ButtonState.Arc &&
+            this.dummyArc.points.length === 1
+        ) {
+            this.dummyArc.points.push(this.svgCoordinatesService.getRelativeEventCoords(event, drawingArea));
+        }
     }
 
     dispatchSVGMouseMove(event: MouseEvent, drawingArea: HTMLElement) {
