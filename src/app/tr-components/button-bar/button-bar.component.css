@@ -16,3 +16,11 @@
 .text-button {
     margin: auto 5px;
 }
+
+.button-container .text-button:first-child {
+    margin-left: 0;
+}
+
+.button-container .text-button:last-child {
+    margin-right: 0;
+}
