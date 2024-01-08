@@ -16,22 +16,22 @@
     <app-button-bar
         (reloadCodeEditorEvent)="codeEditor.loadSourceCode()"
     ></app-button-bar>
-        <!-- <app-layout-switch fxFlex></app-layout-switch> -->
+    <!-- <app-layout-switch fxFlex></app-layout-switch> -->
     <!-- </div> -->
 
-    <div class="petri-net-container"  fxLayout="row">
+    <div class="petri-net-container" fxLayout="row">
         <!-- petri net component -->
         <app-petri-net
             [ngClass]="{
                 'petri-net': true,
-                'active': uiService.tab === TabState.Code,
+                active: uiService.tab === TabState.Code
             }"
             (fileContent)="codeEditor.loadSourceCode()"
         ></app-petri-net>
         <app-code-editor
             [ngClass]="{
                 'code-editor': true,
-                'active': uiService.tab === TabState.Code,
+                active: uiService.tab === TabState.Code
             }"
         ></app-code-editor>
     </div>
