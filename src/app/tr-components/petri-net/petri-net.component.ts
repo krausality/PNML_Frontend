@@ -401,7 +401,7 @@ export class PetriNetComponent {
             this.editMoveElementsService.finalizeMove();
         }
 
-        // Reset StartNode when Drag&Drop is cancelled
+        // Reset for both cancellation or finalization (bubble-up) of arc drawing
         if (this.uiService.button === ButtonState.Arc) {
             this.startTransition = undefined;
             this.startPlace = undefined;
