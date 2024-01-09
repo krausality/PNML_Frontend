@@ -79,7 +79,7 @@ export class PlaceInvariantsService {
         // console.log(this.incidenceMatrix);
 
         this.placeInvariantsMatrix = this.placeInvariants(this.incidenceMatrix);
-        // console.log(this.placeInvariantsMatrix);
+        console.log(this.placeInvariantsMatrix);
     }
 
     removeNonMinimalPIs() {

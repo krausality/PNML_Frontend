@@ -256,10 +256,27 @@
             </button>
         </div>
     </mat-tab>
+
     <mat-tab label="analyze">
         <ng-template mat-tab-label>
             <mat-icon class="example-tab-icon">functions</mat-icon>
             Analyze
         </ng-template>
+
+        <!-- buttons for tab "analyze" -->
+        <div class="button-container">
+            <button
+                mat-stroked-button
+                class="text-button"
+                (click)="placeInvariantsService.calculatePIs()"
+                matTooltip="Calculate place invariants with Farkas algorithm"
+                [matTooltipShowDelay]="showDelay"
+            >
+                Place Invariants (Farkas)
+            </button>
+        </div>
     </mat-tab>
+
+
+
 </mat-tab-group>

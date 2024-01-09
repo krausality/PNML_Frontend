@@ -10,6 +10,7 @@ import { TokenGameService } from 'src/app/tr-services/token-game.service';
 import { ButtonState, TabState } from 'src/app/tr-enums/ui-state';
 import { ClearPopupComponent } from '../clear-popup/clear-popup.component';
 import { DataService } from '../../tr-services/data.service';
+import { PlaceInvariantsService } from 'src/app/tr-services/place-invariants.service';
 
 @Component({
     selector: 'app-button-bar',
@@ -33,6 +34,7 @@ export class ButtonBarComponent {
         protected tokenGameService: TokenGameService,
         private dataService: DataService,
         private matDialog: MatDialog,
+        protected placeInvariantsService: PlaceInvariantsService,
     ) {}
 
     // gets called when a tab is clicked
