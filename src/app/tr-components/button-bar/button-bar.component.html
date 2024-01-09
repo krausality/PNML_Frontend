@@ -268,7 +268,7 @@
             <button
                 mat-stroked-button
                 class="text-button"
-                (click)="placeInvariantsService.calculatePIs()"
+                (click)="placeInvariantsService.calculatePIs(); placeInvariantsService.removeNonMinimalPIs()"
                 matTooltip="Calculate place invariants with Farkas algorithm"
                 [matTooltipShowDelay]="showDelay"
             >

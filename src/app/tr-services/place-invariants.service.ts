@@ -87,6 +87,7 @@ export class PlaceInvariantsService {
             this.placeInvariantsMatrix,
             this.incidenceMatrix,
         );
+        console.log(this.placeInvariantsMatrix);
     }
 
     calculateIncidenceMatrix() {
