@@ -466,8 +466,6 @@ export class PetriNetComponent {
             const newArc: Arc = new Arc(this.startTransition, place, 1);
             this.startTransition.appendPostArc(newArc);
             this.dataService.getArcs().push(newArc);
-            this.startTransition = undefined;
-            this.dummyArc.points = [];
         }
     }
 
@@ -520,8 +518,6 @@ export class PetriNetComponent {
             const newArc: Arc = new Arc(this.startPlace, transition, 1);
             transition.appendPreArc(newArc);
             this.dataService.getArcs().push(newArc);
-            this.startPlace = undefined;
-            this.dummyArc.points = [];
         }
     }
 
