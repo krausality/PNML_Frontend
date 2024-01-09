@@ -35,6 +35,7 @@ import { SetActionPopupComponent } from '../set-action-popup/set-action-popup.co
 import { Node } from 'src/app/tr-interfaces/petri-net/node';
 import { MouseConstants } from '../../tr-enums/mouse-constants';
 import { SvgCoordinatesService } from 'src/app/tr-services/svg-coordinates-service';
+import { PlaceInvariantsService } from 'src/app/tr-services/place-invariants.service';
 
 @Component({
     selector: 'app-petri-net',
@@ -59,6 +60,7 @@ export class PetriNetComponent {
         private matDialog: MatDialog,
         protected editMoveElementsService: EditMoveElementsService,
         protected svgCoordinatesService: SvgCoordinatesService,
+        protected placeInvariantsService: PlaceInvariantsService,
     ) {
         this.httpClient
             .get('assets/place-invariants-5-MAndS.json', { responseType: 'text' })

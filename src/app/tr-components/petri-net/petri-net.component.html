@@ -5,7 +5,8 @@
     [ngClass]="{
         dragging: editMoveElementsService.isCanvasDragInProcess,
         'play-mode': uiService.tab === TabState.Play,
-        'tab-transitioning': uiService.tabTransitioning
+        'tab-transitioning': uiService.tabTransitioning,
+        'analyze-mode': uiService.tab === TabState.Analyze
     }"
     (drop)="processDropEvent($event)"
     (dragover)="prevent($event)"
@@ -30,7 +31,7 @@
 
     <!-- Places -->
     <g
-        *ngFor="let place of dataService.getPlaces()"
+        *ngFor="let place of dataService.getPlaces(); let i = index"
         (click)="dispatchPlaceClick($event, place)"
         (mousedown)="dispatchPlaceMouseDown($event, place)"
         (mouseup)="dispatchPlaceMouseUp($event, place)"
@@ -38,7 +39,9 @@
     >
         <g>
             <circle
-                [ngClass]="{ place: true, editable: isPlaceEditable(place) }"
+                [ngClass]="{ place: true,
+                    editable: isPlaceEditable(place),
+                    'place-invariant': placeInvariantsService.linearCombination[i]}"
                 [attr.cx]="place.position.x"
                 [attr.cy]="place.position.y"
                 [attr.r]="radius"

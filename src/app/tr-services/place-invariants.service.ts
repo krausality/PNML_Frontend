@@ -12,6 +12,7 @@ export class PlaceInvariantsService {
     placeInvariantsMatrix: number[][] = [];
     // Flag to indicate, if placeInvariantsMatrix contains the minimal PIs
     isMinimal: boolean = false;
+    linearCombination: number[] = [];
 
     // Incidence Matrices for Testing *************************************
 
@@ -83,6 +84,9 @@ export class PlaceInvariantsService {
 
         this.placeInvariantsMatrix = this.placeInvariants(this.incidenceMatrix);
         // console.log(this.placeInvariantsMatrix);
+
+        this.calculateLinearCombination();
+        console.log(this.linearCombination);
     }
 
     removeNonMinimalPIs() {
@@ -92,6 +96,9 @@ export class PlaceInvariantsService {
         );
         this.isMinimal = true;
         // console.log(this.placeInvariantsMatrix);
+
+        this.calculateLinearCombination();
+        console.log(this.linearCombination);
     }
 
     calculateIncidenceMatrix() {
@@ -236,6 +243,19 @@ export class PlaceInvariantsService {
         }
 
         return dMatMin;
+    }
+
+    calculateLinearCombination(){
+        // Initialize vector for linear combination of PIs
+        for (let j = 0; j < this.placeInvariantsMatrix[0].length; j++){
+            this.linearCombination[j] = 0;
+        }
+
+        for (let row of this.placeInvariantsMatrix){
+            for (let i = 0; i < row.length; i++) {
+                this.linearCombination[i] += row[i];
+            }
+        }
     }
 
     // Greatest common divisor of two numbers

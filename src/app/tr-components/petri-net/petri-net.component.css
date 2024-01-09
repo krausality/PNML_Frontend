@@ -140,3 +140,8 @@ text.label {
     dominant-baseline: central;
     font-size: 15px;
 }
+
+/* Styles for Analyze-mode*/
+.analyze-mode .place-invariant{
+    fill: lightblue;
+}
