@@ -7,7 +7,7 @@ export class DummyArc {
     points: Point[] = [];
 
     constructor(
-        points: Point[] = [],
+        
     ) {
         this.points = points;
     }
