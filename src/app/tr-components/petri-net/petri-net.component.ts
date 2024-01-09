@@ -81,7 +81,7 @@ export class PetriNetComponent {
     startTransition: Transition | undefined;
     startPlace: Place | undefined;
     anchorToDelete: Point | undefined;
-    dummyArc = new DummyArc([]);
+    dummyArc = new DummyArc();
 
     private parsePetrinetData(
         content: string | undefined,
