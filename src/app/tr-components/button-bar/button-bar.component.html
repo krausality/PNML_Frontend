@@ -268,11 +268,37 @@
             <button
                 mat-stroked-button
                 class="text-button"
-                (click)="placeInvariantsService.calculatePIs(); placeInvariantsService.removeNonMinimalPIs()"
+                (click)="placeInvariantsService.calculatePIs();
+                openPlaceInvariantsTable()"
                 matTooltip="Calculate place invariants with Farkas algorithm"
                 [matTooltipShowDelay]="showDelay"
             >
                 Place Invariants (Farkas)
+            </button>
+            <button
+                mat-stroked-button
+                class="text-button"
+                [disabled]="placeInvariantsService.placeInvariantsMatrix.length === 0"
+                (click)="placeInvariantsService.removeNonMinimalPIs();
+                openPlaceInvariantsTable()"
+                matTooltip="Remove linearly dependent place invariants from result matrix of Farkas algorithm"
+                [matTooltipShowDelay]="showDelay"
+            >
+                Minimal Place Invariants
+            </button>
+
+            <!-- divider -->
+            <div class="divider"></div>
+
+            <!-- show table with place invariants -->
+            <button
+                mat-icon-button
+                [disabled]="placeInvariantsService.placeInvariantsMatrix.length === 0"
+                (click)="openPlaceInvariantsTable()"
+                matTooltip="Show table with place invariants from latest calculation"
+                [matTooltipShowDelay]="showDelay"
+            >
+                <mat-icon>view_headline</mat-icon>
             </button>
         </div>
     </mat-tab>

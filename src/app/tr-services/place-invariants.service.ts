@@ -10,6 +10,8 @@ export class PlaceInvariantsService {
     transIds: string[] = [];
     incidenceMatrix: number[][] = [];
     placeInvariantsMatrix: number[][] = [];
+    // Flag to indicate, if placeInvariantsMatrix contains the minimal PIs
+    isMinimal: boolean = false;
 
     // Incidence Matrices for Testing *************************************
 
@@ -74,12 +76,13 @@ export class PlaceInvariantsService {
         this.transIds = [];
         this.incidenceMatrix = [];
         this.placeInvariantsMatrix = [];
+        this.isMinimal = false;
 
         this.calculateIncidenceMatrix();
         // console.log(this.incidenceMatrix);
 
         this.placeInvariantsMatrix = this.placeInvariants(this.incidenceMatrix);
-        console.log(this.placeInvariantsMatrix);
+        // console.log(this.placeInvariantsMatrix);
     }
 
     removeNonMinimalPIs() {
@@ -87,7 +90,8 @@ export class PlaceInvariantsService {
             this.placeInvariantsMatrix,
             this.incidenceMatrix,
         );
-        console.log(this.placeInvariantsMatrix);
+        this.isMinimal = true;
+        // console.log(this.placeInvariantsMatrix);
     }
 
     calculateIncidenceMatrix() {

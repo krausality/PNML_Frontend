@@ -11,6 +11,7 @@ import { ButtonState, TabState } from 'src/app/tr-enums/ui-state';
 import { ClearPopupComponent } from '../clear-popup/clear-popup.component';
 import { DataService } from '../../tr-services/data.service';
 import { PlaceInvariantsService } from 'src/app/tr-services/place-invariants.service';
+import { PlaceInvariantsTableComponent } from '../place-invariants-table/place-invariants-table.component';
 
 @Component({
     selector: 'app-button-bar',
@@ -56,6 +57,12 @@ export class ButtonBarComponent {
                 break;
             case 'analyze':
                 this.uiService.tab = this.TabState.Analyze;
+                // Reset
+                this.placeInvariantsService.placeIds = [];
+                this.placeInvariantsService.transIds = [];
+                this.placeInvariantsService.incidenceMatrix = [];
+                this.placeInvariantsService.placeInvariantsMatrix = [];
+                this.placeInvariantsService.isMinimal = false;
                 break;
         }
         this.uiService.button = null;
@@ -78,6 +85,12 @@ export class ButtonBarComponent {
     openClearDialog() {
         if (!this.dataService.isEmpty()) {
             this.matDialog.open(ClearPopupComponent);
+        }
+    }
+
+    openPlaceInvariantsTable() {
+        if (!this.dataService.isEmpty()) {
+            this.matDialog.open(PlaceInvariantsTableComponent);
         }
     }
 }

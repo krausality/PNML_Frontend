@@ -61,7 +61,7 @@ export class PetriNetComponent {
         protected svgCoordinatesService: SvgCoordinatesService,
     ) {
         this.httpClient
-            .get('assets/example.json', { responseType: 'text' })
+            .get('assets/place-invariants-5-MAndS.json', { responseType: 'text' })
             .subscribe((data) => {
                 const [places, transitions, arcs, actions] =
                     parserService.parse(data);
