@@ -4,7 +4,7 @@ import { Place } from './place';
 import { Transition } from './transition';
 
 export class DummyArc {
-    points: Point[];
+    points: Point[] = [];
 
     constructor(
         points: Point[] = [],
