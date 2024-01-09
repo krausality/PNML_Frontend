@@ -77,7 +77,7 @@
             [ngClass]="{
                 transition: true,
                 active: transition.isActive,
-                editable: isTransitionEditable(),
+                editable: isTransitionEditable(transition),
                 silent: !transition.label
             }"
             [attr.x]="
