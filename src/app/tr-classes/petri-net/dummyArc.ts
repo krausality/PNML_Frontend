@@ -9,7 +9,7 @@ export class DummyArc {
     constructor(
         
     ) {
-        this.points = points;
+        
     }
 
     get polyLinePoints(): string {
