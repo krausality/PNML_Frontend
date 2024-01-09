@@ -136,8 +136,13 @@
     </g>
 
     <!-- Arcs -->
+    <!-- arc-group on the wrapper group is only needed to 'catch' hover on all children
+          to highlight the arc correctly in anchor mode -->
     <g
         *ngFor="let arc of dataService.getArcs()"
+        [ngClass]="{
+            'arc-group': uiService.button === ButtonState.Anchor
+        }"
         (click)="dispatchArcClick($event, arc)"
         (wheel)="onWheelEventArc($event, arc)"
         (mousedown)="dispatchArcMouseDown($event, arc, drawingArea)"
@@ -152,19 +157,22 @@
             [attr.points]="arc.polyLinePoints"
             marker-end="url(#arrow)"
         ></polyline>
-        <g *ngIf="arc.weight > 1 || arc.weight < -1">
+        <g
+            *ngIf="arc.weight > 1 || arc.weight < -1"
+            class="arc-weight-group no-pointer-events"
+        >
             <!-- Weight at Arc without Anchorpoints - Middle of Polyline -->
             <!-- White Circle for Background -->
             <circle
                 *ngIf="arc.anchors.length == 0"
-                class="arc-weight-background no-pointer-events"
+                class="arc-weight-background"
                 [attr.cx]="(arc.from.position.x + arc.to.position.x) / 2"
                 [attr.cy]="(arc.from.position.y + arc.to.position.y) / 2"
                 r="12"
             />
             <text
                 *ngIf="arc.anchors.length == 0"
-                class="arc-weight no-pointer-events"
+                class="arc-weight"
                 [attr.x]="(arc.from.position.x + arc.to.position.x) / 2"
                 [attr.y]="(arc.from.position.y + arc.to.position.y) / 2"
                 text-anchor="middle"
@@ -177,14 +185,14 @@
             <!-- White Circle for Background -->
             <circle
                 *ngIf="arc.anchors.length == 1"
-                class="arc-weight-background no-pointer-events"
+                class="arc-weight-background"
                 [attr.cx]="arc.anchors[0].x"
                 [attr.cy]="arc.anchors[0].y"
                 r="12"
             />
             <text
                 *ngIf="arc.anchors.length == 1"
-                class="arc-weight no-pointer-events"
+                class="arc-weight"
                 [attr.x]="arc.anchors[0].x"
                 [attr.y]="arc.anchors[0].y"
                 text-anchor="middle"
@@ -212,7 +220,7 @@
             />
             <text
                 *ngIf="arc.anchors.length % 2 === 0 && arc.anchors.length >= 2"
-                class="arc-weight no-pointer-events"
+                class="arc-weight"
                 [attr.x]="
                     (arc.anchors[arc.anchors.length / 2 - 1].x +
                         arc.anchors[arc.anchors.length / 2].x) /
@@ -233,7 +241,7 @@
             <!-- White Circle for Background -->
             <circle
                 *ngIf="arc.anchors.length % 2 === 1 && arc.anchors.length >= 2"
-                class="arc-weight-background no-pointer-events"
+                class="arc-weight-background"
                 [attr.cx]="arc.anchors[arc.anchors.length / 2 - 0.5].x"
                 [attr.cy]="arc.anchors[arc.anchors.length / 2 - 0.5].y"
                 r="12"

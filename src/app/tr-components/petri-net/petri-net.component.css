@@ -136,7 +136,8 @@
 .editable:hover,
 .anchor.active,
 .line-segment:hover,
-.background-arc:hover + .editable {
+.arc-group:hover > .arc.editable,
+.background-arc:hover + .arc.editable {
     cursor: pointer;
     /* stronger drop shadow to visible highlight the hovered element */
     filter: drop-shadow(0 0 2px rgba(255, 0, 0, 1))
