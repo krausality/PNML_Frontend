@@ -56,13 +56,8 @@ export class ButtonBarComponent {
                 this.uiService.tab = this.TabState.Save;
                 break;
             case 'analyze':
+                this.placeInvariantsService.reset();
                 this.uiService.tab = this.TabState.Analyze;
-                // Reset
-                this.placeInvariantsService.placeIds = [];
-                this.placeInvariantsService.transIds = [];
-                this.placeInvariantsService.incidenceMatrix = [];
-                this.placeInvariantsService.placeInvariantsMatrix = [];
-                this.placeInvariantsService.isMinimal = false;
                 break;
         }
         this.uiService.button = null;

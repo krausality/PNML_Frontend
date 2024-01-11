@@ -268,6 +268,26 @@ export class PlaceInvariantsService {
         }
     }
 
+    // Returns the factor for the place placeId in the place invariant
+    // which is the result of the linear combination of the selected
+    // place invariants.
+    // Returns undefined, if placeId is not found in placeIds (i.e. the
+    // index = this.placeIds.indexOf(placeId) is -1)
+    // or index >= this.linearCombination.length.
+    placeFactor(placeId: string): number | undefined {
+        return this.linearCombination[this.placeIds.indexOf(placeId)];
+    }
+
+    reset() {
+        this.placeIds = [];
+        this.transIds = [];
+        this.incidenceMatrix = [];
+        this.placeInvariantsMatrix = [];
+        this.isMinimal = false;
+        this.linearCombination = [];
+        this.selectedPIs = [];
+    }
+
     // Greatest common divisor of two numbers
     private gcd(a: number, b: number): number {
         return b === 0 ? a : this.gcd(b, a % b);

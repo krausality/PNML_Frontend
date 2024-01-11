@@ -1,6 +1,15 @@
 <div fxLayout="row" fxLayoutAlign="space-between center">
-    <h2 mat-dialog-title *ngIf="!placeInvariantsService.isMinimal">{{placeInvariantsService.placeInvariantsMatrix.length}} Place Invariants (Farkas)</h2>
-    <h2 mat-dialog-title *ngIf="placeInvariantsService.isMinimal">{{placeInvariantsService.placeInvariantsMatrix.length}} Minimal Place Invariants</h2>
+    <h2 mat-dialog-title>
+        {{
+            placeInvariantsService.placeInvariantsMatrix.length +
+            (
+                placeInvariantsService.isMinimal ?
+                ' Minimal Place Invariants' :
+                ' Place Invariants (Farkas)'
+            )
+        }}
+
+    </h2>
 
     <button mat-dialog-close mat-icon-button class="close-button">
         <mat-icon>close</mat-icon>
