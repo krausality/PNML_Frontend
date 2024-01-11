@@ -12,7 +12,11 @@ export class PlaceInvariantsService {
     placeInvariantsMatrix: number[][] = [];
     // Flag to indicate, if placeInvariantsMatrix contains the minimal PIs
     isMinimal: boolean = false;
+    // Linear Combination of PIs that are highlighted in the petri net display
     linearCombination: number[] = [];
+    // Boolean vector indicating which rows (PIs) of the placeInvariantsMatrix
+    // have been selected for the linear combination
+    selectedPIs: boolean[] = [];
 
     // Incidence Matrices for Testing *************************************
 
@@ -85,8 +89,11 @@ export class PlaceInvariantsService {
         this.placeInvariantsMatrix = this.placeInvariants(this.incidenceMatrix);
         // console.log(this.placeInvariantsMatrix);
 
+        // Selected PIs for display: default --> all
+        this.selectedPIs = Array(this.placeInvariantsMatrix.length).fill(true);
+        console.log(this.selectedPIs);
         this.calculateLinearCombination();
-        console.log(this.linearCombination);
+        // console.log(this.linearCombination);
     }
 
     removeNonMinimalPIs() {
@@ -97,8 +104,11 @@ export class PlaceInvariantsService {
         this.isMinimal = true;
         // console.log(this.placeInvariantsMatrix);
 
+        // Selected PIs for display: default --> all
+        this.selectedPIs = Array(this.placeInvariantsMatrix.length).fill(true);
+        console.log(this.selectedPIs);
         this.calculateLinearCombination();
-        console.log(this.linearCombination);
+        // console.log(this.linearCombination);
     }
 
     calculateIncidenceMatrix() {

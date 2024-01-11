@@ -41,7 +41,7 @@
             <circle
                 [ngClass]="{ place: true,
                     editable: isPlaceEditable(place),
-                    'place-invariant': placeInvariantsService.linearCombination[i]}"
+                    'place-invariant': placeInvariantsService.linearCombination[placeInvariantsService.placeIds.indexOf(place.id)]}"
                 [attr.cx]="place.position.x"
                 [attr.cy]="place.position.y"
                 [attr.r]="radius"
@@ -61,11 +61,19 @@
         </g>
         <text
             class="place-id"
+            [ngClass]="{'place-invariant': placeInvariantsService.linearCombination[placeInvariantsService.placeIds.indexOf(place.id)]}"
             [attr.x]="place.position.x"
             [attr.y]="place.position.y + placeIdYOffset"
             text-anchor="middle"
         >
-            {{ place.id }}
+            {{
+                (
+                    (placeInvariantsService.linearCombination[placeInvariantsService.placeIds.indexOf(place.id)]) ?
+                    (placeInvariantsService.linearCombination[placeInvariantsService.placeIds.indexOf(place.id)]) + "*" :
+                    ""
+                ) +
+                place.id
+            }}
         </text>
     </g>
 

@@ -145,3 +145,8 @@ text.label {
 .analyze-mode .place-invariant{
     fill: lightblue;
 }
+
+.analyze-mode text.place-invariant{
+    font-weight: bold;
+    fill: rgb(133, 186, 204);
+}
