@@ -12,12 +12,13 @@
     <!--    Main content    -->
 
     <!-- button bar and layout switch -->
-    <!-- <div fxLayout="row"> -->
-    <app-button-bar
-        (reloadCodeEditorEvent)="codeEditor.loadSourceCode()"
-    ></app-button-bar>
-    <!-- <app-layout-switch fxFlex></app-layout-switch> -->
-    <!-- </div> -->
+    <div fxLayout="row" fxLayoutAlign="space-between end">
+        <app-button-bar
+            fxFlex
+            (reloadCodeEditorEvent)="codeEditor.loadSourceCode()"
+        ></app-button-bar>
+    </div>
+
 
     <div class="petri-net-container" fxLayout="row">
         <!-- petri net component -->

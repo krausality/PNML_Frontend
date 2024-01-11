@@ -21,7 +21,6 @@ import { APP_BASE_HREF, PlatformLocation } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { ExampleButtonComponent } from './components/example-button/example-button.component';
 import { PetriNetComponent } from './tr-components/petri-net/petri-net.component';
-import { LayoutSwitchComponent } from './tr-components/layout-switch/layout-switch.component';
 import { ButtonBarComponent } from './tr-components/button-bar/button-bar.component';
 import { mathAbsPipe } from './tr-pipes/math-abs.pipe';
 import { ManageActionsPopupComponent } from './tr-components/manage-actions-popup/manage-actions-popup.component';
@@ -37,7 +36,6 @@ import { CodeEditorComponent } from './tr-components/code-editor/code-editor.com
         ExampleFileComponent,
         ExampleButtonComponent,
         PetriNetComponent,
-        LayoutSwitchComponent,
         ButtonBarComponent,
         mathAbsPipe,
         ManageActionsPopupComponent,
