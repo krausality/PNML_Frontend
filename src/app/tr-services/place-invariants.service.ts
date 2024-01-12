@@ -77,11 +77,7 @@ export class PlaceInvariantsService {
 
     calculatePIs() {
         // Reset
-        this.placeIds = [];
-        this.transIds = [];
-        this.incidenceMatrix = [];
-        this.placeInvariantsMatrix = [];
-        this.isMinimal = false;
+        this.reset()
 
         this.calculateIncidenceMatrix();
         // console.log(this.incidenceMatrix);
@@ -91,9 +87,7 @@ export class PlaceInvariantsService {
 
         // Selected PIs for display: default --> all
         this.selectedPIs = Array(this.placeInvariantsMatrix.length).fill(true);
-        console.log(this.selectedPIs);
         this.calculateLinearCombination();
-        // console.log(this.linearCombination);
     }
 
     removeNonMinimalPIs() {
@@ -106,9 +100,7 @@ export class PlaceInvariantsService {
 
         // Selected PIs for display: default --> all
         this.selectedPIs = Array(this.placeInvariantsMatrix.length).fill(true);
-        console.log(this.selectedPIs);
         this.calculateLinearCombination();
-        // console.log(this.linearCombination);
     }
 
     calculateIncidenceMatrix() {
@@ -257,13 +249,13 @@ export class PlaceInvariantsService {
 
     calculateLinearCombination(){
         // Initialize vector for linear combination of PIs
-        for (let j = 0; j < this.placeInvariantsMatrix[0].length; j++){
-            this.linearCombination[j] = 0;
-        }
+        this.linearCombination = Array(this.placeIds.length).fill(0);
 
-        for (let row of this.placeInvariantsMatrix){
-            for (let i = 0; i < row.length; i++) {
-                this.linearCombination[i] += row[i];
+        for (let i = 0; i < this.placeInvariantsMatrix.length; i++){
+            if (this.selectedPIs[i]){
+                for (let j = 0; j < this.placeInvariantsMatrix[i].length; j++) {
+                    this.linearCombination[j] += this.placeInvariantsMatrix[i][j];
+                }
             }
         }
     }
@@ -286,6 +278,12 @@ export class PlaceInvariantsService {
         this.isMinimal = false;
         this.linearCombination = [];
         this.selectedPIs = [];
+    }
+
+    toggleSelectedPI(index: number) {
+        this.selectedPIs[index] = !this.selectedPIs[index];
+        console.log(this.selectedPIs);
+        this.calculateLinearCombination();
     }
 
     // Greatest common divisor of two numbers

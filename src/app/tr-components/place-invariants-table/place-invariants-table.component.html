@@ -25,9 +25,20 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let row of placeInvariantsService.placeInvariantsMatrix; let i = index">
+            <tr *ngFor="
+                    let row of placeInvariantsService.placeInvariantsMatrix;
+                    let i = index
+                "
+                [ngClass]="{
+                    'selected-row': placeInvariantsService.selectedPIs[i]
+                }"
+            >
                 <th scope="row">{{ i + 1 }}</th>
-                <td *ngFor="let cell of row">{{ cell }}</td>
+                <td *ngFor="let coefficient of row"
+                    (click)="placeInvariantsService.toggleSelectedPI(i)"
+                >
+                    {{ coefficient }}
+                </td>
             </tr>
         </tbody>
     </table>

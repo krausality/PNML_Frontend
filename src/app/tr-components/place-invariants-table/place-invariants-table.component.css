@@ -2,7 +2,20 @@
     margin: 15px;
 }
 
+table {
+    border-collapse: collapse;
+}
+
 th,
 td {
     padding: 4px 8px;
+    border-bottom: solid 1px white;
+}
+
+th {
+    background-color: white;
+}
+
+tr.selected-row {
+    background-color: lightblue;
 }
