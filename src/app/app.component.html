@@ -19,7 +19,6 @@
     <!-- petri net component -->
     <app-petri-net
         class="padding full-size"
-        (fileContent)="processSourceChange($event)"
     ></app-petri-net>
 
     <div fxLayout="row" fxLayoutAlign="space-evenly start">
@@ -28,17 +27,6 @@
             link="assets/example.json"
             description="An example .json Petri net"
         ></app-example-file>
-
-        <mat-form-field appearance="outline" class="textarea">
-            <mat-label>File content</mat-label>
-            <textarea
-                matInput
-                cdkTextareaAutosize
-                cdkAutosizeMinRows="10"
-                cdkAutosizeMaxRows="20"
-                [formControl]="textareaFc"
-            ></textarea>
-        </mat-form-field>
     </div>
 
     <!--  Footer  -->
