@@ -81,10 +81,6 @@
     background-color: #c0bfbc;
 }
 
-.canvas.dragging {
-    cursor: grab;
-}
-
 .play-mode .arc-weight-background {
     fill: #c0bfbc;
 }
@@ -104,6 +100,24 @@
 }
 
 /* Styles for 'move' and 'anchor' mode */
+.canvas.move-mode:hover {
+    /* transition: box-shadow 0.2s; */
+    cursor: grab;
+}
+
+/* set box shadow on canvas, but only if:
+ * - the canvas an no child element is hovered
+ * - the canvas is not currently being dragged
+ */
+/* .canvas.move-mode:hover:not(:has(.editable:hover)):not(.dragging) {
+    box-shadow: inset 0 0 3px 5px rgba(255, 0, 0, 0.2);
+} */
+
+.canvas.move-mode.dragging {
+    cursor: grabbing;
+    /* box-shadow: inset 0 0 3px 5px rgba(255, 0, 0, 0.8); */
+}
+
 .anchor {
     fill: black;
     stroke: black;
@@ -124,6 +138,10 @@
 .anchor.active {
     stroke: red;
     stroke-width: 2;
+}
+
+.move-mode .editable:active {
+    cursor: grabbing;
 }
 
 .no-pointer-events {

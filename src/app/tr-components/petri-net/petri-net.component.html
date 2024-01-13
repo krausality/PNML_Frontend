@@ -4,6 +4,7 @@
     class="canvas"
     [ngClass]="{
         dragging: editMoveElementsService.isCanvasDragInProcess,
+        'move-mode': uiService.button === ButtonState.Move,
         'play-mode': uiService.tab === TabState.Play,
         'tab-transitioning': uiService.tabTransitioning
     }"
