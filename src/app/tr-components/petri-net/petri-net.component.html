@@ -305,4 +305,13 @@
             />
         </ng-container>
     </g>
+
+    <!-- DummyArc -->
+    <g *ngIf="dummyArc.points.length > 1">
+        <polyline
+            class="arc no-pointer-events"
+            [attr.points]="dummyArc.polyLinePoints"
+            marker-end="url(#arrow)"
+        ></polyline>
+    </g>
 </svg>

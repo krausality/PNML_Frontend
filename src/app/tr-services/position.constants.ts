@@ -17,3 +17,6 @@ export const anchorRadius = 5;
 
 // Labels
 export const lineSeparator = '~';
+
+// Tooltip delay
+export const showTooltipDelay = 800;

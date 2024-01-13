@@ -5,6 +5,7 @@
     border-color: lightgrey;
     transition: background-color 1s;
     user-select: none;
+    box-sizing: border-box; /* make border be part of the 100% width */
 }
 
 .place {
