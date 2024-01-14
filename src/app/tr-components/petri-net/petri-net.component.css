@@ -152,9 +152,20 @@
     cursor: pointer;
 }
 
+/* Add hover effect
+ * In general elements should show the "hover"-Style only when they are currently being editable,
+ * and the user is doing a mouseover/hover on the element:
+ * - Elements with class ".editable" oder ".line-segment" that are currently being hovered
+ * - Elements with class ".anchor" that also have the ".active" class set
+ * - Elements with class ".arc" AND ".editable", that are direct children of the ".arc-group"-Element currently being hovered. This is
+ *   needed to be able to highlight the main arcs when line-segments are hovered, as those cannot get a drop shadow since they have no stroke color.
+ * - Elements with class ".arc" AND ".editable", that are next siblings to the ".background-arc"-Element that is currently being hovered.
+ *   This is needed to make sure the arc stay highlighted when not itself but rather only the background-arc is hovered,
+ *   which acts as a bigger click/hover target for the main arc.
+ */
 .editable:hover,
-.anchor.active,
 .line-segment:hover,
+.anchor.active,
 .arc-group:hover > .arc.editable,
 .background-arc:hover + .arc.editable {
     cursor: pointer;
