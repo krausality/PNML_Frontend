@@ -93,7 +93,7 @@
     filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.5));
 }
 
-/* text nodes that follow transitions (rects within svg) should not have different cursors in play mode
+/* Text nodes that follow transitions (here: rects within svg) should not have different cursors in play mode
  * all interaction events should be caught in the wrapper group element */
 .play-mode .transition.active ~ text {
     cursor: pointer;
@@ -129,8 +129,7 @@
     stroke-width: 10;
 }
 
-.editable,
-.insertable {
+.editable {
     filter: drop-shadow(0 0 3px rgba(255, 0, 0, 1));
 }
 
