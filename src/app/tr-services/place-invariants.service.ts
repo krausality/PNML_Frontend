@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DataService } from './data.service';
 import { SingularValueDecomposition } from 'ml-matrix';
+import { Place } from '../tr-classes/petri-net/place';
 
 @Injectable({
     providedIn: 'root',
@@ -10,13 +11,20 @@ export class PlaceInvariantsService {
     transIds: string[] = [];
     incidenceMatrix: number[][] = [];
     placeInvariantsMatrix: number[][] = [];
+
     // Flag to indicate, if placeInvariantsMatrix contains the minimal PIs
     isMinimal: boolean = false;
+
     // Linear Combination of PIs that are highlighted in the petri net display
     linearCombination: number[] = [];
+
     // Boolean vector indicating which rows (PIs) of the placeInvariantsMatrix
     // have been selected for the linear combination
     selectedPIs: boolean[] = [];
+
+    // For display of place invariant table.
+    // If set, only PIs containing this place are shown.
+    selectedPlaceForPITable: Place | undefined;
 
     // Incidence Matrices for Testing *************************************
 
@@ -284,6 +292,20 @@ export class PlaceInvariantsService {
         this.selectedPIs[index] = !this.selectedPIs[index];
         console.log(this.selectedPIs);
         this.calculateLinearCombination();
+    }
+
+    // The method indicates, if the placeInvariant (argument)
+    // is to be included in the displayed place invariant table.
+    // a) If a selectedPlaceForPITable is set, the placeInvariant is to be
+    //    included, if it contains the selectedPlaceForPITable.
+    // b) Otherwise, every placeInvariant is included as a default.
+    includePI(placeInvariant: number[]): boolean {
+        if (this.selectedPlaceForPITable) {
+            let placeIndex = this.placeIds.indexOf(this.selectedPlaceForPITable.id);
+            return placeInvariant[placeIndex] > 0;
+        } else {
+            return true;
+        }
     }
 
     // Greatest common divisor of two numbers

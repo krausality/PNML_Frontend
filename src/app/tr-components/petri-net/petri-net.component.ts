@@ -36,6 +36,7 @@ import { Node } from 'src/app/tr-interfaces/petri-net/node';
 import { MouseConstants } from '../../tr-enums/mouse-constants';
 import { SvgCoordinatesService } from 'src/app/tr-services/svg-coordinates-service';
 import { PlaceInvariantsService } from 'src/app/tr-services/place-invariants.service';
+import { PlaceInvariantsTableComponent } from '../place-invariants-table/place-invariants-table.component';
 
 @Component({
     selector: 'app-petri-net',
@@ -431,6 +432,10 @@ export class PetriNetComponent {
         if (this.uiService.button === ButtonState.Delete) {
             this.dataService.removePlace(place);
         }
+
+        if (this.uiService.tab === TabState.Analyze) {
+            this.openPlaceInvariantsTable(place);
+        }
     }
 
     dispatchPlaceMouseDown(event: MouseEvent, place: Place) {
@@ -698,6 +703,13 @@ export class PetriNetComponent {
                 Math.abs(arc.weight) > 1) || // arc weights can only be decreased if the absolute value is > 1
             this.uiService.button === ButtonState.Delete
         );
+    }
+
+    openPlaceInvariantsTable(place: Place) {
+        if (!this.dataService.isEmpty()) {
+            this.placeInvariantsService.selectedPlaceForPITable = place;
+            this.matDialog.open(PlaceInvariantsTableComponent);
+        }
     }
 
     protected readonly radius = radius;

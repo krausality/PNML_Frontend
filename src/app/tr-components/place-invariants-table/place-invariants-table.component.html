@@ -11,7 +11,12 @@
 
     </h2>
 
-    <button mat-dialog-close mat-icon-button class="close-button">
+    <button
+        mat-dialog-close
+        mat-icon-button
+        class="close-button"
+        (click)="placeInvariantsService.selectedPlaceForPITable = undefined"
+    >
         <mat-icon>close</mat-icon>
     </button>
 </div>
@@ -21,25 +26,28 @@
         <thead>
             <tr>
                 <th scope="col">#</th>
-                <th *ngFor="let placeId of placeInvariantsService.placeIds">{{ placeId }}</th>
+                <th scope="col" *ngFor="let placeId of placeInvariantsService.placeIds">{{ placeId }}</th>
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="
-                    let row of placeInvariantsService.placeInvariantsMatrix;
-                    let i = index
-                "
-                [ngClass]="{
-                    'selected-row': placeInvariantsService.selectedPIs[i]
-                }"
-            >
-                <th scope="row">{{ i + 1 }}</th>
-                <td *ngFor="let coefficient of row"
-                    (click)="placeInvariantsService.toggleSelectedPI(i)"
+            <ng-container *ngFor="
+                let row of placeInvariantsService.placeInvariantsMatrix;
+                let i = index
+            ">
+                <tr
+                    *ngIf="placeInvariantsService.includePI(row)"
+                    [ngClass]="{
+                        'selected-row': placeInvariantsService.selectedPIs[i]
+                    }"
                 >
-                    {{ coefficient }}
-                </td>
-            </tr>
+                    <th scope="row">{{ i + 1 }}</th>
+                    <td *ngFor="let coefficient of row"
+                        (click)="placeInvariantsService.toggleSelectedPI(i)"
+                    >
+                        {{ coefficient }}
+                    </td>
+                </tr>
+            </ng-container>
         </tbody>
     </table>
 </div>
