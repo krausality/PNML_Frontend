@@ -35,6 +35,7 @@ import { SetActionPopupComponent } from '../set-action-popup/set-action-popup.co
 import { Node } from 'src/app/tr-interfaces/petri-net/node';
 import { MouseConstants } from '../../tr-enums/mouse-constants';
 import { SvgCoordinatesService } from 'src/app/tr-services/svg-coordinates-service';
+import { DummyArc } from 'src/app/tr-classes/petri-net/dummyArc';
 
 @Component({
     selector: 'app-petri-net',
@@ -84,6 +85,7 @@ export class PetriNetComponent implements OnChanges{
     startTransition: Transition | undefined;
     startPlace: Place | undefined;
     anchorToDelete: Point | undefined;
+    dummyArc = new DummyArc();
 
     private parsePetrinetData(
         content: string | undefined,
@@ -380,6 +382,12 @@ export class PetriNetComponent implements OnChanges{
             this.dataService.getTransitions().push(transition);
             this.lastNode = transition;
         }
+        if (
+            this.uiService.button === ButtonState.Arc &&
+            this.dummyArc.points.length === 1
+        ) {
+            this.dummyArc.points.push(this.svgCoordinatesService.getRelativeEventCoords(event, drawingArea));
+        }
     }
 
     dispatchSVGMouseMove(event: MouseEvent, drawingArea: HTMLElement) {
@@ -399,6 +407,10 @@ export class PetriNetComponent implements OnChanges{
                 );
             }
         }
+        if (this.uiService.button === ButtonState.Arc && this.dummyArc?.points.length > 0) {
+            // Drawing the drag & drop DummyArc
+            this.dummyArc.points[1] = this.svgCoordinatesService.getRelativeEventCoords(event, drawingArea);
+        }
     }
 
     dispatchSVGMouseUp(event: MouseEvent, drawingArea: HTMLElement) {
@@ -406,10 +418,11 @@ export class PetriNetComponent implements OnChanges{
             this.editMoveElementsService.finalizeMove();
         }
 
-        // Reset StartNode when Drag&Drop is cancelled
+        // Reset for both cancellation or finalization (bubble-up) of arc drawing
         if (this.uiService.button === ButtonState.Arc) {
             this.startTransition = undefined;
             this.startPlace = undefined;
+            this.dummyArc.points = [];
         }
 
         // Resed anchorToDelete after both:
@@ -460,6 +473,7 @@ export class PetriNetComponent implements OnChanges{
         // Set StartNode for Arc
         if (this.uiService.button === ButtonState.Arc) {
             this.startPlace = place;
+            this.dummyArc?.points.push(place.position);
         }
     }
 
@@ -473,7 +487,6 @@ export class PetriNetComponent implements OnChanges{
             const newArc: Arc = new Arc(this.startTransition, place, 1);
             this.startTransition.appendPostArc(newArc);
             this.dataService.getArcs().push(newArc);
-            this.startTransition = undefined;
         }
     }
 
@@ -517,6 +530,7 @@ export class PetriNetComponent implements OnChanges{
         // Set StartNode for Arc
         if (this.uiService.button === ButtonState.Arc) {
             this.startTransition = transition;
+            this.dummyArc?.points.push(transition.position);
         }
     }
 
@@ -530,7 +544,6 @@ export class PetriNetComponent implements OnChanges{
             const newArc: Arc = new Arc(this.startPlace, transition, 1);
             transition.appendPreArc(newArc);
             this.dataService.getArcs().push(newArc);
-            this.startPlace = undefined;
         }
     }
 

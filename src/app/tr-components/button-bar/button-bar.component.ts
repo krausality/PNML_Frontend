@@ -10,6 +10,10 @@ import { TokenGameService } from 'src/app/tr-services/token-game.service';
 import { ButtonState, TabState } from 'src/app/tr-enums/ui-state';
 import { ClearPopupComponent } from '../clear-popup/clear-popup.component';
 import { DataService } from '../../tr-services/data.service';
+import { LayoutSpringEmbedderService } from 'src/app/tr-services/layout-spring-embedder.service';
+import { LayoutSugyiamaService } from 'src/app/tr-services/layout-sugyiama.service';
+
+import { showTooltipDelay } from 'src/app/tr-services/position.constants';
 
 @Component({
     selector: 'app-button-bar',
@@ -21,9 +25,9 @@ export class ButtonBarComponent {
     readonly ButtonState = ButtonState;
     @Output() eventName = new EventEmitter<ButtonState>();
 
-    public petrinetCss: string = '';
+    readonly showTooltipDelay = showTooltipDelay;
 
-    showDelay = 800;
+    public petrinetCss: string = '';
 
     constructor(
         protected uiService: UiService,
@@ -34,6 +38,8 @@ export class ButtonBarComponent {
         protected tokenGameService: TokenGameService,
         private dataService: DataService,
         private matDialog: MatDialog,
+        private layoutSpringEmebdderService: LayoutSpringEmbedderService,
+        private layoutSugyiamaService: LayoutSugyiamaService,
     ) {}
 
     // gets called when a tab is clicked
@@ -76,6 +82,21 @@ export class ButtonBarComponent {
     openClearDialog() {
         if (!this.dataService.isEmpty()) {
             this.matDialog.open(ClearPopupComponent);
+        }
+    }
+
+    applyLayout(layoutAlgorithm: string) {
+        switch (layoutAlgorithm) {
+            case 'spring-embedder':
+                this.layoutSpringEmebdderService.layoutSpringEmbedder();
+                break;
+            case 'sugyiama':
+                this.layoutSpringEmebdderService.terminate();
+                this.layoutSugyiamaService.applySugyiamaLayout();
+                break;
+            default:
+                this.layoutSpringEmebdderService.terminate();
+                break;
         }
     }
 }
