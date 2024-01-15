@@ -6,11 +6,7 @@ import { Transition } from './transition';
 export class DummyArc {
     points: Point[] = [];
 
-    constructor(
-        
-    ) {
-        
-    }
+    constructor() {}
 
     get polyLinePoints(): string {
         return this.pointArrayToString(this.points);

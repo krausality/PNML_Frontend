@@ -14,28 +14,7 @@ import {
 export class ExportJsonDataService {
     constructor(private dataService: DataService) {}
 
-    public getJson(): string | undefined {
-        const jsonObj: JsonPetriNet = this.generateJsonObject();
-        let serializedJsonObj: string | undefined;
-
-        // Option 1: serialization with Formatter() of FracturedJsonJs library:
-
-        // Set formatting options
-        const options = new FracturedJsonOptions();
-        options.MaxTotalLineLength = 2000000000;
-        options.MaxInlineComplexity = 0;
-        options.JsonEolStyle = EolStyle.Crlf;
-        options.MaxTableRowComplexity = 0;
-        options.DontJustifyNumbers = true;
-
-        // Instantiate Formatter and serialize JsonPetriNet object
-        const formatter = new Formatter();
-        formatter.Options = options;
-        serializedJsonObj = formatter.Serialize(jsonObj);
-        return serializedJsonObj;
-    }
-
-    public exportAsJson() {
+    public getJson(): string {
         const jsonObj: JsonPetriNet = this.generateJsonObject();
         let serializedJsonObj: string | undefined;
 
@@ -56,6 +35,11 @@ export class ExportJsonDataService {
         if (serializedJsonObj === undefined) {
             throw new Error('Json data could not be serialized');
         }
+        return serializedJsonObj;
+    }
+
+    public exportAsJson() {
+        const serializedJsonObj = this.getJson();
 
         // Alternative serializations with JSON.stringify(data, replacer, space):
 
