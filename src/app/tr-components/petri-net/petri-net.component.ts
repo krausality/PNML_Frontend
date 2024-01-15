@@ -183,7 +183,7 @@ export class PetriNetComponent implements OnChanges{
     }
 
     protected onWheelEventTransition(e: WheelEvent, transition: Transition) {
-        if(this.uiService.button === ButtonState.Blitz) {
+        if(this.uiService.button === ButtonState.Blitz || this.uiService.button === ButtonState.Select) {
             e.preventDefault();
             e.stopPropagation();
             if (e.deltaY < 0) {
