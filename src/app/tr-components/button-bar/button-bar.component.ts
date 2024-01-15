@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { ExportJsonDataService } from 'src/app/tr-services/export-json-data.service';
 import { PnmlService } from 'src/app/tr-services/pnml.service';
 import { UiService } from 'src/app/tr-services/ui.service';
@@ -21,6 +21,8 @@ import { showTooltipDelay } from 'src/app/tr-services/position.constants';
     styleUrls: ['./button-bar.component.css'],
 })
 export class ButtonBarComponent {
+    @Output() reloadCodeEditorEvent = new EventEmitter();
+
     readonly TabState = TabState;
     readonly ButtonState = ButtonState;
 
@@ -57,6 +59,10 @@ export class ButtonBarComponent {
                 break;
             case 'save':
                 this.uiService.tab = this.TabState.Save;
+                break;
+            case 'code':
+                this.uiService.tab = this.TabState.Code;
+                this.reloadCodeEditorEvent.emit();
                 break;
         }
         this.uiService.button = null;

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ButtonState, TabState } from '../tr-enums/ui-state';
+import { Subject } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',

@@ -1,0 +1,26 @@
+<div class="code-container">
+    <!-- textarea for displaying and editing the source code -->
+    <mat-form-field class="code-form-field">
+        <mat-label>Source code</mat-label>
+        <textarea
+            [formControl]="textareaControl"
+            matInput
+            class="code-textarea"
+        ></textarea>
+    </mat-form-field>
+
+    <!-- language switch that sits on top of the textarea
+         loads the source code in the specified language every time
+         the value is changed -->
+    <mat-form-field class="language-switch">
+        <mat-label>Language</mat-label>
+        <mat-select
+            placeholder="Language"
+            [(value)]="languageSelected"
+            (selectionChange)="loadSourceCode()"
+        >
+            <mat-option value="json">JSON</mat-option>
+            <mat-option value="pnml">PNML</mat-option>
+        </mat-select>
+    </mat-form-field>
+</div>
