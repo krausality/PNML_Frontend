@@ -26,7 +26,10 @@
 </div>
 
 <div mat-dialog-content>
-    <p *ngIf="placeInvariantsService.selectedPlaceForPITable">There are {{placeInvariantsService.placeInvariantsWithSelectedPlace().length}} place invariants that contain {{placeInvariantsService.selectedPlaceForPITable.id}}</p>
+    <!-- <p *ngIf="placeInvariantsService.selectedPlaceForPITable">There are {{placeInvariantsService.placeInvariantsWithSelectedPlace().length}} place invariants that contain {{placeInvariantsService.selectedPlaceForPITable.id}}</p> -->
+    <p *ngIf="placeInvariantsService.selectedPlaceForPITable">
+        {{placeInvariantsService.infoPIsWithSelectedPlace()}}
+    </p>
     <table>
         <thead>
             <tr>

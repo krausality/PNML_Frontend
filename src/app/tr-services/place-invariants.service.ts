@@ -323,12 +323,14 @@ export class PlaceInvariantsService {
         let place = this.selectedPlaceForPITable;
         let n = this.placeInvariantsWithSelectedPlace().length;
         let info = '';
+        let pITypeSingular: string = this.isMinimal ? 'minimal place invariant' : 'place invariant (Farkas)';
+        let pITypePlural: string = this.isMinimal ? 'minimal place invariants' : 'place invariants (Farkas)';
         switch (n) {
-            case 0: info = 'There are no place invariants that contain ' + place;
+            case 0: info = 'There are no ' + pITypePlural + ' that contain ' + place?.id;
             break;
-            case 1: info = 'There is 1 place invariant that contains' + place;
+            case 1: info = 'There is 1 ' + pITypeSingular + ' that contains ' + place?.id;
             break;
-            default: info = 'There are' + n + 'place invariants that contain' + place;
+            default: info = 'There are ' + n +' ' + pITypePlural + ' that contain ' + place?.id;
         }
         return info;
     }
