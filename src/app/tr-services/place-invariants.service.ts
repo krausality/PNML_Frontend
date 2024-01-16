@@ -26,6 +26,9 @@ export class PlaceInvariantsService {
     // If set, only PIs containing this place are shown.
     selectedPlaceForPITable: Place | undefined;
 
+    // Indicator variable if table with full functionality is shown
+    showFullTable: boolean = false;
+
     // Incidence Matrices for Testing *************************************
 
     // From https://teaching.model.in.tum.de/2021ss/petri/material/petrinets.pdf

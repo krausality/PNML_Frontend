@@ -294,7 +294,7 @@
             <button
                 mat-icon-button
                 [disabled]="placeInvariantsService.placeInvariantsMatrix.length === 0"
-                (click)="openPlaceInvariantsTable()"
+                (click)="placeInvariantsService.showFullTable=true; openPlaceInvariantsTable()"
                 matTooltip="Show table with place invariants from latest calculation"
                 [matTooltipShowDelay]="showDelay"
             >
