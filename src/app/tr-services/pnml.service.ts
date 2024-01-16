@@ -17,7 +17,7 @@ import { DataService } from './data.service';
 export class PnmlService {
     constructor(private dataServive: DataService) {}
 
-    parse(xmlString: string): [Array<Place>, Array<Transition>, Array<Arc>] {
+    parse(xmlString: string): [Array<Place>, Array<Transition>, Array<Arc>, Array<String>] {
         try {
             const result = xml2js(xmlString) as PnmlPetriNet;
             const pnml = result.elements.find(
@@ -37,17 +37,19 @@ export class PnmlService {
             );
             let places: Place[] = [];
             let transitions: Transition[] = [];
+            let arcs: Arc[] = [];
+            let actions: string[] = [];
             if (pnmlPlaces) {
                 places = this.parsePnmlPlaces(pnmlPlaces);
             }
             if (pnmlTransitions) {
                 transitions = this.parsePnmlTransitions(pnmlTransitions);
+                actions = this.getActionsfromTransitions(transitions)
             }
-            let arcs: Arc[] = [];
             if (pnmlArcs) {
                 arcs = this.parsePnmlArcs(pnmlArcs, places, transitions);
             }
-            return [places, transitions, arcs];
+            return [places, transitions, arcs, actions];
         } catch (error) {
             throw new Error(`Error parsing XML to JSON: ${error}`);
         }
@@ -131,6 +133,17 @@ export class PnmlService {
             places.push(transition);
         });
         return places;
+    }
+
+    getActionsfromTransitions(transitions: Array<Transition>): string[] {
+        const actions: string[] = [];
+
+        transitions.forEach(transition => {
+            if(transition.label) {
+                actions.push(transition.label);
+            }
+        });
+        return actions;
     }
 
     private parsePnmlArcs(
