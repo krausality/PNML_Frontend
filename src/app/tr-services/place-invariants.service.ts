@@ -318,7 +318,6 @@ export class PlaceInvariantsService {
         return PIsWithSelectedPlace;
     }
 
-    //TODO: unterscheide Farkas und minimal PIs
     infoPIsWithSelectedPlace(): string {
         let place = this.selectedPlaceForPITable;
         let n = this.placeInvariantsWithSelectedPlace().length;
@@ -333,6 +332,19 @@ export class PlaceInvariantsService {
             default: info = 'There are ' + n +' ' + pITypePlural + ' that contain ' + place?.id;
         }
         return info;
+    }
+
+    headerPItable(): string {
+        if (this.selectedPlaceForPITable) {
+            return this.selectedPlaceForPITable.id;
+        } else {
+            let n = this.placeInvariantsMatrix.length;
+
+            let pITypeSingular: string = this.isMinimal ? 'minimal place invariant' : 'place invariant (Farkas)';
+            let pITypePlural: string = this.isMinimal ? 'minimal place invariants' : 'place invariants (Farkas)';
+
+            return n + ' ' + (n === 1 ? pITypeSingular : pITypePlural);
+        }
     }
 
     // Greatest common divisor of two numbers

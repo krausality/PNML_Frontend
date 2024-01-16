@@ -3,7 +3,7 @@
         mat-dialog-title
         style="font-size: 18px;"
     >
-        {{
+        <!-- {{
             placeInvariantsService.selectedPlaceForPITable ?
             placeInvariantsService.selectedPlaceForPITable.id :
             placeInvariantsService.placeInvariantsMatrix.length +
@@ -12,7 +12,8 @@
                 ' Minimal Place Invariants' :
                 ' Place Invariants (Farkas)'
             )
-        }}
+        }} -->
+        {{placeInvariantsService.headerPItable()}}
     </h2>
 
     <button
