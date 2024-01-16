@@ -298,6 +298,16 @@
             >
                 <mat-icon>restart_alt</mat-icon>
             </button>
+
+            <!-- apply button -->
+            <button
+                mat-icon-button
+                matTooltip="Apply the source code in the code editor as the new petrinet state"
+                [matTooltipShowDelay]="showTooltipDelay"
+                (click)="applySourceCodeEvent.emit()"
+            >
+                <mat-icon>task</mat-icon>
+            </button>
         </div>
     </mat-tab>
 </mat-tab-group>

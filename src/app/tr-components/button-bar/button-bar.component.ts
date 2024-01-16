@@ -22,6 +22,7 @@ import { showTooltipDelay } from 'src/app/tr-services/position.constants';
 })
 export class ButtonBarComponent {
     @Output() reloadCodeEditorEvent = new EventEmitter();
+    @Output() applySourceCodeEvent = new EventEmitter();
 
     readonly TabState = TabState;
     readonly ButtonState = ButtonState;
