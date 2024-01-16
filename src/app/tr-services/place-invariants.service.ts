@@ -271,6 +271,26 @@ export class PlaceInvariantsService {
         }
     }
 
+    get linearCombinationString(): string {
+        let pIString = '';
+        for (let i = 0; i < this.placeIds.length; i++){
+            const f = this.linearCombination[i];
+            if (f > 0) {
+                pIString += (pIString.length > 0 ? ' + ' : '') + (f > 1 ? f + '*' : '') + this.placeIds[i];
+            }
+        }
+        return pIString;
+    }
+
+    get tokenSumOfLinearCombination(): number {
+        let tokenSum = 0;
+        for (let place of this.dataService.getPlaces()) {
+            const index = this.placeIds.indexOf(place.id);
+            tokenSum += this.linearCombination[index] * place.token;
+        }
+        return tokenSum;
+    }
+
     // Returns the factor for the place placeId in the place invariant
     // which is the result of the linear combination of the selected
     // place invariants.

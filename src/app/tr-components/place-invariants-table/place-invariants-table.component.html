@@ -36,7 +36,11 @@
     </p>
     <ng-container *ngIf="placeInvariantsService.showFullTable">
         <p>Linear combination of selected place invariants:</p>
-        <p>Show full table</p>
+        <p>
+            {{placeInvariantsService.linearCombinationString}}
+            =
+            {{placeInvariantsService.tokenSumOfLinearCombination}}
+        </p>
     </ng-container>
     <table *ngIf="placeInvariantsService.pITableHasData">
         <thead>
