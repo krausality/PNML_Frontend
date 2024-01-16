@@ -347,6 +347,16 @@ export class PlaceInvariantsService {
         }
     }
 
+    // TODO: has to be adjusted, in case PIs for selected place should
+    // only contain the previously selcted PIs
+    get pITableHasData(): boolean {
+        if (this.selectedPlaceForPITable) {
+            return this.placeInvariantsWithSelectedPlace().length > 0;
+        } else {
+            return this.placeInvariantsMatrix.length > 0;
+        }
+    }
+
     // Greatest common divisor of two numbers
     private gcd(a: number, b: number): number {
         return b === 0 ? a : this.gcd(b, a % b);

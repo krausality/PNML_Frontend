@@ -31,7 +31,7 @@
     <p *ngIf="placeInvariantsService.selectedPlaceForPITable">
         {{placeInvariantsService.infoPIsWithSelectedPlace()}}
     </p>
-    <table>
+    <table *ngIf="placeInvariantsService.pITableHasData">
         <thead>
             <tr>
                 <th scope="col">#</th>
