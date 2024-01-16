@@ -140,7 +140,8 @@ export class PnmlService {
 
         transitions.forEach(transition => {
             if(transition.label) {
-                actions.push(transition.label);
+                if(!actions.includes(transition.label)){
+                }
             }
         });
         return actions;
