@@ -308,6 +308,31 @@ export class PlaceInvariantsService {
         }
     }
 
+    placeInvariantsWithSelectedPlace(): number[][] {
+        let PIsWithSelectedPlace: number[][] = [];
+        for (let placeInvariant of this.placeInvariantsMatrix) {
+            if (this.includePI(placeInvariant)){
+                PIsWithSelectedPlace.push(placeInvariant);
+            }
+        }
+        return PIsWithSelectedPlace;
+    }
+
+    //TODO: unterscheide Farkas und minimal PIs
+    infoPIsWithSelectedPlace(): string {
+        let place = this.selectedPlaceForPITable;
+        let n = this.placeInvariantsWithSelectedPlace().length;
+        let info = '';
+        switch (n) {
+            case 0: info = 'There are no place invariants that contain ' + place;
+            break;
+            case 1: info = 'There is 1 place invariant that contains' + place;
+            break;
+            default: info = 'There are' + n + 'place invariants that contain' + place;
+        }
+        return info;
+    }
+
     // Greatest common divisor of two numbers
     private gcd(a: number, b: number): number {
         return b === 0 ? a : this.gcd(b, a % b);

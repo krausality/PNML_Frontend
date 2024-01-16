@@ -1,6 +1,11 @@
 <div fxLayout="row" fxLayoutAlign="space-between center">
-    <h2 mat-dialog-title>
+    <h2
+        mat-dialog-title
+        style="font-size: 18px;"
+    >
         {{
+            placeInvariantsService.selectedPlaceForPITable ?
+            placeInvariantsService.selectedPlaceForPITable.id :
             placeInvariantsService.placeInvariantsMatrix.length +
             (
                 placeInvariantsService.isMinimal ?
@@ -8,7 +13,6 @@
                 ' Place Invariants (Farkas)'
             )
         }}
-
     </h2>
 
     <button
@@ -22,6 +26,7 @@
 </div>
 
 <div mat-dialog-content>
+    <p *ngIf="placeInvariantsService.selectedPlaceForPITable">There are {{placeInvariantsService.placeInvariantsWithSelectedPlace().length}} place invariants that contain {{placeInvariantsService.selectedPlaceForPITable.id}}</p>
     <table>
         <thead>
             <tr>
