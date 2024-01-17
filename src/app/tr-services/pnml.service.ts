@@ -17,7 +17,7 @@ import { DataService } from './data.service';
 export class PnmlService {
     constructor(private dataServive: DataService) {}
 
-    parse(xmlString: string): [Array<Place>, Array<Transition>, Array<Arc>, Array<String>] {
+    parse(xmlString: string): [Array<Place>, Array<Transition>, Array<Arc>, Array<string>] {
         try {
             const result = xml2js(xmlString) as PnmlPetriNet;
             const pnml = result.elements.find(
