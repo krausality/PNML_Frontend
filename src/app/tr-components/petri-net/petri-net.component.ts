@@ -99,6 +99,7 @@ export class PetriNetComponent {
                 this.dataService.places = places;
                 this.dataService.transitions = transitions;
                 this.dataService.arcs = arcs;
+                this.dataService.actions
             } else {
                 const [places, transitions, arcs, actions] =
                     this.parserService.parse(content);
