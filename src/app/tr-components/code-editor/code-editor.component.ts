@@ -8,6 +8,11 @@ import { ExportJsonDataService } from 'src/app/tr-services/export-json-data.serv
 import { ParserService } from 'src/app/tr-services/parser.service';
 import { PnmlService } from 'src/app/tr-services/pnml.service';
 
+import Ajv from 'ajv/dist/2020';
+// import betterAjvErrors from 'better-ajv-errors';
+import jsonSchema from 'src/app/tr-components/code-editor/petrinet.schema';
+// import * as petrinetSchema from './petrinet.schema.json';
+
 @Component({
     selector: 'app-code-editor',
     templateUrl: './code-editor.component.html',
@@ -16,6 +21,13 @@ import { PnmlService } from 'src/app/tr-services/pnml.service';
 export class CodeEditorComponent {
     languageSelected = 'json';
     textareaControl = new FormControl('');
+
+    ajv = new Ajv({
+        allowMatchingProperties: true,
+        verbose: true,
+        allErrors: true,
+    });
+    validate = this.ajv.compile(jsonSchema);
 
     constructor(
         private exportJsonDataService: ExportJsonDataService,
@@ -49,6 +61,7 @@ export class CodeEditorComponent {
             // TODO: possibly delete the existing petrinet here
             return;
         }
+
         // parse the data as json or pnml based on the selected language
         let parsedData: [
             Array<Place>,
@@ -57,6 +70,22 @@ export class CodeEditorComponent {
             Array<string>?,
         ];
         if (this.languageSelected === 'json') {
+            // validate JSON structure
+            try {
+                JSON.parse(sourceCode);
+            } catch (e) {
+                console.log('Problem parsing JSON', e);
+                // handle and show error message e.g.
+            }
+
+            // validate agains JSON schema
+            const json = JSON.parse(sourceCode);
+            const valid = this.validate(json);
+            if (!valid) {
+                console.log(this.validate.errors);
+                return;
+            }
+
             parsedData = this.parserService.parse(sourceCode);
         } else {
             parsedData = this.pnmlService.parse(sourceCode);
