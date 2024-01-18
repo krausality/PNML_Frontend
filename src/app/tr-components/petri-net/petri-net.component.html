@@ -160,7 +160,7 @@
         ></polyline>
         <g
             *ngIf="arc.weight > 1 || arc.weight < -1"
-            class="arc-weight-group no-pointer-events"
+            class="no-pointer-events"
         >
             <!-- Weight at Arc without Anchorpoints - Middle of Polyline -->
             <!-- White Circle for Background -->
@@ -249,7 +249,7 @@
             />
             <text
                 *ngIf="arc.anchors.length % 2 === 1 && arc.anchors.length >= 2"
-                class="arc-weight no-pointer-events"
+                class="arc-weight"
                 [attr.x]="arc.anchors[arc.anchors.length / 2 - 0.5].x"
                 [attr.y]="arc.anchors[arc.anchors.length / 2 - 0.5].y"
                 text-anchor="middle"

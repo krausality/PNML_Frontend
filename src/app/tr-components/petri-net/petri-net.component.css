@@ -90,7 +90,7 @@
 }
 
 .play-mode .transition.active:hover {
-    filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.5));
+    filter: drop-shadow(0 0 3px rgba(0, 0, 0, 1));
 }
 
 /* Text nodes that follow transitions (here: rects within svg) should not have different cursors in play mode
@@ -102,7 +102,7 @@
 /* Styles for 'move' and 'anchor' mode */
 .canvas.move-mode:hover {
     /* transition: box-shadow 0.2s; */
-    cursor: grab;
+    cursor: pointer;
 }
 
 /* set box shadow on canvas, but only if:
