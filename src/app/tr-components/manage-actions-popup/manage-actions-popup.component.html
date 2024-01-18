@@ -45,24 +45,68 @@
     </mat-list>
 </div>
 
-<div mat-dialog-actions>
+<!-- <div mat-dialog-actions>
     <mat-form-field class="add-action-input">
-        <mat-label>Action</mat-label>
+        <mat-label>New Action Line #1</mat-label>
         <input
             matInput
             #newActionInput
             type="text"
-            placeholder="New Action"
+            placeholder="New Action Line #1"
             (keyup.enter)="addAction(newActionInput)"
         />
-        <button mat-icon-button matSuffix (click)="addAction(newActionInput)">
-            <mat-icon>add_task</mat-icon>
-        </button>
     </mat-form-field>
-</div>
+    <mat-form-field class="add-action-input">
+        <mat-label>New Action Line #2</mat-label>
+        <input
+            matInput
+            #newActionInput
+            type="text"
+            placeholder="New Action Line #2"
+            (keyup.enter)="addAction(newActionInput)"
+        />
+    </mat-form-field>
+    <button mat-icon-button matSuffix (click)="addAction(newActionInput)">
+        <mat-icon>add_task</mat-icon>
+    </button>
+</div> -->
+<form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()" class="add-action-input">
+
+    <div mat-dialog-actions>
+        <mat-form-field >
+            <mat-label>New Action Line #1</mat-label>
+            <input
+                id="line_1"
+                formControlName="line_1"
+                matInput
+                #newActionInput
+                type="text"
+                placeholder="New Action Line #1"
+            />
+        </mat-form-field>
+    </div>
+    <div mat-dialog-actions>
+        <mat-form-field >
+            <mat-label>New Action Line #2</mat-label>
+            <input
+                id="line_2"
+                formControlName="line_2"
+                matInput
+                #newActionInput
+                type="text"
+                placeholder="New Action Line #2"
+            />
+        </mat-form-field>
+
+
+    <button mat-icon-button matSuffix type="submit">
+        <mat-icon>add_task</mat-icon>
+    </button></div>
+  </form>
+
 
 <!-- only show this error message if the user tries submitting an empty action -->
-<div
+<!-- <div
     class="action-error"
     *ngIf="
         (newActionInput.value.length > 0 || actionSubmittedOnce) &&
@@ -70,4 +114,4 @@
     "
 >
     Action cannot be empty
-</div>
+</div> -->
