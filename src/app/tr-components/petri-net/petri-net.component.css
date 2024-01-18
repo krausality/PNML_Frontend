@@ -47,7 +47,7 @@
     fill: none;
     stroke: transparent;
     opacity: 0;
-    stroke-width: 12 !important;
+    stroke-width: 10 !important;
 }
 
 .place-id {
@@ -158,15 +158,11 @@
  * - Elements with class ".anchor" that also have the ".active" class set
  * - Elements with class ".arc" AND ".editable", that are direct children of the ".arc-group"-Element currently being hovered. This is
  *   needed to be able to highlight the main arcs when line-segments are hovered, as those cannot get a drop shadow since they have no stroke color.
- * - Elements with class ".arc" AND ".editable", that are next siblings to the ".background-arc"-Element that is currently being hovered.
- *   This is needed to make sure the arc stay highlighted when not itself but rather only the background-arc is hovered,
- *   which acts as a bigger click/hover target for the main arc.
  */
 .editable:hover,
 .line-segment:hover,
 .anchor.active,
-.arc-group:hover > .arc.editable,
-.background-arc:hover + .arc.editable {
+.arc-group:hover > .arc.editable {
     cursor: pointer;
     /* stronger drop shadow to visible highlight the hovered element */
     filter: drop-shadow(0 0 2px rgba(255, 0, 0, 1))
