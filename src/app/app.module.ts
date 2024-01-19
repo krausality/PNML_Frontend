@@ -23,6 +23,7 @@ import { ExampleButtonComponent } from './components/example-button/example-butt
 import { PetriNetComponent } from './tr-components/petri-net/petri-net.component';
 import { ButtonBarComponent } from './tr-components/button-bar/button-bar.component';
 import { mathAbsPipe } from './tr-pipes/math-abs.pipe';
+import { objectEntriesPipe } from './tr-pipes/object-entries.pipe';
 import { ManageActionsPopupComponent } from './tr-components/manage-actions-popup/manage-actions-popup.component';
 import { SetActionPopupComponent } from './tr-components/set-action-popup/set-action-popup.component';
 import { ClearPopupComponent } from './tr-components/clear-popup/clear-popup.component';

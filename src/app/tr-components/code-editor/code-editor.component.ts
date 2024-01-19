@@ -8,9 +8,8 @@ import { ExportJsonDataService } from 'src/app/tr-services/export-json-data.serv
 import { ParserService } from 'src/app/tr-services/parser.service';
 import { PnmlService } from 'src/app/tr-services/pnml.service';
 
-import Ajv from 'ajv/dist/2020';
-// import betterAjvErrors from 'better-ajv-errors';
-import jsonSchema from 'src/app/tr-components/code-editor/petrinet.schema';
+import { createJsonSchemaValidator } from './json-schema.validator';
+
 // import * as petrinetSchema from './petrinet.schema.json';
 
 @Component({
@@ -20,14 +19,8 @@ import jsonSchema from 'src/app/tr-components/code-editor/petrinet.schema';
 })
 export class CodeEditorComponent {
     languageSelected = 'json';
-    textareaControl = new FormControl('');
+    textareaControl = new FormControl('', [createJsonSchemaValidator()]);
 
-    ajv = new Ajv({
-        allowMatchingProperties: true,
-        verbose: true,
-        allErrors: true,
-    });
-    validate = this.ajv.compile(jsonSchema);
 
     constructor(
         private exportJsonDataService: ExportJsonDataService,
@@ -82,11 +75,15 @@ export class CodeEditorComponent {
 
             // validate agains JSON schema
             const json = JSON.parse(sourceCode);
-            const valid = this.validate(json);
-            if (!valid) {
-                console.log(this.validate.errors);
-                return;
-            }
+            // const valid = this.validate(json);
+            // if (!valid) {
+            //     console.log(this.validate.errors);
+            //     this.validate.errors?.forEach((validationError) => {
+            //         console.log(validationError);
+            //         this.codeValidationErrors.push('Error');
+            //     });
+            //     return;
+            // }
 
             parsedData = this.parserService.parse(sourceCode);
         } else {
