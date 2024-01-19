@@ -94,11 +94,12 @@ export class PetriNetComponent {
             // Use pnml parser if file type is pnml
             // we'll try the json parser for all other cases
             if (contentType === 'pnml') {
-                const [places, transitions, arcs] =
+                const [places, transitions, arcs,actions] =
                     this.pnmlService.parse(content);
                 this.dataService.places = places;
                 this.dataService.transitions = transitions;
                 this.dataService.arcs = arcs;
+                this.dataService.actions = actions
             } else {
                 const [places, transitions, arcs, actions] =
                     this.parserService.parse(content);
