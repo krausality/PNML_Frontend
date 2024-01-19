@@ -53,12 +53,14 @@ export class CodeEditorComponent {
     // depending on which language is selected
     public applySourceCode() {
         let sourceCode = this.textareaControl.value;
-        // the value of the textareaControl can be null
-        // if this is the case nothing should be applied
-        // TODO: should the existing petri net be deleted if an
-        //       empty one is applied?
+        // the value of the textareaControl can be null or empty
+        // if this is the case the existing petrinet will be deleted
+        console.log(!sourceCode);
         if (!sourceCode) {
-            // TODO: possibly delete the existing petrinet here
+            this.dataService.places = [];
+            this.dataService.transitions = [];
+            this.dataService.arcs = [];
+            this.dataService.actions = [];
             return;
         }
 
@@ -67,7 +69,7 @@ export class CodeEditorComponent {
             Array<Place>,
             Array<Transition>,
             Array<Arc>,
-            Array<string>?,
+            Array<string>,
         ];
         if (this.languageSelected === 'json') {
             // validate JSON structure
@@ -96,9 +98,6 @@ export class CodeEditorComponent {
         this.dataService.places = places;
         this.dataService.transitions = transitions;
         this.dataService.arcs = arcs;
-        // only overwrite actions if there are any
-        if (actions) {
-            this.dataService.actions = actions;
-        }
+        this.dataService.actions = actions;
     }
 }

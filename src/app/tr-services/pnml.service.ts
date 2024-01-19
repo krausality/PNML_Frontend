@@ -17,7 +17,9 @@ import { DataService } from './data.service';
 export class PnmlService {
     constructor(private dataServive: DataService) {}
 
-    parse(xmlString: string): [Array<Place>, Array<Transition>, Array<Arc>, Array<string>] {
+    parse(
+        xmlString: string,
+    ): [Array<Place>, Array<Transition>, Array<Arc>, Array<string>] {
         try {
             const result = xml2js(xmlString) as PnmlPetriNet;
             const pnml = result.elements.find(
@@ -44,7 +46,7 @@ export class PnmlService {
             }
             if (pnmlTransitions) {
                 transitions = this.parsePnmlTransitions(pnmlTransitions);
-                actions = this.getActionsfromTransitions(transitions)
+                actions = this.getActionsfromTransitions(transitions);
             }
             if (pnmlArcs) {
                 arcs = this.parsePnmlArcs(pnmlArcs, places, transitions);
@@ -138,9 +140,9 @@ export class PnmlService {
     getActionsfromTransitions(transitions: Array<Transition>): string[] {
         const actions: string[] = [];
 
-        transitions.forEach(transition => {
-            if(transition.label) {
-                if(!actions.includes(transition.label)){
+        transitions.forEach((transition) => {
+            if (transition.label) {
+                if (!actions.includes(transition.label)) {
                     actions.push(transition.label);
                 }
             }
