@@ -94,11 +94,12 @@ export class PetriNetComponent {
             // Use pnml parser if file type is pnml
             // we'll try the json parser for all other cases
             if (contentType === 'pnml') {
-                const [places, transitions, arcs] =
+                const [places, transitions, arcs,actions] =
                     this.pnmlService.parse(content);
                 this.dataService.places = places;
                 this.dataService.transitions = transitions;
                 this.dataService.arcs = arcs;
+                this.dataService.actions = actions
             } else {
                 const [places, transitions, arcs, actions] =
                     this.parserService.parse(content);
@@ -372,7 +373,12 @@ export class PetriNetComponent {
             this.uiService.button === ButtonState.Arc &&
             this.dummyArc.points.length === 1
         ) {
-            this.dummyArc.points.push(this.svgCoordinatesService.getRelativeEventCoords(event, drawingArea));
+            this.dummyArc.points.push(
+                this.svgCoordinatesService.getRelativeEventCoords(
+                    event,
+                    drawingArea,
+                ),
+            );
         }
     }
 
@@ -393,9 +399,16 @@ export class PetriNetComponent {
                 );
             }
         }
-        if (this.uiService.button === ButtonState.Arc && this.dummyArc?.points.length > 0) {
+        if (
+            this.uiService.button === ButtonState.Arc &&
+            this.dummyArc?.points.length > 0
+        ) {
             // Drawing the drag & drop DummyArc
-            this.dummyArc.points[1] = this.svgCoordinatesService.getRelativeEventCoords(event, drawingArea);
+            this.dummyArc.points[1] =
+                this.svgCoordinatesService.getRelativeEventCoords(
+                    event,
+                    drawingArea,
+                );
         }
     }
 

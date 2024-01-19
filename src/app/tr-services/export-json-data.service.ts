@@ -14,7 +14,7 @@ import {
 export class ExportJsonDataService {
     constructor(private dataService: DataService) {}
 
-    public exportAsJson() {
+    public getJson(): string {
         const jsonObj: JsonPetriNet = this.generateJsonObject();
         let serializedJsonObj: string | undefined;
 
@@ -35,6 +35,11 @@ export class ExportJsonDataService {
         if (serializedJsonObj === undefined) {
             throw new Error('Json data could not be serialized');
         }
+        return serializedJsonObj;
+    }
+
+    public exportAsJson() {
+        const serializedJsonObj = this.getJson();
 
         // Alternative serializations with JSON.stringify(data, replacer, space):
 

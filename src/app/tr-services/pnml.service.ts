@@ -17,7 +17,7 @@ import { DataService } from './data.service';
 export class PnmlService {
     constructor(private dataServive: DataService) {}
 
-    parse(xmlString: string): [Array<Place>, Array<Transition>, Array<Arc>] {
+    parse(xmlString: string): [Array<Place>, Array<Transition>, Array<Arc>, Array<string>] {
         try {
             const result = xml2js(xmlString) as PnmlPetriNet;
             const pnml = result.elements.find(
@@ -37,17 +37,19 @@ export class PnmlService {
             );
             let places: Place[] = [];
             let transitions: Transition[] = [];
+            let arcs: Arc[] = [];
+            let actions: string[] = [];
             if (pnmlPlaces) {
                 places = this.parsePnmlPlaces(pnmlPlaces);
             }
             if (pnmlTransitions) {
                 transitions = this.parsePnmlTransitions(pnmlTransitions);
+                actions = this.getActionsfromTransitions(transitions)
             }
-            let arcs: Arc[] = [];
             if (pnmlArcs) {
                 arcs = this.parsePnmlArcs(pnmlArcs, places, transitions);
             }
-            return [places, transitions, arcs];
+            return [places, transitions, arcs, actions];
         } catch (error) {
             throw new Error(`Error parsing XML to JSON: ${error}`);
         }
@@ -133,6 +135,19 @@ export class PnmlService {
         return places;
     }
 
+    getActionsfromTransitions(transitions: Array<Transition>): string[] {
+        const actions: string[] = [];
+
+        transitions.forEach(transition => {
+            if(transition.label) {
+                if(!actions.includes(transition.label)){
+                    actions.push(transition.label);
+                }
+            }
+        });
+        return actions;
+    }
+
     private parsePnmlArcs(
         list: Array<PnmlElement>,
         places: Place[],
@@ -159,20 +174,8 @@ export class PnmlService {
     }
 
     writePNML() {
-        const places = this.dataServive.getPlaces();
-        const transitions = this.dataServive.getTransitions();
-        const arcs = this.dataServive.getArcs();
         const fileName = 'petri-net-with-love.pnml';
-        const pnmlContent = `<?xml version="1.0" encoding="UTF-8"?>
-  <pnml xmlns="http://www.pnml.org/version-2009/grammar/pnml">
-    <net id="net1" type="http://www.pnml.org/version-2009/grammar/ptnet">
-${places.map((place) => this.getPlaceString(place)).join('\n')}
-${transitions
-    .map((transition) => this.getTransitionString(transition))
-    .join('\n')}
-${arcs.map((arc) => this.getArcString(arc)).join('\n')}
-    </net>
-  </pnml>`;
+        const pnmlContent = this.getPNML();
 
         // Create Blob (Binary Large OBject)
         const file = new Blob([pnmlContent], {
@@ -254,6 +257,24 @@ ${arcs.map((arc) => this.getArcString(arc)).join('\n')}
         } else {
             return undefined;
         }
+    }
+
+    public getPNML(): string {
+        const places = this.dataServive.getPlaces();
+        const transitions = this.dataServive.getTransitions();
+        const arcs = this.dataServive.getArcs();
+        const pnmlContent = `<?xml version="1.0" encoding="UTF-8"?>
+  <pnml xmlns="http://www.pnml.org/version-2009/grammar/pnml">
+    <net id="net1" type="http://www.pnml.org/version-2009/grammar/ptnet">
+${places.map((place) => this.getPlaceString(place)).join('\n')}
+${transitions
+    .map((transition) => this.getTransitionString(transition))
+    .join('\n')}
+${arcs.map((arc) => this.getArcString(arc)).join('\n')}
+    </net>
+  </pnml>`;
+
+        return pnmlContent;
     }
 }
 
