@@ -39,6 +39,7 @@ import { CodeEditorComponent } from './tr-components/code-editor/code-editor.com
         PetriNetComponent,
         ButtonBarComponent,
         mathAbsPipe,
+        objectEntriesPipe,
         ManageActionsPopupComponent,
         SetActionPopupComponent,
         ClearPopupComponent,

@@ -20,12 +20,20 @@ export function createJsonSchemaValidator(): ValidatorFn {
 
         const codeValidationErrors: ValidationErrors = {};
 
-        const json = JSON.parse(value);
-        const valid = validate(json);
+        try {
+            const json = JSON.parse(value);
+            const valid = validate(json);
 
-        if (!valid) {
-            codeValidationErrors['jsonschema'] = 'invalid';
-            return codeValidationErrors;
+            if (!valid) {
+                validate.errors?.forEach((validationError) => {
+                    let path = validationError.instancePath;
+                    path = path.replace(/\//g, '.');
+
+                    codeValidationErrors[path] = validationError.message;
+                });
+            }
+        } catch (e) {
+            codeValidationErrors['JSON parsing error'] = e;
         }
 
         // everything is valid
