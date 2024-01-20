@@ -2,6 +2,7 @@ export enum TabState {
     Build,
     Play,
     Save,
+    Code,
 }
 
 export enum ButtonState {

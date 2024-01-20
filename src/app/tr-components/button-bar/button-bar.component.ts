@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { ExportJsonDataService } from 'src/app/tr-services/export-json-data.service';
 import { PnmlService } from 'src/app/tr-services/pnml.service';
 import { UiService } from 'src/app/tr-services/ui.service';
@@ -21,9 +21,11 @@ import { showTooltipDelay } from 'src/app/tr-services/position.constants';
     styleUrls: ['./button-bar.component.css'],
 })
 export class ButtonBarComponent {
+    @Output() reloadCodeEditorEvent = new EventEmitter();
+
     readonly TabState = TabState;
     readonly ButtonState = ButtonState;
-    @Output() eventName = new EventEmitter<ButtonState>();
+    @Output() buttonStateEventEmitter = new EventEmitter<ButtonState>();
 
     readonly showTooltipDelay = showTooltipDelay;
 
@@ -59,9 +61,13 @@ export class ButtonBarComponent {
             case 'save':
                 this.uiService.tab = this.TabState.Save;
                 break;
+            case 'code':
+                this.uiService.tab = this.TabState.Code;
+                this.reloadCodeEditorEvent.emit();
+                break;
         }
         this.uiService.button = null;
-        this.eventName.emit(undefined);
+        this.buttonStateEventEmitter.emit(undefined);
 
         setTimeout(() => {
             this.uiService.tabTransitioning = false;
@@ -71,7 +77,7 @@ export class ButtonBarComponent {
     // gets called when a button is clicked that needs its state saved globally
     // sets the "button" property in the uiService
     buttonClicked(button: ButtonState) {
-        this.eventName.emit(button);
+        this.buttonStateEventEmitter.emit(button);
         this.uiService.button = button;
     }
 

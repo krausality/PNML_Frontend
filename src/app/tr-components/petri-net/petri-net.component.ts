@@ -386,7 +386,12 @@ export class PetriNetComponent implements OnChanges{
             this.uiService.button === ButtonState.Arc &&
             this.dummyArc.points.length === 1
         ) {
-            this.dummyArc.points.push(this.svgCoordinatesService.getRelativeEventCoords(event, drawingArea));
+            this.dummyArc.points.push(
+                this.svgCoordinatesService.getRelativeEventCoords(
+                    event,
+                    drawingArea,
+                ),
+            );
         }
     }
 
@@ -407,9 +412,16 @@ export class PetriNetComponent implements OnChanges{
                 );
             }
         }
-        if (this.uiService.button === ButtonState.Arc && this.dummyArc?.points.length > 0) {
+        if (
+            this.uiService.button === ButtonState.Arc &&
+            this.dummyArc?.points.length > 0
+        ) {
             // Drawing the drag & drop DummyArc
-            this.dummyArc.points[1] = this.svgCoordinatesService.getRelativeEventCoords(event, drawingArea);
+            this.dummyArc.points[1] =
+                this.svgCoordinatesService.getRelativeEventCoords(
+                    event,
+                    drawingArea,
+                );
         }
     }
 
