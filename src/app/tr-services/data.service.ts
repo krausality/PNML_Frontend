@@ -182,6 +182,24 @@ export class DataService {
         return true;
     }
 
+    hasElementsWithoutPosition(): boolean {
+        let hasElementsWithoutPosition = false;
+
+        const transitionsWithoutPosition = this.getTransitions().filter(transition => {
+            return (!transition.position.x || !transition.position.y)
+        })
+
+        const placesWithoutPosition = this.getPlaces().filter(place => {
+            return (!place.position.x || !place.position.y)
+        })
+
+        if(transitionsWithoutPosition.length !== 0 || placesWithoutPosition.length !== 0) {
+            hasElementsWithoutPosition = true;
+        }
+
+        return hasElementsWithoutPosition;
+    }
+
     mockData() {
         this.places = [
             new Place(4, new Point(100, 200), 'p1'),
