@@ -15,7 +15,7 @@
     <div fxLayout="row" fxLayoutAlign="space-between end">
         <app-button-bar
             fxFlex
-            (eventName)="updateButtonState($event)"
+            (buttonStateEventEmitter)="updateButtonState($event)"
             (reloadCodeEditorEvent)="codeEditor.loadSourceCode()"
         ></app-button-bar>
     </div>

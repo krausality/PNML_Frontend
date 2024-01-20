@@ -25,7 +25,7 @@ export class ButtonBarComponent {
 
     readonly TabState = TabState;
     readonly ButtonState = ButtonState;
-    @Output() eventName = new EventEmitter<ButtonState>();
+    @Output() buttonStateEventEmitter = new EventEmitter<ButtonState>();
 
     readonly showTooltipDelay = showTooltipDelay;
 
@@ -67,7 +67,7 @@ export class ButtonBarComponent {
                 break;
         }
         this.uiService.button = null;
-        this.eventName.emit(undefined);
+        this.buttonStateEventEmitter.emit(undefined);
 
         setTimeout(() => {
             this.uiService.tabTransitioning = false;
@@ -77,7 +77,7 @@ export class ButtonBarComponent {
     // gets called when a button is clicked that needs its state saved globally
     // sets the "button" property in the uiService
     buttonClicked(button: ButtonState) {
-        this.eventName.emit(button);
+        this.buttonStateEventEmitter.emit(button);
         this.uiService.button = button;
     }
 
