@@ -239,27 +239,31 @@
                 >
                     {{ arc.weight | mathAbs }}
                 </text>
-            </g>
 
-            <!-- Weight at Arc with unpair Anchorpoints - At the middle Anchorpoint -->
-            <!-- White Circle for Background -->
-            <circle
-                *ngIf="arc.anchors.length % 2 === 1 && arc.anchors.length >= 2"
-                class="arc-weight-background"
-                [attr.cx]="arc.anchors[arc.anchors.length / 2 - 0.5].x"
-                [attr.cy]="arc.anchors[arc.anchors.length / 2 - 0.5].y"
-                r="12"
-            />
-            <text
-                *ngIf="arc.anchors.length % 2 === 1 && arc.anchors.length >= 2"
-                class="arc-weight"
-                [attr.x]="arc.anchors[arc.anchors.length / 2 - 0.5].x"
-                [attr.y]="arc.anchors[arc.anchors.length / 2 - 0.5].y"
-                text-anchor="middle"
-                dominant-baseline="central"
-            >
-                {{ arc.weight | mathAbs }}
-            </text>
+                <!-- Weight at Arc with unpair Anchorpoints - At the middle Anchorpoint -->
+                <!-- White Circle for Background -->
+                <circle
+                    *ngIf="
+                        arc.anchors.length % 2 === 1 && arc.anchors.length >= 2
+                    "
+                    class="arc-weight-background"
+                    [attr.cx]="arc.anchors[arc.anchors.length / 2 - 0.5].x"
+                    [attr.cy]="arc.anchors[arc.anchors.length / 2 - 0.5].y"
+                    r="12"
+                />
+                <text
+                    *ngIf="
+                        arc.anchors.length % 2 === 1 && arc.anchors.length >= 2
+                    "
+                    class="arc-weight"
+                    [attr.x]="arc.anchors[arc.anchors.length / 2 - 0.5].x"
+                    [attr.y]="arc.anchors[arc.anchors.length / 2 - 0.5].y"
+                    text-anchor="middle"
+                    dominant-baseline="central"
+                >
+                    {{ arc.weight | mathAbs }}
+                </text>
+            </g>
 
             <!-- Line segments -->
             <!-- When in anchor insertion mode, render invisible anchor line segments to capture mousedown events -->
