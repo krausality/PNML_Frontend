@@ -137,8 +137,6 @@
     </g>
 
     <!-- Arcs -->
-    <!-- arc-group on the wrapper group is only needed to 'catch' hover on all children
-          to highlight the arc correctly in anchor mode -->
     <g
         *ngFor="let arc of dataService.getArcs()"
         (click)="dispatchArcClick($event, arc)"
@@ -264,6 +262,7 @@
                     {{ arc.weight | mathAbs }}
                 </text>
             </g>
+            <!-- closes grouping of arc weights -->
 
             <!-- Line segments -->
             <!-- When in anchor insertion mode, render invisible anchor line segments to capture mousedown events -->
@@ -286,6 +285,7 @@
                 ></line>
             </ng-container>
         </g>
+        <!-- closes arc-group -->
 
         <!-- Anchor points -->
         <ng-container
