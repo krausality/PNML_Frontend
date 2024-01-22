@@ -45,28 +45,40 @@
     </mat-list>
 </div>
 
-<div mat-dialog-actions>
-    <mat-form-field class="add-action-input">
-        <mat-label>Action</mat-label>
+<div mat-dialog-actions class="add-action-input">
+    <mat-form-field >
+        <mat-label>Action Line 1</mat-label>
         <input
             matInput
-            #newActionInput
+            #newActionInput1
             type="text"
             placeholder="New Action"
-            (keyup.enter)="addAction(newActionInput)"
+
         />
-        <button mat-icon-button matSuffix (click)="addAction(newActionInput)">
+    </mat-form-field>
+    <br>
+    <mat-form-field >
+        <mat-label>Action Line 2</mat-label>
+        <input
+            matInput
+            #newActionInput2
+            type="text"
+            placeholder="New Action"
+
+        />
+        <button mat-icon-button matSuffix (click)="addAction(newActionInput1, newActionInput2)">
             <mat-icon>add_task</mat-icon>
         </button>
     </mat-form-field>
+
 </div>
 
 <!-- only show this error message if the user tries submitting an empty action -->
 <div
     class="action-error"
     *ngIf="
-        (newActionInput.value.length > 0 || actionSubmittedOnce) &&
-        isActionEmpty(newActionInput.value)
+        (newActionInput1.value.length > 0 || actionSubmittedOnce) &&
+        isActionEmpty(newActionInput1.value)
     "
 >
     Action cannot be empty
