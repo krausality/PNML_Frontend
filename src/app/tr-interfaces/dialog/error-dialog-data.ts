@@ -1,4 +1,4 @@
 export interface ErrorDialogData {
-    parsingError: boolean,
-    schemaValidationError: boolean
+    parsingError: boolean;
+    schemaValidationError: boolean;
 }

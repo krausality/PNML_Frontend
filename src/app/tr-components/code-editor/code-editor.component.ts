@@ -24,7 +24,7 @@ export class CodeEditorComponent {
         private pnmlService: PnmlService,
         private parserService: ParserService,
         private dataService: DataService,
-        private matDialog: MatDialog
+        private matDialog: MatDialog,
     ) {}
 
     // loads the source code in json or pnml depending on
@@ -69,7 +69,7 @@ export class CodeEditorComponent {
             }
         } catch (error) {
             this.matDialog.open(ErrorPopupComponent, {
-                data: {parsingError: true, schemaValidationError: true}
+                data: { parsingError: true, schemaValidationError: true },
             });
             return;
         }

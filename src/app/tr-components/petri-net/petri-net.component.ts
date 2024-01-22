@@ -110,7 +110,7 @@ export class PetriNetComponent {
                 }
             } catch (error) {
                 this.matDialog.open(ErrorPopupComponent, {
-                    data: {parsingError: true, schemaValidationError: true}
+                    data: { parsingError: true, schemaValidationError: true },
                 });
                 return;
             }

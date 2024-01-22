@@ -20,7 +20,7 @@ export class ParserService {
         try {
             rawData = JSON.parse(text) as JsonPetriNet;
         } catch (e) {
-            throw new Error("JSON parsing error");
+            throw new Error('JSON parsing error');
         }
 
         let places: Place[] = [];

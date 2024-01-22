@@ -7,7 +7,7 @@
     },
     "actions": ["A", "B", "C", "D"],
     "labels": {
-        "t1": "A"a
+        "t1": "A"
     },
     "marking": {
         "p1": 1

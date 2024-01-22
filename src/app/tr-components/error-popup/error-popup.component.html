@@ -7,6 +7,12 @@
 </div>
 
 <div mat-dialog-content>
-    <p *ngIf="data.parsingError">Error while parsing, please check that the syntax of your petrinet is correct.</p>
-    <p *ngIf="data.schemaValidationError">Error while validating the schema of your imported data, please check that the semantics of your importet petrinet are correct.</p>
+    <p *ngIf="data.parsingError">
+        Error while parsing, please check that the syntax of your petrinet is
+        correct.
+    </p>
+    <p *ngIf="data.schemaValidationError">
+        Error while validating the schema of your imported data, please check
+        that the semantics of your importet petrinet are correct.
+    </p>
 </div>
