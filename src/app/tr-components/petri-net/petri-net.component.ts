@@ -691,24 +691,40 @@ export class PetriNetComponent {
 
     // returns true if the provided place can be edited and should be highlighted
     isPlaceEditable(place: Place): boolean {
+        const hasPreArcFromStartTransition =
+            this.startTransition &&
+            this.dataService.getArcs().filter((arc) => {
+                return arc.from === this.startTransition && arc.to === place;
+            }).length;
+
         return (
             (this.uiService.button === ButtonState.Move &&
                 !this.editMoveElementsService.newAnchor) ||
             this.uiService.button === ButtonState.Add ||
             (this.uiService.button === ButtonState.Remove && place.token > 0) || // tokens can only be removed if the number of tokens in a place is > 0
             this.uiService.button === ButtonState.Delete ||
-            (this.uiService.button === ButtonState.Arc && !this.startPlace)
+            (this.uiService.button === ButtonState.Arc &&
+                !this.startPlace &&
+                !hasPreArcFromStartTransition)
         ); // if the user starts dragging an arc from a place he can only finish on a transition --> places are no longer editable
     }
 
     // returns true if transitions can be edited and should be highlighted
-    isTransitionEditable(): boolean {
+    isTransitionEditable(transition: Transition): boolean {
+        const hasPreArcFromStartPlace =
+            this.startPlace &&
+            transition.preArcs.filter((arc) => {
+                return arc.from === this.startPlace;
+            }).length;
+
         return (
             (this.uiService.button === ButtonState.Move &&
                 !this.editMoveElementsService.newAnchor) ||
             this.uiService.button === ButtonState.Select ||
             this.uiService.button === ButtonState.Delete ||
-            (this.uiService.button === ButtonState.Arc && !this.startTransition)
+            (this.uiService.button === ButtonState.Arc &&
+                !this.startTransition &&
+                !hasPreArcFromStartPlace)
         ); // if the user starts dragging an arc from a transition he can only finish on a place --> transitions no longer editable
     }
 

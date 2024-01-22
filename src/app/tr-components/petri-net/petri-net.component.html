@@ -4,6 +4,7 @@
     class="canvas"
     [ngClass]="{
         dragging: editMoveElementsService.isCanvasDragInProcess,
+        'move-mode': uiService.button === ButtonState.Move,
         'play-mode': uiService.tab === TabState.Play,
         'tab-transitioning': uiService.tabTransitioning
     }"
@@ -46,7 +47,7 @@
             <text
                 [ngClass]="{
                     'token-label': true,
-                    'no-pointer-events': uiService.button === ButtonState.Move
+                    'no-pointer-events': true
                 }"
                 [attr.x]="place.position.x"
                 [attr.y]="place.position.y"
@@ -77,7 +78,7 @@
             [ngClass]="{
                 transition: true,
                 active: transition.isActive,
-                editable: isTransitionEditable(),
+                editable: isTransitionEditable(transition),
                 silent: !transition.label
             }"
             [attr.x]="
@@ -94,7 +95,7 @@
                 *ngIf="!transition.label.includes(lineSeparator)"
                 [ngClass]="{
                     label: true,
-                    'no-pointer-events': uiService.button === ButtonState.Move
+                    'no-pointer-events': true
                 }"
                 [attr.x]="transition.position.x"
                 [attr.y]="transition.position.y"
@@ -106,8 +107,7 @@
                 <text
                     [ngClass]="{
                         label: true,
-                        'no-pointer-events':
-                            uiService.button === ButtonState.Move
+                        'no-pointer-events': true
                     }"
                     [attr.x]="transition.position.x"
                     [attr.y]="transition.position.y - 9"
@@ -117,8 +117,7 @@
                 <text
                     [ngClass]="{
                         label: true,
-                        'no-pointer-events':
-                            uiService.button === ButtonState.Move
+                        'no-pointer-events': true
                     }"
                     [attr.x]="transition.position.x"
                     [attr.y]="transition.position.y + 9"
@@ -144,133 +143,149 @@
         (wheel)="onWheelEventArc($event, arc)"
         (mousedown)="dispatchArcMouseDown($event, arc, drawingArea)"
     >
-        <polyline
-            class="background-arc"
-            [attr.points]="arc.polyLinePoints"
-        ></polyline>
-        <polyline
-            [ngClass]="{ arc, editable: isArcEditable(arc) }"
-            [attr.points]="arc.polyLinePoints"
-            marker-end="url(#arrow)"
-        ></polyline>
-        <g *ngIf="arc.weight > 1 || arc.weight < -1">
-            <!-- Weight at Arc without Anchorpoints - Middle of Polyline -->
-            <!-- White Circle for Background -->
-            <circle
-                *ngIf="arc.anchors.length == 0"
-                class="arc-weight-background"
-                [attr.cx]="(arc.from.position.x + arc.to.position.x) / 2"
-                [attr.cy]="(arc.from.position.y + arc.to.position.y) / 2"
-                r="12"
-            />
-            <text
-                *ngIf="arc.anchors.length == 0"
-                class="arc-weight"
-                [attr.x]="(arc.from.position.x + arc.to.position.x) / 2"
-                [attr.y]="(arc.from.position.y + arc.to.position.y) / 2"
-                text-anchor="middle"
-                dominant-baseline="central"
+        <g class="arc-group">
+            <polyline
+                class="background-arc"
+                [ngClass]="{ editable: isArcEditable(arc) }"
+                [attr.points]="arc.polyLinePoints"
+            ></polyline>
+            <polyline
+                [ngClass]="{ arc, editable: isArcEditable(arc) }"
+                [attr.points]="arc.polyLinePoints"
+                marker-end="url(#arrow)"
+            ></polyline>
+            <g
+                *ngIf="arc.weight > 1 || arc.weight < -1"
+                class="no-pointer-events"
             >
-                {{ arc.weight | mathAbs }}
-            </text>
+                <!-- Weight at Arc without Anchorpoints - Middle of Polyline -->
+                <!-- White Circle for Background -->
+                <circle
+                    *ngIf="arc.anchors.length == 0"
+                    class="arc-weight-background"
+                    [attr.cx]="(arc.from.position.x + arc.to.position.x) / 2"
+                    [attr.cy]="(arc.from.position.y + arc.to.position.y) / 2"
+                    r="12"
+                />
+                <text
+                    *ngIf="arc.anchors.length == 0"
+                    class="arc-weight"
+                    [attr.x]="(arc.from.position.x + arc.to.position.x) / 2"
+                    [attr.y]="(arc.from.position.y + arc.to.position.y) / 2"
+                    text-anchor="middle"
+                    dominant-baseline="central"
+                >
+                    {{ arc.weight | mathAbs }}
+                </text>
 
-            <!-- Weight at Arc with 1 Anchorpoint - At the Anchorpoint -->
-            <!-- White Circle for Background -->
-            <circle
-                *ngIf="arc.anchors.length == 1"
-                class="arc-weight-background"
-                [attr.cx]="arc.anchors[0].x"
-                [attr.cy]="arc.anchors[0].y"
-                r="12"
-            />
-            <text
-                *ngIf="arc.anchors.length == 1"
-                class="arc-weight"
-                [attr.x]="arc.anchors[0].x"
-                [attr.y]="arc.anchors[0].y"
-                text-anchor="middle"
-                dominant-baseline="central"
-            >
-                {{ arc.weight | mathAbs }}
-            </text>
+                <!-- Weight at Arc with 1 Anchorpoint - At the Anchorpoint -->
+                <!-- White Circle for Background -->
+                <circle
+                    *ngIf="arc.anchors.length == 1"
+                    class="arc-weight-background"
+                    [attr.cx]="arc.anchors[0].x"
+                    [attr.cy]="arc.anchors[0].y"
+                    r="12"
+                />
+                <text
+                    *ngIf="arc.anchors.length == 1"
+                    class="arc-weight"
+                    [attr.x]="arc.anchors[0].x"
+                    [attr.y]="arc.anchors[0].y"
+                    text-anchor="middle"
+                    dominant-baseline="central"
+                >
+                    {{ arc.weight | mathAbs }}
+                </text>
 
-            <!-- Weight at Arc with pair Anchorpoints - Middle of the middle Line -->
-            <!-- White Circle for Background -->
-            <circle
-                *ngIf="arc.anchors.length % 2 === 0 && arc.anchors.length >= 2"
-                class="arc-weight-background"
-                [attr.cx]="
-                    (arc.anchors[arc.anchors.length / 2 - 1].x +
-                        arc.anchors[arc.anchors.length / 2].x) /
-                    2
-                "
-                [attr.cy]="
-                    (arc.anchors[arc.anchors.length / 2 - 1].y +
-                        arc.anchors[arc.anchors.length / 2].y) /
-                    2
-                "
-                r="12"
-            />
-            <text
-                *ngIf="arc.anchors.length % 2 === 0 && arc.anchors.length >= 2"
-                class="arc-weight"
-                [attr.x]="
-                    (arc.anchors[arc.anchors.length / 2 - 1].x +
-                        arc.anchors[arc.anchors.length / 2].x) /
-                    2
-                "
-                [attr.y]="
-                    (arc.anchors[arc.anchors.length / 2 - 1].y +
-                        arc.anchors[arc.anchors.length / 2].y) /
-                    2
-                "
-                text-anchor="middle"
-                dominant-baseline="central"
-            >
-                {{ arc.weight | mathAbs }}
-            </text>
+                <!-- Weight at Arc with pair Anchorpoints - Middle of the middle Line -->
+                <!-- White Circle for Background -->
+                <circle
+                    *ngIf="
+                        arc.anchors.length % 2 === 0 && arc.anchors.length >= 2
+                    "
+                    class="arc-weight-background"
+                    [attr.cx]="
+                        (arc.anchors[arc.anchors.length / 2 - 1].x +
+                            arc.anchors[arc.anchors.length / 2].x) /
+                        2
+                    "
+                    [attr.cy]="
+                        (arc.anchors[arc.anchors.length / 2 - 1].y +
+                            arc.anchors[arc.anchors.length / 2].y) /
+                        2
+                    "
+                    r="12"
+                />
+                <text
+                    *ngIf="
+                        arc.anchors.length % 2 === 0 && arc.anchors.length >= 2
+                    "
+                    class="arc-weight"
+                    [attr.x]="
+                        (arc.anchors[arc.anchors.length / 2 - 1].x +
+                            arc.anchors[arc.anchors.length / 2].x) /
+                        2
+                    "
+                    [attr.y]="
+                        (arc.anchors[arc.anchors.length / 2 - 1].y +
+                            arc.anchors[arc.anchors.length / 2].y) /
+                        2
+                    "
+                    text-anchor="middle"
+                    dominant-baseline="central"
+                >
+                    {{ arc.weight | mathAbs }}
+                </text>
 
-            <!-- Weight at Arc with unpair Anchorpoints - At the middle Anchorpoint -->
-            <!-- White Circle for Background -->
-            <circle
-                *ngIf="arc.anchors.length % 2 === 1 && arc.anchors.length >= 2"
-                class="arc-weight-background"
-                [attr.cx]="arc.anchors[arc.anchors.length / 2 - 0.5].x"
-                [attr.cy]="arc.anchors[arc.anchors.length / 2 - 0.5].y"
-                r="12"
-            />
-            <text
-                *ngIf="arc.anchors.length % 2 === 1 && arc.anchors.length >= 2"
-                class="arc-weight"
-                [attr.x]="arc.anchors[arc.anchors.length / 2 - 0.5].x"
-                [attr.y]="arc.anchors[arc.anchors.length / 2 - 0.5].y"
-                text-anchor="middle"
-                dominant-baseline="central"
-            >
-                {{ arc.weight | mathAbs }}
-            </text>
+                <!-- Weight at Arc with unpair Anchorpoints - At the middle Anchorpoint -->
+                <!-- White Circle for Background -->
+                <circle
+                    *ngIf="
+                        arc.anchors.length % 2 === 1 && arc.anchors.length >= 2
+                    "
+                    class="arc-weight-background"
+                    [attr.cx]="arc.anchors[arc.anchors.length / 2 - 0.5].x"
+                    [attr.cy]="arc.anchors[arc.anchors.length / 2 - 0.5].y"
+                    r="12"
+                />
+                <text
+                    *ngIf="
+                        arc.anchors.length % 2 === 1 && arc.anchors.length >= 2
+                    "
+                    class="arc-weight"
+                    [attr.x]="arc.anchors[arc.anchors.length / 2 - 0.5].x"
+                    [attr.y]="arc.anchors[arc.anchors.length / 2 - 0.5].y"
+                    text-anchor="middle"
+                    dominant-baseline="central"
+                >
+                    {{ arc.weight | mathAbs }}
+                </text>
+            </g>
+            <!-- closes grouping of arc weights -->
+
+            <!-- Line segments -->
+            <!-- When in anchor insertion mode, render invisible anchor line segments to capture mousedown events -->
+            <ng-container *ngIf="uiService.button === ButtonState.Anchor">
+                <line
+                    *ngFor="let lineSegment of arc.lineSegments"
+                    class="line-segment"
+                    [attr.x1]="lineSegment[0].x"
+                    [attr.y1]="lineSegment[0].y"
+                    [attr.x2]="lineSegment[1].x"
+                    [attr.y2]="lineSegment[1].y"
+                    (mousedown)="
+                        dispatchLineSegmentMouseDown(
+                            $event,
+                            arc,
+                            lineSegment,
+                            drawingArea
+                        )
+                    "
+                ></line>
+            </ng-container>
         </g>
-
-        <!-- Line segments -->
-        <!-- When in anchor insertion mode, render invisible anchor line segments to capture mousedown events -->
-        <ng-container *ngIf="uiService.button === ButtonState.Anchor">
-            <line
-                *ngFor="let lineSegment of arc.lineSegments"
-                class="line-segment"
-                [attr.x1]="lineSegment[0].x"
-                [attr.y1]="lineSegment[0].y"
-                [attr.x2]="lineSegment[1].x"
-                [attr.y2]="lineSegment[1].y"
-                (mousedown)="
-                    dispatchLineSegmentMouseDown(
-                        $event,
-                        arc,
-                        lineSegment,
-                        drawingArea
-                    )
-                "
-            ></line>
-        </ng-container>
+        <!-- closes arc-group -->
 
         <!-- Anchor points -->
         <ng-container
@@ -286,8 +301,9 @@
                     anchor: true,
                     active: point === editMoveElementsService.newAnchor,
                     editable:
-                        uiService.button === ButtonState.Move &&
-                        !editMoveElementsService.newAnchor
+                        (uiService.button === ButtonState.Move &&
+                            !editMoveElementsService.newAnchor) ||
+                        uiService.button === ButtonState.Delete
                 }"
                 [attr.cx]="point.x"
                 [attr.cy]="point.y"
