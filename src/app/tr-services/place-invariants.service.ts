@@ -9,7 +9,7 @@ import { Place } from '../tr-classes/petri-net/place';
 export class PlaceInvariantsService {
     placeIds: string[] = [];
     transIds: string[] = [];
-    incidenceMatrix: number[][] = [];
+    incidenceMatrix: number[][] | undefined;
     placeInvariantsMatrix: number[][] = [];
 
     // Flag to indicate, if placeInvariantsMatrix contains the minimal PIs
@@ -90,7 +90,7 @@ export class PlaceInvariantsService {
         // Reset
         this.reset()
 
-        this.calculateIncidenceMatrix();
+        this.incidenceMatrix = this.calculateIncidenceMatrix();
         // console.log(this.incidenceMatrix);
 
         this.placeInvariantsMatrix = this.placeInvariants(this.incidenceMatrix);
@@ -102,19 +102,22 @@ export class PlaceInvariantsService {
     }
 
     removeNonMinimalPIs() {
-        this.placeInvariantsMatrix = this.calculateMinimalPIs(
-            this.placeInvariantsMatrix,
-            this.incidenceMatrix,
-        );
-        this.isMinimal = true;
-        // console.log(this.placeInvariantsMatrix);
+        // TODO: possobly refactoring, so that this test is not necessary
+        if (this.incidenceMatrix){
+            this.placeInvariantsMatrix = this.calculateMinimalPIs(
+                this.placeInvariantsMatrix,
+                this.incidenceMatrix,
+            );
+            this.isMinimal = true;
+            // console.log(this.placeInvariantsMatrix);
 
-        // Selected PIs for display: default --> all
-        this.selectedPIs = Array(this.placeInvariantsMatrix.length).fill(true);
-        this.calculateLinearCombination();
+            // Selected PIs for display: default --> all
+            this.selectedPIs = Array(this.placeInvariantsMatrix.length).fill(true);
+            this.calculateLinearCombination();
+        }
     }
 
-    calculateIncidenceMatrix() {
+    calculateIncidenceMatrix(): number[][] {
         // Determine placeIds
         this.dataService
             .getPlaces()
@@ -130,7 +133,7 @@ export class PlaceInvariantsService {
         const n = this.placeIds.length; // number of rows of incidence matrix
         const m = this.transIds.length; // number of columns of incidence matrix
         // Initialize incidence matrix with 0s
-        this.incidenceMatrix = Array.from({ length: n }, () =>
+        let incMat = Array.from({ length: n }, () =>
             Array.from({ length: m }, () => 0),
         );
 
@@ -139,14 +142,16 @@ export class PlaceInvariantsService {
             // pre-arcs give values for output matrix
             for (let preArc of t.getPreArcs()) {
                 const rowIndex = this.placeIds.indexOf(preArc.from.id);
-                this.incidenceMatrix[rowIndex][colIndex] += preArc.weight; // Note: weight of pre-arcs has negative sign
+                incMat[rowIndex][colIndex] += preArc.weight; // Note: weight of pre-arcs has negative sign
             }
             // post-arcs give values for input matrix
             for (let postArc of t.getPostArcs()) {
                 const rowIndex = this.placeIds.indexOf(postArc.to.id);
-                this.incidenceMatrix[rowIndex][colIndex] += postArc.weight;
+                incMat[rowIndex][colIndex] += postArc.weight;
             }
         }
+
+        return incMat;
     }
 
     placeInvariants(incidenceMatrix: number[][]): number[][] {
@@ -304,7 +309,7 @@ export class PlaceInvariantsService {
     reset() {
         this.placeIds = [];
         this.transIds = [];
-        this.incidenceMatrix = [];
+        this.incidenceMatrix = undefined;
         this.placeInvariantsMatrix = [];
         this.isMinimal = false;
         this.linearCombination = [];
