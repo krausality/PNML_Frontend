@@ -73,6 +73,7 @@
         (click)="dispatchTransitionClick($event, transition)"
         (mousedown)="dispatchTransitionMouseDown($event, transition)"
         (mouseup)="dispatchTransitionMouseUp($event, transition)"
+        (wheel)="onWheelEventTransition($event, transition)"
     >
         <rect
             [ngClass]="{

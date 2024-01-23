@@ -66,6 +66,7 @@ export class ButtonBarComponent {
                 break;
         }
         this.uiService.button = null;
+        this.uiService.buttonState$.next(null)
 
         setTimeout(() => {
             this.uiService.tabTransitioning = false;
@@ -76,6 +77,7 @@ export class ButtonBarComponent {
     // sets the "button" property in the uiService
     buttonClicked(button: ButtonState) {
         this.uiService.button = button;
+        this.uiService.buttonState$.next(button)
     }
 
     openActionDialog() {

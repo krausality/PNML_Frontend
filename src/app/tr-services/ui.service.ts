@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ButtonState, TabState } from '../tr-enums/ui-state';
-import { Subject } from 'rxjs';
+import {BehaviorSubject, Observable} from "rxjs";
+import {Diagram} from "../classes/diagram/diagram";
 
 @Injectable({
     providedIn: 'root',
@@ -22,6 +23,8 @@ export class UiService {
     // for petri net transitions during the token game are still displayed
     // instantaneously.
     tabTransitioning: boolean = false;
+
+    buttonState$: BehaviorSubject<ButtonState | null> = new BehaviorSubject<ButtonState | null>(this.button);
 
     constructor() {}
 }
