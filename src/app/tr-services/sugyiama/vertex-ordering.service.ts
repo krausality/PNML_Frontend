@@ -106,10 +106,10 @@ export class VertexOrderingService {
     private transpose(currentOrder: LayeredGraph) {
         let improved = true;
 
-        // TODO: remove counter once sure that we're not creating any endless loops by accident
-        let failsafe = 0;
-        while (improved && failsafe < 20) {
-            failsafe++;
+        let runs = 0;
+        const maxRuns = 20;
+        while (improved && runs < maxRuns) {
+            runs++;
             improved = false;
             for (const [layerId, layer] of currentOrder.entries()) {
                 if (layer.length === 1 || !currentOrder[layerId + 1]) {
@@ -229,7 +229,7 @@ export class VertexOrderingService {
             // console.log('[Vertex Ordering]: adjacent values', adjacentValues);
 
             const mid = Math.floor(adjacentValues.length / 2);
-            // TODO: implemented weighted median
+            // TODO/Optimization: implemented weighted median
             return adjacentValues.length % 2 !== 0
                 ? adjacentValues[mid]
                 : (adjacentValues[mid - 1] + adjacentValues[mid]) / 2;
@@ -255,7 +255,7 @@ export class VertexOrderingService {
             }
 
             const mid = Math.floor(adjacentValues.length / 2);
-            // TODO: implemented weighted median
+            // TODO/Optimization: implemented weighted median
             return adjacentValues.length % 2 !== 0
                 ? adjacentValues[mid]
                 : (adjacentValues[mid - 1] + adjacentValues[mid]) / 2;
