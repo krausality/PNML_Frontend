@@ -42,7 +42,7 @@ import { DummyArc } from 'src/app/tr-classes/petri-net/dummyArc';
     templateUrl: './petri-net.component.html',
     styleUrls: ['./petri-net.component.css'],
 })
-export class PetriNetComponent implements OnChanges{
+export class PetriNetComponent {
     @Output('fileContent') fileContent: EventEmitter<string>;
     @Input() buttonState : ButtonState | undefined;
 
@@ -80,6 +80,11 @@ export class PetriNetComponent implements OnChanges{
         //     this.dataService.arcs = arcs;
         // });
         this.fileContent = new EventEmitter<string>();
+        this.uiService.buttonState$.subscribe(buttonState => {
+            if(buttonState !== ButtonState.Blitz) {
+                this.lastNode = null;
+            }
+        })
     }
 
     startTransition: Transition | undefined;
@@ -754,18 +759,15 @@ export class PetriNetComponent implements OnChanges{
         const actions = this.dataService.getActions();
         if (label) {
             const labelIndex = actions.indexOf(label);
-            if (labelIndex -1 === actions.length) {
-                return;
-            } else {
+            if (labelIndex -1 < actions.length) {
                 return actions [labelIndex + 1];
             }
         } else {
             if (actions.length > 0) {
                 return actions[0];
-            } else {
-                return;
             }
         }
+        return;
     }
 
     getLastLabel(label: string | undefined): string | undefined {
@@ -787,15 +789,6 @@ export class PetriNetComponent implements OnChanges{
 
 
     }
-
-    ngOnChanges(changes: SimpleChanges): void {
-        if(this.buttonState !== ButtonState.Blitz) {
-            this.lastNode = null;
-        }
-    }
-
-
-
 
 
     protected readonly radius = radius;

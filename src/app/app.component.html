@@ -15,7 +15,6 @@
     <div fxLayout="row" fxLayoutAlign="space-between end">
         <app-button-bar
             fxFlex
-            (buttonStateEventEmitter)="updateButtonState($event)"
             (reloadCodeEditorEvent)="codeEditor.loadSourceCode()"
         ></app-button-bar>
     </div>
@@ -23,7 +22,6 @@
     <div class="petri-net-container" fxLayout="row">
         <!-- petri net component -->
         <app-petri-net
-            [buttonState]="buttonState"
             [ngClass]="{
                 'petri-net': true,
                 active: uiService.tab === TabState.Code
