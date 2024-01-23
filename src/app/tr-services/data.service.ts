@@ -185,15 +185,15 @@ export class DataService {
     hasElementsWithoutPosition(): boolean {
         let hasElementsWithoutPosition = false;
 
-        const transitionsWithoutPosition = this.getTransitions().filter(transition => {
+        const transitionWithoutPosition = this.getTransitions().find(transition => {
             return (!transition.position.x || !transition.position.y)
         })
 
-        const placesWithoutPosition = this.getPlaces().filter(place => {
+        const placeWithoutPosition = this.getPlaces().find(place => {
             return (!place.position.x || !place.position.y)
         })
 
-        if(transitionsWithoutPosition.length !== 0 || placesWithoutPosition.length !== 0) {
+        if(transitionWithoutPosition || placeWithoutPosition) {
             hasElementsWithoutPosition = true;
         }
 
