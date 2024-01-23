@@ -118,14 +118,6 @@
     /* box-shadow: inset 0 0 3px 5px rgba(255, 0, 0, 0.8); */
 }
 
-.canvas.move-mode.dragging .place,
-.canvas.move-mode.dragging .transition,
-.canvas.move-mode.dragging .arc,
-.canvas.move-mode.dragging .anchor {
-    stroke: red;
-    stroke-width: 2;
-}
-
 .anchor {
     fill: black;
     stroke: black;
@@ -142,7 +134,11 @@
 }
 
 .editable:active,
-.anchor.active {
+.anchor.active,
+.canvas.move-mode.dragging .place,
+.canvas.move-mode.dragging .transition,
+.canvas.move-mode.dragging .arc,
+.canvas.move-mode.dragging .anchor {
     stroke: red;
     stroke-width: 2;
 }
