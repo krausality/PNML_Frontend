@@ -160,11 +160,12 @@ export class PlaceInvariantsService {
         // m columns: transitions
 
         // Determine n
-        const n: number = incidenceMatrix.length;
-        // TODO: handle case n===0
+        // const n: number = incidenceMatrix.length;
+        const n: number = this.placeIds.length;
 
         // Determine m
-        const m: number = incidenceMatrix[0].length;
+        // const m: number = incidenceMatrix[0].length;
+        const m: number = this.transIds.length;
 
         // nxn identity matrix
         // TODO Approach with for loops --> easier to understand
