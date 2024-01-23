@@ -774,18 +774,13 @@ export class PetriNetComponent {
         const actions = this.dataService.getActions();
         if (label) {
             const labelIndex = actions.indexOf(label);
-            if (labelIndex === 0) {
-                return;
-            } else  {
+            if (labelIndex !== 0) {
                 return actions [labelIndex - 1];
             }
-        } else {
-            if (actions.length > 0) {
-                return actions[actions.length-1];
-            } else {
-                return;
-            }
+        } else if (actions.length > 0) {
+            return actions[actions.length-1];
         }
+        return;
 
 
     }
