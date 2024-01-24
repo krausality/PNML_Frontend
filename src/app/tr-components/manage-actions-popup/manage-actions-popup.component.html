@@ -16,9 +16,22 @@
                     fxLayoutAlign="space-between center"
                     class="action-list-row"
                 >
-                    <span class="action-text">
-                        {{ action }}
-                    </span>
+
+                    <div *ngIf="!containsBreakChar(action)">
+                        <span class="action-text">
+                            {{ action }}
+                        </span>
+                    </div>
+
+                    <div *ngIf="containsBreakChar(action)">
+                        <span class="action-text">
+                            {{ returnLine1(action) }}
+                        </span>
+                        <br>
+                        <span class="action-text">
+                            {{ returnLine2(action) }}
+                        </span>
+                    </div>
 
                     <!-- only allow deleting an action that is not currently used as transition label -->
                     <div
@@ -44,41 +57,43 @@
         </div>
     </mat-list>
 </div>
+<div mat-dialog-content class="add-action-input">
+<mat-form-field >
+    <mat-label>Action Line 1</mat-label>
+    <input
+        matInput
+        #newActionInput1
+        type="text"
+        placeholder="New Action"
 
-<div mat-dialog-actions class="add-action-input">
-    <mat-form-field >
-        <mat-label>Action Line 1</mat-label>
-        <input
-            matInput
-            #newActionInput1
-            type="text"
-            placeholder="New Action"
-
-        />
-    </mat-form-field>
-    <mat-form-field >
-        <mat-label>Action Line 2</mat-label>
-        <input
-            matInput
-            #newActionInput2
-            type="text"
-            placeholder="New Action"
-
-        />
-        <button mat-icon-button matSuffix (click)="addAction(newActionInput1, newActionInput2)">
-            <mat-icon>add_task</mat-icon>
-        </button>
-    </mat-form-field>
-
+    />
+</mat-form-field>
+<mat-form-field >
+    <mat-label>Action Line 2 (optional)</mat-label>
+    <input
+        matInput
+        #newActionInput2
+        type="text"
+        placeholder="New Action"
+    />
+</mat-form-field>
+<button mat-stroked-button matSuffix (click)="addAction(newActionInput1, newActionInput2)">
+    Add Action
+</button>
 </div>
 
 <!-- only show this error message if the user tries submitting an empty action -->
 <div
     class="action-error"
-    *ngIf="
-        (newActionInput1.value.length > 0 || actionSubmittedOnce) &&
-        isActionEmpty(newActionInput1.value)
-    "
+    *ngIf="(bothActionsEmpty)"
 >
-    Action cannot be empty
+    <p>Actions cannot be empty.</p>
+    <p>At least one Action has to filled.</p>
+</div>
+<div
+    class="action-error"
+    *ngIf="(actionAlreadyExists)"
+>
+    <p>Action already exists.</p>
+    <p>Please enter another label.</p>
 </div>

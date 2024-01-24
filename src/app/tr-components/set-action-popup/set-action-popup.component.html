@@ -18,7 +18,7 @@
                 *ngFor="let action of dataService.getActions()"
                 [value]="action"
             >
-                {{ action }}
+                {{ replaceBreakChar(action) }}
             </mat-option>
         </mat-select>
     </mat-form-field>
