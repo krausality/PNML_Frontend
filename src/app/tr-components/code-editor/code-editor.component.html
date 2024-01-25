@@ -13,9 +13,8 @@
          loads the source code in the specified language every time
          the value is changed -->
     <mat-form-field class="language-switch">
-        <mat-label>Language</mat-label>
+        <mat-label>Format</mat-label>
         <mat-select
-            placeholder="Language"
             [(value)]="languageSelected"
             (selectionChange)="loadSourceCode()"
         >
