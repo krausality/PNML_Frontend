@@ -110,10 +110,14 @@ export class PetriNetComponent {
                 }
             } catch (error) {
                 this.matDialog.open(ErrorPopupComponent, {
-                    data: { parsingError: true, schemaValidationError: true },
+                    data: { parsingError: true, schemaValidationError: false },
                 });
                 return;
             }
+
+            // schema validation here (?)
+            // show popup with data: { parsingError: false, schemaValidationError: true }
+            // if schema fails to validate
 
             // destructure the parsed data and overwrite the corresponding parameters
             // in the data service
