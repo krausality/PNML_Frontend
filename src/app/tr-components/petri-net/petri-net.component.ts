@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ParserService } from 'src/app/tr-services/parser.service';
 import { catchError, of, take } from 'rxjs';
 import { FileReaderService } from '../../services/file-reader.service';
@@ -44,7 +44,7 @@ import { DummyArc } from 'src/app/tr-classes/petri-net/dummyArc';
 })
 export class PetriNetComponent {
     @Output('fileContent') fileContent: EventEmitter<string>;
-    @Input() buttonState : ButtonState | undefined;
+    @Input() buttonState: ButtonState | undefined;
 
     lastNode: Node | null = null;
     nextNode: Node | null = null;
@@ -80,11 +80,11 @@ export class PetriNetComponent {
         //     this.dataService.arcs = arcs;
         // });
         this.fileContent = new EventEmitter<string>();
-        this.uiService.buttonState$.subscribe(buttonState => {
-            if(buttonState !== ButtonState.Blitz) {
+        this.uiService.buttonState$.subscribe((buttonState) => {
+            if (buttonState !== ButtonState.Blitz) {
                 this.lastNode = null;
             }
-        })
+        });
     }
 
     startTransition: Transition | undefined;
@@ -188,7 +188,10 @@ export class PetriNetComponent {
     }
 
     protected onWheelEventTransition(e: WheelEvent, transition: Transition) {
-        if(this.uiService.button === ButtonState.Blitz || this.uiService.button === ButtonState.Select) {
+        if (
+            this.uiService.button === ButtonState.Blitz ||
+            this.uiService.button === ButtonState.Select
+        ) {
             e.preventDefault();
             e.stopPropagation();
             if (e.deltaY < 0) {
@@ -196,7 +199,6 @@ export class PetriNetComponent {
             } else {
                 transition.label = this.getLastLabel(transition.label);
             }
-
         }
     }
 
@@ -455,7 +457,7 @@ export class PetriNetComponent {
 
     // Places
     dispatchPlaceClick(event: MouseEvent, place: Place) {
-       if (this.uiService.button === ButtonState.Add) {
+        if (this.uiService.button === ButtonState.Add) {
             place.token++;
         }
 
@@ -472,10 +474,10 @@ export class PetriNetComponent {
 
     dispatchPlaceMouseDown(event: MouseEvent, place: Place) {
         if (this.uiService.button === ButtonState.Blitz) {
-            if(event.button == MouseConstants.Right_Click) {
+            if (event.button == MouseConstants.Right_Click) {
                 this.dataService.removePlace(place);
             } else if (event.button == MouseConstants.Left_Click) {
-                //Existing Transition is selected as the next Node. Method is called before dispatchSVGClick
+                // Existing Place is selected as the next Node. Method is called before dispatchSVGClick
                 this.nextNode = place;
             }
         }
@@ -527,9 +529,8 @@ export class PetriNetComponent {
     }
 
     dispatchTransitionMouseDown(event: MouseEvent, transition: Transition) {
-
         if (this.uiService.button === ButtonState.Blitz) {
-            if(event.button == MouseConstants.Right_Click) {
+            if (event.button == MouseConstants.Right_Click) {
                 this.dataService.removeTransition(transition);
             } else if (event.button == MouseConstants.Left_Click) {
                 //Existing Transition is selected as the next Node. Method is called before dispatchSVGClick
@@ -606,8 +607,11 @@ export class PetriNetComponent {
         arc: Arc,
         drawingArea: HTMLElement,
     ) {
-        if (this.uiService.button === ButtonState.Blitz && event.button == MouseConstants.Right_Click) {
-                this.dataService.removeArc(arc);
+        if (
+            this.uiService.button === ButtonState.Blitz &&
+            event.button == MouseConstants.Right_Click
+        ) {
+            this.dataService.removeArc(arc);
         }
     }
 
@@ -759,8 +763,8 @@ export class PetriNetComponent {
         const actions = this.dataService.getActions();
         if (label) {
             const labelIndex = actions.indexOf(label);
-            if (labelIndex -1 < actions.length) {
-                return actions [labelIndex + 1];
+            if (labelIndex - 1 < actions.length) {
+                return actions[labelIndex + 1];
             }
         } else {
             if (actions.length > 0) {
@@ -775,16 +779,13 @@ export class PetriNetComponent {
         if (label) {
             const labelIndex = actions.indexOf(label);
             if (labelIndex !== 0) {
-                return actions [labelIndex - 1];
+                return actions[labelIndex - 1];
             }
         } else if (actions.length > 0) {
-            return actions[actions.length-1];
+            return actions[actions.length - 1];
         }
         return;
-
-
     }
-
 
     protected readonly radius = radius;
     protected readonly placeIdYOffset = placeIdYOffset;
