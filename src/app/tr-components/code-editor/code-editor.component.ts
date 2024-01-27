@@ -32,9 +32,11 @@ export class CodeEditorComponent implements OnInit {
     ngOnInit() {
         // reload the source code in a the given format when the
         // BehaviorSubject changes its value
-        this.uiService.codeEditorFormat$.subscribe(format => {
+        this.uiService.codeEditorFormat$.subscribe((format) => {
             if (format === CodeEditorFormat.JSON) {
-                this.textareaControl.setValue(this.exportJsonDataService.getJson());
+                this.textareaControl.setValue(
+                    this.exportJsonDataService.getJson(),
+                );
             } else {
                 this.textareaControl.setValue(this.pnmlService.getPNML());
             }
@@ -63,7 +65,9 @@ export class CodeEditorComponent implements OnInit {
         ];
 
         try {
-            if (this.uiService.codeEditorFormat$.value === CodeEditorFormat.JSON) {
+            if (
+                this.uiService.codeEditorFormat$.value === CodeEditorFormat.JSON
+            ) {
                 parsedData = this.parserService.parse(sourceCode);
             } else {
                 parsedData = this.pnmlService.parse(sourceCode);

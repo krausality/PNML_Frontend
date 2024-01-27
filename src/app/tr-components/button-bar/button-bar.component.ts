@@ -7,7 +7,11 @@ import { ExportSvgService } from 'src/app/tr-services/export-svg.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ManageActionsPopupComponent } from '../manage-actions-popup/manage-actions-popup.component';
 import { TokenGameService } from 'src/app/tr-services/token-game.service';
-import { ButtonState, CodeEditorFormat, TabState } from 'src/app/tr-enums/ui-state';
+import {
+    ButtonState,
+    CodeEditorFormat,
+    TabState,
+} from 'src/app/tr-enums/ui-state';
 import { ClearPopupComponent } from '../clear-popup/clear-popup.component';
 import { DataService } from '../../tr-services/data.service';
 import { LayoutSpringEmbedderService } from 'src/app/tr-services/layout-spring-embedder.service';
@@ -63,11 +67,13 @@ export class ButtonBarComponent {
                 break;
             case 'code':
                 this.uiService.tab = this.TabState.Code;
-                this.uiService.codeEditorFormat$.next(this.uiService.codeEditorFormat$.value);
+                this.uiService.codeEditorFormat$.next(
+                    this.uiService.codeEditorFormat$.value,
+                );
                 break;
         }
         this.uiService.button = null;
-        this.uiService.buttonState$.next(null)
+        this.uiService.buttonState$.next(null);
 
         setTimeout(() => {
             this.uiService.tabTransitioning = false;
@@ -78,7 +84,7 @@ export class ButtonBarComponent {
     // sets the "button" property in the uiService
     buttonClicked(button: ButtonState) {
         this.uiService.button = button;
-        this.uiService.buttonState$.next(button)
+        this.uiService.buttonState$.next(button);
     }
 
     openActionDialog() {

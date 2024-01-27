@@ -198,7 +198,9 @@ export class PetriNetComponent {
         // instead of emitting the file content we set the current code editor format as
         // next value of the BehaviorSubject in order to have the code editor component
         // load the source code by itself (with our formatting applied)
-        this.uiService.codeEditorFormat$.next(this.uiService.codeEditorFormat$.value);
+        this.uiService.codeEditorFormat$.next(
+            this.uiService.codeEditorFormat$.value,
+        );
     }
 
     public prevent(e: DragEvent) {
