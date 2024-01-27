@@ -14,7 +14,7 @@ import { LayoutSpringEmbedderService } from 'src/app/tr-services/layout-spring-e
 import { LayoutSugyiamaService } from 'src/app/tr-services/layout-sugyiama.service';
 
 import { showTooltipDelay } from 'src/app/tr-services/position.constants';
-
+import { HelpPopupComponent } from '../help-popup/help-popup.component';
 @Component({
     selector: 'app-button-bar',
     templateUrl: './button-bar.component.html',
@@ -66,7 +66,7 @@ export class ButtonBarComponent {
                 break;
         }
         this.uiService.button = null;
-        this.uiService.buttonState$.next(null)
+        this.uiService.buttonState$.next(null);
 
         setTimeout(() => {
             this.uiService.tabTransitioning = false;
@@ -77,7 +77,7 @@ export class ButtonBarComponent {
     // sets the "button" property in the uiService
     buttonClicked(button: ButtonState) {
         this.uiService.button = button;
-        this.uiService.buttonState$.next(button)
+        this.uiService.buttonState$.next(button);
     }
 
     openActionDialog() {
@@ -88,6 +88,10 @@ export class ButtonBarComponent {
         if (!this.dataService.isEmpty()) {
             this.matDialog.open(ClearPopupComponent);
         }
+    }
+
+    openHelpDialog() {
+        this.matDialog.open(HelpPopupComponent);
     }
 
     applyLayout(layoutAlgorithm: string) {

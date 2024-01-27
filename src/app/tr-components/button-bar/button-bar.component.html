@@ -188,6 +188,15 @@
             >
                 Sugyiama
             </button>
+
+            <button
+                mat-icon-button
+                (click)="openHelpDialog()"
+                matTooltip="Show help page for 'build' mode"
+                [matTooltipShowDelay]="showTooltipDelay"
+            >
+                <mat-icon>help</mat-icon>
+            </button>
         </div>
     </mat-tab>
 
@@ -219,6 +228,16 @@
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>fast_rewind</mat-icon>
+            </button>
+        </div>
+        <div class="button-container float-right">
+            <button
+                mat-icon-button
+                (click)="openHelpDialog()"
+                matTooltip="Show help page for 'play' mode"
+                [matTooltipShowDelay]="showTooltipDelay"
+            >
+                <mat-icon>help</mat-icon>
             </button>
         </div>
     </mat-tab>
@@ -283,6 +302,17 @@
                 SVG
             </button>
         </div>
+
+        <div class="button-container float-right">
+            <button
+                mat-icon-button
+                (click)="openHelpDialog()"
+                matTooltip="Show help page for 'save' mode"
+                [matTooltipShowDelay]="showTooltipDelay"
+            >
+                <mat-icon>help</mat-icon>
+            </button>
+        </div>
     </mat-tab>
 
     <mat-tab label="code">
@@ -301,6 +331,17 @@
                 (click)="reloadCodeEditorEvent.emit()"
             >
                 <mat-icon>restart_alt</mat-icon>
+            </button>
+        </div>
+
+        <div class="button-container float-right">
+            <button
+                mat-icon-button
+                (click)="openHelpDialog()"
+                matTooltip="Show help page for 'save' mode"
+                [matTooltipShowDelay]="showTooltipDelay"
+            >
+                <mat-icon>help</mat-icon>
             </button>
         </div>
     </mat-tab>
