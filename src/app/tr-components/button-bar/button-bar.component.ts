@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component } from '@angular/core';
 import { ExportJsonDataService } from 'src/app/tr-services/export-json-data.service';
 import { PnmlService } from 'src/app/tr-services/pnml.service';
 import { UiService } from 'src/app/tr-services/ui.service';
@@ -25,8 +25,6 @@ import { showTooltipDelay } from 'src/app/tr-services/position.constants';
     styleUrls: ['./button-bar.component.css'],
 })
 export class ButtonBarComponent {
-    @Output() applySourceCodeEvent = new EventEmitter();
-
     readonly TabState = TabState;
     readonly ButtonState = ButtonState;
     readonly CodeEditorFormat = CodeEditorFormat;

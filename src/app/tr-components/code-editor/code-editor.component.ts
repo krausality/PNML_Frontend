@@ -11,6 +11,7 @@ import { PnmlService } from 'src/app/tr-services/pnml.service';
 import { ErrorPopupComponent } from '../error-popup/error-popup.component';
 import { UiService } from 'src/app/tr-services/ui.service';
 import { CodeEditorFormat } from 'src/app/tr-enums/ui-state';
+import { ButtonState } from 'src/app/tr-enums/ui-state';
 
 @Component({
     selector: 'app-code-editor',
@@ -39,6 +40,12 @@ export class CodeEditorComponent implements OnInit {
                 );
             } else {
                 this.textareaControl.setValue(this.pnmlService.getPNML());
+            }
+        });
+
+        this.uiService.buttonState$.subscribe((buttonState) => {
+            if (buttonState === ButtonState.ApplyCode) {
+                this.applySourceCode();
             }
         });
     }

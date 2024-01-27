@@ -312,7 +312,7 @@
                 mat-icon-button
                 matTooltip="Apply the source code in the code editor as the new petrinet state"
                 [matTooltipShowDelay]="showTooltipDelay"
-                (click)="applySourceCodeEvent.emit()"
+                (click)="buttonClicked(ButtonState.ApplyCode)"
             >
                 <mat-icon>task</mat-icon>
             </button>
