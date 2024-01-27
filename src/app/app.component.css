@@ -40,7 +40,7 @@ hr {
 
 .petri-net {
     width: 100%;
-    margin-right: 10px;
+    margin-right: 0px;
     transition: width 500ms;
 }
 
@@ -49,7 +49,7 @@ hr {
 }
 
 .code-editor {
-    margin-left: 10px;
+    margin-left: 0px;
     transition:
         width 500ms,
         min-width 500ms,
@@ -61,6 +61,7 @@ hr {
 }
 
 .code-editor.active {
+    margin-left: 20px;
     width: 50%;
     max-width: 50%;
     min-width: 50%;

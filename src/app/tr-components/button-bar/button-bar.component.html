@@ -67,6 +67,8 @@
                     uiService.button === ButtonState.Anchor ? 'primary' : ''
                 "
                 (click)="buttonClicked(ButtonState.Anchor)"
+                matTooltip="Add anchor point"
+                [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>linear_scale</mat-icon>
             </button>
@@ -105,7 +107,7 @@
                     uiService.button === ButtonState.Delete ? 'primary' : ''
                 "
                 (click)="buttonClicked(ButtonState.Delete)"
-                matTooltip="Delete element"
+                matTooltip="Delete single element"
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>delete</mat-icon>
@@ -118,6 +120,8 @@
                     uiService.button === ButtonState.Clear ? 'primary' : ''
                 "
                 (click)="openClearDialog()"
+                matTooltip="Delete the whole petrinet"
+                [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>clear</mat-icon>
             </button>
@@ -130,7 +134,7 @@
                 mat-icon-button
                 [color]="uiService.button === ButtonState.Move ? 'primary' : ''"
                 (click)="buttonClicked(ButtonState.Move)"
-                matTooltip="Move element"
+                matTooltip="Move individual elements or the complete petri net (canvas drag)"
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>open_with</mat-icon>
@@ -294,7 +298,11 @@
                 mat-icon-button
                 matTooltip="Reset code editor to the current petrinet state"
                 [matTooltipShowDelay]="showTooltipDelay"
-                (click)="reloadCodeEditorEvent.emit()"
+                (click)="
+                    uiService.codeEditorFormat$.next(
+                        uiService.codeEditorFormat$.value
+                    )
+                "
             >
                 <mat-icon>restart_alt</mat-icon>
             </button>
@@ -307,6 +315,40 @@
                 (click)="applySourceCodeEvent.emit()"
             >
                 <mat-icon>task</mat-icon>
+            </button>
+        </div>
+
+        <div class="button-container float-right">
+            <!-- switch code editor to json format -->
+            <button
+                mat-stroked-button
+                class="text-button"
+                [color]="
+                    uiService.codeEditorFormat$.value === CodeEditorFormat.JSON
+                        ? 'primary'
+                        : ''
+                "
+                (click)="switchCodeEditorFormat(CodeEditorFormat.JSON)"
+                matTooltip="Switch the code editor format to JSON"
+                [matTooltipShowDelay]="showTooltipDelay"
+            >
+                JSON
+            </button>
+
+            <!-- switch code editor to pnml format -->
+            <button
+                mat-stroked-button
+                class="text-button"
+                [color]="
+                    uiService.codeEditorFormat$.value === CodeEditorFormat.PNML
+                        ? 'primary'
+                        : ''
+                "
+                (click)="switchCodeEditorFormat(CodeEditorFormat.PNML)"
+                matTooltip="Switch the code editor format to PNML"
+                [matTooltipShowDelay]="showTooltipDelay"
+            >
+                PNML
             </button>
         </div>
     </mat-tab>

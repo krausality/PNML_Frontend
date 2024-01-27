@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroupDirective, NgForm } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { Arc } from 'src/app/tr-classes/petri-net/arc';
 import { Place } from 'src/app/tr-classes/petri-net/place';
@@ -8,6 +9,9 @@ import { DataService } from 'src/app/tr-services/data.service';
 import { ExportJsonDataService } from 'src/app/tr-services/export-json-data.service';
 import { ParserService } from 'src/app/tr-services/parser.service';
 import { PnmlService } from 'src/app/tr-services/pnml.service';
+import { ErrorPopupComponent } from '../error-popup/error-popup.component';
+import { UiService } from 'src/app/tr-services/ui.service';
+import { CodeEditorFormat } from 'src/app/tr-enums/ui-state';
 
 import { createJsonSchemaValidator } from './json-schema.validator';
 
@@ -16,8 +20,7 @@ import { createJsonSchemaValidator } from './json-schema.validator';
     templateUrl: './code-editor.component.html',
     styleUrls: ['./code-editor.component.css'],
 })
-export class CodeEditorComponent {
-    languageSelected = 'json';
+export class CodeEditorComponent implements OnInit {
     textareaControl = new FormControl('', [createJsonSchemaValidator()]);
 
     constructor(
@@ -25,19 +28,22 @@ export class CodeEditorComponent {
         private pnmlService: PnmlService,
         private parserService: ParserService,
         private dataService: DataService,
+        private uiService: UiService,
+        private matDialog: MatDialog,
     ) {}
 
-    // loads the source code in json or pnml depending on
-    // which language is selected in the language switch
-    public loadSourceCode() {
-        if (this.languageSelected === 'json') {
-            const jsonContent = this.exportJsonDataService.getJson();
-            if (jsonContent) {
-                this.textareaControl.setValue(jsonContent);
+    ngOnInit() {
+        // reload the source code in a the given format when the
+        // BehaviorSubject changes its value
+        this.uiService.codeEditorFormat$.subscribe((format) => {
+            if (format === CodeEditorFormat.JSON) {
+                this.textareaControl.setValue(
+                    this.exportJsonDataService.getJson(),
+                );
+            } else {
+                this.textareaControl.setValue(this.pnmlService.getPNML());
             }
-        } else {
-            this.textareaControl.setValue(this.pnmlService.getPNML());
-        }
+        });
     }
 
     // applies the current source code as json or pnml
@@ -46,7 +52,6 @@ export class CodeEditorComponent {
         let sourceCode = this.textareaControl.value;
         // the value of the textareaControl can be null or empty
         // if this is the case the existing petrinet will be deleted
-
         if (!sourceCode) {
             this.dataService.places = [];
             this.dataService.transitions = [];
@@ -62,22 +67,26 @@ export class CodeEditorComponent {
             Array<Arc>,
             Array<string>,
         ];
-        if (this.languageSelected === 'json') {
-            // validate JSON structure
-            try {
-                JSON.parse(sourceCode);
-            } catch (e) {
-                console.log('Problem parsing JSON', e);
-                // handle and show error message e.g.
+
+        try {
+            if (
+                this.uiService.codeEditorFormat$.value === CodeEditorFormat.JSON
+            ) {
+                parsedData = this.parserService.parse(sourceCode);
+            } else {
+                parsedData = this.pnmlService.parse(sourceCode);
             }
-
-            // validate agains JSON schema
-            const json = JSON.parse(sourceCode);
-
-            parsedData = this.parserService.parse(sourceCode);
-        } else {
-            parsedData = this.pnmlService.parse(sourceCode);
+        } catch (error) {
+            this.matDialog.open(ErrorPopupComponent, {
+                data: { parsingError: true, schemaValidationError: false },
+            });
+            return;
         }
+
+        // schema validation here (?)
+        // show popup with data: { parsingError: false, schemaValidationError: true }
+        // if schema fails to validate
+
         // destructure the parsed data and overwrite the corresponding parameters
         // in the data service
         const [places, transitions, arcs, actions] = parsedData;

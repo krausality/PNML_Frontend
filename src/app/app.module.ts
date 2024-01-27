@@ -28,6 +28,7 @@ import { ManageActionsPopupComponent } from './tr-components/manage-actions-popu
 import { SetActionPopupComponent } from './tr-components/set-action-popup/set-action-popup.component';
 import { ClearPopupComponent } from './tr-components/clear-popup/clear-popup.component';
 import { CodeEditorComponent } from './tr-components/code-editor/code-editor.component';
+import { ErrorPopupComponent } from './tr-components/error-popup/error-popup.component';
 
 @NgModule({
     declarations: [
@@ -44,6 +45,7 @@ import { CodeEditorComponent } from './tr-components/code-editor/code-editor.com
         SetActionPopupComponent,
         ClearPopupComponent,
         CodeEditorComponent,
+        ErrorPopupComponent,
     ],
     imports: [
         BrowserModule,
