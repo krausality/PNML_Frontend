@@ -17,4 +17,10 @@ export enum ButtonState {
     Clear,
     Move,
     Select,
+    ApplyCode,
+}
+
+export enum CodeEditorFormat {
+    JSON,
+    PNML,
 }

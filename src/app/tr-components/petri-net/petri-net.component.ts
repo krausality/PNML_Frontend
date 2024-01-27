@@ -36,6 +36,7 @@ import { Node } from 'src/app/tr-interfaces/petri-net/node';
 import { MouseConstants } from '../../tr-enums/mouse-constants';
 import { SvgCoordinatesService } from 'src/app/tr-services/svg-coordinates-service';
 import { DummyArc } from 'src/app/tr-classes/petri-net/dummyArc';
+import { ErrorPopupComponent } from '../error-popup/error-popup.component';
 
 @Component({
     selector: 'app-petri-net',
@@ -43,7 +44,6 @@ import { DummyArc } from 'src/app/tr-classes/petri-net/dummyArc';
     styleUrls: ['./petri-net.component.css'],
 })
 export class PetriNetComponent {
-    @Output('fileContent') fileContent: EventEmitter<string>;
     @Input() buttonState: ButtonState | undefined;
 
     lastNode: Node | null = null;
@@ -79,7 +79,6 @@ export class PetriNetComponent {
         //     this.dataService.transitions = transitions;
         //     this.dataService.arcs = arcs;
         // });
-        this.fileContent = new EventEmitter<string>();
         this.uiService.buttonState$.subscribe((buttonState) => {
             if (buttonState !== ButtonState.Blitz) {
                 this.lastNode = null;
@@ -97,24 +96,40 @@ export class PetriNetComponent {
         contentType: string,
     ) {
         if (content) {
-            // Use pnml parser if file type is pnml
-            // we'll try the json parser for all other cases
-            if (contentType === 'pnml') {
-                const [places, transitions, arcs,actions] =
-                    this.pnmlService.parse(content);
-                this.dataService.places = places;
-                this.dataService.transitions = transitions;
-                this.dataService.arcs = arcs;
-                this.dataService.actions = actions
-            } else {
-                const [places, transitions, arcs, actions] =
-                    this.parserService.parse(content);
-                this.dataService.places = places;
-                this.dataService.transitions = transitions;
-                this.dataService.arcs = arcs;
+            // variable to parse the data into
+            let parsedData: [
+                Array<Place>,
+                Array<Transition>,
+                Array<Arc>,
+                Array<string>,
+            ];
 
-                this.dataService.actions = actions;
+            try {
+                // Use pnml parser if file type is pnml
+                // we'll try the json parser for all other cases
+                if (contentType === 'pnml') {
+                    parsedData = this.pnmlService.parse(content);
+                } else {
+                    parsedData = this.parserService.parse(content);
+                }
+            } catch (error) {
+                this.matDialog.open(ErrorPopupComponent, {
+                    data: { parsingError: true, schemaValidationError: false },
+                });
+                return;
             }
+
+            // schema validation here (?)
+            // show popup with data: { parsingError: false, schemaValidationError: true }
+            // if schema fails to validate
+
+            // destructure the parsed data and overwrite the corresponding parameters
+            // in the data service
+            const [places, transitions, arcs, actions] = parsedData;
+            this.dataService.places = places;
+            this.dataService.transitions = transitions;
+            this.dataService.arcs = arcs;
+            this.dataService.actions = actions;
         }
     }
 
@@ -180,7 +195,12 @@ export class PetriNetComponent {
         if (content === undefined) {
             return;
         }
-        this.fileContent.emit(content);
+        // instead of emitting the file content we set the current code editor format as
+        // next value of the BehaviorSubject in order to have the code editor component
+        // load the source code by itself (with our formatting applied)
+        this.uiService.codeEditorFormat$.next(
+            this.uiService.codeEditorFormat$.value,
+        );
     }
 
     public prevent(e: DragEvent) {

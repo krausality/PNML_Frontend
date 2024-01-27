@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component } from '@angular/core';
 import { ExportJsonDataService } from 'src/app/tr-services/export-json-data.service';
 import { PnmlService } from 'src/app/tr-services/pnml.service';
 import { UiService } from 'src/app/tr-services/ui.service';
@@ -7,7 +7,11 @@ import { ExportSvgService } from 'src/app/tr-services/export-svg.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ManageActionsPopupComponent } from '../manage-actions-popup/manage-actions-popup.component';
 import { TokenGameService } from 'src/app/tr-services/token-game.service';
-import { ButtonState, TabState } from 'src/app/tr-enums/ui-state';
+import {
+    ButtonState,
+    CodeEditorFormat,
+    TabState,
+} from 'src/app/tr-enums/ui-state';
 import { ClearPopupComponent } from '../clear-popup/clear-popup.component';
 import { DataService } from '../../tr-services/data.service';
 import { LayoutSpringEmbedderService } from 'src/app/tr-services/layout-spring-embedder.service';
@@ -21,10 +25,9 @@ import { HelpPopupComponent } from '../help-popup/help-popup.component';
     styleUrls: ['./button-bar.component.css'],
 })
 export class ButtonBarComponent {
-    @Output() reloadCodeEditorEvent = new EventEmitter();
-
     readonly TabState = TabState;
     readonly ButtonState = ButtonState;
+    readonly CodeEditorFormat = CodeEditorFormat;
 
     readonly showTooltipDelay = showTooltipDelay;
 
@@ -62,7 +65,9 @@ export class ButtonBarComponent {
                 break;
             case 'code':
                 this.uiService.tab = this.TabState.Code;
-                this.reloadCodeEditorEvent.emit();
+                this.uiService.codeEditorFormat$.next(
+                    this.uiService.codeEditorFormat$.value,
+                );
                 break;
         }
         this.uiService.button = null;
@@ -107,5 +112,15 @@ export class ButtonBarComponent {
                 this.layoutSpringEmebdderService.terminate();
                 break;
         }
+    }
+
+    switchCodeEditorFormat(format: CodeEditorFormat) {
+        // only send a new value if it is not the same as the current value
+        if (format === this.uiService.codeEditorFormat$.value) {
+            return;
+        }
+
+        // set the new format as next value in the BehaviorSubject
+        this.uiService.codeEditorFormat$.next(format);
     }
 }

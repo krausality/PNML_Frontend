@@ -328,13 +328,59 @@
                 mat-icon-button
                 matTooltip="Reset code editor to the current petrinet state"
                 [matTooltipShowDelay]="showTooltipDelay"
-                (click)="reloadCodeEditorEvent.emit()"
+                (click)="
+                    uiService.codeEditorFormat$.next(
+                        uiService.codeEditorFormat$.value
+                    )
+                "
             >
                 <mat-icon>restart_alt</mat-icon>
+            </button>
+
+            <!-- apply button -->
+            <button
+                mat-icon-button
+                matTooltip="Apply the source code in the code editor as the new petrinet state"
+                [matTooltipShowDelay]="showTooltipDelay"
+                (click)="buttonClicked(ButtonState.ApplyCode)"
+            >
+                <mat-icon>task</mat-icon>
             </button>
         </div>
 
         <div class="button-container float-right">
+            <!-- switch code editor to json format -->
+            <button
+                mat-stroked-button
+                class="text-button"
+                [color]="
+                    uiService.codeEditorFormat$.value === CodeEditorFormat.JSON
+                        ? 'primary'
+                        : ''
+                "
+                (click)="switchCodeEditorFormat(CodeEditorFormat.JSON)"
+                matTooltip="Switch the code editor format to JSON"
+                [matTooltipShowDelay]="showTooltipDelay"
+            >
+                JSON
+            </button>
+
+            <!-- switch code editor to pnml format -->
+            <button
+                mat-stroked-button
+                class="text-button"
+                [color]="
+                    uiService.codeEditorFormat$.value === CodeEditorFormat.PNML
+                        ? 'primary'
+                        : ''
+                "
+                (click)="switchCodeEditorFormat(CodeEditorFormat.PNML)"
+                matTooltip="Switch the code editor format to PNML"
+                [matTooltipShowDelay]="showTooltipDelay"
+            >
+                PNML
+            </button>
+
             <button
                 mat-icon-button
                 (click)="openHelpDialog()"
