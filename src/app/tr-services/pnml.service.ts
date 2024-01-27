@@ -26,15 +26,48 @@ export class PnmlService {
             const net = pnml?.elements.find(
                 (element) => element.name === name_net,
             );
-            const pnmlPlaces = net?.elements.filter(
-                (element) => element.name === name_place,
+
+            const pages = net?.elements.filter(
+                (element) => element.name === name_page,
             );
-            const pnmlTransitions = net?.elements.filter(
-                (element) => element.name === name_transition,
-            );
-            const pnmlArcs = net?.elements.filter(
-                (element) => element.name === name_arc,
-            );
+
+            let pnmlPlaces: PnmlElement[] = [];
+            let pnmlTransitions: PnmlElement[] = [];
+            let pnmlArcs: PnmlElement[] = [];
+
+            if(pages && pages.length >0) {
+                pages.forEach(page=> {
+                    const pnmlPlacesPage = page.elements.filter(
+                        (element) => element.name === name_place,
+                    );
+                    if(pnmlPlacesPage) {
+                        pnmlPlaces = pnmlPlaces.concat(pnmlPlacesPage);
+                    }
+                    const pnmlTransitionsPage = page.elements.filter(
+                        (element) => element.name === name_transition,
+                    );
+                    if(pnmlTransitionsPage) {
+                        pnmlTransitions = pnmlTransitions.concat(pnmlTransitionsPage);
+                    }
+                    const pnmlArcsPage = page.elements.filter(
+                        (element) => element.name === name_arc,
+                    );
+                    if(pnmlArcsPage) {
+                        pnmlArcs = pnmlArcs.concat(pnmlArcsPage);
+                    }
+                })
+            } else if(net) {
+                pnmlPlaces = net.elements.filter(
+                    (element) => element.name === name_place,
+                );
+                pnmlTransitions = net.elements.filter(
+                    (element) => element.name === name_transition,
+                );
+                pnmlArcs = net.elements.filter(
+                    (element) => element.name === name_arc,
+                );
+            }
+
             let places: Place[] = [];
             let transitions: Transition[] = [];
             let arcs: Arc[] = [];
@@ -280,6 +313,7 @@ ${arcs.map((arc) => this.getArcString(arc)).join('\n')}
 
 const name_pnml = 'pnml';
 const name_net = 'net';
+const name_page = 'page';
 
 const name_place = 'place';
 const name_transition = 'transition';
