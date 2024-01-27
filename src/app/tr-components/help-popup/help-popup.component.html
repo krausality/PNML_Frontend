@@ -1,0 +1,34 @@
+<div fxLayout="row" fxLayoutAlign="space-between center">
+    <h2 mat-dialog-title>Help</h2>
+
+    <button mat-dialog-close mat-icon-button class="close-button">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
+
+<div mat-dialog-content>
+    <!-- Infotext for Build Mode -->
+    <ng-container *ngIf="uiService.tab === TabState.Build">
+        <p>Content for Build Mode Help</p>
+    </ng-container>
+
+    <!-- Infotext for Play Mode -->
+    <ng-container *ngIf="uiService.tab === TabState.Play">
+        <p>Content for Play Mode Help</p>
+    </ng-container>
+
+    <!-- Infotext for Build Mode -->
+    <ng-container *ngIf="uiService.tab === TabState.Save">
+        <p>Content for Play Mode Help</p>
+    </ng-container>
+
+    <!-- Infotext for Code Tab -->
+    <ng-container *ngIf="uiService.tab === TabState.Code">
+        <p>Content for Code Mode Help</p>
+    </ng-container>
+
+    <!-- Context Help for Analyze Mode -->
+    <!-- <ng-container *ngIf="uiService.tab === TabState.Analyze">
+        <p>Content for Analyze Mode Help</p>
+    </ng-container> -->
+</div>

@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component } from '@angular/core';
 import { ExportJsonDataService } from 'src/app/tr-services/export-json-data.service';
 import { PnmlService } from 'src/app/tr-services/pnml.service';
 import { UiService } from 'src/app/tr-services/ui.service';
@@ -18,15 +18,13 @@ import { LayoutSpringEmbedderService } from 'src/app/tr-services/layout-spring-e
 import { LayoutSugyiamaService } from 'src/app/tr-services/layout-sugyiama.service';
 
 import { showTooltipDelay } from 'src/app/tr-services/position.constants';
-
+import { HelpPopupComponent } from '../help-popup/help-popup.component';
 @Component({
     selector: 'app-button-bar',
     templateUrl: './button-bar.component.html',
     styleUrls: ['./button-bar.component.css'],
 })
 export class ButtonBarComponent {
-    @Output() applySourceCodeEvent = new EventEmitter();
-
     readonly TabState = TabState;
     readonly ButtonState = ButtonState;
     readonly CodeEditorFormat = CodeEditorFormat;
@@ -95,6 +93,10 @@ export class ButtonBarComponent {
         if (!this.dataService.isEmpty()) {
             this.matDialog.open(ClearPopupComponent);
         }
+    }
+
+    openHelpDialog() {
+        this.matDialog.open(HelpPopupComponent);
     }
 
     applyLayout(layoutAlgorithm: string) {
