@@ -68,6 +68,7 @@ export class CodeEditorComponent implements OnInit {
             Array<string>,
         ];
 
+        // validate JSON / XML formats and display popup if formatting rules are broken
         try {
             if (
                 this.uiService.codeEditorFormat$.value === CodeEditorFormat.JSON
@@ -78,14 +79,25 @@ export class CodeEditorComponent implements OnInit {
             }
         } catch (error) {
             this.matDialog.open(ErrorPopupComponent, {
-                data: { parsingError: true, schemaValidationError: false },
+                data: {
+                    parsingError: true,
+                    schemaValidationErrors: this.textareaControl.errors,
+                },
             });
             return;
         }
 
-        // schema validation here (?)
-        // show popup with data: { parsingError: false, schemaValidationError: true }
-        // if schema fails to validate
+        // Display results of JSON against Petrinet JSOn Schema
+        // TODO: Validate XML as well?
+        if (this.textareaControl.errors) {
+            this.matDialog.open(ErrorPopupComponent, {
+                data: {
+                    parsingError: false,
+                    schemaValidationErrors: this.textareaControl.errors,
+                },
+            });
+            return;
+        }
 
         // destructure the parsed data and overwrite the corresponding parameters
         // in the data service

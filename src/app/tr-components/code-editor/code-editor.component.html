@@ -7,10 +7,5 @@
             matInput
             class="code-textarea"
         ></textarea>
-        <mat-error
-            *ngFor="let errorMessage of textareaControl.errors | objectEntries"
-        >
-            {{ errorMessage }}
-        </mat-error>
     </mat-form-field>
 </div>
