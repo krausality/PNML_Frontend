@@ -18,3 +18,8 @@ export enum ButtonState {
     Move,
     Select,
 }
+
+export enum CodeEditorFormat {
+    JSON,
+    PNML,
+}

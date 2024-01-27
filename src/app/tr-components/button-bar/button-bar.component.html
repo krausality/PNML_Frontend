@@ -309,5 +309,28 @@
                 <mat-icon>task</mat-icon>
             </button>
         </div>
+
+        <div class="button-container float-right">
+            <!-- switch code editor to json format -->
+            <button
+                mat-stroked-button
+                class="text-button"
+                [color]=""
+                matTooltip="Switch the code editor format to JSON"
+                [matTooltipShowDelay]="showTooltipDelay"
+            >
+                JSON
+            </button>
+
+            <!-- switch code editor to pnml format -->
+            <button
+                mat-stroked-button
+                class="text-button"
+                matTooltip="Switch the code editor format to PNML"
+                [matTooltipShowDelay]="showTooltipDelay"
+            >
+                PNML
+            </button>
+        </div>
     </mat-tab>
 </mat-tab-group>
