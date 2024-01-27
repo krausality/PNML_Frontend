@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Arc } from 'src/app/tr-classes/petri-net/arc';
@@ -9,14 +9,15 @@ import { ExportJsonDataService } from 'src/app/tr-services/export-json-data.serv
 import { ParserService } from 'src/app/tr-services/parser.service';
 import { PnmlService } from 'src/app/tr-services/pnml.service';
 import { ErrorPopupComponent } from '../error-popup/error-popup.component';
+import { UiService } from 'src/app/tr-services/ui.service';
+import { CodeEditorFormat } from 'src/app/tr-enums/ui-state';
 
 @Component({
     selector: 'app-code-editor',
     templateUrl: './code-editor.component.html',
     styleUrls: ['./code-editor.component.css'],
 })
-export class CodeEditorComponent {
-    languageSelected = 'json';
+export class CodeEditorComponent implements OnInit {
     textareaControl = new FormControl('');
 
     constructor(
@@ -24,20 +25,20 @@ export class CodeEditorComponent {
         private pnmlService: PnmlService,
         private parserService: ParserService,
         private dataService: DataService,
+        private uiService: UiService,
         private matDialog: MatDialog,
     ) {}
 
-    // loads the source code in json or pnml depending on
-    // which language is selected in the language switch
-    public loadSourceCode() {
-        if (this.languageSelected === 'json') {
-            const jsonContent = this.exportJsonDataService.getJson();
-            if (jsonContent) {
-                this.textareaControl.setValue(jsonContent);
+    ngOnInit() {
+        // reload the source code in a the given format when the
+        // BehaviorSubject changes its value
+        this.uiService.codeEditorFormat$.subscribe(format => {
+            if (format === CodeEditorFormat.JSON) {
+                this.textareaControl.setValue(this.exportJsonDataService.getJson());
+            } else {
+                this.textareaControl.setValue(this.pnmlService.getPNML());
             }
-        } else {
-            this.textareaControl.setValue(this.pnmlService.getPNML());
-        }
+        });
     }
 
     // applies the current source code as json or pnml
@@ -62,7 +63,7 @@ export class CodeEditorComponent {
         ];
 
         try {
-            if (this.languageSelected === 'json') {
+            if (this.uiService.codeEditorFormat$.value === CodeEditorFormat.JSON) {
                 parsedData = this.parserService.parse(sourceCode);
             } else {
                 parsedData = this.pnmlService.parse(sourceCode);

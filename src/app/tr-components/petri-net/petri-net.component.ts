@@ -44,7 +44,6 @@ import { ErrorPopupComponent } from '../error-popup/error-popup.component';
     styleUrls: ['./petri-net.component.css'],
 })
 export class PetriNetComponent {
-    @Output('fileContent') fileContent: EventEmitter<string>;
     @Input() buttonState: ButtonState | undefined;
 
     lastNode: Node | null = null;
@@ -80,7 +79,6 @@ export class PetriNetComponent {
         //     this.dataService.transitions = transitions;
         //     this.dataService.arcs = arcs;
         // });
-        this.fileContent = new EventEmitter<string>();
         this.uiService.buttonState$.subscribe((buttonState) => {
             if (buttonState !== ButtonState.Blitz) {
                 this.lastNode = null;
@@ -197,7 +195,10 @@ export class PetriNetComponent {
         if (content === undefined) {
             return;
         }
-        this.fileContent.emit(content);
+        // instead of emitting the file content we set the current code editor format as
+        // next value of the BehaviorSubject in order to have the code editor component
+        // load the source code by itself (with our formatting applied)
+        this.uiService.codeEditorFormat$.next(this.uiService.codeEditorFormat$.value);
     }
 
     public prevent(e: DragEvent) {

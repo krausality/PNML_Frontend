@@ -15,7 +15,6 @@
     <div fxLayout="row" fxLayoutAlign="space-between end">
         <app-button-bar
             fxFlex
-            (reloadCodeEditorEvent)="codeEditor.loadSourceCode()"
             (applySourceCodeEvent)="codeEditor.applySourceCode()"
         ></app-button-bar>
     </div>
@@ -27,7 +26,6 @@
                 'petri-net': true,
                 active: uiService.tab === TabState.Code
             }"
-            (fileContent)="codeEditor.loadSourceCode()"
         ></app-petri-net>
         <app-code-editor
             [ngClass]="{
