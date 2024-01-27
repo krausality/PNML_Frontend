@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ParserService } from 'src/app/tr-services/parser.service';
 import { catchError, of, take } from 'rxjs';
 import { FileReaderService } from '../../services/file-reader.service';
@@ -45,6 +45,7 @@ import { ErrorPopupComponent } from '../error-popup/error-popup.component';
 })
 export class PetriNetComponent {
     @Output('fileContent') fileContent: EventEmitter<string>;
+    @Input() buttonState: ButtonState | undefined;
 
     lastNode: Node | null = null;
     nextNode: Node | null = null;
@@ -80,6 +81,11 @@ export class PetriNetComponent {
         //     this.dataService.arcs = arcs;
         // });
         this.fileContent = new EventEmitter<string>();
+        this.uiService.buttonState$.subscribe((buttonState) => {
+            if (buttonState !== ButtonState.Blitz) {
+                this.lastNode = null;
+            }
+        });
     }
 
     startTransition: Transition | undefined;
@@ -197,6 +203,21 @@ export class PetriNetComponent {
     public prevent(e: DragEvent) {
         // dragover must be prevented for drop to work
         e.preventDefault();
+    }
+
+    protected onWheelEventTransition(e: WheelEvent, transition: Transition) {
+        if (
+            this.uiService.button === ButtonState.Blitz ||
+            this.uiService.button === ButtonState.Select
+        ) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (e.deltaY < 0) {
+                transition.label = this.getNextLabel(transition.label);
+            } else {
+                transition.label = this.getLastLabel(transition.label);
+            }
+        }
     }
 
     protected onWheelEventPlace(e: WheelEvent, place: Place) {
@@ -454,11 +475,6 @@ export class PetriNetComponent {
 
     // Places
     dispatchPlaceClick(event: MouseEvent, place: Place) {
-        //Existing Place is selected as the next Node. Method is called before dispatchSVGClick
-        if (this.uiService.button === ButtonState.Blitz) {
-            this.nextNode = place;
-        }
-
         if (this.uiService.button === ButtonState.Add) {
             place.token++;
         }
@@ -475,6 +491,15 @@ export class PetriNetComponent {
     }
 
     dispatchPlaceMouseDown(event: MouseEvent, place: Place) {
+        if (this.uiService.button === ButtonState.Blitz) {
+            if (event.button == MouseConstants.Right_Click) {
+                this.dataService.removePlace(place);
+            } else if (event.button == MouseConstants.Left_Click) {
+                // Existing Place is selected as the next Node. Method is called before dispatchSVGClick
+                this.nextNode = place;
+            }
+        }
+
         if (this.uiService.button === ButtonState.Move) {
             // Keep event from bubbling up to canvas and e.g. trigger canvas drag & drop
             event.stopPropagation();
@@ -504,11 +529,6 @@ export class PetriNetComponent {
 
     // Transitions
     dispatchTransitionClick(event: MouseEvent, transition: Transition) {
-        //Existing Transition is selected as the next Node. Method is called before dispatchSVGClick
-        if (this.uiService.button === ButtonState.Blitz) {
-            this.nextNode = transition;
-        }
-
         // Token game: fire transition
         if (this.uiService.tab === TabState.Play) {
             this.tokenGameService.fire(transition);
@@ -527,6 +547,15 @@ export class PetriNetComponent {
     }
 
     dispatchTransitionMouseDown(event: MouseEvent, transition: Transition) {
+        if (this.uiService.button === ButtonState.Blitz) {
+            if (event.button == MouseConstants.Right_Click) {
+                this.dataService.removeTransition(transition);
+            } else if (event.button == MouseConstants.Left_Click) {
+                //Existing Transition is selected as the next Node. Method is called before dispatchSVGClick
+                this.nextNode = transition;
+            }
+        }
+
         if (this.uiService.button === ButtonState.Move) {
             // Keep event from bubbling up to canvas and e.g. trigger canvas drag & drop
             event.stopPropagation();
@@ -595,7 +624,14 @@ export class PetriNetComponent {
         event: MouseEvent,
         arc: Arc,
         drawingArea: HTMLElement,
-    ) {}
+    ) {
+        if (
+            this.uiService.button === ButtonState.Blitz &&
+            event.button == MouseConstants.Right_Click
+        ) {
+            this.dataService.removeArc(arc);
+        }
+    }
 
     dispatchLineSegmentMouseDown(
         event: MouseEvent,
@@ -708,24 +744,40 @@ export class PetriNetComponent {
 
     // returns true if the provided place can be edited and should be highlighted
     isPlaceEditable(place: Place): boolean {
+        const hasPreArcFromStartTransition =
+            this.startTransition &&
+            this.dataService.getArcs().filter((arc) => {
+                return arc.from === this.startTransition && arc.to === place;
+            }).length;
+
         return (
             (this.uiService.button === ButtonState.Move &&
                 !this.editMoveElementsService.newAnchor) ||
             this.uiService.button === ButtonState.Add ||
             (this.uiService.button === ButtonState.Remove && place.token > 0) || // tokens can only be removed if the number of tokens in a place is > 0
             this.uiService.button === ButtonState.Delete ||
-            (this.uiService.button === ButtonState.Arc && !this.startPlace)
+            (this.uiService.button === ButtonState.Arc &&
+                !this.startPlace &&
+                !hasPreArcFromStartTransition)
         ); // if the user starts dragging an arc from a place he can only finish on a transition --> places are no longer editable
     }
 
     // returns true if transitions can be edited and should be highlighted
-    isTransitionEditable(): boolean {
+    isTransitionEditable(transition: Transition): boolean {
+        const hasPreArcFromStartPlace =
+            this.startPlace &&
+            transition.preArcs.filter((arc) => {
+                return arc.from === this.startPlace;
+            }).length;
+
         return (
             (this.uiService.button === ButtonState.Move &&
                 !this.editMoveElementsService.newAnchor) ||
             this.uiService.button === ButtonState.Select ||
             this.uiService.button === ButtonState.Delete ||
-            (this.uiService.button === ButtonState.Arc && !this.startTransition)
+            (this.uiService.button === ButtonState.Arc &&
+                !this.startTransition &&
+                !hasPreArcFromStartPlace)
         ); // if the user starts dragging an arc from a transition he can only finish on a place --> transitions no longer editable
     }
 
@@ -739,6 +791,34 @@ export class PetriNetComponent {
                 Math.abs(arc.weight) > 1) || // arc weights can only be decreased if the absolute value is > 1
             this.uiService.button === ButtonState.Delete
         );
+    }
+
+    getNextLabel(label: string | undefined): string | undefined {
+        const actions = this.dataService.getActions();
+        if (label) {
+            const labelIndex = actions.indexOf(label);
+            if (labelIndex - 1 < actions.length) {
+                return actions[labelIndex + 1];
+            }
+        } else {
+            if (actions.length > 0) {
+                return actions[0];
+            }
+        }
+        return;
+    }
+
+    getLastLabel(label: string | undefined): string | undefined {
+        const actions = this.dataService.getActions();
+        if (label) {
+            const labelIndex = actions.indexOf(label);
+            if (labelIndex !== 0) {
+                return actions[labelIndex - 1];
+            }
+        } else if (actions.length > 0) {
+            return actions[actions.length - 1];
+        }
+        return;
     }
 
     protected readonly radius = radius;

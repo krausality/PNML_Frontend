@@ -48,15 +48,18 @@ export class LayoutSpringEmbedderService {
         this.dataService.getArcs().forEach((arc) => (arc.anchors.length = 0));
 
         // combining places and transitions into one array because we don't need to handle them differently in this algorithm
-        const nodes: Node[] = [
+        const combinedNodes: Node[] = [
             ...this.dataService.getPlaces(),
             ...this.dataService.getTransitions(),
         ];
 
+        // all nodes that will be modified during the alogrithm
+        const nodes: Node[] = [];
+
         // discover the connected nodes of each node once and keep the map in memory
         // instead of doing it every iteration
         const connectedNodeMap: { [id: string]: Node[] } = {};
-        nodes.forEach((n) => {
+        combinedNodes.forEach((n) => {
             const connectedNodes: Node[] = [];
             this.dataService.getArcs().forEach((arc) => {
                 if (arc.from.id === n.id) {
@@ -65,8 +68,16 @@ export class LayoutSpringEmbedderService {
                     connectedNodes.push(arc.from);
                 }
             });
-            connectedNodeMap[n.id] = connectedNodes;
+            // only add the node to the connectedNodeMap if it actually has connected nodes
+            // as of FP-101 we don't want to apply forces to orphan nodes
+            // also only append nodes which are connected to other nodes onto the pool of
+            // of nodes to layout
+            if (connectedNodes.length > 0) {
+                connectedNodeMap[n.id] = connectedNodes;
+                nodes.push(n);
+            }
         });
+
 
         let iterations = 1;
         // this is only needed for the first iteration
@@ -110,7 +121,7 @@ export class LayoutSpringEmbedderService {
             });
 
             // sleep for a few ms each iteration to visualize layouting via spring forces
-            await this.sleep(10);
+            await this.sleep(1);
 
             iterations++;
         }
