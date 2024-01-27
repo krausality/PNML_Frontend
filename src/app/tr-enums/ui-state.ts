@@ -17,5 +17,4 @@ export enum ButtonState {
     Clear,
     Move,
     Select,
-    Help,
 }
