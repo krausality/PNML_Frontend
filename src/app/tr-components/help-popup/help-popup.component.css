@@ -11,3 +11,42 @@ h1.help-title {
     font-size: 26px;
     color: rgb(240, 0, 0);
 }
+
+h2 {
+    font-weight: normal;
+    color: rgb(30,30,30);
+    font-size: 20px;
+}
+
+p {
+    color: black;
+}
+
+table p:first-child {
+    margin-top: 0px;
+}
+
+table p:last-child {
+    margin-bottom: 0px;
+}
+
+table {
+    border-collapse: collapse;
+    /* border-color: black;
+    border-width: 1px;
+    border-style: solid; */
+}
+
+.button-cell,
+.text-cell {
+    vertical-align: top;
+    padding: 10px;
+}
+
+mat-icon.help-icon {
+    color: black;
+}
+
+button.help-text-button {
+    pointer-events: none;
+}

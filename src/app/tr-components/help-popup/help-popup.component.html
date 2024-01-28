@@ -7,28 +7,78 @@
 </div>
 
 <div mat-dialog-content>
-    <!-- Infotext for Build Mode -->
+
+    <!-- Infotext for Build Mode ****************************************** -->
     <ng-container *ngIf="uiService.tab === TabState.Build">
         <p>Content for Build Mode Help</p>
     </ng-container>
 
-    <!-- Infotext for Play Mode -->
+    <!-- Infotext for Play Mode ******************************************* -->
     <ng-container *ngIf="uiService.tab === TabState.Play">
         <p>Content for Play Mode Help</p>
     </ng-container>
 
-    <!-- Infotext for Build Mode -->
+    <!-- Infotext for Save Mode ******************************************* -->
     <ng-container *ngIf="uiService.tab === TabState.Save">
-        <p>Content for Play Mode Help</p>
+
+        <h2>Save petri net as data file</h2>
+
+        <table>
+            <tr>
+                <td class="button-cell">
+                    <button mat-stroked-button class="help-text-button">
+                        JSON
+                    </button>
+                </td>
+                <td class="text-cell">
+                    <p>Save petri net data in JSON format.</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="button-cell">
+                    <button mat-stroked-button class="help-text-button">
+                        PNML
+                    </button>
+                </td>
+                <td class="text-cell">
+                    <p>Save petri net data in PNML (Petri Net Meta Language) format (<a href="https://www.pnml.org/" target="_blank">PNML.org</a>). The format is based on XML.</p>
+                </td>
+            </tr>
+        </table>
+
+        <h2>Save petri net as image</h2>
+
+        <table>
+            <tr>
+                <td class="button-cell">
+                    <button mat-stroked-button class="help-text-button">
+                        PNG
+                    </button>
+                </td>
+                <td class="text-cell"><p>Save petri net as image in PNG (Portable Network Graphics) raster format.</p></td>
+            </tr>
+            <tr>
+                <td class="button-cell">
+                    <button mat-stroked-button class="help-text-button">
+                        SVG
+                    </button>
+                </td>
+                <td class="text-cell">
+                    <p>Save petri net as image in SVG (Scalable Vector Graphics) vector format.</p>
+                </td>
+            </tr>
+        </table>
+
     </ng-container>
 
-    <!-- Infotext for Code Tab -->
+    <!-- Infotext for Code Tab ******************************************** -->
     <ng-container *ngIf="uiService.tab === TabState.Code">
         <p>Content for Code Mode Help</p>
     </ng-container>
 
-    <!-- Context Help for Analyze Mode -->
-    <!-- <ng-container *ngIf="uiService.tab === TabState.Analyze">
+    <!-- Context Help for Analyze Mode ************************************ -->
+    <ng-container *ngIf="uiService.tab === TabState.Analyze">
         <p>Content for Analyze Mode Help</p>
-    </ng-container> -->
+    </ng-container>
+
 </div>
