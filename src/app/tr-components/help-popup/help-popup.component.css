@@ -18,7 +18,7 @@ h2 {
     font-size: 20px;
 }
 
-p {
+p, ul {
     color: black;
 }
 
@@ -49,4 +49,5 @@ mat-icon.help-icon {
 
 button.help-text-button {
     pointer-events: none;
+    white-space: nowrap;
 }
