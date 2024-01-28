@@ -1,5 +1,7 @@
 <div fxLayout="row" fxLayoutAlign="space-between center" class="header-area">
-    <h1 mat-dialog-title class="help-title">Help: {{TabState[uiService.tab]}}</h1>
+    <h1 mat-dialog-title class="help-title">
+        Help: {{ TabState[uiService.tab] }}
+    </h1>
 
     <button mat-dialog-close mat-icon-button class="close-button">
         <mat-icon>close</mat-icon>
@@ -7,169 +9,125 @@
 </div>
 
 <div mat-dialog-content>
-
     <!-- Infotext for Build Mode ****************************************** -->
     <ng-container *ngIf="uiService.tab === TabState.Build">
-
         <h2>Overview</h2>
-        <p>
-            In Build mode you can:
-        </p>
+        <p>In Build mode you can:</p>
         <ul>
-            <li>Build  a new petri net from scratch. </li>
+            <li>Build a new petri net from scratch.</li>
             <li>Modify an existing petri net.</li>
-            <li>Load a petri net from file with drag and drop into the canvas area (supported file formats: pnml, json).</li>
+            <li>
+                Load a petri net from file with drag and drop into the canvas
+                area (supported file formats: pnml, json).
+            </li>
         </ul>
         <p>
-            For most actions, you activate the appropriate action mode by selecting the corresponding button. While the mode is activated (button is highlighted in red) you can perform the actions belonging to this mode. A few buttons will directly perform the action ('Delete all' and layout buttons) or open a popup window ('Edit actions').
+            For most actions, you activate the appropriate action mode by
+            selecting the corresponding button. While the mode is activated
+            (button is highlighted in red) you can perform the actions belonging
+            to this mode. A few buttons will directly perform the action
+            ('Delete all' and layout buttons) or open a popup window ('Edit
+            actions').
         </p>
 
-        <h2>Blitz tool</h2>
+        <div class="grid">
+            <h2 class="grid-span-2">Blitz tool</h2>
+            <mat-icon class="help-icon">bolt</mat-icon>
+            <p>TODO: add description.</p>
 
-        <table>
-            <tr>
-                <td class="button-cell">
-                    <mat-icon class="help-icon">bolt</mat-icon>
-                </td>
-                <td class="text-cell"><p>TODO: add description.</p></td>
-            </tr>
-        </table>
+            <h2 class="grid-span-2">Add petri net elements</h2>
 
+            <mat-icon class="help-icon">circle</mat-icon>
+            <p>Place mode: Left-click in the canvas area to set a new place.</p>
 
-        <h2>Add petri net elements</h2>
+            <mat-icon class="help-icon">square</mat-icon>
+            <p>
+                Transition mode: Left-click in the canvas area to set a new
+                transition.
+            </p>
 
-        <table>
-            <tr>
-                <td class="button-cell">
-                    <mat-icon class="help-icon">circle</mat-icon>
-                </td>
-                <td class="text-cell"><p>Place mode: Left-click in the canvas area to set a new place.</p></td>
-            </tr>
-            <tr>
-                <td class="button-cell">
-                    <mat-icon class="help-icon">square</mat-icon>
-                </td>
-                <td class="text-cell"><p>Transition mode: Left-click in the canvas area to set a new transition.</p></td>
-            </tr>
-            <tr>
-                <td class="button-cell">
-                    <mat-icon class="help-icon">north_east</mat-icon>
-                </td>
-                <td class="text-cell">
-                    <p>Arc mode: To add a new arc from a start node (place or transition) to a complementary end node (transition or place)</p>
-                    <ul>
-                        <li>left-click on the start node and keep the button pressed down, then</li>
-                        <li>drag the arraow into the end node and </li>
-                        <li>release the mouse to finalize the arc.</li>
-                    </ul>
-                    <p>To abort an ongoing arc drawing, just release the mouse button anywhere in the empty area of the canvas.</p>
-                </td>
-            </tr>
-            <tr>
-                <td class="button-cell">
-                    <mat-icon class="help-icon">linear_scale</mat-icon>
-                </td>
-                <td class="text-cell">
-                    <p>Anchor mode: To add a new anchor point to an arc</p>
-                    <ul>
-                        <li>
-                            left-click on the arc and hold the mouse button pressed down &rAarr; the application temporarily switches into 'Move' mode,
-                        </li>
-                        <li>drag the anchor point to its desired position and </li>
-                        <li>release the mouse button to set the anchor point.</li>
-                    </ul>
-                </td>
-            </tr>
-        </table>
+            <mat-icon class="help-icon">north_east</mat-icon>
+            <div>
+                <p>
+                    Arc mode: To add a new arc from a start node (place or
+                    transition) to a complementary end node (transition or
+                    place)
+                </p>
+                <ul>
+                    <li>
+                        left-click on the start node and keep the button pressed
+                        down, then
+                    </li>
+                    <li>drag the arraow into the end node and</li>
+                    <li>release the mouse to finalize the arc.</li>
+                </ul>
+                <p>
+                    To abort an ongoing arc drawing, just release the mouse
+                    button anywhere in the empty area of the canvas.
+                </p>
+            </div>
 
-        <h2>Tokens and weights</h2>
+            <mat-icon class="help-icon">linear_scale</mat-icon>
+            <div>
+                <p>Anchor mode: To add a new anchor point to an arc</p>
+                <ul>
+                    <li>
+                        left-click on the arc and hold the mouse button pressed
+                        down &rAarr; the application temporarily switches into
+                        'Move' mode,
+                    </li>
+                    <li>drag the anchor point to its desired position and</li>
+                    <li>release the mouse button to set the anchor point.</li>
+                </ul>
+            </div>
 
-        <table>
-            <tr>
-                <td class="button-cell">
-                    <mat-icon class="help-icon">add</mat-icon>
-                </td>
-                <td class="text-cell"><p>TODO: add description.</p></td>
-            </tr>
-            <tr>
-                <td class="button-cell">
-                    <mat-icon class="help-icon">remove</mat-icon>
-                </td>
-                <td class="text-cell"><p>TODO: add description.</p></td>
-            </tr>
-        </table>
+            <h2 class="grid-span-2">Tokens and weights</h2>
 
-        <h2>Delete</h2>
+            <mat-icon class="help-icon">add</mat-icon>
+            <p>TODO: add description.</p>
 
-        <table>
-            <tr>
-                <td class="button-cell">
-                    <mat-icon class="help-icon">delete</mat-icon>
-                </td>
-                <td class="text-cell"><p>TODO: add description.</p></td>
-            </tr>
-            <tr>
-                <td class="button-cell">
-                    <mat-icon class="help-icon">clear</mat-icon>
-                </td>
-                <td class="text-cell"><p>TODO: add description.</p></td>
-            </tr>
-        </table>
+            <mat-icon class="help-icon">remove</mat-icon>
+            <p>TODO: add description.</p>
 
-        <h2>Move</h2>
+            <h2 class="grid-span-2">Delete</h2>
 
-        <table>
-            <tr>
-                <td class="button-cell">
-                    <mat-icon class="help-icon">open_with</mat-icon>
-                </td>
-                <td class="text-cell"><p>TODO: add description.</p></td>
-            </tr>
-        </table>
+            <mat-icon class="help-icon">delete</mat-icon>
+            <p>TODO: add description.</p>
 
-        <h2>Actions</h2>
+            <mat-icon class="help-icon">clear</mat-icon>
+            <p>TODO: add description.</p>
 
-        <table>
-            <tr>
-                <td class="button-cell">
-                    <mat-icon class="help-icon">ads_click</mat-icon>
-                </td>
-                <td class="text-cell"><p>TODO: add description.</p></td>
-            </tr>
-            <tr>
-                <td class="button-cell">
-                    <mat-icon class="help-icon">edit_note</mat-icon>
-                </td>
-                <td class="text-cell"><p>TODO: add description.</p></td>
-            </tr>
-        </table>
+            <h2 class="grid-span-2">Move</h2>
 
-        <h2>Layout</h2>
+            <mat-icon class="help-icon">open_with</mat-icon>
+            <p>TODO: add description.</p>
 
-        <table>
-            <tr>
-                <td class="button-cell">
-                    <button mat-stroked-button class="help-text-button">
-                        Spring Embedder
-                    </button>
-                </td>
-                <td class="text-cell">
-                    <p>Apply automatic layout to the petri net with a Spring Embedder algorithm. Orphan nodes will stay in their original position</p>
-                </td>
-            </tr>
-            <tr>
-                <td class="button-cell">
-                    <button mat-stroked-button class="help-text-button">
-                        Sugiyama
-                    </button>
-                </td>
-                <td class="text-cell">
-                    <p>Apply automatic layout to the petri net with a Sugiyama algorithm. Orphan nodes will be placed in the first column of the new layout.</p>
-                </td>
-            </tr>
-        </table>
+            <h2 class="grid-span-2">Actions</h2>
+            <mat-icon class="help-icon">ads_click</mat-icon>
+            <p>TODO: add description.</p>
 
+            <mat-icon class="help-icon">edit_note</mat-icon>
+            <p>TODO: add description.</p>
+        </div>
+        <div class="grid">
+            <h2 class="grid-span-2">Layout</h2>
+            <button mat-stroked-button class="help-text-button">
+                Spring Embedder
+            </button>
+            <p>
+                Apply automatic layout to the petri net with a Spring Embedder
+                algorithm. Orphan nodes will stay in their original position
+            </p>
 
+            <button mat-stroked-button class="help-text-button">
+                Sugiyama
+            </button>
+            <p>
+                Apply automatic layout to the petri net with a Sugiyama
+                algorithm. Orphan nodes will be placed in the first column of
+                the new layout.
+            </p>
+        </div>
     </ng-container>
 
     <!-- Infotext for Play Mode ******************************************* -->
@@ -181,7 +139,12 @@
                 <td class="button-cell">
                     <mat-icon class="help-icon">restart_alt</mat-icon>
                 </td>
-                <td class="text-cell"><p>Reset token game: Reset petri net marking to its initial state at the beginning of the token game.</p></td>
+                <td class="text-cell">
+                    <p>
+                        Reset token game: Reset petri net marking to its initial
+                        state at the beginning of the token game.
+                    </p>
+                </td>
             </tr>
             <tr>
                 <td class="button-cell">
@@ -189,7 +152,10 @@
                 </td>
                 <td class="text-cell">
                     <p>
-                        Step back: Set the petri net marking one step back to the state before the last transition firing. Can be applied multiple times until you reach the start state of the token game.
+                        Step back: Set the petri net marking one step back to
+                        the state before the last transition firing. Can be
+                        applied multiple times until you reach the start state
+                        of the token game.
                     </p>
                 </td>
             </tr>
@@ -198,7 +164,6 @@
 
     <!-- Infotext for Save Mode ******************************************* -->
     <ng-container *ngIf="uiService.tab === TabState.Save">
-
         <h2>Save petri net as data file</h2>
 
         <table>
@@ -219,7 +184,12 @@
                     </button>
                 </td>
                 <td class="text-cell">
-                    <p>Save petri net data in PNML (Petri Net Meta Language) format (<a href="https://www.pnml.org/" target="_blank">PNML.org</a>). The format is based on XML.</p>
+                    <p>
+                        Save petri net data in PNML (Petri Net Meta Language)
+                        format (<a href="https://www.pnml.org/" target="_blank"
+                            >PNML.org</a
+                        >). The format is based on XML.
+                    </p>
                 </td>
             </tr>
         </table>
@@ -233,7 +203,11 @@
                         PNG
                     </button>
                 </td>
-                <td class="text-cell"><p>Save in PNG (Portable Network Graphics) raster format.</p></td>
+                <td class="text-cell">
+                    <p>
+                        Save in PNG (Portable Network Graphics) raster format.
+                    </p>
+                </td>
             </tr>
             <tr>
                 <td class="button-cell">
@@ -246,12 +220,10 @@
                 </td>
             </tr>
         </table>
-
     </ng-container>
 
     <!-- Infotext for Code Tab ******************************************** -->
     <ng-container *ngIf="uiService.tab === TabState.Code">
-
         <table>
             <tr>
                 <td class="button-cell">
@@ -264,9 +236,7 @@
                     <mat-icon class="help-icon">task</mat-icon>
                 </td>
                 <td class="text-cell">
-                    <p>
-                        TODO: add description.
-                    </p>
+                    <p>TODO: add description.</p>
                 </td>
             </tr>
             <tr>
@@ -275,7 +245,9 @@
                         JSON
                     </button>
                 </td>
-                <td class="text-cell"><p>Disply source code in JSON format.</p></td>
+                <td class="text-cell">
+                    <p>Disply source code in JSON format.</p>
+                </td>
             </tr>
             <tr>
                 <td class="button-cell">
@@ -288,12 +260,10 @@
                 </td>
             </tr>
         </table>
-
     </ng-container>
 
     <!-- Context Help for Analyze Mode ************************************ -->
     <ng-container *ngIf="uiService.tab === TabState.Analyze">
         <p>Content for Analyze Mode Help</p>
     </ng-container>
-
 </div>
