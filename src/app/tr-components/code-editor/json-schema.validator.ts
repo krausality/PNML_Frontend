@@ -1,7 +1,8 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 import Ajv from 'ajv/dist/2020';
-import jsonSchema from 'src/app/tr-components/code-editor/petrinet.schema';
+import { validateJsonAgainstSchema } from 'src/app/tr-utils/json.utils';
+import jsonSchema from 'src/app/tr-utils/petrinet.schema';
 
 const ajv = new Ajv({
     allowMatchingProperties: true,
@@ -18,25 +19,15 @@ export function createJsonSchemaValidator(): ValidatorFn {
             return null;
         }
 
-        const codeValidationErrors: ValidationErrors = {};
+        let codeValidationErrors: ValidationErrors = {};
 
         try {
-            const json = JSON.parse(value);
-            const valid = validate(json);
-
-            if (!valid) {
-                validate.errors?.forEach((validationError) => {
-                    let path = validationError.instancePath;
-                    path = path.replace(/\//g, '.');
-
-                    codeValidationErrors[path] = validationError.message;
-                });
-            }
+            codeValidationErrors = validateJsonAgainstSchema(value);
         } catch (e) {
-            codeValidationErrors['JSON parsing error'] = e;
+            console.log(e);
+            return null;
         }
 
-        // everything is valid
         return Object.keys(codeValidationErrors).length
             ? codeValidationErrors
             : null;

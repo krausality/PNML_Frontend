@@ -16,6 +16,11 @@ import { ButtonState } from 'src/app/tr-enums/ui-state';
 
 import { createJsonSchemaValidator } from './json-schema.validator';
 
+// const parseJson = require('json-parse-better-errors');
+// import parseJson = require('json-parse-better-errors');
+// import parseJson from 'json-parse-better-errors';
+// import * as parseJson from 'json-parse-better-errors';
+
 @Component({
     selector: 'app-code-editor',
     templateUrl: './code-editor.component.html',
@@ -87,16 +92,20 @@ export class CodeEditorComponent implements OnInit {
         } catch (error) {
             this.matDialog.open(ErrorPopupComponent, {
                 data: {
-                    parsingError: true,
+                    parsingError: error,
                     schemaValidationErrors: this.textareaControl.errors,
                 },
             });
             return;
         }
 
-        // Display results of JSON against Petrinet JSOn Schema
-        // TODO: Validate XML as well?
-        if (this.textareaControl.errors) {
+        // Code was parsed successfully
+        // Display results of JSON against Petrinet JSON Schema
+        // TODO: Ideally add XML Schema Validation as well
+        if (
+            this.uiService.codeEditorFormat$.value === CodeEditorFormat.JSON &&
+            this.textareaControl.errors
+        ) {
             this.matDialog.open(ErrorPopupComponent, {
                 data: {
                     parsingError: false,
