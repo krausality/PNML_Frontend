@@ -132,134 +132,66 @@
 
     <!-- Infotext for Play Mode ******************************************* -->
     <ng-container *ngIf="uiService.tab === TabState.Play">
-        <h2>Token game</h2>
+        <div class="grid">
+            <h2 class="grid-span-2">Token game</h2>
 
-        <table>
-            <tr>
-                <td class="button-cell">
-                    <mat-icon class="help-icon">restart_alt</mat-icon>
-                </td>
-                <td class="text-cell">
-                    <p>
-                        Reset token game: Reset petri net marking to its initial
-                        state at the beginning of the token game.
-                    </p>
-                </td>
-            </tr>
-            <tr>
-                <td class="button-cell">
-                    <mat-icon class="help-icon">fast_rewind</mat-icon>
-                </td>
-                <td class="text-cell">
-                    <p>
-                        Step back: Set the petri net marking one step back to
-                        the state before the last transition firing. Can be
-                        applied multiple times until you reach the start state
-                        of the token game.
-                    </p>
-                </td>
-            </tr>
-        </table>
+            <mat-icon class="help-icon">restart_alt</mat-icon>
+            <p>
+                Reset token game: Reset petri net marking to its initial state
+                at the beginning of the token game.
+            </p>
+
+            <mat-icon class="help-icon">fast_rewind</mat-icon>
+            <p>
+                Step back: Set the petri net marking one step back to the state
+                before the last transition firing. Can be applied multiple times
+                until you reach the start state of the token game.
+            </p>
+        </div>
     </ng-container>
 
     <!-- Infotext for Save Mode ******************************************* -->
     <ng-container *ngIf="uiService.tab === TabState.Save">
-        <h2>Save petri net as data file</h2>
+        <div class="grid">
+            <h2 class="grid-span-2">Save petri net as data file</h2>
 
-        <table>
-            <tr>
-                <td class="button-cell">
-                    <button mat-stroked-button class="help-text-button">
-                        JSON
-                    </button>
-                </td>
-                <td class="text-cell">
-                    <p>Save petri net data in JSON format.</p>
-                </td>
-            </tr>
-            <tr>
-                <td class="button-cell">
-                    <button mat-stroked-button class="help-text-button">
-                        PNML
-                    </button>
-                </td>
-                <td class="text-cell">
-                    <p>
-                        Save petri net data in PNML (Petri Net Meta Language)
-                        format (<a href="https://www.pnml.org/" target="_blank"
-                            >PNML.org</a
-                        >). The format is based on XML.
-                    </p>
-                </td>
-            </tr>
-        </table>
+            <button mat-stroked-button class="help-text-button">JSON</button>
+            <p>Save petri net data in JSON format.</p>
 
-        <h2>Save petri net as image</h2>
+            <button mat-stroked-button class="help-text-button">PNML</button>
+            <p>
+                Save petri net data in PNML (Petri Net Meta Language) format (<a
+                    href="https://www.pnml.org/"
+                    target="_blank"
+                    >PNML.org</a
+                >). The format is based on XML.
+            </p>
 
-        <table>
-            <tr>
-                <td class="button-cell">
-                    <button mat-stroked-button class="help-text-button">
-                        PNG
-                    </button>
-                </td>
-                <td class="text-cell">
-                    <p>
-                        Save in PNG (Portable Network Graphics) raster format.
-                    </p>
-                </td>
-            </tr>
-            <tr>
-                <td class="button-cell">
-                    <button mat-stroked-button class="help-text-button">
-                        SVG
-                    </button>
-                </td>
-                <td class="text-cell">
-                    <p>Save in SVG (Scalable Vector Graphics) vector format.</p>
-                </td>
-            </tr>
-        </table>
+            <h2 class="grid-span-2">Save petri net as image</h2>
+
+            <button mat-stroked-button class="help-text-button">PNG</button>
+            <p>Save in PNG (Portable Network Graphics) raster format.</p>
+
+            <button mat-stroked-button class="help-text-button">SVG</button>
+            <p>Save in SVG (Scalable Vector Graphics) vector format.</p>
+        </div>
     </ng-container>
 
     <!-- Infotext for Code Tab ******************************************** -->
     <ng-container *ngIf="uiService.tab === TabState.Code">
-        <table>
-            <tr>
-                <td class="button-cell">
-                    <mat-icon class="help-icon">restart_alt</mat-icon>
-                </td>
-                <td class="text-cell"><p>TODO: add description.</p></td>
-            </tr>
-            <tr>
-                <td class="button-cell">
-                    <mat-icon class="help-icon">task</mat-icon>
-                </td>
-                <td class="text-cell">
-                    <p>TODO: add description.</p>
-                </td>
-            </tr>
-            <tr>
-                <td class="button-cell">
-                    <button mat-stroked-button class="help-text-button">
-                        JSON
-                    </button>
-                </td>
-                <td class="text-cell">
-                    <p>Disply source code in JSON format.</p>
-                </td>
-            </tr>
-            <tr>
-                <td class="button-cell">
-                    <button mat-stroked-button class="help-text-button">
-                        PNML
-                    </button>
-                </td>
-                <td class="text-cell">
-                    <p>Disply source code in PNML format.</p>
-                </td>
-            </tr>
-        </table>
+        <div class="grid">
+            <mat-icon class="help-icon">restart_alt</mat-icon>
+            <p>TODO: add description.</p>
+
+            <mat-icon class="help-icon">task</mat-icon>
+            <p>TODO: add description.</p>
+
+            <button mat-stroked-button class="help-text-button">JSON</button>
+            <p>Disply source code in JSON format.</p>
+
+            <button mat-stroked-button class="help-text-button">PNML</button>
+            <p>Disply source code in PNML format.</p>
+        </div>
     </ng-container>
 
     <!-- Context Help for Analyze Mode ************************************ -->
