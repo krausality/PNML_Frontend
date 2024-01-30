@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { ButtonState, TabState } from '../tr-enums/ui-state';
+import { ButtonState, CodeEditorFormat, TabState } from '../tr-enums/ui-state';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
@@ -21,6 +22,14 @@ export class UiService {
     // for petri net transitions during the token game are still displayed
     // instantaneously.
     tabTransitioning: boolean = false;
+
+    buttonState$: BehaviorSubject<ButtonState | null> =
+        new BehaviorSubject<ButtonState | null>(this.button);
+
+    // BehaviorSubject that changes state when the code format is switched in the button bar
+    // this way the code editor can be notified of the new format without the use of event bindings
+    codeEditorFormat$: BehaviorSubject<CodeEditorFormat> =
+        new BehaviorSubject<CodeEditorFormat>(CodeEditorFormat.JSON);
 
     constructor() {}
 }

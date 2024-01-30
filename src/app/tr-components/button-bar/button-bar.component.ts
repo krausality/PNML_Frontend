@@ -7,12 +7,20 @@ import { ExportSvgService } from 'src/app/tr-services/export-svg.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ManageActionsPopupComponent } from '../manage-actions-popup/manage-actions-popup.component';
 import { TokenGameService } from 'src/app/tr-services/token-game.service';
-import { ButtonState, TabState } from 'src/app/tr-enums/ui-state';
+import {
+    ButtonState,
+    CodeEditorFormat,
+    TabState,
+} from 'src/app/tr-enums/ui-state';
 import { ClearPopupComponent } from '../clear-popup/clear-popup.component';
 import { DataService } from '../../tr-services/data.service';
 import { PlaceInvariantsService } from 'src/app/tr-services/place-invariants.service';
 import { PlaceInvariantsTableComponent } from '../place-invariants-table/place-invariants-table.component';
+import { LayoutSpringEmbedderService } from 'src/app/tr-services/layout-spring-embedder.service';
+import { LayoutSugyiamaService } from 'src/app/tr-services/layout-sugyiama.service';
 
+import { showTooltipDelay } from 'src/app/tr-services/position.constants';
+import { HelpPopupComponent } from '../help-popup/help-popup.component';
 @Component({
     selector: 'app-button-bar',
     templateUrl: './button-bar.component.html',
@@ -21,10 +29,11 @@ import { PlaceInvariantsTableComponent } from '../place-invariants-table/place-i
 export class ButtonBarComponent {
     readonly TabState = TabState;
     readonly ButtonState = ButtonState;
+    readonly CodeEditorFormat = CodeEditorFormat;
+
+    readonly showTooltipDelay = showTooltipDelay;
 
     public petrinetCss: string = '';
-
-    showDelay = 800;
 
     constructor(
         protected uiService: UiService,
@@ -36,6 +45,8 @@ export class ButtonBarComponent {
         private dataService: DataService,
         private matDialog: MatDialog,
         protected placeInvariantsService: PlaceInvariantsService,
+        private layoutSpringEmebdderService: LayoutSpringEmbedderService,
+        private layoutSugyiamaService: LayoutSugyiamaService,
     ) {}
 
     // gets called when a tab is clicked
@@ -59,8 +70,15 @@ export class ButtonBarComponent {
                 this.placeInvariantsService.reset();
                 this.uiService.tab = this.TabState.Analyze;
                 break;
+            case 'code':
+                this.uiService.tab = this.TabState.Code;
+                this.uiService.codeEditorFormat$.next(
+                    this.uiService.codeEditorFormat$.value,
+                );
+                break;
         }
         this.uiService.button = null;
+        this.uiService.buttonState$.next(null);
 
         setTimeout(() => {
             this.uiService.tabTransitioning = false;
@@ -71,6 +89,7 @@ export class ButtonBarComponent {
     // sets the "button" property in the uiService
     buttonClicked(button: ButtonState) {
         this.uiService.button = button;
+        this.uiService.buttonState$.next(button);
     }
 
     openActionDialog() {
@@ -87,5 +106,34 @@ export class ButtonBarComponent {
         if (!this.dataService.isEmpty()) {
             this.matDialog.open(PlaceInvariantsTableComponent);
         }
+    }
+
+    openHelpDialog() {
+        this.matDialog.open(HelpPopupComponent);
+    }
+
+    applyLayout(layoutAlgorithm: string) {
+        switch (layoutAlgorithm) {
+            case 'spring-embedder':
+                this.layoutSpringEmebdderService.layoutSpringEmbedder();
+                break;
+            case 'sugyiama':
+                this.layoutSpringEmebdderService.terminate();
+                this.layoutSugyiamaService.applySugyiamaLayout();
+                break;
+            default:
+                this.layoutSpringEmebdderService.terminate();
+                break;
+        }
+    }
+
+    switchCodeEditorFormat(format: CodeEditorFormat) {
+        // only send a new value if it is not the same as the current value
+        if (format === this.uiService.codeEditorFormat$.value) {
+            return;
+        }
+
+        // set the new format as next value in the BehaviorSubject
+        this.uiService.codeEditorFormat$.next(format);
     }
 }

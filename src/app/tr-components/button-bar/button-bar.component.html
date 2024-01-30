@@ -15,7 +15,7 @@
                 "
                 (click)="buttonClicked(ButtonState.Blitz)"
                 matTooltip="Auto-Petrinet"
-                [matTooltipShowDelay]="showDelay"
+                [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>bolt</mat-icon>
             </button>
@@ -31,7 +31,7 @@
                 "
                 (click)="buttonClicked(ButtonState.Place)"
                 matTooltip="Add Place"
-                [matTooltipShowDelay]="showDelay"
+                [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>circle</mat-icon>
             </button>
@@ -44,7 +44,7 @@
                 "
                 (click)="buttonClicked(ButtonState.Transition)"
                 matTooltip="Add transition"
-                [matTooltipShowDelay]="showDelay"
+                [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>square</mat-icon>
             </button>
@@ -55,7 +55,7 @@
                 [color]="uiService.button === ButtonState.Arc ? 'primary' : ''"
                 (click)="buttonClicked(ButtonState.Arc)"
                 matTooltip="Add arc"
-                [matTooltipShowDelay]="showDelay"
+                [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>north_east</mat-icon>
             </button>
@@ -67,6 +67,8 @@
                     uiService.button === ButtonState.Anchor ? 'primary' : ''
                 "
                 (click)="buttonClicked(ButtonState.Anchor)"
+                matTooltip="Add anchor point"
+                [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>linear_scale</mat-icon>
             </button>
@@ -80,7 +82,7 @@
                 [color]="uiService.button === ButtonState.Add ? 'primary' : ''"
                 (click)="buttonClicked(ButtonState.Add)"
                 matTooltip="Increase tokens or weight"
-                [matTooltipShowDelay]="showDelay"
+                [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>add</mat-icon>
             </button>
@@ -93,7 +95,7 @@
                 "
                 (click)="buttonClicked(ButtonState.Remove)"
                 matTooltip="Decrease tokens or weight"
-                [matTooltipShowDelay]="showDelay"
+                [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>remove</mat-icon>
             </button>
@@ -105,8 +107,8 @@
                     uiService.button === ButtonState.Delete ? 'primary' : ''
                 "
                 (click)="buttonClicked(ButtonState.Delete)"
-                matTooltip="Delete element"
-                [matTooltipShowDelay]="showDelay"
+                matTooltip="Delete single element"
+                [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>delete</mat-icon>
             </button>
@@ -118,6 +120,8 @@
                     uiService.button === ButtonState.Clear ? 'primary' : ''
                 "
                 (click)="openClearDialog()"
+                matTooltip="Delete the whole petrinet"
+                [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>clear</mat-icon>
             </button>
@@ -130,8 +134,8 @@
                 mat-icon-button
                 [color]="uiService.button === ButtonState.Move ? 'primary' : ''"
                 (click)="buttonClicked(ButtonState.Move)"
-                matTooltip="Move element"
-                [matTooltipShowDelay]="showDelay"
+                matTooltip="Move individual elements or the complete petri net (canvas drag)"
+                [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>open_with</mat-icon>
             </button>
@@ -147,7 +151,7 @@
                 "
                 (click)="buttonClicked(ButtonState.Select)"
                 matTooltip="Add action label to a transition"
-                [matTooltipShowDelay]="showDelay"
+                [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>ads_click</mat-icon>
             </button>
@@ -157,9 +161,41 @@
                 mat-icon-button
                 (click)="openActionDialog()"
                 matTooltip="Edit action label options"
-                [matTooltipShowDelay]="showDelay"
+                [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>edit_note</mat-icon>
+            </button>
+        </div>
+
+        <div class="button-container float-right">
+            <button
+                mat-stroked-button
+                class="text-button"
+                (click)="applyLayout('spring-embedder')"
+                matTooltip="Apply spring embedder layout to current petrinet"
+                [matTooltipShowDelay]="showTooltipDelay"
+            >
+                Spring Embedder
+            </button>
+
+            <!-- apply sugyiama layout (once) -->
+            <button
+                mat-stroked-button
+                class="text-button"
+                (click)="applyLayout('sugyiama')"
+                matTooltip="Apply sugyiama layout to current petrinet"
+                [matTooltipShowDelay]="showTooltipDelay"
+            >
+                Sugyiama
+            </button>
+
+            <button
+                mat-icon-button
+                (click)="openHelpDialog()"
+                matTooltip="Show help page for 'build' mode"
+                [matTooltipShowDelay]="showTooltipDelay"
+            >
+                <mat-icon>help</mat-icon>
             </button>
         </div>
     </mat-tab>
@@ -178,7 +214,7 @@
                 [disabled]="tokenGameService.isGameHistoryEmpty()"
                 (click)="tokenGameService.resetGame()"
                 matTooltip="Reset to start"
-                [matTooltipShowDelay]="showDelay"
+                [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>restart_alt</mat-icon>
             </button>
@@ -189,12 +225,23 @@
                 [disabled]="tokenGameService.isGameHistoryEmpty()"
                 (click)="tokenGameService.revertToPreviousState()"
                 matTooltip="Go back one step"
-                [matTooltipShowDelay]="showDelay"
+                [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>fast_rewind</mat-icon>
             </button>
         </div>
+        <div class="button-container float-right">
+            <button
+                mat-icon-button
+                (click)="openHelpDialog()"
+                matTooltip="Show help page for 'play' mode"
+                [matTooltipShowDelay]="showTooltipDelay"
+            >
+                <mat-icon>help</mat-icon>
+            </button>
+        </div>
     </mat-tab>
+
     <mat-tab label="save">
         <ng-template mat-tab-label>
             <mat-icon class="example-tab-icon">download</mat-icon>
@@ -209,7 +256,7 @@
                 class="text-button"
                 (click)="exportJsonDataService.exportAsJson()"
                 matTooltip="Export petrinet as JSON"
-                [matTooltipShowDelay]="showDelay"
+                [matTooltipShowDelay]="showTooltipDelay"
             >
                 JSON
             </button>
@@ -220,7 +267,7 @@
                 class="text-button"
                 (click)="pnmlService.writePNML()"
                 matTooltip="Export petrinet as PNML"
-                [matTooltipShowDelay]="showDelay"
+                [matTooltipShowDelay]="showTooltipDelay"
             >
                 PNML
             </button>
@@ -239,7 +286,7 @@
                     )
                 "
                 matTooltip="Save petrinet as PNG image"
-                [matTooltipShowDelay]="showDelay"
+                [matTooltipShowDelay]="showTooltipDelay"
             >
                 PNG
             </button>
@@ -250,9 +297,97 @@
                 class="text-button"
                 (click)="exportSvgService.exportAsSvg()"
                 matTooltip="Save petrinet as SVG image"
-                [matTooltipShowDelay]="showDelay"
+                [matTooltipShowDelay]="showTooltipDelay"
             >
                 SVG
+            </button>
+        </div>
+
+        <div class="button-container float-right">
+            <button
+                mat-icon-button
+                (click)="openHelpDialog()"
+                matTooltip="Show help page for 'save' mode"
+                [matTooltipShowDelay]="showTooltipDelay"
+            >
+                <mat-icon>help</mat-icon>
+            </button>
+        </div>
+    </mat-tab>
+
+    <mat-tab label="code">
+        <ng-template mat-tab-label>
+            <mat-icon class="example-tab-icon">data_object</mat-icon>
+            Code
+        </ng-template>
+
+        <!-- buttons for tab "code" -->
+        <div class="button-container">
+            <!-- reset button -->
+            <button
+                mat-icon-button
+                matTooltip="Reset code editor to the current petrinet state"
+                [matTooltipShowDelay]="showTooltipDelay"
+                (click)="
+                    uiService.codeEditorFormat$.next(
+                        uiService.codeEditorFormat$.value
+                    )
+                "
+            >
+                <mat-icon>restart_alt</mat-icon>
+            </button>
+
+            <!-- apply button -->
+            <button
+                mat-icon-button
+                matTooltip="Apply the source code in the code editor as the new petrinet state"
+                [matTooltipShowDelay]="showTooltipDelay"
+                (click)="buttonClicked(ButtonState.ApplyCode)"
+            >
+                <mat-icon>task</mat-icon>
+            </button>
+        </div>
+
+        <div class="button-container float-right">
+            <!-- switch code editor to json format -->
+            <button
+                mat-stroked-button
+                class="text-button"
+                [color]="
+                    uiService.codeEditorFormat$.value === CodeEditorFormat.JSON
+                        ? 'primary'
+                        : ''
+                "
+                (click)="switchCodeEditorFormat(CodeEditorFormat.JSON)"
+                matTooltip="Switch the code editor format to JSON"
+                [matTooltipShowDelay]="showTooltipDelay"
+            >
+                JSON
+            </button>
+
+            <!-- switch code editor to pnml format -->
+            <button
+                mat-stroked-button
+                class="text-button"
+                [color]="
+                    uiService.codeEditorFormat$.value === CodeEditorFormat.PNML
+                        ? 'primary'
+                        : ''
+                "
+                (click)="switchCodeEditorFormat(CodeEditorFormat.PNML)"
+                matTooltip="Switch the code editor format to PNML"
+                [matTooltipShowDelay]="showTooltipDelay"
+            >
+                PNML
+            </button>
+
+            <button
+                mat-icon-button
+                (click)="openHelpDialog()"
+                matTooltip="Show help page for 'save' mode"
+                [matTooltipShowDelay]="showTooltipDelay"
+            >
+                <mat-icon>help</mat-icon>
             </button>
         </div>
     </mat-tab>
@@ -273,7 +408,7 @@
                     openPlaceInvariantsTable()
                 "
                 matTooltip="Calculate place invariants with Farkas algorithm"
-                [matTooltipShowDelay]="showDelay"
+                [matTooltipShowDelay]="showTooltipDelay"
             >
                 Place Invariants (Farkas)
             </button>
@@ -288,7 +423,7 @@
                     openPlaceInvariantsTable()
                 "
                 matTooltip="Remove linearly dependent place invariants from result matrix of Farkas algorithm"
-                [matTooltipShowDelay]="showDelay"
+                [matTooltipShowDelay]="showTooltipDelay"
             >
                 Minimal Place Invariants
             </button>
@@ -317,7 +452,7 @@
                     openPlaceInvariantsTable()
                 "
                 matTooltip="Show table with place invariants (PIs) from latest calculation and select place invariants for linear combination."
-                [matTooltipShowDelay]="showDelay"
+                [matTooltipShowDelay]="showTooltipDelay"
             >
                 Show/Select PIs
             </button>

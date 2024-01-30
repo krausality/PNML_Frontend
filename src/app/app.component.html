@@ -12,34 +12,24 @@
     <!--    Main content    -->
 
     <!-- button bar and layout switch -->
-    <div fxLayout="row">
+    <div fxLayout="row" fxLayoutAlign="space-between end">
         <app-button-bar fxFlex></app-button-bar>
-        <app-layout-switch fxFlex></app-layout-switch>
     </div>
 
-    <!-- petri net component -->
-    <app-petri-net
-        class="padding full-size"
-        (fileContent)="processSourceChange($event)"
-    ></app-petri-net>
-
-    <div fxLayout="row" fxLayoutAlign="space-evenly start">
-        <app-example-file
-            title="File"
-            link="assets/example.json"
-            description="An example .json Petri net"
-        ></app-example-file>
-
-        <mat-form-field appearance="outline" class="textarea">
-            <mat-label>File content</mat-label>
-            <textarea
-                matInput
-                cdkTextareaAutosize
-                cdkAutosizeMinRows="10"
-                cdkAutosizeMaxRows="20"
-                [formControl]="textareaFc"
-            ></textarea>
-        </mat-form-field>
+    <div class="petri-net-container" fxLayout="row">
+        <!-- petri net component -->
+        <app-petri-net
+            [ngClass]="{
+                'petri-net': true,
+                active: uiService.tab === TabState.Code
+            }"
+        ></app-petri-net>
+        <app-code-editor
+            [ngClass]="{
+                'code-editor': true,
+                active: uiService.tab === TabState.Code
+            }"
+        ></app-code-editor>
     </div>
 
     <!--  Footer  -->
