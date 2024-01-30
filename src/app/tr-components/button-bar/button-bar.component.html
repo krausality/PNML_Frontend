@@ -315,6 +315,73 @@
         </div>
     </mat-tab>
 
+    <mat-tab label="analyze">
+        <ng-template mat-tab-label>
+            <mat-icon class="example-tab-icon">functions</mat-icon>
+            Analyze
+        </ng-template>
+
+        <!-- buttons for tab "analyze" -->
+        <div class="button-container">
+            <button
+                mat-stroked-button
+                class="text-button"
+                (click)="
+                    placeInvariantsService.calculatePIs();
+                    openPlaceInvariantsTable()
+                "
+                matTooltip="Calculate place invariants with Farkas algorithm"
+                [matTooltipShowDelay]="showTooltipDelay"
+            >
+                Place Invariants (Farkas)
+            </button>
+            <button
+                mat-stroked-button
+                class="text-button"
+                [disabled]="
+                    placeInvariantsService.placeInvariantsMatrix.length === 0
+                "
+                (click)="
+                    placeInvariantsService.removeNonMinimalPIs();
+                    openPlaceInvariantsTable()
+                "
+                matTooltip="Remove linearly dependent place invariants from result matrix of Farkas algorithm"
+                [matTooltipShowDelay]="showTooltipDelay"
+            >
+                Minimal Place Invariants
+            </button>
+
+            <!-- divider -->
+            <div class="divider"></div>
+
+            <!-- show table with place invariants -->
+            <!-- <button
+                mat-icon-button
+                [disabled]="placeInvariantsService.placeInvariantsMatrix.length === 0"
+                (click)="placeInvariantsService.showFullTable=true; openPlaceInvariantsTable()"
+                matTooltip="Show table with place invariants from latest calculation and select place invariants for linear combination."
+                [matTooltipShowDelay]="showDelay"
+            >
+                <mat-icon>view_headline</mat-icon>
+            </button> -->
+            <button
+                mat-stroked-button
+                class="text-button"
+                [disabled]="
+                    placeInvariantsService.placeInvariantsMatrix.length === 0
+                "
+                (click)="
+                    placeInvariantsService.showFullTable = true;
+                    openPlaceInvariantsTable()
+                "
+                matTooltip="Show table with place invariants (PIs) from latest calculation and select place invariants for linear combination."
+                [matTooltipShowDelay]="showTooltipDelay"
+            >
+                Show/Select PIs
+            </button>
+        </div>
+    </mat-tab>
+
     <mat-tab label="code">
         <ng-template mat-tab-label>
             <mat-icon class="example-tab-icon">data_object</mat-icon>
@@ -388,73 +455,6 @@
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>help</mat-icon>
-            </button>
-        </div>
-    </mat-tab>
-
-    <mat-tab label="analyze">
-        <ng-template mat-tab-label>
-            <mat-icon class="example-tab-icon">functions</mat-icon>
-            Analyze
-        </ng-template>
-
-        <!-- buttons for tab "analyze" -->
-        <div class="button-container">
-            <button
-                mat-stroked-button
-                class="text-button"
-                (click)="
-                    placeInvariantsService.calculatePIs();
-                    openPlaceInvariantsTable()
-                "
-                matTooltip="Calculate place invariants with Farkas algorithm"
-                [matTooltipShowDelay]="showTooltipDelay"
-            >
-                Place Invariants (Farkas)
-            </button>
-            <button
-                mat-stroked-button
-                class="text-button"
-                [disabled]="
-                    placeInvariantsService.placeInvariantsMatrix.length === 0
-                "
-                (click)="
-                    placeInvariantsService.removeNonMinimalPIs();
-                    openPlaceInvariantsTable()
-                "
-                matTooltip="Remove linearly dependent place invariants from result matrix of Farkas algorithm"
-                [matTooltipShowDelay]="showTooltipDelay"
-            >
-                Minimal Place Invariants
-            </button>
-
-            <!-- divider -->
-            <div class="divider"></div>
-
-            <!-- show table with place invariants -->
-            <!-- <button
-                mat-icon-button
-                [disabled]="placeInvariantsService.placeInvariantsMatrix.length === 0"
-                (click)="placeInvariantsService.showFullTable=true; openPlaceInvariantsTable()"
-                matTooltip="Show table with place invariants from latest calculation and select place invariants for linear combination."
-                [matTooltipShowDelay]="showDelay"
-            >
-                <mat-icon>view_headline</mat-icon>
-            </button> -->
-            <button
-                mat-stroked-button
-                class="text-button"
-                [disabled]="
-                    placeInvariantsService.placeInvariantsMatrix.length === 0
-                "
-                (click)="
-                    placeInvariantsService.showFullTable = true;
-                    openPlaceInvariantsTable()
-                "
-                matTooltip="Show table with place invariants (PIs) from latest calculation and select place invariants for linear combination."
-                [matTooltipShowDelay]="showTooltipDelay"
-            >
-                Show/Select PIs
             </button>
         </div>
     </mat-tab>
