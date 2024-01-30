@@ -142,11 +142,11 @@ text.label {
 }
 
 /* Styles for Analyze-mode*/
-.analyze-mode .place-invariant{
+.analyze-mode .place-invariant {
     fill: lightblue;
 }
 
-.analyze-mode text.place-invariant{
+.analyze-mode text.place-invariant {
     font-weight: bold;
     fill: rgb(133, 186, 204);
 }

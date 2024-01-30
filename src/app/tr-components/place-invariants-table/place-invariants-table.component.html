@@ -1,8 +1,5 @@
 <div fxLayout="row" fxLayoutAlign="space-between center">
-    <h2
-        mat-dialog-title
-        style="font-size: 18px;"
-    >
+    <h2 mat-dialog-title style="font-size: 18px">
         <!-- {{
             placeInvariantsService.selectedPlaceForPITable ?
             placeInvariantsService.selectedPlaceForPITable.id :
@@ -13,7 +10,7 @@
                 ' Place Invariants (Farkas)'
             )
         }} -->
-        {{placeInvariantsService.headerPItable()}}
+        {{ placeInvariantsService.headerPItable() }}
     </h2>
 
     <button
@@ -22,7 +19,7 @@
         class="close-button"
         (click)="
             placeInvariantsService.selectedPlaceForPITable = undefined;
-            placeInvariantsService.showFullTable = false;
+            placeInvariantsService.showFullTable = false
         "
     >
         <mat-icon>close</mat-icon>
@@ -32,28 +29,35 @@
 <div mat-dialog-content>
     <!-- <p *ngIf="placeInvariantsService.selectedPlaceForPITable">There are {{placeInvariantsService.placeInvariantsWithSelectedPlace().length}} place invariants that contain {{placeInvariantsService.selectedPlaceForPITable.id}}</p> -->
     <p *ngIf="placeInvariantsService.selectedPlaceForPITable">
-        {{placeInvariantsService.infoPIsWithSelectedPlace()}}
+        {{ placeInvariantsService.infoPIsWithSelectedPlace() }}
     </p>
     <ng-container *ngIf="placeInvariantsService.showFullTable">
         <p>Linear combination of selected place invariants:</p>
         <p>
-            {{placeInvariantsService.linearCombinationString}}
+            {{ placeInvariantsService.linearCombinationString }}
             =
-            {{placeInvariantsService.tokenSumOfLinearCombination}}
+            {{ placeInvariantsService.tokenSumOfLinearCombination }}
         </p>
     </ng-container>
     <table *ngIf="placeInvariantsService.pITableHasData">
         <thead>
             <tr>
                 <th scope="col">#</th>
-                <th scope="col" *ngFor="let placeId of placeInvariantsService.placeIds">{{ placeId }}</th>
+                <th
+                    scope="col"
+                    *ngFor="let placeId of placeInvariantsService.placeIds"
+                >
+                    {{ placeId }}
+                </th>
             </tr>
         </thead>
         <tbody>
-            <ng-container *ngFor="
-                let row of placeInvariantsService.placeInvariantsMatrix;
-                let i = index
-            ">
+            <ng-container
+                *ngFor="
+                    let row of placeInvariantsService.placeInvariantsMatrix;
+                    let i = index
+                "
+            >
                 <tr
                     *ngIf="placeInvariantsService.includePI(row)"
                     [ngClass]="{
@@ -61,7 +65,8 @@
                     }"
                 >
                     <th scope="row">{{ i + 1 }}</th>
-                    <td *ngFor="let coefficient of row"
+                    <td
+                        *ngFor="let coefficient of row"
                         (click)="placeInvariantsService.toggleSelectedPI(i)"
                     >
                         {{ coefficient }}
@@ -71,4 +76,3 @@
         </tbody>
     </table>
 </div>
-

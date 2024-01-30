@@ -64,7 +64,9 @@ export class PetriNetComponent {
         protected placeInvariantsService: PlaceInvariantsService,
     ) {
         this.httpClient
-            .get('assets/place-invariants-5-MAndS.json', { responseType: 'text' })
+            .get('assets/place-invariants-5-MAndS.json', {
+                responseType: 'text',
+            })
             .subscribe((data) => {
                 const [places, transitions, arcs, actions] =
                     parserService.parse(data);

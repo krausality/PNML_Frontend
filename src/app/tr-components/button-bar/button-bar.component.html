@@ -268,8 +268,10 @@
             <button
                 mat-stroked-button
                 class="text-button"
-                (click)="placeInvariantsService.calculatePIs();
-                openPlaceInvariantsTable()"
+                (click)="
+                    placeInvariantsService.calculatePIs();
+                    openPlaceInvariantsTable()
+                "
                 matTooltip="Calculate place invariants with Farkas algorithm"
                 [matTooltipShowDelay]="showDelay"
             >
@@ -278,9 +280,13 @@
             <button
                 mat-stroked-button
                 class="text-button"
-                [disabled]="placeInvariantsService.placeInvariantsMatrix.length === 0"
-                (click)="placeInvariantsService.removeNonMinimalPIs();
-                openPlaceInvariantsTable()"
+                [disabled]="
+                    placeInvariantsService.placeInvariantsMatrix.length === 0
+                "
+                (click)="
+                    placeInvariantsService.removeNonMinimalPIs();
+                    openPlaceInvariantsTable()
+                "
                 matTooltip="Remove linearly dependent place invariants from result matrix of Farkas algorithm"
                 [matTooltipShowDelay]="showDelay"
             >
@@ -303,8 +309,13 @@
             <button
                 mat-stroked-button
                 class="text-button"
-                [disabled]="placeInvariantsService.placeInvariantsMatrix.length === 0"
-                (click)="placeInvariantsService.showFullTable=true; openPlaceInvariantsTable()"
+                [disabled]="
+                    placeInvariantsService.placeInvariantsMatrix.length === 0
+                "
+                (click)="
+                    placeInvariantsService.showFullTable = true;
+                    openPlaceInvariantsTable()
+                "
                 matTooltip="Show table with place invariants (PIs) from latest calculation and select place invariants for linear combination."
                 [matTooltipShowDelay]="showDelay"
             >
@@ -312,7 +323,4 @@
             </button>
         </div>
     </mat-tab>
-
-
-
 </mat-tab-group>

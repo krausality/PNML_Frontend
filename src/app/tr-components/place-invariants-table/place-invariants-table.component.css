@@ -22,7 +22,7 @@ td {
 }
 
 tr:hover {
-    background-color: rgb(240,240,240);
+    background-color: rgb(240, 240, 240);
 }
 
 /* tr:hover td{
@@ -39,5 +39,5 @@ tr.selected-row {
 }
 
 tr.selected-row:hover {
-    background-color: rgb(163,206,220);
+    background-color: rgb(163, 206, 220);
 }

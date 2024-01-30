@@ -88,7 +88,7 @@ export class PlaceInvariantsService {
 
     calculatePIs() {
         // Reset
-        this.reset()
+        this.reset();
 
         this.incidenceMatrix = this.calculateIncidenceMatrix();
         // console.log(this.incidenceMatrix);
@@ -103,7 +103,7 @@ export class PlaceInvariantsService {
 
     removeNonMinimalPIs() {
         // TODO: possobly refactoring, so that this test is not necessary
-        if (this.incidenceMatrix){
+        if (this.incidenceMatrix) {
             this.placeInvariantsMatrix = this.calculateMinimalPIs(
                 this.placeInvariantsMatrix,
                 this.incidenceMatrix,
@@ -112,7 +112,9 @@ export class PlaceInvariantsService {
             // console.log(this.placeInvariantsMatrix);
 
             // Selected PIs for display: default --> all
-            this.selectedPIs = Array(this.placeInvariantsMatrix.length).fill(true);
+            this.selectedPIs = Array(this.placeInvariantsMatrix.length).fill(
+                true,
+            );
             this.calculateLinearCombination();
         }
     }
@@ -264,14 +266,15 @@ export class PlaceInvariantsService {
         return dMatMin;
     }
 
-    calculateLinearCombination(){
+    calculateLinearCombination() {
         // Initialize vector for linear combination of PIs
         this.linearCombination = Array(this.placeIds.length).fill(0);
 
-        for (let i = 0; i < this.placeInvariantsMatrix.length; i++){
-            if (this.selectedPIs[i]){
+        for (let i = 0; i < this.placeInvariantsMatrix.length; i++) {
+            if (this.selectedPIs[i]) {
                 for (let j = 0; j < this.placeInvariantsMatrix[i].length; j++) {
-                    this.linearCombination[j] += this.placeInvariantsMatrix[i][j];
+                    this.linearCombination[j] +=
+                        this.placeInvariantsMatrix[i][j];
                 }
             }
         }
@@ -279,10 +282,13 @@ export class PlaceInvariantsService {
 
     get linearCombinationString(): string {
         let pIString = '';
-        for (let i = 0; i < this.placeIds.length; i++){
+        for (let i = 0; i < this.placeIds.length; i++) {
             const f = this.linearCombination[i];
             if (f > 0) {
-                pIString += (pIString.length > 0 ? ' + ' : '') + (f > 1 ? f + '*' : '') + this.placeIds[i];
+                pIString +=
+                    (pIString.length > 0 ? ' + ' : '') +
+                    (f > 1 ? f + '*' : '') +
+                    this.placeIds[i];
             }
         }
         return pIString;
@@ -330,7 +336,9 @@ export class PlaceInvariantsService {
     // b) Otherwise, every placeInvariant is included as a default.
     includePI(placeInvariant: number[]): boolean {
         if (this.selectedPlaceForPITable) {
-            let placeIndex = this.placeIds.indexOf(this.selectedPlaceForPITable.id);
+            let placeIndex = this.placeIds.indexOf(
+                this.selectedPlaceForPITable.id,
+            );
             return placeInvariant[placeIndex] > 0;
         } else {
             return true;
@@ -340,7 +348,7 @@ export class PlaceInvariantsService {
     placeInvariantsWithSelectedPlace(): number[][] {
         let PIsWithSelectedPlace: number[][] = [];
         for (let placeInvariant of this.placeInvariantsMatrix) {
-            if (this.includePI(placeInvariant)){
+            if (this.includePI(placeInvariant)) {
                 PIsWithSelectedPlace.push(placeInvariant);
             }
         }
@@ -351,14 +359,35 @@ export class PlaceInvariantsService {
         let place = this.selectedPlaceForPITable;
         let n = this.placeInvariantsWithSelectedPlace().length;
         let info = '';
-        let pITypeSingular: string = this.isMinimal ? 'minimal place invariant' : 'place invariant (Farkas)';
-        let pITypePlural: string = this.isMinimal ? 'minimal place invariants' : 'place invariants (Farkas)';
+        let pITypeSingular: string = this.isMinimal
+            ? 'minimal place invariant'
+            : 'place invariant (Farkas)';
+        let pITypePlural: string = this.isMinimal
+            ? 'minimal place invariants'
+            : 'place invariants (Farkas)';
         switch (n) {
-            case 0: info = 'There are no ' + pITypePlural + ' that contain ' + place?.id;
-            break;
-            case 1: info = 'There is 1 ' + pITypeSingular + ' that contains ' + place?.id;
-            break;
-            default: info = 'There are ' + n +' ' + pITypePlural + ' that contain ' + place?.id;
+            case 0:
+                info =
+                    'There are no ' +
+                    pITypePlural +
+                    ' that contain ' +
+                    place?.id;
+                break;
+            case 1:
+                info =
+                    'There is 1 ' +
+                    pITypeSingular +
+                    ' that contains ' +
+                    place?.id;
+                break;
+            default:
+                info =
+                    'There are ' +
+                    n +
+                    ' ' +
+                    pITypePlural +
+                    ' that contain ' +
+                    place?.id;
         }
         return info;
     }
@@ -369,8 +398,12 @@ export class PlaceInvariantsService {
         } else {
             let n = this.placeInvariantsMatrix.length;
 
-            let pITypeSingular: string = this.isMinimal ? 'minimal place invariant' : 'place invariant (Farkas)';
-            let pITypePlural: string = this.isMinimal ? 'minimal place invariants' : 'place invariants (Farkas)';
+            let pITypeSingular: string = this.isMinimal
+                ? 'minimal place invariant'
+                : 'place invariant (Farkas)';
+            let pITypePlural: string = this.isMinimal
+                ? 'minimal place invariants'
+                : 'place invariants (Farkas)';
 
             return n + ' ' + (n === 1 ? pITypeSingular : pITypePlural);
         }
