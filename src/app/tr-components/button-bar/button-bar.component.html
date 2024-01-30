@@ -307,6 +307,17 @@
                 Show/Select Place Invariants
             </button>
         </div>
+
+        <div class="button-container float-right">
+            <button
+                mat-icon-button
+                (click)="openHelpDialog()"
+                matTooltip="Show help page for 'save' mode"
+                [matTooltipShowDelay]="showTooltipDelay"
+            >
+                <mat-icon>help</mat-icon>
+            </button>
+        </div>
     </mat-tab>
 
     <mat-tab label="save">
