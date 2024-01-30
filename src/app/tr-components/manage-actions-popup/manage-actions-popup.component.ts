@@ -46,11 +46,13 @@ export class ManageActionsPopupComponent {
             this.isActionEmpty(actionLine2.value)
         ) {
             this.bothActionsEmpty = true;
+            this.actionAlreadyExists = false;
         } else if (
             this.dataService.getActions().includes(actionLine1.value) ||
             this.dataService.getActions().includes(actionLine2.value) ||
             this.dataService.getActions().includes(actionLine1.value + '~' +actionLine2.value)
         ) {
+            this.bothActionsEmpty = false;
             this.actionAlreadyExists = true;
         }
 
