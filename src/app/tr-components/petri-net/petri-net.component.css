@@ -134,7 +134,11 @@
 }
 
 .editable:active,
-.anchor.active {
+.anchor.active,
+.canvas.move-mode.dragging .place,
+.canvas.move-mode.dragging .transition,
+.canvas.move-mode.dragging .arc,
+.canvas.move-mode.dragging .anchor {
     stroke: red;
     stroke-width: 2;
 }
