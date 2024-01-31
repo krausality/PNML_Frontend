@@ -62,23 +62,6 @@ export class PetriNetComponent {
         protected editMoveElementsService: EditMoveElementsService,
         protected svgCoordinatesService: SvgCoordinatesService,
     ) {
-        this.httpClient
-            .get('assets/example.json', { responseType: 'text' })
-            .subscribe((data) => {
-                const [places, transitions, arcs, actions] =
-                    parserService.parse(data);
-                this.dataService.places = places;
-                this.dataService.transitions = transitions;
-                this.dataService.arcs = arcs;
-                this.dataService.actions = actions;
-            });
-
-        // this.httpClient.get("assets/example.pnml", { responseType: "text" }).subscribe(data => {
-        //     const [places, transitions, arcs] = pnmlService.parse(data);
-        //     this.dataService.places = places;
-        //     this.dataService.transitions = transitions;
-        //     this.dataService.arcs = arcs;
-        // });
         this.uiService.buttonState$.subscribe((buttonState) => {
             if (buttonState !== ButtonState.Blitz) {
                 this.lastNode = null;
