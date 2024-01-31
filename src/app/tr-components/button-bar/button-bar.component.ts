@@ -103,9 +103,7 @@ export class ButtonBarComponent {
     }
 
     openPlaceInvariantsTable() {
-        if (!this.dataService.isEmpty()) {
-            this.matDialog.open(PlaceInvariantsTableComponent);
-        }
+        this.matDialog.open(PlaceInvariantsTableComponent);
     }
 
     openHelpDialog() {

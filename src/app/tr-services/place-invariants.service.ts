@@ -10,7 +10,7 @@ export class PlaceInvariantsService {
     placeIds: string[] = [];
     transIds: string[] = [];
     incidenceMatrix: number[][] | undefined;
-    placeInvariantsMatrix: number[][] = [];
+    placeInvariantsMatrix: number[][] | undefined;
 
     // Flag to indicate, if placeInvariantsMatrix contains the minimal PIs
     isMinimal: boolean = false;
@@ -103,7 +103,7 @@ export class PlaceInvariantsService {
 
     removeNonMinimalPIs() {
         // TODO: possobly refactoring, so that this test is not necessary
-        if (this.incidenceMatrix) {
+        if (this.incidenceMatrix && this.placeInvariantsMatrix) {
             this.placeInvariantsMatrix = this.calculateMinimalPIs(
                 this.placeInvariantsMatrix,
                 this.incidenceMatrix,
@@ -270,13 +270,19 @@ export class PlaceInvariantsService {
         // Initialize vector for linear combination of PIs
         this.linearCombination = Array(this.placeIds.length).fill(0);
 
-        for (let i = 0; i < this.placeInvariantsMatrix.length; i++) {
-            if (this.selectedPIs[i]) {
-                for (let j = 0; j < this.placeInvariantsMatrix[i].length; j++) {
-                    this.linearCombination[j] +=
-                        this.placeInvariantsMatrix[i][j];
+        if (this.placeInvariantsMatrix) {
+            for (let i = 0; i < this.placeInvariantsMatrix.length; i++) {
+                if (this.selectedPIs[i]) {
+                    for (let j = 0; j < this.placeInvariantsMatrix[i].length; j++) {
+                        this.linearCombination[j] +=
+                            this.placeInvariantsMatrix[i][j];
+                    }
                 }
             }
+        } else {
+            // TODO: What should happen
+            // If nothing could be done, then reset linearCombination
+            this.linearCombination = [];
         }
     }
 
@@ -317,7 +323,7 @@ export class PlaceInvariantsService {
         this.placeIds = [];
         this.transIds = [];
         this.incidenceMatrix = undefined;
-        this.placeInvariantsMatrix = [];
+        this.placeInvariantsMatrix = undefined;
         this.isMinimal = false;
         this.linearCombination = [];
         this.selectedPIs = [];
@@ -347,9 +353,12 @@ export class PlaceInvariantsService {
 
     placeInvariantsWithSelectedPlace(): number[][] {
         let PIsWithSelectedPlace: number[][] = [];
-        for (let placeInvariant of this.placeInvariantsMatrix) {
-            if (this.includePI(placeInvariant)) {
-                PIsWithSelectedPlace.push(placeInvariant);
+        // TODO: What if this.placeInvariantsMatrix === undefined
+        if (this.placeInvariantsMatrix) {
+            for (let placeInvariant of this.placeInvariantsMatrix) {
+                if (this.includePI(placeInvariant)) {
+                    PIsWithSelectedPlace.push(placeInvariant);
+                }
             }
         }
         return PIsWithSelectedPlace;
@@ -396,7 +405,12 @@ export class PlaceInvariantsService {
         if (this.selectedPlaceForPITable) {
             return this.selectedPlaceForPITable.id;
         } else {
-            let n = this.placeInvariantsMatrix.length;
+            let n;
+            if (this.placeInvariantsMatrix){
+                n = this.placeInvariantsMatrix.length;
+            } else {
+                return "A Place Invariants Table Has Not Yet Been Calculated";
+            }
 
             let pITypeSingular: string = this.isMinimal
                 ? 'minimal place invariant'
@@ -414,8 +428,10 @@ export class PlaceInvariantsService {
     get pITableHasData(): boolean {
         if (this.selectedPlaceForPITable) {
             return this.placeInvariantsWithSelectedPlace().length > 0;
-        } else {
+        } else if (this.placeInvariantsMatrix) {
             return this.placeInvariantsMatrix.length > 0;
+        } else {
+            return false;
         }
     }
 

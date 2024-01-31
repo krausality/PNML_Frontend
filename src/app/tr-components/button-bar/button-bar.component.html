@@ -293,7 +293,7 @@
                 mat-stroked-button
                 class="text-button"
                 [disabled]="
-                    placeInvariantsService.placeInvariantsMatrix.length === 0
+                    !placeInvariantsService.placeInvariantsMatrix
                 "
                 (click)="
                     placeInvariantsService.showFullTable = true;
