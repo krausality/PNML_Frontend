@@ -324,3 +324,15 @@
         ></polyline>
     </g>
 </svg>
+
+<div *ngIf="dataService.isEmpty()" class="import-hint">
+    <p>
+        Get started by drawing a petrinet with the toolbar buttons <br />
+        or import a petrinet as JSON or PNML file by dragging it into this
+        space!
+    </p>
+    <!-- <p>
+        If you need help, check out the <mat-icon>help</mat-icon> button at the
+        righthand side of the toolbar.
+    </p> -->
+</div>
