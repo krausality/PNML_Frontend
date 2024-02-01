@@ -41,3 +41,7 @@ tr.selected-row {
 tr.selected-row:hover {
     background-color: rgb(163, 206, 220);
 }
+
+.not-active {
+    pointer-events: none;
+}

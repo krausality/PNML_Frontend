@@ -61,7 +61,8 @@
                 <tr
                     *ngIf="placeInvariantsService.includePI(row)"
                     [ngClass]="{
-                        'selected-row': placeInvariantsService.selectedPIs[i]
+                        'selected-row': placeInvariantsService.selectedPIs[i],
+                        'not-active': !placeInvariantsService.showFullTable
                     }"
                 >
                     <th scope="row">{{ i + 1 }}</th>
