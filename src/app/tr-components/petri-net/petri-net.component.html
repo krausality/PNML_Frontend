@@ -45,7 +45,8 @@
                     editable: isPlaceEditable(place),
                     'place-invariant': placeInvariantsService.placeFactor(
                         place.id
-                    )
+                    ),
+                    pointer: placeInvariantsService.placeInvariantsMatrix
                 }"
                 [attr.cx]="place.position.x"
                 [attr.cy]="place.position.y"
