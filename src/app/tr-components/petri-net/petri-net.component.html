@@ -75,7 +75,8 @@
             text-anchor="middle"
         >
             {{
-                (placeInvariantsService.placeFactor(place.id)
+                (placeInvariantsService.placeFactor(place.id) &&
+                    uiService.tab === TabState.Analyze
                     ? placeInvariantsService.placeFactor(place.id) + "*"
                     : "") + place.id
             }}
