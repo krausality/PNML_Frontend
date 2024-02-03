@@ -2,7 +2,6 @@ export enum TabState {
     Build,
     Play,
     Save,
-    Analyze,
     Code,
     Analyze,
 }
