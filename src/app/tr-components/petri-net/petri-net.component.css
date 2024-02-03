@@ -17,6 +17,11 @@
     pointer-events: none;
 }
 
+.import-hint p {
+    margin-left: 2rem;
+    margin-right: 2rem;
+}
+
 .canvas {
     width: 100%;
     height: 70vh;
