@@ -3,6 +3,7 @@ export enum TabState {
     Play,
     Save,
     Code,
+    Analyze,
 }
 
 export enum ButtonState {
@@ -17,4 +18,10 @@ export enum ButtonState {
     Clear,
     Move,
     Select,
+    ApplyCode,
+}
+
+export enum CodeEditorFormat {
+    JSON,
+    PNML,
 }

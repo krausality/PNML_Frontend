@@ -78,7 +78,6 @@ export class LayoutSpringEmbedderService {
             }
         });
 
-
         let iterations = 1;
         // this is only needed for the first iteration
         let maxForceVectorLength = this.epsilon + 1;

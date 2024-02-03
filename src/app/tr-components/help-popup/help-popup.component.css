@@ -1,0 +1,81 @@
+.close-button {
+    margin: 10px;
+}
+
+.header-area {
+    background-color: lightgrey;
+    border-bottom: 2px solid red;
+}
+
+h1.help-title {
+    font-size: 26px;
+    color: rgb(240, 0, 0);
+}
+
+h2 {
+    font-weight: normal;
+    color: rgb(30, 30, 30);
+    font-size: 20px;
+}
+
+p,
+ul {
+    color: black;
+}
+
+table p:first-child {
+    margin-top: 0px;
+}
+
+table p:last-child {
+    margin-bottom: 0px;
+}
+
+table {
+    border-collapse: collapse;
+    /* border-color: black;
+    border-width: 1px;
+    border-style: solid; */
+}
+
+.button-cell,
+.text-cell {
+    vertical-align: top;
+    padding: 10px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: min-content auto;
+    align-items: start;
+    grid-column-gap: 1rem;
+}
+
+.grid > mat-icon,
+.grid > p {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.grid > button {
+    margin-top: 0.7rem;
+    margin-bottom: 0.7rem;
+}
+
+.grid > mat-icon,
+.grid > button {
+    margin-left: 1.6rem;
+}
+
+.grid-span-2 {
+    grid-column: span 2;
+}
+
+mat-icon.help-icon {
+    color: black;
+}
+
+button.help-text-button {
+    pointer-events: none;
+    white-space: nowrap;
+}
