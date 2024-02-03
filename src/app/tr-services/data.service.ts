@@ -183,21 +183,16 @@ export class DataService {
     }
 
     hasElementsWithoutPosition(): boolean {
-        let hasElementsWithoutPosition = false;
-
-        const transitionWithoutPosition = this.getTransitions().find(transition => {
-            return (!transition.position.x || !transition.position.y)
-        })
-
-        const placeWithoutPosition = this.getPlaces().find(place => {
-            return (!place.position.x || !place.position.y)
-        })
-
-        if(transitionWithoutPosition || placeWithoutPosition) {
-            hasElementsWithoutPosition = true;
-        }
-
-        return hasElementsWithoutPosition;
+        // [].some search function will return true if
+        // any node is found that has either no x or no y position
+        return [...this.getTransitions(), ...this.getPlaces()].some(
+            (node: Node) => {
+                return (
+                    (!node.position.x && node.position.x !== 0) ||
+                    (!node.position.y && node.position.y !== 0)
+                );
+            },
+        );
     }
 
     mockData() {
