@@ -51,7 +51,22 @@
                 [attr.cx]="place.position.x"
                 [attr.cy]="place.position.y"
                 [attr.r]="radius"
-            />
+            >
+                <title
+                    *ngIf="
+                        uiService.tab === TabState.Analyze &&
+                        placeInvariantsService.placeInvariantsMatrix
+                    "
+                >
+                    Click to show
+                    {{
+                        placeInvariantsService.isMinimal
+                            ? "minimal place invariants"
+                            : "place invariants (Farkas)"
+                    }}
+                    that contain {{ place.id }}
+                </title>
+            </circle>
             <text
                 [ngClass]="{
                     'token-label': true,
@@ -76,7 +91,7 @@
         >
             {{
                 (placeInvariantsService.placeFactor(place.id) &&
-                    uiService.tab === TabState.Analyze
+                uiService.tab === TabState.Analyze
                     ? placeInvariantsService.placeFactor(place.id) + "*"
                     : "") + place.id
             }}
