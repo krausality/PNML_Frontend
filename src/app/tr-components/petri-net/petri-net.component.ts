@@ -135,7 +135,14 @@ export class PetriNetComponent {
 
     // Process Drag & Drop using Observables
     public processDropEvent(e: DragEvent) {
-        e.preventDefault();
+        e.preventDefault(); // Prevent opening of the dragged file in a new tab
+
+        // Drag & Drop imports should only be available in Code & Build Mode
+        // to prevent inconsistencies
+        if (![TabState.Code, TabState.Build].includes(this.uiService.tab)) {
+
+            return;
+        }
 
         const fileLocation = e.dataTransfer?.getData(
             ExampleFileComponent.META_DATA_CODE,
