@@ -140,6 +140,11 @@ export class PetriNetComponent {
         // Drag & Drop imports should only be available in Code & Build Mode
         // to prevent inconsistencies
         if (![TabState.Code, TabState.Build].includes(this.uiService.tab)) {
+            this.matDialog.open(ErrorPopupComponent, {
+                data: {
+                    error: 'Importing by drag & drop is only available in "Build" and "Code" mode',
+                },
+            });
 
             return;
         }
