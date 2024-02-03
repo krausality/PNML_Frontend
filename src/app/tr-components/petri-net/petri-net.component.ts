@@ -37,6 +37,7 @@ import { MouseConstants } from '../../tr-enums/mouse-constants';
 import { SvgCoordinatesService } from 'src/app/tr-services/svg-coordinates-service';
 import { DummyArc } from 'src/app/tr-classes/petri-net/dummyArc';
 import { ErrorPopupComponent } from '../error-popup/error-popup.component';
+import { LayoutSugyiamaService } from '../../tr-services/layout-sugyiama.service';
 
 @Component({
     selector: 'app-petri-net',
@@ -61,6 +62,7 @@ export class PetriNetComponent {
         private matDialog: MatDialog,
         protected editMoveElementsService: EditMoveElementsService,
         protected svgCoordinatesService: SvgCoordinatesService,
+        private layoutSugyiamaService: LayoutSugyiamaService,
     ) {
         this.httpClient
             .get('assets/example.json', { responseType: 'text' })
@@ -130,6 +132,10 @@ export class PetriNetComponent {
             this.dataService.transitions = transitions;
             this.dataService.arcs = arcs;
             this.dataService.actions = actions;
+
+            if (this.dataService.hasElementsWithoutPosition()) {
+                this.layoutSugyiamaService.applySugyiamaLayout();
+            }
         }
     }
 
