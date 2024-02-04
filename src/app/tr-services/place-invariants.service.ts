@@ -465,6 +465,12 @@ export class PlaceInvariantsService {
 
     // Rank of a matrix
     rank(mat: number[][]): number {
+
+        // rank of an empty matrix is 0
+        if (mat.length===0 || mat[0].length===0) {
+            return 0;
+        }
+
         let svd = new SingularValueDecomposition(mat, { autoTranspose: true });
         return svd.diagonal.filter((value) => value > 1e-10).length;
     }
