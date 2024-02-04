@@ -309,6 +309,11 @@ export class PlaceInvariantsService {
         return tokenSum;
     }
 
+    // Number of selected PIs
+    get numOfSelctedPIs(): number {
+        return this.selectedPIs.filter(isSelected => isSelected).length;
+    }
+
     // Returns the factor for the place placeId in the place invariant
     // which is the result of the linear combination of the selected
     // place invariants.
@@ -406,42 +411,22 @@ export class PlaceInvariantsService {
             // Header for table for a specific place
             return this.selectedPlaceForPITable.id;
         } else {
-            // let n;
-            // if (this.placeInvariantsMatrix){
-            //     n = this.placeInvariantsMatrix.length;
-            // } else {
-            //     return "A Place Invariants Table Has Not Yet Been Calculated";
-            // }
-
-
-
-            // let pITypeSingular: string = this.isMinimal
-            //     ? 'minimal place invariant'
-            //     : 'place invariant (Farkas)';
-            // let pITypePlural: string = this.isMinimal
-            //     ? 'minimal place invariants'
-            //     : 'place invariants (Farkas)';
-
-            // return n + ' ' + (n === 1 ? pITypeSingular : pITypePlural);
-
-            // Refactored: **************
-
             if (!this.placeInvariantsMatrix){
                 return "A Place Invariants Table Has Not Yet Been Calculated";
             }
 
             let pITypeSingular: string = this.isMinimal
-                ? 'minimal place invariant'
-                : 'place invariant (Farkas)';
+                ? 'Minimal Place Invariant'
+                : 'Place Invariant (Farkas)';
             let pITypePlural: string = this.isMinimal
-                ? 'minimal place invariants'
-                : 'place invariants (Farkas)';
+                ? 'Minimal Place Invariants'
+                : 'Place Invariants (Farkas)';
 
             let n = this.placeInvariantsMatrix.length;
 
             if (this.showLCTable) {
                 // Header for table with linear combination
-                return "Linear combination of " + pITypePlural;
+                return "Linear Combination of " + pITypePlural;
             } else {
                 // Header for result table from calculation
                 return n + ' ' + (n === 1 ? pITypeSingular : pITypePlural);
