@@ -39,6 +39,7 @@ import { PlaceInvariantsService } from 'src/app/tr-services/place-invariants.ser
 import { PlaceInvariantsTableComponent } from '../place-invariants-table/place-invariants-table.component';
 import { DummyArc } from 'src/app/tr-classes/petri-net/dummyArc';
 import { ErrorPopupComponent } from '../error-popup/error-popup.component';
+import { LayoutSugyiamaService } from '../../tr-services/layout-sugyiama.service';
 
 @Component({
     selector: 'app-petri-net',
@@ -62,6 +63,7 @@ export class PetriNetComponent {
         protected tokenGameService: TokenGameService,
         private matDialog: MatDialog,
         protected editMoveElementsService: EditMoveElementsService,
+        private layoutSugyiamaService: LayoutSugyiamaService,
         protected svgCoordinatesService: SvgCoordinatesService,
         protected placeInvariantsService: PlaceInvariantsService,
     ) {
@@ -78,12 +80,6 @@ export class PetriNetComponent {
                 this.dataService.actions = actions;
             });
 
-        // this.httpClient.get("assets/example.pnml", { responseType: "text" }).subscribe(data => {
-        //     const [places, transitions, arcs] = pnmlService.parse(data);
-        //     this.dataService.places = places;
-        //     this.dataService.transitions = transitions;
-        //     this.dataService.arcs = arcs;
-        // });
         this.uiService.buttonState$.subscribe((buttonState) => {
             if (buttonState !== ButtonState.Blitz) {
                 this.lastNode = null;
@@ -135,6 +131,10 @@ export class PetriNetComponent {
             this.dataService.transitions = transitions;
             this.dataService.arcs = arcs;
             this.dataService.actions = actions;
+
+            if (this.dataService.hasElementsWithoutPosition()) {
+                this.layoutSugyiamaService.applySugyiamaLayout();
+            }
         }
     }
 
