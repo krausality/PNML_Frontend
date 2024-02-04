@@ -270,7 +270,7 @@
                     placeInvariantsService.removeNonMinimalPIs();
                     openPlaceInvariantsTable()
                 "
-                matTooltip="Remove linearly dependent place invariants from result matrix of Farkas algorithm"
+                matTooltip="Calculate place invariants with Farkas algorithm AND Remove linearly dependent place invariants"
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 Minimal Place Invariants
@@ -280,15 +280,6 @@
             <div class="divider"></div>
 
             <!-- show table with place invariants -->
-            <!-- <button
-                mat-icon-button
-                [disabled]="placeInvariantsService.placeInvariantsMatrix.length === 0"
-                (click)="placeInvariantsService.showLCTable=true; openPlaceInvariantsTable()"
-                matTooltip="Show table with place invariants from latest calculation and select place invariants for linear combination."
-                [matTooltipShowDelay]="showDelay"
-            >
-                <mat-icon>view_headline</mat-icon>
-            </button> -->
             <button
                 mat-stroked-button
                 class="text-button"
