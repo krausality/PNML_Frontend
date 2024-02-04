@@ -11,59 +11,71 @@ export class VertexOrderingService {
     private _arcs: Arc[] = [];
 
     // Maps of adjacent nodes
-    private _nodeInputMap: Map<Node, Node[]> = new Map();
-    private _nodeOutputMap: Map<Node, Node[]> = new Map();
+    private _nodeInputIdMap: Map<string, Node[]> = new Map();
+    private _nodeOutputIdMap: Map<string, Node[]> = new Map();
 
     private _layers: LayeredGraph = [];
 
-    constructor(
-        layers: LayeredGraph,
-        arcs: Arc[],
-        nodeInputMap: Map<Node, Node[]>,
-        nodeOutputMap: Map<Node, Node[]>,
-    ) {
+    constructor(layers: LayeredGraph, nodes: Node[], arcs: Arc[]) {
         this._layers = layers;
+        this._nodes = nodes;
         this._arcs = arcs;
 
-        this._nodeInputMap = nodeInputMap;
-        this._nodeOutputMap = nodeOutputMap;
+        this.generateAdjacentNodeMaps();
     }
 
     orderVertices() {
         this.insertDummyNodes();
 
-        // TODO:
-        // We should create a deep copy of the layers
-        // then use median & transpose algorithms to sort layer-copy
-        // then always continue on with wichever order has the least crossings (--> best)
-        // Problem: the current data structure doesn't allow this since our
-        // we always have to iterate over the original layers to be able to use our node maps
-
-        // const currentOrder = this._layers;
-        // let best = currentOrder;
+        let best = [...this._layers];
+        let bestCrossingsNumber = this.totalCrossings(best);
 
         // 24 iterations is the number taken from paper by Ganser et al.,
-        // for testing we'll use less for now
-        const maxIterations = 4;
+        // they suggest checking wether the algorithm has actually improved anything
+        const maxIterations = 24;
+        const maxRoundsNoImprovement = 6;
+        let roundsWithNoImprovement = 0;
         for (let i = 0; i < maxIterations; i++) {
+            // Change direction of sweep for every other iteration
+            if (i % 2 !== 0) {
+                this._layers.reverse();
+            }
             this.median(i, this._layers);
             this.transpose(this._layers);
+            if (i % 2 !== 0) {
+                this._layers.reverse();
+            }
 
-            // console.log(this.totalCrossings(this._layers));
+            const currentCrossingNumber = this.totalCrossings(this._layers);
 
-            // if (this.totalCrossings(currentOrder) > this.totalCrossings(best)) {
-            //     best = currentOrder;
-            // }
+            if (currentCrossingNumber < bestCrossingsNumber) {
+                best = [...this._layers];
+                bestCrossingsNumber = currentCrossingNumber;
+            } else {
+                roundsWithNoImprovement++;
+            }
+
+            // If the optimum (0 crossings) has been reached
+            // or X rounds have passed without any improvements, we'll stop the algorithm early
+            if (
+                bestCrossingsNumber === 0 ||
+                roundsWithNoImprovement > maxRoundsNoImprovement
+            ) {
+                break;
+            }
         }
+
+        this._layers = best;
     }
 
     private median(iteration: number, currentOrder: LayeredGraph) {
         // Sweep through the tree
         // Change direction top-to-bottom to bottom-to-top for each iteration
-        if (iteration % 2 === 0) {
-            for (const [layerId, nodes] of currentOrder.entries()) {
-                const median = new Map();
-                for (const node of nodes) {
+        for (const [layerId, nodes] of currentOrder.entries()) {
+            const median = new Map();
+            for (const node of nodes) {
+                // Direction changes top-to-bottom to bottom-to-top for every other iteration
+                if (iteration % 2 === 0) {
                     const adjacentLayer = currentOrder[layerId - 1];
                     if (adjacentLayer) {
                         median.set(
@@ -74,13 +86,7 @@ export class VertexOrderingService {
                             ),
                         );
                     }
-                }
-                nodes.sort((a, b) => median.get(a) - median.get(b));
-            }
-        } else {
-            for (const [layerId, nodes] of currentOrder.reverse().entries()) {
-                const median = new Map();
-                for (const node of nodes) {
+                } else {
                     const adjacentLayer = currentOrder[layerId + 1];
                     if (adjacentLayer) {
                         median.set(
@@ -92,18 +98,18 @@ export class VertexOrderingService {
                         );
                     }
                 }
-                nodes.sort((a, b) => median.get(a) - median.get(b));
             }
+            nodes.sort((a, b) => median.get(a) - median.get(b));
         }
     }
 
     private transpose(currentOrder: LayeredGraph) {
         let improved = true;
 
-        // TODO: remove counter once sure that we're not creating any endless loops by accident
-        let failsafe = 0;
-        while (improved && failsafe < 5) {
-            failsafe++;
+        let runs = 0;
+        const maxRuns = 20;
+        while (improved && runs < maxRuns) {
+            runs++;
             improved = false;
             for (const [layerId, layer] of currentOrder.entries()) {
                 if (layer.length === 1 || !currentOrder[layerId + 1]) {
@@ -141,15 +147,21 @@ export class VertexOrderingService {
         let crossings = 0;
         for (const [layerId, layer] of currentOrder.entries()) {
             if (layer.length === 1 || !currentOrder[layerId + 1]) {
-                // the last layer or nodes with 1 node cannot have crossings
+                // the last layer or layers with only one node cannot have crossings
                 continue;
             }
 
-            // Check crossings for each neighbouring nodes
-            for (let position = 0; position < layer.length - 1; position++) {
-                const nodeA = layer[position];
-                const nodeB = layer[position + 1];
-                crossings += this.layerCrossings(nodeA, nodeB, layerId);
+            // Check crossings for each pair of nodes in the layer
+            for (let positionA = 0; positionA < layer.length; positionA++) {
+                for (
+                    let positionB = positionA + 1;
+                    positionB < layer.length;
+                    positionB++
+                ) {
+                    const nodeA = layer[positionA];
+                    const nodeB = layer[positionB];
+                    crossings += this.layerCrossings(nodeA, nodeB, layerId);
+                }
             }
         }
 
@@ -189,8 +201,8 @@ export class VertexOrderingService {
     private getConnectedNodes(node: Node) {
         const connectedNodes = [];
 
-        const inputNodes = this._nodeInputMap.get(node);
-        const outputNodes = this._nodeOutputMap.get(node);
+        const inputNodes = this._nodeInputIdMap.get(node.id);
+        const outputNodes = this._nodeOutputIdMap.get(node.id);
 
         if (inputNodes) connectedNodes.push(...inputNodes);
         if (outputNodes) connectedNodes.push(...outputNodes);
@@ -200,7 +212,7 @@ export class VertexOrderingService {
 
     private getMedianValueOfInputNodes(node: Node, layer: Node[]) {
         // console.log('[Vertex Ordering]: nodes in adjacent layer to node: ', node, layer);
-        const inputNodes = this._nodeInputMap.get(node);
+        const inputNodes = this._nodeInputIdMap.get(node.id);
         if (!inputNodes || !inputNodes.length) {
             // nodes with no adjacent vertices are given a median of -1
             return -1;
@@ -217,7 +229,7 @@ export class VertexOrderingService {
             // console.log('[Vertex Ordering]: adjacent values', adjacentValues);
 
             const mid = Math.floor(adjacentValues.length / 2);
-            // TODO: implemented weighted median
+            // TODO/Optimization: implemented weighted median
             return adjacentValues.length % 2 !== 0
                 ? adjacentValues[mid]
                 : (adjacentValues[mid - 1] + adjacentValues[mid]) / 2;
@@ -226,7 +238,7 @@ export class VertexOrderingService {
 
     private getMedianValueOfOutputNodes(node: Node, layer: Node[]) {
         // console.log('[Vertex Ordering]: nodes in adjacent layer to node: ', node, layer);
-        const outputNodes = this._nodeOutputMap.get(node);
+        const outputNodes = this._nodeOutputIdMap.get(node.id);
         if (!outputNodes || !outputNodes.length) {
             // nodes with no adjacent vertices are given a median of -1
             return -1;
@@ -243,7 +255,7 @@ export class VertexOrderingService {
             }
 
             const mid = Math.floor(adjacentValues.length / 2);
-            // TODO: implemented weighted median
+            // TODO/Optimization: implemented weighted median
             return adjacentValues.length % 2 !== 0
                 ? adjacentValues[mid]
                 : (adjacentValues[mid - 1] + adjacentValues[mid]) / 2;
@@ -261,7 +273,7 @@ export class VertexOrderingService {
             // This has to be done seperately for input & output nodes
             // so that we can ensure the correct direction of the inserted dummy arcs
             for (let node of nodes) {
-                const preNodes = this._nodeInputMap.get(node);
+                const preNodes = this._nodeInputIdMap.get(node.id);
                 if (preNodes) {
                     for (let preNode of preNodes) {
                         const preNodeLayer = this.findLayerIdForNode(preNode);
@@ -280,7 +292,7 @@ export class VertexOrderingService {
                     }
                 }
 
-                const outputNodes = this._nodeOutputMap.get(node);
+                const outputNodes = this._nodeOutputIdMap.get(node.id);
                 if (outputNodes) {
                     // check if there are outgoing edges from a vertex from a layer
                     // that is *not* the next one
@@ -341,20 +353,20 @@ export class VertexOrderingService {
     }
 
     private generateAdjacentNodeMaps() {
-        this._nodeInputMap.clear();
-        this._nodeOutputMap.clear();
+        this._nodeInputIdMap.clear();
+        this._nodeOutputIdMap.clear();
 
         this._arcs.forEach((arc) => {
-            if (this._nodeInputMap.get(arc.to)) {
-                this._nodeInputMap.get(arc.to)?.push(arc.from);
+            if (this._nodeInputIdMap.get(arc.to.id)) {
+                this._nodeInputIdMap.get(arc.to.id)?.push(arc.from);
             } else {
-                this._nodeInputMap.set(arc.to, [arc.from]);
+                this._nodeInputIdMap.set(arc.to.id, [arc.from]);
             }
 
-            if (this._nodeOutputMap.get(arc.from)) {
-                this._nodeOutputMap.get(arc.from)?.push(arc.to);
+            if (this._nodeOutputIdMap.get(arc.from.id)) {
+                this._nodeOutputIdMap.get(arc.from.id)?.push(arc.to);
             } else {
-                this._nodeOutputMap.set(arc.from, [arc.to]);
+                this._nodeOutputIdMap.set(arc.from.id, [arc.to]);
             }
         });
     }
