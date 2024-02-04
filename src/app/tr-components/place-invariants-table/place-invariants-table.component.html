@@ -1,17 +1,5 @@
 <div fxLayout="row" fxLayoutAlign="space-between center">
-    <h2 mat-dialog-title style="font-size: 18px">
-        <!-- {{
-            placeInvariantsService.selectedPlaceForPITable ?
-            placeInvariantsService.selectedPlaceForPITable.id :
-            placeInvariantsService.placeInvariantsMatrix.length +
-            (
-                placeInvariantsService.isMinimal ?
-                ' Minimal Place Invariants' :
-                ' Place Invariants (Farkas)'
-            )
-        }} -->
-        {{ placeInvariantsService.headerPItable() }}
-    </h2>
+    <h2 mat-dialog-title style="font-size: 18px">{{ placeInvariantsService.headerPItable() }}</h2>
 
     <button
         mat-dialog-close
@@ -19,7 +7,7 @@
         class="close-button"
         (click)="
             placeInvariantsService.selectedPlaceForPITable = undefined;
-            placeInvariantsService.showFullTable = false
+            placeInvariantsService.showLCTable = false
         "
     >
         <mat-icon>close</mat-icon>
@@ -31,7 +19,7 @@
     <p *ngIf="placeInvariantsService.selectedPlaceForPITable">
         {{ placeInvariantsService.infoPIsWithSelectedPlace() }}
     </p>
-    <ng-container *ngIf="placeInvariantsService.showFullTable">
+    <ng-container *ngIf="placeInvariantsService.showLCTable">
         <p>Linear combination of selected place invariants:</p>
         <p>
             {{ placeInvariantsService.linearCombinationString }}
@@ -62,7 +50,7 @@
                     *ngIf="placeInvariantsService.includePI(row)"
                     [ngClass]="{
                         'selected-row': placeInvariantsService.selectedPIs[i],
-                        'not-active': !placeInvariantsService.showFullTable
+                        'not-active': !placeInvariantsService.showLCTable
                     }"
                 >
                     <th scope="row">{{ i + 1 }}</th>

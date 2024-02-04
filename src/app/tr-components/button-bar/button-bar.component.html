@@ -283,7 +283,7 @@
             <!-- <button
                 mat-icon-button
                 [disabled]="placeInvariantsService.placeInvariantsMatrix.length === 0"
-                (click)="placeInvariantsService.showFullTable=true; openPlaceInvariantsTable()"
+                (click)="placeInvariantsService.showLCTable=true; openPlaceInvariantsTable()"
                 matTooltip="Show table with place invariants from latest calculation and select place invariants for linear combination."
                 [matTooltipShowDelay]="showDelay"
             >
@@ -296,13 +296,13 @@
                     !placeInvariantsService.placeInvariantsMatrix
                 "
                 (click)="
-                    placeInvariantsService.showFullTable = true;
+                    placeInvariantsService.showLCTable = true;
                     openPlaceInvariantsTable()
                 "
                 matTooltip="Show table with place invariants from latest calculation and select place invariants for linear combination."
                 [matTooltipShowDelay]="showTooltipDelay"
             >
-                Show/Select Place Invariants
+                Linear Combination
             </button>
         </div>
 

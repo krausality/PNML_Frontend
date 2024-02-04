@@ -26,8 +26,8 @@ export class PlaceInvariantsService {
     // If set, only PIs containing this place are shown.
     selectedPlaceForPITable: Place | undefined;
 
-    // Indicator variable if table with full functionality is shown
-    showFullTable: boolean = false;
+    // Indicator variable if table for linear combination (LC) of PIs is shown
+    showLCTable: boolean = false;
 
     // Incidence Matrices for Testing *************************************
 
@@ -403,12 +403,30 @@ export class PlaceInvariantsService {
 
     headerPItable(): string {
         if (this.selectedPlaceForPITable) {
+            // Header for table for a specific place
             return this.selectedPlaceForPITable.id;
         } else {
-            let n;
-            if (this.placeInvariantsMatrix){
-                n = this.placeInvariantsMatrix.length;
-            } else {
+            // let n;
+            // if (this.placeInvariantsMatrix){
+            //     n = this.placeInvariantsMatrix.length;
+            // } else {
+            //     return "A Place Invariants Table Has Not Yet Been Calculated";
+            // }
+
+
+
+            // let pITypeSingular: string = this.isMinimal
+            //     ? 'minimal place invariant'
+            //     : 'place invariant (Farkas)';
+            // let pITypePlural: string = this.isMinimal
+            //     ? 'minimal place invariants'
+            //     : 'place invariants (Farkas)';
+
+            // return n + ' ' + (n === 1 ? pITypeSingular : pITypePlural);
+
+            // Refactored: **************
+
+            if (!this.placeInvariantsMatrix){
                 return "A Place Invariants Table Has Not Yet Been Calculated";
             }
 
@@ -419,7 +437,15 @@ export class PlaceInvariantsService {
                 ? 'minimal place invariants'
                 : 'place invariants (Farkas)';
 
-            return n + ' ' + (n === 1 ? pITypeSingular : pITypePlural);
+            let n = this.placeInvariantsMatrix.length;
+
+            if (this.showLCTable) {
+                // Header for table with linear combination
+                return "Linear combination of " + pITypePlural;
+            } else {
+                // Header for result table from calculation
+                return n + ' ' + (n === 1 ? pITypeSingular : pITypePlural);
+            }
         }
     }
 
