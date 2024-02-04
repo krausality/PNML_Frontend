@@ -91,10 +91,8 @@ export class PlaceInvariantsService {
         this.reset();
 
         this.incidenceMatrix = this.calculateIncidenceMatrix();
-        // console.log(this.incidenceMatrix);
 
         this.placeInvariantsMatrix = this.placeInvariants(this.incidenceMatrix);
-        // console.log(this.placeInvariantsMatrix);
 
         // Selected PIs for display: default --> all
         this.selectedPIs = Array(this.placeInvariantsMatrix.length).fill(true);
@@ -109,7 +107,6 @@ export class PlaceInvariantsService {
                 this.incidenceMatrix,
             );
             this.isMinimal = true;
-            // console.log(this.placeInvariantsMatrix);
 
             // Selected PIs for display: default --> all
             this.selectedPIs = Array(this.placeInvariantsMatrix.length).fill(
@@ -124,13 +121,11 @@ export class PlaceInvariantsService {
         this.dataService
             .getPlaces()
             .forEach((place) => this.placeIds.push(place.id));
-        // console.log(this.placeIds);
 
         // Determine transIds
         this.dataService
             .getTransitions()
             .forEach((transition) => this.transIds.push(transition.id));
-        // console.log(this.transIds);
 
         const n = this.placeIds.length; // number of rows of incidence matrix
         const m = this.transIds.length; // number of columns of incidence matrix
@@ -180,11 +175,8 @@ export class PlaceInvariantsService {
             row.concat(identityMatrix[i]),
         );
 
-        //console.log(dMat);
-
         for (let i = 0; i < m; i++) {
             const k = dMat.length; // current number of rows in dMat(i-1), i.e. D(i-1)
-            // console.log("k: " + k);
             for (let j1 = 0; j1 < k; j1++) {
                 for (let j2 = j1 + 1; j2 < k; j2++) {
                     const d1 = dMat[j1]; // row j1
@@ -207,7 +199,6 @@ export class PlaceInvariantsService {
 
                         // Augment dMat with dPrime as the last row
                         dMat = [...dMat, dPrime];
-                        //console.log(dMat);
                     }
                 }
             }
@@ -216,7 +207,6 @@ export class PlaceInvariantsService {
             // inaccuracies.
             const epsilon = 0.00000001;
             dMat = dMat.filter((row) => Math.abs(row[i]) < epsilon);
-            // console.log(dMat);
         }
 
         // Remove first m columns from the matrix
@@ -336,7 +326,6 @@ export class PlaceInvariantsService {
 
     toggleSelectedPI(index: number) {
         this.selectedPIs[index] = !this.selectedPIs[index];
-        console.log(this.selectedPIs);
         this.calculateLinearCombination();
     }
 
