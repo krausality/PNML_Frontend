@@ -67,9 +67,8 @@ export class LayoutSugyiamaService {
         // - Re-order vertices to reduce crossings between arcs
         const vertexOrderingService = new VertexOrderingService(
             layers,
+            this._nodes,
             this._arcs,
-            this._nodeInputMap,
-            this._nodeOutputMap,
         );
         vertexOrderingService.orderVertices();
 

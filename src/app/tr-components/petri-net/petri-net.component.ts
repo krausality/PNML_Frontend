@@ -28,7 +28,11 @@ import { Point } from 'src/app/tr-classes/petri-net/point';
 import { Transition } from 'src/app/tr-classes/petri-net/transition';
 import { Arc } from 'src/app/tr-classes/petri-net/arc';
 import { EditMoveElementsService } from 'src/app/tr-services/edit-move-elements.service';
-import { ButtonState, TabState } from 'src/app/tr-enums/ui-state';
+import {
+    ButtonState,
+    CodeEditorFormat,
+    TabState,
+} from 'src/app/tr-enums/ui-state';
 import { TokenGameService } from 'src/app/tr-services/token-game.service';
 import { MatDialog } from '@angular/material/dialog';
 import { SetActionPopupComponent } from '../set-action-popup/set-action-popup.component';
@@ -37,6 +41,8 @@ import { MouseConstants } from '../../tr-enums/mouse-constants';
 import { SvgCoordinatesService } from 'src/app/tr-services/svg-coordinates-service';
 import { DummyArc } from 'src/app/tr-classes/petri-net/dummyArc';
 import { ErrorPopupComponent } from '../error-popup/error-popup.component';
+import { validateJsonAgainstSchema } from 'src/app/tr-utils/json.utils';
+import { LayoutSugyiamaService } from '../../tr-services/layout-sugyiama.service';
 
 @Component({
     selector: 'app-petri-net',
@@ -61,24 +67,8 @@ export class PetriNetComponent {
         private matDialog: MatDialog,
         protected editMoveElementsService: EditMoveElementsService,
         protected svgCoordinatesService: SvgCoordinatesService,
+        private layoutSugyiamaService: LayoutSugyiamaService,
     ) {
-        this.httpClient
-            .get('assets/example.json', { responseType: 'text' })
-            .subscribe((data) => {
-                const [places, transitions, arcs, actions] =
-                    parserService.parse(data);
-                this.dataService.places = places;
-                this.dataService.transitions = transitions;
-                this.dataService.arcs = arcs;
-                this.dataService.actions = actions;
-            });
-
-        // this.httpClient.get("assets/example.pnml", { responseType: "text" }).subscribe(data => {
-        //     const [places, transitions, arcs] = pnmlService.parse(data);
-        //     this.dataService.places = places;
-        //     this.dataService.transitions = transitions;
-        //     this.dataService.arcs = arcs;
-        // });
         this.uiService.buttonState$.subscribe((buttonState) => {
             if (buttonState !== ButtonState.Blitz) {
                 this.lastNode = null;
@@ -93,7 +83,7 @@ export class PetriNetComponent {
 
     private parsePetrinetData(
         content: string | undefined,
-        contentType: string,
+        contentType: CodeEditorFormat | undefined,
     ) {
         if (content) {
             // variable to parse the data into
@@ -107,18 +97,36 @@ export class PetriNetComponent {
             try {
                 // Use pnml parser if file type is pnml
                 // we'll try the json parser for all other cases
-                if (contentType === 'pnml') {
+                if (contentType === CodeEditorFormat.PNML) {
                     parsedData = this.pnmlService.parse(content);
                 } else {
                     parsedData = this.parserService.parse(content);
                 }
             } catch (error) {
                 this.matDialog.open(ErrorPopupComponent, {
-                    data: { parsingError: true, schemaValidationError: false },
+                    data: {
+                        parsingError: error,
+                        schemaValidationErrors: false,
+                    },
                 });
                 return;
             }
 
+            if (contentType === CodeEditorFormat.JSON) {
+                const schemaValidationErrors =
+                    validateJsonAgainstSchema(content);
+
+                if (Object.keys(schemaValidationErrors).length) {
+                    this.matDialog.open(ErrorPopupComponent, {
+                        data: {
+                            parsingError: false,
+                            schemaValidationErrors: schemaValidationErrors,
+                        },
+                    });
+
+                    return;
+                }
+            }
             // schema validation here (?)
             // show popup with data: { parsingError: false, schemaValidationError: true }
             // if schema fails to validate
@@ -130,6 +138,10 @@ export class PetriNetComponent {
             this.dataService.transitions = transitions;
             this.dataService.arcs = arcs;
             this.dataService.actions = actions;
+
+            if (this.dataService.hasElementsWithoutPosition()) {
+                this.layoutSugyiamaService.applySugyiamaLayout();
+            }
         }
     }
 
@@ -177,7 +189,7 @@ export class PetriNetComponent {
                 take(1),
             )
             .subscribe((content) => {
-                this.parsePetrinetData(content, 'json');
+                this.parsePetrinetData(content, CodeEditorFormat.JSON);
                 this.emitFileContent(content);
             });
     }
@@ -189,10 +201,22 @@ export class PetriNetComponent {
 
         const file = files[0];
 
-        // the file does not have a correct file type set,
         // extract type from file name
         const extension = file.name.split('.').pop();
-        const fileType = extension ? extension : '';
+        let fileType: CodeEditorFormat | undefined;
+
+        switch (extension) {
+            case 'json':
+                fileType = CodeEditorFormat.JSON;
+                break;
+            case 'pnml':
+            case 'xml':
+                fileType = CodeEditorFormat.PNML;
+                break;
+            default:
+                fileType = undefined;
+                break;
+        }
 
         this.fileReaderService
             .readFile(files[0])

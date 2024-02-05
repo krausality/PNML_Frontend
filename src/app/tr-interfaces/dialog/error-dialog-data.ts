@@ -1,5 +1,7 @@
+import { ValidationErrors } from '@angular/forms';
+
 export interface ErrorDialogData {
     error: string;
-    parsingError: boolean;
-    schemaValidationError: boolean;
+    parsingError: boolean | string;
+    schemaValidationErrors: ValidationErrors;
 }

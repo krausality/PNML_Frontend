@@ -182,6 +182,19 @@ export class DataService {
         return true;
     }
 
+    hasElementsWithoutPosition(): boolean {
+        // [].some search function will return true if
+        // any node is found that has either no x or no y position
+        return [...this.getTransitions(), ...this.getPlaces()].some(
+            (node: Node) => {
+                return (
+                    (!node.position.x && node.position.x !== 0) ||
+                    (!node.position.y && node.position.y !== 0)
+                );
+            },
+        );
+    }
+
     mockData() {
         this.places = [
             new Place(4, new Point(100, 200), 'p1'),
