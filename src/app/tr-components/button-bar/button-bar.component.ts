@@ -90,6 +90,8 @@ export class ButtonBarComponent {
     }
 
     openClearDialog() {
+        //Necessary To Reset Line-Drawing from Blitz-Tool
+        this.buttonClicked(ButtonState.Clear);
         if (!this.dataService.isEmpty()) {
             this.matDialog.open(ClearPopupComponent);
         }
