@@ -15,21 +15,27 @@ export class PlaceInvariantsService {
     // Flag to indicate, if placeInvariantsMatrix contains the minimal PIs
     isMinimal: boolean = false;
 
-    // Linear Combination of PIs that are highlighted in the petri net display
+    // Linear Combination of the selected PIs.
+    // The length of the vector is the number of places of the petri net.
+    // Each element corresponds to the place in placeIds with the same index.
+    // The values are the factors for the places for the new place invariant
+    // that results from the linear combination.
     linearCombination: number[] = [];
 
     // Boolean vector indicating which rows (PIs) of the placeInvariantsMatrix
     // have been selected for the linear combination
     selectedPIs: boolean[] = [];
 
-    // For display of place invariant table.
+    // Variable that holds the place, for which a place specific PI table will
+    // be shwon.
     // If set, only PIs containing this place are shown.
     selectedPlaceForPITable: Place | undefined;
 
-    // Indicator variable if table for linear combination (LC) of PIs is shown
+    // Boolean variable that indicates whether table for linear combination (LC)
+    // of PIs is shown
     showLCTable: boolean = false;
 
-    // Incidence Matrices for Testing *************************************
+    // Incidence Matrices for Testing *****************************************
 
     // From https://teaching.model.in.tum.de/2021ss/petri/material/petrinets.pdf
     // page 89 (local file: TUM_petrinets_incl_Farkas.pdf)
@@ -55,7 +61,7 @@ export class PlaceInvariantsService {
     // Result matrix from Script (page 61 / pdf: 43):
     // 1 1 1
 
-    // Fromhttp://dbis.informatik.uni-freiburg.de/content/courses/SS09/Spezialvorlesung/Formale%20Grundlagen%20von%20Informationssystemen/folien/3-1-Petri-Netze.pdf
+    // From http://dbis.informatik.uni-freiburg.de/content/courses/SS09/Spezialvorlesung/Formale%20Grundlagen%20von%20Informationssystemen/folien/3-1-Petri-Netze.pdf
     // page 66 (local file: 3-1-Petri-Netze.pdf)
     tM3: number[][] = [
         [1, -1, 0, 0],
@@ -82,7 +88,7 @@ export class PlaceInvariantsService {
     // 0 0 0 1 0 0 1
     // 1 1 1 1 0 0 0
 
-    // END: Incidence Matrices for Testing ********************************
+    // END: Incidence Matrices for Testing ************************************
 
     constructor(private dataService: DataService) {}
 
@@ -100,8 +106,8 @@ export class PlaceInvariantsService {
     }
 
     removeNonMinimalPIs() {
-        // TODO: possobly refactoring, so that this test is not necessary
         if (this.incidenceMatrix && this.placeInvariantsMatrix) {
+
             this.placeInvariantsMatrix = this.calculateMinimalPIs(
                 this.placeInvariantsMatrix,
                 this.incidenceMatrix,
@@ -117,6 +123,7 @@ export class PlaceInvariantsService {
     }
 
     calculateIncidenceMatrix(): number[][] {
+
         // Determine placeIds
         this.dataService
             .getPlaces()
@@ -129,19 +136,23 @@ export class PlaceInvariantsService {
 
         const n = this.placeIds.length; // number of rows of incidence matrix
         const m = this.transIds.length; // number of columns of incidence matrix
+
         // Initialize incidence matrix with 0s
         let incMat = Array.from({ length: n }, () =>
             Array.from({ length: m }, () => 0),
         );
 
         for (let t of this.dataService.getTransitions()) {
+
             const colIndex = this.transIds.indexOf(t.id);
-            // pre-arcs give values for output matrix
+
+            // pre-arcs
             for (let preArc of t.getPreArcs()) {
                 const rowIndex = this.placeIds.indexOf(preArc.from.id);
                 incMat[rowIndex][colIndex] += preArc.weight; // Note: weight of pre-arcs has negative sign
             }
-            // post-arcs give values for input matrix
+
+            // post-arcs
             for (let postArc of t.getPostArcs()) {
                 const rowIndex = this.placeIds.indexOf(postArc.to.id);
                 incMat[rowIndex][colIndex] += postArc.weight;
@@ -157,15 +168,12 @@ export class PlaceInvariantsService {
         // m columns: transitions
 
         // Determine n
-        // const n: number = incidenceMatrix.length;
         const n: number = this.placeIds.length;
 
         // Determine m
-        // const m: number = incidenceMatrix[0].length;
         const m: number = this.transIds.length;
 
         // nxn identity matrix
-        // TODO Approach with for loops --> easier to understand
         const identityMatrix: number[][] = Array.from({ length: n }, (_, i) =>
             Array.from({ length: n }, (_, j) => (i === j ? 1 : 0)),
         );
@@ -176,12 +184,18 @@ export class PlaceInvariantsService {
         );
 
         for (let i = 0; i < m; i++) {
+
             const k = dMat.length; // current number of rows in dMat(i-1), i.e. D(i-1)
+
             for (let j1 = 0; j1 < k; j1++) {
+
                 for (let j2 = j1 + 1; j2 < k; j2++) {
+
                     const d1 = dMat[j1]; // row j1
                     const d2 = dMat[j2]; // row j2
+
                     if (Math.sign(d1[i]) * Math.sign(d2[i]) === -1) {
+
                         const absD1I = Math.abs(d1[i]);
                         const absD2I = Math.abs(d2[i]);
 
@@ -202,6 +216,7 @@ export class PlaceInvariantsService {
                     }
                 }
             }
+
             // Filter rows where ith element is 0.
             // Use an epsilon value instead of exact 0 to account for numerical
             // inaccuracies.
@@ -213,7 +228,6 @@ export class PlaceInvariantsService {
         dMat = dMat.map((row) => row.slice(m));
 
         return dMat;
-        // return new Array<Array<number>>;
     }
 
     /**
@@ -230,9 +244,11 @@ export class PlaceInvariantsService {
         dMat: number[][],
         incidenceMatrix: number[][],
     ): number[][] {
+
         let dMatMin: number[][] = [];
 
         for (let pInvariant of dMat) {
+
             // Indices of support places of the invariant
             let supportIndices = [];
             for (let i = 0; i < pInvariant.length; i++) {
@@ -247,7 +263,6 @@ export class PlaceInvariantsService {
             }
 
             let q = supportIndices.length;
-
             if (q === this.rank(Mq) + 1) {
                 dMatMin.push(pInvariant);
             }
@@ -270,14 +285,14 @@ export class PlaceInvariantsService {
                 }
             }
         } else {
-            // TODO: What should happen
-            // If nothing could be done, then reset linearCombination
+            // Reset linearCombination
             this.linearCombination = [];
         }
     }
 
     get linearCombinationString(): string {
         let pIString = '';
+
         for (let i = 0; i < this.placeIds.length; i++) {
             const f = this.linearCombination[i];
             if (f > 0) {
@@ -287,6 +302,7 @@ export class PlaceInvariantsService {
                     this.placeIds[i];
             }
         }
+
         return pIString;
     }
 
@@ -322,6 +338,8 @@ export class PlaceInvariantsService {
         this.isMinimal = false;
         this.linearCombination = [];
         this.selectedPIs = [];
+        this.selectedPlaceForPITable = undefined;
+        this.showLCTable = false;
     }
 
     toggleSelectedPI(index: number) {
@@ -331,7 +349,7 @@ export class PlaceInvariantsService {
 
     // The method indicates, if the placeInvariant (argument)
     // is to be included in the displayed place invariant table.
-    // a) If a selectedPlaceForPITable is set, the placeInvariant is to be
+    // a) If selectedPlaceForPITable is set, the placeInvariant is to be
     //    included, if it contains the selectedPlaceForPITable.
     // b) Otherwise, every placeInvariant is included as a default.
     includePI(placeInvariant: number[]): boolean {
@@ -347,7 +365,6 @@ export class PlaceInvariantsService {
 
     placeInvariantsWithSelectedPlace(): number[][] {
         let PIsWithSelectedPlace: number[][] = [];
-        // TODO: What if this.placeInvariantsMatrix === undefined
         if (this.placeInvariantsMatrix) {
             for (let placeInvariant of this.placeInvariantsMatrix) {
                 if (this.includePI(placeInvariant)) {
@@ -410,7 +427,6 @@ export class PlaceInvariantsService {
             let pITypePlural: string = this.isMinimal
                 ? 'Minimal Place Invariants'
                 : 'Place Invariants (Farkas)';
-
             let n = this.placeInvariantsMatrix.length;
 
             if (this.showLCTable) {
@@ -423,8 +439,6 @@ export class PlaceInvariantsService {
         }
     }
 
-    // TODO: has to be adjusted, in case PIs for selected place should
-    // only contain the previously selcted PIs
     get pITableHasData(): boolean {
         if (this.selectedPlaceForPITable) {
             return this.placeInvariantsWithSelectedPlace().length > 0;
@@ -440,6 +454,7 @@ export class PlaceInvariantsService {
         return b === 0 ? a : this.gcd(b, a % b);
     }
 
+    // Greatest common divisor of the numbers in array arr
     private gcdArray(arr: number[]): number | undefined {
         if (arr.length === 0) return undefined;
 
@@ -452,7 +467,7 @@ export class PlaceInvariantsService {
         return result;
     }
 
-    // Rank of a matrix
+    // Rank of a matrix mat
     rank(mat: number[][]): number {
 
         // rank of an empty matrix is 0
