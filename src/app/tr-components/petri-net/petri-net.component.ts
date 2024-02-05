@@ -809,10 +809,8 @@ export class PetriNetComponent {
     }
 
     openPlaceInvariantsTable(place: Place) {
-        if (!this.dataService.isEmpty()) {
-            this.placeInvariantsService.selectedPlaceForPITable = place;
-            this.matDialog.open(PlaceInvariantsTableComponent);
-        }
+        this.placeInvariantsService.selectedPlaceForPITable = place;
+        this.matDialog.open(PlaceInvariantsTableComponent);
     }
 
     getNextLabel(label: string | undefined): string | undefined {
