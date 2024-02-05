@@ -286,9 +286,7 @@
             <button
                 mat-stroked-button
                 class="text-button"
-                [disabled]="
-                    !placeInvariantsService.placeInvariantsMatrix
-                "
+                [disabled]="!placeInvariantsService.placeInvariantsMatrix"
                 (click)="
                     placeInvariantsService.showLCTable = true;
                     openPlaceInvariantsTable()
