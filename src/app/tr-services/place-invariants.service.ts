@@ -107,7 +107,6 @@ export class PlaceInvariantsService {
 
     removeNonMinimalPIs() {
         if (this.incidenceMatrix && this.placeInvariantsMatrix) {
-
             this.placeInvariantsMatrix = this.calculateMinimalPIs(
                 this.placeInvariantsMatrix,
                 this.incidenceMatrix,
@@ -123,7 +122,6 @@ export class PlaceInvariantsService {
     }
 
     calculateIncidenceMatrix(): number[][] {
-
         // Determine placeIds
         this.dataService
             .getPlaces()
@@ -143,7 +141,6 @@ export class PlaceInvariantsService {
         );
 
         for (let t of this.dataService.getTransitions()) {
-
             const colIndex = this.transIds.indexOf(t.id);
 
             // pre-arcs
@@ -184,18 +181,14 @@ export class PlaceInvariantsService {
         );
 
         for (let i = 0; i < m; i++) {
-
             const k = dMat.length; // current number of rows in dMat(i-1), i.e. D(i-1)
 
             for (let j1 = 0; j1 < k; j1++) {
-
                 for (let j2 = j1 + 1; j2 < k; j2++) {
-
                     const d1 = dMat[j1]; // row j1
                     const d2 = dMat[j2]; // row j2
 
                     if (Math.sign(d1[i]) * Math.sign(d2[i]) === -1) {
-
                         const absD1I = Math.abs(d1[i]);
                         const absD2I = Math.abs(d2[i]);
 
@@ -244,11 +237,9 @@ export class PlaceInvariantsService {
         dMat: number[][],
         incidenceMatrix: number[][],
     ): number[][] {
-
         let dMatMin: number[][] = [];
 
         for (let pInvariant of dMat) {
-
             // Indices of support places of the invariant
             let supportIndices = [];
             for (let i = 0; i < pInvariant.length; i++) {
@@ -278,7 +269,11 @@ export class PlaceInvariantsService {
         if (this.placeInvariantsMatrix) {
             for (let i = 0; i < this.placeInvariantsMatrix.length; i++) {
                 if (this.selectedPIs[i]) {
-                    for (let j = 0; j < this.placeInvariantsMatrix[i].length; j++) {
+                    for (
+                        let j = 0;
+                        j < this.placeInvariantsMatrix[i].length;
+                        j++
+                    ) {
                         this.linearCombination[j] +=
                             this.placeInvariantsMatrix[i][j];
                     }
@@ -317,7 +312,7 @@ export class PlaceInvariantsService {
 
     // Number of selected PIs
     get numOfSelctedPIs(): number {
-        return this.selectedPIs.filter(isSelected => isSelected).length;
+        return this.selectedPIs.filter((isSelected) => isSelected).length;
     }
 
     // Returns the factor for the place placeId in the place invariant
@@ -417,8 +412,8 @@ export class PlaceInvariantsService {
             // Header for table for a specific place
             return this.selectedPlaceForPITable.id;
         } else {
-            if (!this.placeInvariantsMatrix){
-                return "A Place Invariants Table Has Not Yet Been Calculated";
+            if (!this.placeInvariantsMatrix) {
+                return 'A Place Invariants Table Has Not Yet Been Calculated';
             }
 
             let pITypeSingular: string = this.isMinimal
@@ -431,7 +426,7 @@ export class PlaceInvariantsService {
 
             if (this.showLCTable) {
                 // Header for table with linear combination
-                return "Linear Combination of " + pITypePlural;
+                return 'Linear Combination of ' + pITypePlural;
             } else {
                 // Header for result table from calculation
                 return n + ' ' + (n === 1 ? pITypeSingular : pITypePlural);
@@ -469,9 +464,8 @@ export class PlaceInvariantsService {
 
     // Rank of a matrix mat
     rank(mat: number[][]): number {
-
         // rank of an empty matrix is 0
-        if (mat.length===0 || mat[0].length===0) {
+        if (mat.length === 0 || mat[0].length === 0) {
             return 0;
         }
 
