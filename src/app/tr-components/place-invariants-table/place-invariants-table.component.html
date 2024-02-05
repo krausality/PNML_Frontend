@@ -19,14 +19,27 @@
         {{ placeInvariantsService.infoPIsWithSelectedPlace() }}
     </p>
     <ng-container *ngIf="placeInvariantsService.showLCTable">
-        <p class="lc-hint">[Toggle table rows to select/deselect the corresponding place invariants for linear combination.<br>Selected table rows are highlighted in blue.]</p>
-        <p>Linear combination of selected place invariants (selected: {{ placeInvariantsService.numOfSelctedPIs }} out of {{ placeInvariantsService.placeInvariantsMatrix?.length }}):</p>
+        <p class="lc-hint">
+            [Click on table rows to select/deselect the corresponding place
+            invariants for linear combination.<br />Selected table rows are
+            highlighted in blue.]
+        </p>
+        <p>
+            Linear combination of selected place invariants (selected:
+            {{ placeInvariantsService.numOfSelctedPIs }} out of
+            {{ placeInvariantsService.placeInvariantsMatrix?.length }}):
+        </p>
         <p *ngIf="placeInvariantsService.numOfSelctedPIs > 0">
             {{ placeInvariantsService.linearCombinationString }}
             =
             {{ placeInvariantsService.tokenSumOfLinearCombination }}
         </p>
-        <p class="nothing-selected" *ngIf="placeInvariantsService.numOfSelctedPIs === 0">[No place invariants have been selected]</p>
+        <p
+            class="nothing-selected"
+            *ngIf="placeInvariantsService.numOfSelctedPIs === 0"
+        >
+            [No place invariants have been selected]
+        </p>
     </ng-container>
     <table *ngIf="placeInvariantsService.pITableHasData">
         <thead>

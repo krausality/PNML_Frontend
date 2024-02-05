@@ -33,9 +33,6 @@ table p:last-child {
 
 table {
     border-collapse: collapse;
-    /* border-color: black;
-    border-width: 1px;
-    border-style: solid; */
 }
 
 .button-cell,
