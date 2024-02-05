@@ -497,8 +497,10 @@ export class PetriNetComponent {
             this.dataService.removePlace(place);
         }
 
-        if (this.uiService.tab === TabState.Analyze &&
-            this.placeInvariantsService.placeInvariantsMatrix) {
+        if (
+            this.uiService.tab === TabState.Analyze &&
+            this.placeInvariantsService.placeInvariantsMatrix
+        ) {
             this.openPlaceInvariantsTable(place);
         }
     }
