@@ -11,8 +11,16 @@
         Error while parsing, please check that the syntax of your petrinet is
         correct.
     </p>
-    <p *ngIf="data.schemaValidationError">
+    <p *ngIf="data.parsingError">
+        {{ data.parsingError }}
+    </p>
+    <p *ngIf="data.schemaValidationErrors">
         Error while validating the schema of your imported data, please check
         that the semantics of your importet petrinet are correct.
     </p>
+    <ul *ngIf="data.schemaValidationErrors">
+        <li *ngFor="let error of data.schemaValidationErrors | keyvalue">
+            {{ error.key }}: {{ error.value }}
+        </li>
+    </ul>
 </div>

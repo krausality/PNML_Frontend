@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormGroupDirective, NgForm } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { ErrorStateMatcher } from '@angular/material/core';
 import { Arc } from 'src/app/tr-classes/petri-net/arc';
 import { Place } from 'src/app/tr-classes/petri-net/place';
 import { Transition } from 'src/app/tr-classes/petri-net/transition';
@@ -13,13 +14,20 @@ import { UiService } from 'src/app/tr-services/ui.service';
 import { CodeEditorFormat } from 'src/app/tr-enums/ui-state';
 import { ButtonState } from 'src/app/tr-enums/ui-state';
 
+import { createJsonSchemaValidator } from './json-schema.validator';
+
+// const parseJson = require('json-parse-better-errors');
+// import parseJson = require('json-parse-better-errors');
+// import parseJson from 'json-parse-better-errors';
+// import * as parseJson from 'json-parse-better-errors';
+
 @Component({
     selector: 'app-code-editor',
     templateUrl: './code-editor.component.html',
     styleUrls: ['./code-editor.component.css'],
 })
 export class CodeEditorComponent implements OnInit {
-    textareaControl = new FormControl('');
+    textareaControl = new FormControl('', [createJsonSchemaValidator()]);
 
     constructor(
         private exportJsonDataService: ExportJsonDataService,
@@ -63,6 +71,7 @@ export class CodeEditorComponent implements OnInit {
             this.dataService.actions = [];
             return;
         }
+
         // parse the data as json or pnml based on the selected language
         let parsedData: [
             Array<Place>,
@@ -71,6 +80,7 @@ export class CodeEditorComponent implements OnInit {
             Array<string>,
         ];
 
+        // validate JSON / XML formats and display popup if formatting rules are broken
         try {
             if (
                 this.uiService.codeEditorFormat$.value === CodeEditorFormat.JSON
@@ -81,14 +91,29 @@ export class CodeEditorComponent implements OnInit {
             }
         } catch (error) {
             this.matDialog.open(ErrorPopupComponent, {
-                data: { parsingError: true, schemaValidationError: false },
+                data: {
+                    parsingError: error,
+                    schemaValidationErrors: this.textareaControl.errors,
+                },
             });
             return;
         }
 
-        // schema validation here (?)
-        // show popup with data: { parsingError: false, schemaValidationError: true }
-        // if schema fails to validate
+        // Code was parsed successfully
+        // Display results of JSON against Petrinet JSON Schema
+        // TODO: Ideally add XML Schema Validation as well
+        if (
+            this.uiService.codeEditorFormat$.value === CodeEditorFormat.JSON &&
+            this.textareaControl.errors
+        ) {
+            this.matDialog.open(ErrorPopupComponent, {
+                data: {
+                    parsingError: false,
+                    schemaValidationErrors: this.textareaControl.errors,
+                },
+            });
+            return;
+        }
 
         // destructure the parsed data and overwrite the corresponding parameters
         // in the data service
