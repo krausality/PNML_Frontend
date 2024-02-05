@@ -147,7 +147,19 @@ export class PetriNetComponent {
 
     // Process Drag & Drop using Observables
     public processDropEvent(e: DragEvent) {
-        e.preventDefault();
+        e.preventDefault(); // Prevent opening of the dragged file in a new tab
+
+        // Drag & Drop imports should only be available in Code & Build Mode
+        // to prevent inconsistencies
+        if (![TabState.Code, TabState.Build].includes(this.uiService.tab)) {
+            this.matDialog.open(ErrorPopupComponent, {
+                data: {
+                    error: 'Importing by drag & drop is only available in "Build" and "Code" mode',
+                },
+            });
+
+            return;
+        }
 
         const fileLocation = e.dataTransfer?.getData(
             ExampleFileComponent.META_DATA_CODE,
