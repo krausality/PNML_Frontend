@@ -67,19 +67,6 @@ export class PetriNetComponent {
         protected svgCoordinatesService: SvgCoordinatesService,
         protected placeInvariantsService: PlaceInvariantsService,
     ) {
-        this.httpClient
-            .get('assets/place-invariants-5-MAndS.json', {
-                responseType: 'text',
-            })
-            .subscribe((data) => {
-                const [places, transitions, arcs, actions] =
-                    parserService.parse(data);
-                this.dataService.places = places;
-                this.dataService.transitions = transitions;
-                this.dataService.arcs = arcs;
-                this.dataService.actions = actions;
-            });
-
         this.uiService.buttonState$.subscribe((buttonState) => {
             if (buttonState !== ButtonState.Blitz) {
                 this.lastNode = null;
