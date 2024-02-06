@@ -10,8 +10,6 @@ export class ManageActionsPopupComponent {
     actionSubmittedOnce = false;
     bothActionsEmpty = false;
     actionAlreadyExists = false;
-    actionLine1: HTMLInputElement | undefined;
-    actionLine2: HTMLInputElement | undefined;
 
     constructor(protected dataService: DataService) {}
 
@@ -62,14 +60,6 @@ export class ManageActionsPopupComponent {
 
     isActionEmpty(action: string): boolean {
         return !action.trim();
-    }
-
-    saveActionLine1(actionLine1: HTMLInputElement) {
-        this.actionLine1 = actionLine1;
-    }
-
-    saveActionLine2(actionLine2: HTMLInputElement) {
-        this.actionLine2 = actionLine2;
     }
 
     returnLine1(action: string): string {
