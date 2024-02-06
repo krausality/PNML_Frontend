@@ -6,6 +6,8 @@ import { Transition } from '../tr-classes/petri-net/transition';
 import { Arc } from '../tr-classes/petri-net/arc';
 import { Node } from '../tr-interfaces/petri-net/node';
 
+import parseJson from 'json-parse-better-errors';
+
 @Injectable({
     providedIn: 'root',
 })
@@ -17,11 +19,9 @@ export class ParserService {
         text: string,
     ): [Array<Place>, Array<Transition>, Array<Arc>, Array<string>] {
         let rawData: JsonPetriNet;
-        try {
-            rawData = JSON.parse(text) as JsonPetriNet;
-        } catch (e) {
-            throw new Error('JSON parsing error');
-        }
+
+        // Errors from JSON parse need to be caught & handled when using the parser service
+        rawData = parseJson(text) as JsonPetriNet;
 
         let places: Place[] = [];
         let transitions: Transition[] = [];
