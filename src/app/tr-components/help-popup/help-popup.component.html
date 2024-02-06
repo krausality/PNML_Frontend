@@ -117,10 +117,17 @@
             <h2 class="grid-span-2">Delete</h2>
 
             <mat-icon class="help-icon">delete</mat-icon>
-            <p>TODO: add description.</p>
+            <p>
+                Delete mode: Left-click any individual element (place,
+                transition, anchor or arc) to delete it.
+            </p>
 
             <mat-icon class="help-icon">clear</mat-icon>
-            <p>TODO: add description.</p>
+            <p>
+                Clear mode: Click the button to delete the whole petri net. A
+                popup will ask you to confirm your delete action in order to to
+                prevent unintentional data loss.
+            </p>
 
             <h2 class="grid-span-2">Move</h2>
 
@@ -161,11 +168,38 @@
             <button mat-stroked-button class="help-text-button">
                 Sugiyama
             </button>
+            <div>
             <p>
-                Apply automatic layout to the petri net with a Sugiyama
-                algorithm. Orphan nodes will be placed in the first column of
-                the new layout.
-            </p>
+                    Apply automatic layered graph layout to the petri net with a
+                    Sugiyama algorithm. Orphan nodes will be placed in the first
+                    column of the new layout.
+                </p>
+                <p>
+                    The implementation of the sugyiama algorithm in this
+                    application uses the following steps and algorithms:
+                </p>
+                <ul>
+                    <li>
+                        Circles in the graph are removed through a Depth-First
+                        Search (DFS) algorithm
+                    </li>
+                    <li>
+                        Each individual node is then assigned to a layer by an
+                        implementation of the Longest Path Algorithm proposed by
+                        Tamassia et al.
+                    </li>
+                    <li>
+                        The nodes are then ordered and arc crossing minimized
+                        using the median ordering method with transpose as
+                        proposed by Ganser et. al
+                    </li>
+                    <li>
+                        Finally new coordinates are assigned to each node
+                        through a basic algorithm that just places the node
+                        layers in even distances to each other.
+                    </li>
+                </ul>
+            </div>
         </div>
     </ng-container>
 
