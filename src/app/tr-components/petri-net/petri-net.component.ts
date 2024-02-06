@@ -28,7 +28,11 @@ import { Point } from 'src/app/tr-classes/petri-net/point';
 import { Transition } from 'src/app/tr-classes/petri-net/transition';
 import { Arc } from 'src/app/tr-classes/petri-net/arc';
 import { EditMoveElementsService } from 'src/app/tr-services/edit-move-elements.service';
-import { ButtonState, TabState } from 'src/app/tr-enums/ui-state';
+import {
+    ButtonState,
+    CodeEditorFormat,
+    TabState,
+} from 'src/app/tr-enums/ui-state';
 import { TokenGameService } from 'src/app/tr-services/token-game.service';
 import { MatDialog } from '@angular/material/dialog';
 import { SetActionPopupComponent } from '../set-action-popup/set-action-popup.component';
@@ -36,6 +40,9 @@ import { Node } from 'src/app/tr-interfaces/petri-net/node';
 import { MouseConstants } from '../../tr-enums/mouse-constants';
 import { SvgCoordinatesService } from 'src/app/tr-services/svg-coordinates-service';
 import { DummyArc } from 'src/app/tr-classes/petri-net/dummyArc';
+import { ErrorPopupComponent } from '../error-popup/error-popup.component';
+import { validateJsonAgainstSchema } from 'src/app/tr-utils/json.utils';
+import { LayoutSugyiamaService } from '../../tr-services/layout-sugyiama.service';
 
 @Component({
     selector: 'app-petri-net',
@@ -43,7 +50,6 @@ import { DummyArc } from 'src/app/tr-classes/petri-net/dummyArc';
     styleUrls: ['./petri-net.component.css'],
 })
 export class PetriNetComponent {
-    @Output('fileContent') fileContent: EventEmitter<string>;
     @Input() buttonState: ButtonState | undefined;
 
     lastNode: Node | null = null;
@@ -61,25 +67,8 @@ export class PetriNetComponent {
         private matDialog: MatDialog,
         protected editMoveElementsService: EditMoveElementsService,
         protected svgCoordinatesService: SvgCoordinatesService,
+        private layoutSugyiamaService: LayoutSugyiamaService,
     ) {
-        this.httpClient
-            .get('assets/example.json', { responseType: 'text' })
-            .subscribe((data) => {
-                const [places, transitions, arcs, actions] =
-                    parserService.parse(data);
-                this.dataService.places = places;
-                this.dataService.transitions = transitions;
-                this.dataService.arcs = arcs;
-                this.dataService.actions = actions;
-            });
-
-        // this.httpClient.get("assets/example.pnml", { responseType: "text" }).subscribe(data => {
-        //     const [places, transitions, arcs] = pnmlService.parse(data);
-        //     this.dataService.places = places;
-        //     this.dataService.transitions = transitions;
-        //     this.dataService.arcs = arcs;
-        // });
-        this.fileContent = new EventEmitter<string>();
         this.uiService.buttonState$.subscribe((buttonState) => {
             if (buttonState !== ButtonState.Blitz) {
                 this.lastNode = null;
@@ -94,33 +83,83 @@ export class PetriNetComponent {
 
     private parsePetrinetData(
         content: string | undefined,
-        contentType: string,
+        contentType: CodeEditorFormat | undefined,
     ) {
         if (content) {
-            // Use pnml parser if file type is pnml
-            // we'll try the json parser for all other cases
-            if (contentType === 'pnml') {
-                const [places, transitions, arcs,actions] =
-                    this.pnmlService.parse(content);
-                this.dataService.places = places;
-                this.dataService.transitions = transitions;
-                this.dataService.arcs = arcs;
-                this.dataService.actions = actions
-            } else {
-                const [places, transitions, arcs, actions] =
-                    this.parserService.parse(content);
-                this.dataService.places = places;
-                this.dataService.transitions = transitions;
-                this.dataService.arcs = arcs;
+            // variable to parse the data into
+            let parsedData: [
+                Array<Place>,
+                Array<Transition>,
+                Array<Arc>,
+                Array<string>,
+            ];
 
-                this.dataService.actions = actions;
+            try {
+                // Use pnml parser if file type is pnml
+                // we'll try the json parser for all other cases
+                if (contentType === CodeEditorFormat.PNML) {
+                    parsedData = this.pnmlService.parse(content);
+                } else {
+                    parsedData = this.parserService.parse(content);
+                }
+            } catch (error) {
+                this.matDialog.open(ErrorPopupComponent, {
+                    data: {
+                        parsingError: error,
+                        schemaValidationErrors: false,
+                    },
+                });
+                return;
+            }
+
+            if (contentType === CodeEditorFormat.JSON) {
+                const schemaValidationErrors =
+                    validateJsonAgainstSchema(content);
+
+                if (Object.keys(schemaValidationErrors).length) {
+                    this.matDialog.open(ErrorPopupComponent, {
+                        data: {
+                            parsingError: false,
+                            schemaValidationErrors: schemaValidationErrors,
+                        },
+                    });
+
+                    return;
+                }
+            }
+            // schema validation here (?)
+            // show popup with data: { parsingError: false, schemaValidationError: true }
+            // if schema fails to validate
+
+            // destructure the parsed data and overwrite the corresponding parameters
+            // in the data service
+            const [places, transitions, arcs, actions] = parsedData;
+            this.dataService.places = places;
+            this.dataService.transitions = transitions;
+            this.dataService.arcs = arcs;
+            this.dataService.actions = actions;
+
+            if (this.dataService.hasElementsWithoutPosition()) {
+                this.layoutSugyiamaService.applySugyiamaLayout();
             }
         }
     }
 
     // Process Drag & Drop using Observables
     public processDropEvent(e: DragEvent) {
-        e.preventDefault();
+        e.preventDefault(); // Prevent opening of the dragged file in a new tab
+
+        // Drag & Drop imports should only be available in Code & Build Mode
+        // to prevent inconsistencies
+        if (![TabState.Code, TabState.Build].includes(this.uiService.tab)) {
+            this.matDialog.open(ErrorPopupComponent, {
+                data: {
+                    error: 'Importing by drag & drop is only available in "Build" and "Code" mode',
+                },
+            });
+
+            return;
+        }
 
         const fileLocation = e.dataTransfer?.getData(
             ExampleFileComponent.META_DATA_CODE,
@@ -150,7 +189,7 @@ export class PetriNetComponent {
                 take(1),
             )
             .subscribe((content) => {
-                this.parsePetrinetData(content, 'json');
+                this.parsePetrinetData(content, CodeEditorFormat.JSON);
                 this.emitFileContent(content);
             });
     }
@@ -162,10 +201,22 @@ export class PetriNetComponent {
 
         const file = files[0];
 
-        // the file does not have a correct file type set,
         // extract type from file name
         const extension = file.name.split('.').pop();
-        const fileType = extension ? extension : '';
+        let fileType: CodeEditorFormat | undefined;
+
+        switch (extension) {
+            case 'json':
+                fileType = CodeEditorFormat.JSON;
+                break;
+            case 'pnml':
+            case 'xml':
+                fileType = CodeEditorFormat.PNML;
+                break;
+            default:
+                fileType = undefined;
+                break;
+        }
 
         this.fileReaderService
             .readFile(files[0])
@@ -180,7 +231,12 @@ export class PetriNetComponent {
         if (content === undefined) {
             return;
         }
-        this.fileContent.emit(content);
+        // instead of emitting the file content we set the current code editor format as
+        // next value of the BehaviorSubject in order to have the code editor component
+        // load the source code by itself (with our formatting applied)
+        this.uiService.codeEditorFormat$.next(
+            this.uiService.codeEditorFormat$.value,
+        );
     }
 
     public prevent(e: DragEvent) {

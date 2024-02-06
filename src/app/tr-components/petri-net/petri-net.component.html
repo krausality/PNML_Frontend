@@ -324,3 +324,23 @@
         ></polyline>
     </g>
 </svg>
+
+<div *ngIf="dataService.isEmpty()" class="import-hint">
+    <p *ngIf="uiService.tab === TabState.Build">
+        Get started by drawing a petrinet with the toolbar buttons or import a
+        petrinet as JSON or PNML file by dragging it into this space! <br />
+        The drag-and-drop import option is available in both 'Build' and 'Code'
+        mode.
+    </p>
+    <p *ngIf="![TabState.Build, TabState.Code].includes(uiService.tab)">
+        Please use the "Build" or "Code" tabs to create or import a petrinet.
+    </p>
+    <p *ngIf="uiService.tab === TabState.Code">
+        Use the Code editor to create a petrinet, or import a JSON or PNML file
+        by dragging it into this space!
+    </p>
+    <!-- <p>
+        If you need help, check out the <mat-icon>help</mat-icon> button at the
+        righthand side of the toolbar.
+    </p> -->
+</div>
