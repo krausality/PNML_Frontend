@@ -171,9 +171,26 @@
 
     <!-- Infotext for Play Mode ******************************************* -->
     <ng-container *ngIf="uiService.tab === TabState.Play">
-        <div class="grid">
-            <h2 class="grid-span-2">Token game</h2>
+        <h2>Token game</h2>
 
+        <p>In the token game mode, you can:</p>
+        <ul>
+            <li>
+                Fire transitions to see how the tokens progress through the
+                petri net.
+            </li>
+            <li>Reset the token game to the initial marking.</li>
+            <li>Go back on step if you clicked the wrong transition.</li>
+        </ul>
+
+        <div class="grid">
+            <h2 class="grid-span-2">Firing transitions</h2>
+            <p class="grid-span-2">
+                To fire a transition, just click one of the highlighted, green,
+                transitions.
+            </p>
+
+            <h2 class="grid-span-2">Undo & Reset</h2>
             <mat-icon class="help-icon">restart_alt</mat-icon>
             <p>
                 Reset token game: Reset petri net marking to its initial state
