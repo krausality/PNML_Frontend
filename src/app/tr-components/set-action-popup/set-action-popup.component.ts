@@ -13,4 +13,10 @@ export class SetActionPopupComponent {
         protected dataService: DataService,
         @Inject(MAT_DIALOG_DATA) protected data: SetActionDialogData,
     ) {}
+
+    replaceBreakChar(action: string): string {
+        return action.replace("~", "↲")
+    }
 }
+
+
