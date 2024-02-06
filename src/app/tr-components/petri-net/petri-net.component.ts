@@ -414,11 +414,6 @@ export class PetriNetComponent {
                 }
             }
             this.nextNode = null;
-            if(this.lastNode instanceof Transition) {
-                this.startTransition = this.lastNode;
-            } else if(this.lastNode instanceof Place) {
-                this.startPlace = this.lastNode;
-            };
         }
     }
 
@@ -435,7 +430,6 @@ export class PetriNetComponent {
         ) {
             this.lastNode = null;
             this.nextNode = null;
-            this.editMoveElementsService.isCanvasDragInProcess = false;
         }
         if (
             this.uiService.button === ButtonState.Blitz &&
@@ -537,7 +531,6 @@ export class PetriNetComponent {
             } else if (event.button == MouseConstants.Left_Click) {
                 // Existing Place is selected as the next Node. Method is called before dispatchSVGClick
                 this.nextNode = place;
-                this.editMoveElementsService.initializeNodeMove(event, place);
             }
         }
 
@@ -594,7 +587,6 @@ export class PetriNetComponent {
             } else if (event.button == MouseConstants.Left_Click) {
                 //Existing Transition is selected as the next Node. Method is called before dispatchSVGClick
                 this.nextNode = transition;
-                this.editMoveElementsService.initializeNodeMove(event, transition);
             }
         }
 
