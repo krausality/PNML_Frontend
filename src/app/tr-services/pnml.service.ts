@@ -143,7 +143,7 @@ export class PnmlService {
             const nameTextElement = nameElement?.elements.find(
                 (element) => element.name === text,
             );
-            const nameTextAttribute = nameTextElement?.elements.find(
+            const nameTextAttribute = nameTextElement?.elements?.find(
                 (element) => element.type === text,
             );
             const nameText = nameTextAttribute?.text;
