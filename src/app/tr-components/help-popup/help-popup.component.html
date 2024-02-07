@@ -55,8 +55,8 @@
                 </p>
                 <ul>
                     <li>
-                        left-click on the start node and keep the mouse button pressed
-                        down, then
+                        left-click on the start node and keep the mouse button
+                        pressed down, then
                     </li>
                     <li>drag the arraow into the end node and</li>
                     <li>release the mouse to finalize the arc.</li>
@@ -85,33 +85,52 @@
 
             <mat-icon class="help-icon">add</mat-icon>
             <div>
-                <p>Increase mode: In increase mode, you can increase the token number of a place or the weight of an arc.</p>
+                <p>
+                    Increase mode: In increase mode, you can increase the token
+                    number of a place or the weight of an arc.
+                </p>
                 <p>To increase the token number of a place</p>
                 <ul>
                     <li>left-click on the place or</li>
-                    <li>hover over the place and scroll-up with the mouse wheel.</li>
+                    <li>
+                        hover over the place and scroll-up with the mouse wheel.
+                    </li>
                 </ul>
                 <p>To increase the weight of an arc</p>
                 <ul>
                     <li>left-click on the arc or</li>
-                    <li>hover over the arc and scroll-up with the mouse wheel.</li>
+                    <li>
+                        hover over the arc and scroll-up with the mouse wheel.
+                    </li>
                 </ul>
             </div>
 
             <mat-icon class="help-icon">remove</mat-icon>
             <div>
-                <p>Decrease mode: In decrease mode, you can decrease the token number of a place or the weight of an arc.</p>
+                <p>
+                    Decrease mode: In decrease mode, you can decrease the token
+                    number of a place or the weight of an arc.
+                </p>
                 <p>To decrease the token number of a place</p>
                 <ul>
                     <li>left-click on the place or</li>
-                    <li>hover over the place and scroll-down with the mouse wheel.</li>
+                    <li>
+                        hover over the place and scroll-down with the mouse
+                        wheel.
+                    </li>
                 </ul>
                 <p>To decrease the weight of an arc</p>
                 <ul>
                     <li>left-click on the arc or</li>
-                    <li>hover over the arc and scroll-down with the mouse wheel.</li>
+                    <li>
+                        hover over the arc and scroll-down with the mouse wheel.
+                    </li>
                 </ul>
-                <p>Note that the minimum value for both tokens of a place and weights of an arc is 1. Further reduction below this value is not possible.</p>
+                <p>
+                    Note that the minimum value for both tokens of a place and
+                    weights of an arc is 1. Further reduction below this value
+                    is not possible.
+                </p>
             </div>
 
             <h2 class="grid-span-2">Delete</h2>
@@ -133,18 +152,38 @@
 
             <mat-icon class="help-icon">open_with</mat-icon>
             <div>
-                <p>Move mode: In move mode, you can move individual elements or the complete petri net at once.</p>
-                <p>All elements, that can be moved individually (places, transitions or anchor points), are highlighted with a red dropshadow. To move an individual element</p>
+                <p>
+                    Move mode: In move mode, you can move individual elements or
+                    the complete petri net at once.
+                </p>
+                <p>
+                    All elements, that can be moved individually (places,
+                    transitions or anchor points), are highlighted with a red
+                    dropshadow. To move an individual element
+                </p>
                 <ul>
-                    <li>left-click on the element and keep the mouse button pressed down,</li>
+                    <li>
+                        left-click on the element and keep the mouse button
+                        pressed down,
+                    </li>
                     <li>drag the element to its new position and</li>
-                    <li>release the mouse button to place the element at the new location.</li>
+                    <li>
+                        release the mouse button to place the element at the new
+                        location.
+                    </li>
                 </ul>
                 <p>To move the complete petri net at once</p>
                 <ul>
-                    <li>left-click anywhere on an empty spot on the canvas and keep the mouse button pressed down (the whole petri net will light up),</li>
+                    <li>
+                        left-click anywhere on an empty spot on the canvas and
+                        keep the mouse button pressed down (the whole petri net
+                        will light up),
+                    </li>
                     <li>drag the mouse to move the petri net and</li>
-                    <li>release the mouse button to place the petri net at its new position.</li>
+                    <li>
+                        release the mouse button to place the petri net at its
+                        new position.
+                    </li>
                 </ul>
             </div>
 
@@ -169,7 +208,7 @@
                 Sugiyama
             </button>
             <div>
-            <p>
+                <p>
                     Apply automatic layered graph layout to the petri net with a
                     Sugiyama algorithm. Orphan nodes will be placed in the first
                     column of the new layout.
@@ -186,17 +225,20 @@
                     <li>
                         Each individual node is then assigned to a layer by an
                         implementation of the Longest Path Algorithm proposed by
-                        Tamassia et al.
+                        Tamassia et al. [R. Tamassia, Handbook of Graph Drawing
+                        and Visualization, 2010]
                     </li>
                     <li>
                         The nodes are then ordered to minimize arc crossings
                         using the median ordering method with transpose as
-                        proposed by Ganser et. al
+                        proposed by Ganser et. al [E. Gansner, E. Koutsofios, S.
+                        North, and K.-P. Vo, A technique for drawing directed
+                        graphs, 1993]
                     </li>
                     <li>
                         Finally, new coordinates are assigned to each node
-                        through a basic algorithm that places the node
-                        layers in even distances to each other.
+                        through a basic algorithm that places the node layers in
+                        even distances to each other.
                     </li>
                 </ul>
             </div>
