@@ -32,7 +32,7 @@
 
     <!-- Places -->
     <g
-        *ngFor="let place of dataService.getPlaces(); let i = index"
+        *ngFor="let place of dataService.getPlaces()"
         (click)="dispatchPlaceClick($event, place)"
         (mousedown)="dispatchPlaceMouseDown($event, place)"
         (mouseup)="dispatchPlaceMouseUp($event, place)"
@@ -58,7 +58,7 @@
                     element is the circle element representing the places of
                     the petri net. Thus, when in Analyze mode and when place
                     invariants have been calculated, the title contents will
-                    be shown as a tooltip
+                    be shown as a tooltip.
                 -->
                 <title
                     *ngIf="
