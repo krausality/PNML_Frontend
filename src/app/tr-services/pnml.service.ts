@@ -38,7 +38,7 @@ export class PnmlService {
             let pnmlArcs: PnmlElement[] = [];
 
             if (pages && pages.length > 0) {
-                pages.forEach(page => {
+                pages.forEach((page) => {
                     const pnmlPlacesPage = page.elements.filter(
                         (element) => element.name === name_place,
                     );
@@ -49,7 +49,8 @@ export class PnmlService {
                         (element) => element.name === name_transition,
                     );
                     if (pnmlTransitionsPage) {
-                        pnmlTransitions = pnmlTransitions.concat(pnmlTransitionsPage);
+                        pnmlTransitions =
+                            pnmlTransitions.concat(pnmlTransitionsPage);
                     }
                     const pnmlArcsPage = page.elements.filter(
                         (element) => element.name === name_arc,
@@ -57,7 +58,7 @@ export class PnmlService {
                     if (pnmlArcsPage) {
                         pnmlArcs = pnmlArcs.concat(pnmlArcsPage);
                     }
-                })
+                });
             } else if (net) {
                 pnmlPlaces = net.elements.filter(
                     (element) => element.name === name_place,
