@@ -118,6 +118,12 @@
     filter: drop-shadow(0 0 3px rgba(0, 0, 0, 1));
 }
 
+.play-mode .transition.active:active {
+    fill: lightgreen;
+    filter: drop-shadow(0 0 3px rgba(255, 255, 255, 1));
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 1));
+}
+
 /* Text nodes that follow transitions (here: rects within svg) should not have different cursors in play mode
  * all interaction events should be caught in the wrapper group element */
 .play-mode .transition.active ~ text {

@@ -361,11 +361,6 @@ export class PetriNetComponent {
             this.addTransition(event, drawingArea);
         }
 
-        //Reset Blitz-Tool to start new with a new Place
-        if (this.uiService.button !== ButtonState.Blitz) {
-            this.lastNode = null;
-        }
-
         if (this.uiService.button === ButtonState.Blitz) {
             if (this.nextNode) {
                 // Initialising Blitz-Tool by clickling on an existing Node

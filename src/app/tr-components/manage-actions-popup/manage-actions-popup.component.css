@@ -1,7 +1,11 @@
 .add-action-input {
     min-width: 400px;
+    margin: 0px;
     width: 100%;
-    margin: 0 15px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
 .action-text {
