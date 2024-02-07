@@ -252,6 +252,26 @@
 
     <!-- Context Help for Analyze Mode ************************************ -->
     <ng-container *ngIf="uiService.tab === TabState.Analyze">
-        <p>Content for Analyze Mode Help</p>
+        <p>In Analyze mode, you can calculate place invariants of the petri net and investigate the results.</p>
+        <div class="grid">
+            <button mat-stroked-button class="help-text-button">Place Invariants (Farkas)</button>
+            <div>
+                <p>Pressing this button will calculate place invariants with the Farkas algorithm. A popup window will appear with the results of the calculation. It presents a table where each table row represents one place invariant.</p>
+                <p>The results from the Farkas algorithm contain all minimal place invariants, but they may also contain additional place invariants that are non-minimal.</p>
+                <p>The Farkas algorithm for the calculation of place invariants  is described in various publications, for example Martinez & Silva [Martínez, J., Silva, M. (1982). A simple and Fast Algorithm to Obtain all Invariants of a Generalised Petri Net. In: Girault, C., Reisig, W. (eds) Application and Theory of Petri Nets. Informatik-Fachberichte, vol 52. Springer, Berlin, Heidelberg. https://doi.org/10.1007/978-3-642-68353-4_47].</p>
+            </div>
+            <button mat-stroked-button class="help-text-button">Minimal Place Invariants</button>
+            <div>
+                <p>Pressing this button will </p>
+                <ul>
+                    <li>calculate the place invariants with the Farkas algorithm as above, </li>
+                    <li>and then remove all non-minimal invariants</li>
+                </ul>
+                <p>Now the results from the calculation contain only the minimal place invariants.</p>
+                <p>The algorithm for removal of non-minimal place invariants is implemented according to the description in Martinez & Silva [see above].</p>
+            </div>
+        </div>
+        <p>After either of the calculations, all places that are part of the support of one or several of the calculated place invariants are highlighted in blue. These places are then also part of the support of the LC place invariant that results from linear combination (LC) of all result place invariants. The non-zero values of this LC place invariant are shown at the corresponding place ids in the petri net graph.</p>
+        <p>By clicking on any place of the petri net you can see a selection of the place invariants, that contain this place in its support. In this table of place invariants for a specific place, all place invariants that contain this place in its support will be included, regardless if a place invariant has been selected for linear combination or not (see further down). Those that are included in the current linear combination are highlighted in blue, those that have been deselected are highlighted in white.</p>
     </ng-container>
 </div>
