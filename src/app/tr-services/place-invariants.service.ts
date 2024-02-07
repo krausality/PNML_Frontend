@@ -39,13 +39,13 @@ export class PlaceInvariantsService {
 
     // From https://teaching.model.in.tum.de/2021ss/petri/material/petrinets.pdf
     // page 89 (local file: TUM_petrinets_incl_Farkas.pdf)
-    tM1: number[][] = [
-        [-1, 1, 1, -1],
-        [1, -1, -1, 1],
-        [0, 0, 1, 0],
-        [1, 0, 0, -1],
-        [-1, 0, 0, 1],
-    ];
+    // tM1: number[][] = [
+    //     [-1, 1, 1, -1],
+    //     [1, -1, -1, 1],
+    //     [0, 0, 1, 0],
+    //     [1, 0, 0, -1],
+    //     [-1, 0, 0, 1],
+    // ];
     // Result matrix from presentation (contains one linearly dependent vector):
     // 1 1 0 0 0
     // 0 0 0 1 1
@@ -53,35 +53,35 @@ export class PlaceInvariantsService {
 
     // From http://theo.cs.ovgu.de/lehre/lehre08w/petri/petri08-text1.pdf
     // page 53 (pdf: 36) (local file: Vorlesungsscript-Petrinetze_Magdeburg_2008.pdf)
-    tM2: number[][] = [
-        [-1, -1, 1, 0],
-        [1, -1, 0, 0],
-        [0, 2, -1, 0],
-    ];
+    // tM2: number[][] = [
+    //     [-1, -1, 1, 0],
+    //     [1, -1, 0, 0],
+    //     [0, 2, -1, 0],
+    // ];
     // Result matrix from Script (page 61 / pdf: 43):
     // 1 1 1
 
     // From http://dbis.informatik.uni-freiburg.de/content/courses/SS09/Spezialvorlesung/Formale%20Grundlagen%20von%20Informationssystemen/folien/3-1-Petri-Netze.pdf
     // page 66 (local file: 3-1-Petri-Netze.pdf)
-    tM3: number[][] = [
-        [1, -1, 0, 0],
-        [-1, -1, 1, 0],
-        [0, 2, -1, 0],
-    ];
+    // tM3: number[][] = [
+    //     [1, -1, 0, 0],
+    //     [-1, -1, 1, 0],
+    //     [0, 2, -1, 0],
+    // ];
     // Result matrix
     // 1 1 1
 
     // From http://dbis.informatik.uni-freiburg.de/content/courses/SS09/Spezialvorlesung/Formale%20Grundlagen%20von%20Informationssystemen/folien/3-1-Petri-Netze.pdf
     // page 70 (local file: 3-1-Petri-Netze.pdf)
-    tM4: number[][] = [
-        [-1, -1, -1, 1, 1, 1],
-        [1, 0, 0, -1, 0, 0],
-        [0, 1, 0, 0, -1, 0],
-        [0, 0, 1, 0, 0, -1],
-        [-1, 0, 0, 1, 0, 0],
-        [0, -1, 0, 0, 1, 0],
-        [0, 0, -1, 0, 0, 1],
-    ];
+    // tM4: number[][] = [
+    //     [-1, -1, -1, 1, 1, 1],
+    //     [1, 0, 0, -1, 0, 0],
+    //     [0, 1, 0, 0, -1, 0],
+    //     [0, 0, 1, 0, 0, -1],
+    //     [-1, 0, 0, 1, 0, 0],
+    //     [0, -1, 0, 0, 1, 0],
+    //     [0, 0, -1, 0, 0, 1],
+    // ];
     // Result matrix from presentation (page 70):
     // 0 1 0 0 1 0 0
     // 0 0 1 0 0 1 0
