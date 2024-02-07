@@ -27,7 +27,7 @@ export class PlaceInvariantsService {
     selectedPIs: boolean[] = [];
 
     // Variable that holds the place, for which a place specific PI table will
-    // be shwon.
+    // be shown.
     // If set, only PIs containing this place are shown.
     selectedPlaceForPITable: Place | undefined;
 
