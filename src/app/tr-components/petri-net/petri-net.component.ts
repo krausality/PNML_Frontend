@@ -56,6 +56,7 @@ export class PetriNetComponent {
 
     lastNode: Node | null = null;
     nextNode: Node | null = null;
+    addElement: boolean = true;
 
     constructor(
         private parserService: ParserService,
@@ -74,6 +75,7 @@ export class PetriNetComponent {
     ) {
         this.uiService.buttonState$.subscribe((buttonState) => {
             if (buttonState !== ButtonState.Blitz) {
+                this.dummyArc.points = [];
                 this.lastNode = null;
             }
         });
@@ -362,9 +364,16 @@ export class PetriNetComponent {
         }
 
         if (this.uiService.button === ButtonState.Blitz) {
-            if (this.nextNode) {
+            if(!this.addElement) {
+                this.addElement = true;
+                return;
+            }
+            if (this.nextNode && this.nextNode.position) {
                 // Initialising Blitz-Tool by clickling on an existing Node
                 if (!this.lastNode) {
+
+                    this.dummyArc  = new DummyArc();
+                    this.dummyArc.points[0] = this.nextNode.position
                     this.lastNode = this.nextNode;
                     this.nextNode = null;
                     return;
@@ -416,6 +425,7 @@ export class PetriNetComponent {
                     this.lastNode = place;
                 }
             }
+            this.dummyArc.points[0] = this.lastNode.position;
             this.nextNode = null;
         }
     }
@@ -433,6 +443,7 @@ export class PetriNetComponent {
         ) {
             this.lastNode = null;
             this.nextNode = null;
+            this.dummyArc.points = [];
         }
         if (
             this.uiService.button === ButtonState.Blitz &&
@@ -443,6 +454,7 @@ export class PetriNetComponent {
             const transition = this.createTransition(event, drawingArea);
             this.dataService.getTransitions().push(transition);
             this.lastNode = transition;
+            this.dummyArc.points[0] = this.lastNode.position;
         }
         if (
             this.uiService.button === ButtonState.Arc &&
@@ -475,7 +487,7 @@ export class PetriNetComponent {
             }
         }
         if (
-            this.uiService.button === ButtonState.Arc &&
+            (this.uiService.button === ButtonState.Arc || this.uiService.button === ButtonState.Blitz) &&
             this.dummyArc?.points.length > 0
         ) {
             // Drawing the drag & drop DummyArc
@@ -503,8 +515,10 @@ export class PetriNetComponent {
         // * A successfull deletion of an anchor: mouse up on the anchor element
         //   bubbles up to the svg element and triggers dispatchSVGMouseUp().
         // * An aborted anchor deletion: mouse up does not occur on the original
-        //   anchor but somewhere else on the display area --> the event is captuered
+        //   anchor but somewhere else on the display area --> the event
+        //   is captuered
         //   here as well.
+
         if (this.anchorToDelete) {
             this.anchorToDelete = undefined;
         }
@@ -537,10 +551,15 @@ export class PetriNetComponent {
     dispatchPlaceMouseDown(event: MouseEvent, place: Place) {
         if (this.uiService.button === ButtonState.Blitz) {
             if (event.button == MouseConstants.Right_Click) {
+                this.dummyArc = new DummyArc();
                 this.dataService.removePlace(place);
             } else if (event.button == MouseConstants.Left_Click) {
                 // Existing Place is selected as the next Node. Method is called before dispatchSVGClick
-                this.nextNode = place;
+                if(this.lastNode instanceof Place) {
+                    this.addElement = false;
+                } else {
+                    this.nextNode = place;
+                }
             }
         }
 
@@ -596,7 +615,12 @@ export class PetriNetComponent {
                 this.dataService.removeTransition(transition);
             } else if (event.button == MouseConstants.Left_Click) {
                 //Existing Transition is selected as the next Node. Method is called before dispatchSVGClick
-                this.nextNode = transition;
+                if(this.lastNode instanceof Transition) {
+                    this.addElement = false;
+                } else {
+                    this.nextNode = transition;
+                }
+
             }
         }
 
@@ -794,6 +818,14 @@ export class PetriNetComponent {
                 return arc.from === this.startTransition && arc.to === place;
             }).length;
 
+        if(this.uiService.button === ButtonState.Blitz) {
+            if(!this.lastNode) {
+                return true;
+            } else {
+                return this.dataService.isConnectionPossible(this.lastNode,place)
+            }
+        }
+
         return (
             (this.uiService.button === ButtonState.Move &&
                 !this.editMoveElementsService.newAnchor) ||
@@ -813,6 +845,14 @@ export class PetriNetComponent {
             transition.preArcs.filter((arc) => {
                 return arc.from === this.startPlace;
             }).length;
+
+        if(this.uiService.button === ButtonState.Blitz) {
+            if(!this.lastNode) {
+                return true;
+            } else {
+                return this.dataService.isConnectionPossible(this.lastNode,transition)
+            }
+        }
 
         return (
             (this.uiService.button === ButtonState.Move &&
