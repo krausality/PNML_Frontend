@@ -409,6 +409,7 @@ export class PetriNetComponent {
             const transition = this.createTransition(event, drawingArea);
             this.dataService.getTransitions().push(transition);
             this.lastNode = transition;
+            this.dummyArc.points[0] = this.lastNode.position;
         }
         if (
             this.uiService.button === ButtonState.Arc &&
