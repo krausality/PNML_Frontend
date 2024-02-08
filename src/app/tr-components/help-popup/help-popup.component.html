@@ -336,16 +336,16 @@
     <ng-container *ngIf="uiService.tab === TabState.Code">
         <div class="grid">
             <mat-icon class="help-icon">restart_alt</mat-icon>
-            <p>TODO: add description.</p>
+            <p>Reload the contents of the code editor. This is done via serializing the internal state of the petri net in the selected format and replacing the contents of the editor with the created code.</p>
 
             <mat-icon class="help-icon">task</mat-icon>
-            <p>TODO: add description.</p>
+            <p>Apply the contents of the code editor. If parsing and schema validation indicate that the code is syntactically and semantically correct then the current petri net will be replaced with the one parsed from the code editor.</p>
 
             <button mat-stroked-button class="help-text-button">JSON</button>
-            <p>Disply source code in JSON format.</p>
+            <p>Switches the displayed source code to the JSON format. This action essentially reloads the code editor and will dismiss any changes you have made but not yet applied.</p>
 
             <button mat-stroked-button class="help-text-button">PNML</button>
-            <p>Disply source code in PNML format.</p>
+            <p>Switches the displayed source code to the PNML format. Similarly to the JSON button, this essentially reloads the code editor and will dismiss any changes you have made but not yet applied.</p>
         </div>
     </ng-container>
 
