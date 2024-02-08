@@ -39,6 +39,8 @@ import { SetActionPopupComponent } from '../set-action-popup/set-action-popup.co
 import { Node } from 'src/app/tr-interfaces/petri-net/node';
 import { MouseConstants } from '../../tr-enums/mouse-constants';
 import { SvgCoordinatesService } from 'src/app/tr-services/svg-coordinates-service';
+import { PlaceInvariantsService } from 'src/app/tr-services/place-invariants.service';
+import { PlaceInvariantsTableComponent } from '../place-invariants-table/place-invariants-table.component';
 import { DummyArc } from 'src/app/tr-classes/petri-net/dummyArc';
 import { ErrorPopupComponent } from '../error-popup/error-popup.component';
 import { validateJsonAgainstSchema } from 'src/app/tr-utils/json.utils';
@@ -66,8 +68,9 @@ export class PetriNetComponent {
         protected tokenGameService: TokenGameService,
         private matDialog: MatDialog,
         protected editMoveElementsService: EditMoveElementsService,
-        protected svgCoordinatesService: SvgCoordinatesService,
         private layoutSugyiamaService: LayoutSugyiamaService,
+        protected svgCoordinatesService: SvgCoordinatesService,
+        protected placeInvariantsService: PlaceInvariantsService,
     ) {
         this.uiService.buttonState$.subscribe((buttonState) => {
             if (buttonState !== ButtonState.Blitz) {
@@ -522,6 +525,13 @@ export class PetriNetComponent {
         if (this.uiService.button === ButtonState.Delete) {
             this.dataService.removePlace(place);
         }
+
+        if (
+            this.uiService.tab === TabState.Analyze &&
+            this.placeInvariantsService.placeInvariantsMatrix
+        ) {
+            this.openPlaceInvariantsTable(place);
+        }
     }
 
     dispatchPlaceMouseDown(event: MouseEvent, place: Place) {
@@ -825,6 +835,11 @@ export class PetriNetComponent {
                 Math.abs(arc.weight) > 1) || // arc weights can only be decreased if the absolute value is > 1
             this.uiService.button === ButtonState.Delete
         );
+    }
+
+    openPlaceInvariantsTable(place: Place) {
+        this.placeInvariantsService.selectedPlaceForPITable = place;
+        this.matDialog.open(PlaceInvariantsTableComponent);
     }
 
     getNextLabel(label: string | undefined): string | undefined {

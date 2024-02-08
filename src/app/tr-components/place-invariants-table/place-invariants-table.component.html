@@ -1,0 +1,81 @@
+<div fxLayout="row" fxLayoutAlign="space-between center">
+    <h2 mat-dialog-title class="pi-table">{{ placeInvariantsService.headerPItable() }}</h2>
+
+    <button
+        mat-dialog-close
+        mat-icon-button
+        class="close-button"
+        (click)="
+            placeInvariantsService.selectedPlaceForPITable = undefined;
+            placeInvariantsService.showLCTable = false
+        "
+    >
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
+
+<div mat-dialog-content>
+    <p *ngIf="placeInvariantsService.selectedPlaceForPITable">
+        {{ placeInvariantsService.infoPIsWithSelectedPlace() }}
+    </p>
+    <ng-container *ngIf="placeInvariantsService.showLCTable">
+        <p class="lc-hint">
+            [Click on table rows to select/deselect the corresponding place
+            invariants for linear combination.<br />Selected table rows are
+            highlighted in blue.]
+        </p>
+        <p>
+            Linear combination of selected place invariants (selected:
+            {{ placeInvariantsService.numOfSelctedPIs }} out of
+            {{ placeInvariantsService.placeInvariantsMatrix?.length }}):
+        </p>
+        <p *ngIf="placeInvariantsService.numOfSelctedPIs > 0">
+            {{ placeInvariantsService.linearCombinationString }}
+            =
+            {{ placeInvariantsService.tokenSumOfLinearCombination }}
+        </p>
+        <p
+            class="nothing-selected"
+            *ngIf="placeInvariantsService.numOfSelctedPIs === 0"
+        >
+            [No place invariants have been selected]
+        </p>
+    </ng-container>
+    <table *ngIf="placeInvariantsService.pITableHasData">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th
+                    scope="col"
+                    *ngFor="let placeId of placeInvariantsService.placeIds"
+                >
+                    {{ placeId }}
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <ng-container
+                *ngFor="
+                    let row of placeInvariantsService.placeInvariantsMatrix;
+                    let i = index
+                "
+            >
+                <tr
+                    *ngIf="placeInvariantsService.includePI(row)"
+                    [ngClass]="{
+                        'selected-row': placeInvariantsService.selectedPIs[i],
+                        'not-active': !placeInvariantsService.showLCTable
+                    }"
+                >
+                    <th scope="row">{{ i + 1 }}</th>
+                    <td
+                        *ngFor="let coefficient of row"
+                        (click)="placeInvariantsService.toggleSelectedPI(i)"
+                    >
+                        {{ coefficient }}
+                    </td>
+                </tr>
+            </ng-container>
+        </tbody>
+    </table>
+</div>

@@ -26,6 +26,7 @@ import { mathAbsPipe } from './tr-pipes/math-abs.pipe';
 import { ManageActionsPopupComponent } from './tr-components/manage-actions-popup/manage-actions-popup.component';
 import { SetActionPopupComponent } from './tr-components/set-action-popup/set-action-popup.component';
 import { ClearPopupComponent } from './tr-components/clear-popup/clear-popup.component';
+import { PlaceInvariantsTableComponent } from './tr-components/place-invariants-table/place-invariants-table.component';
 import { CodeEditorComponent } from './tr-components/code-editor/code-editor.component';
 import { ErrorPopupComponent } from './tr-components/error-popup/error-popup.component';
 import { HelpPopupComponent } from './tr-components/help-popup/help-popup.component';
@@ -44,6 +45,7 @@ import { HelpPopupComponent } from './tr-components/help-popup/help-popup.compon
         HelpPopupComponent,
         SetActionPopupComponent,
         ClearPopupComponent,
+        PlaceInvariantsTableComponent,
         CodeEditorComponent,
         ErrorPopupComponent,
     ],

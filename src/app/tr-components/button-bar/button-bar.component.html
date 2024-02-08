@@ -242,6 +242,74 @@
         </div>
     </mat-tab>
 
+    <mat-tab label="analyze">
+        <ng-template mat-tab-label>
+            <mat-icon class="example-tab-icon">functions</mat-icon>
+            Analyze
+        </ng-template>
+
+        <!-- buttons for tab "analyze" -->
+        <div class="button-container">
+            <!-- Place invariants (Farkas) -->
+            <button
+                mat-stroked-button
+                class="text-button"
+                (click)="
+                    placeInvariantsService.calculatePIs();
+                    openPlaceInvariantsTable()
+                "
+                matTooltip="Calculate place invariants with Farkas algorithm"
+                [matTooltipShowDelay]="showTooltipDelay"
+            >
+                Place Invariants (Farkas)
+            </button>
+
+            <!-- Minimal place invariants -->
+            <button
+                mat-stroked-button
+                class="text-button"
+                (click)="
+                    placeInvariantsService.calculatePIs();
+                    placeInvariantsService.removeNonMinimalPIs();
+                    openPlaceInvariantsTable()
+                "
+                matTooltip="Calculate place invariants with Farkas algorithm AND Remove linearly dependent place invariants"
+                [matTooltipShowDelay]="showTooltipDelay"
+            >
+                Minimal Place Invariants
+            </button>
+
+            <!-- divider -->
+            <div class="divider"></div>
+
+            <!-- Linear combination of place invariants -->
+            <button
+                mat-stroked-button
+                class="text-button"
+                [disabled]="!placeInvariantsService.placeInvariantsMatrix"
+                (click)="
+                    placeInvariantsService.showLCTable = true;
+                    openPlaceInvariantsTable()
+                "
+                matTooltip="Show table with place invariants from latest calculation and select place invariants for linear combination."
+                [matTooltipShowDelay]="showTooltipDelay"
+            >
+                Linear Combination
+            </button>
+        </div>
+
+        <div class="button-container float-right">
+            <button
+                mat-icon-button
+                (click)="openHelpDialog()"
+                matTooltip="Show help page for 'analyze' mode"
+                [matTooltipShowDelay]="showTooltipDelay"
+            >
+                <mat-icon>help</mat-icon>
+            </button>
+        </div>
+    </mat-tab>
+
     <mat-tab label="save">
         <ng-template mat-tab-label>
             <mat-icon class="example-tab-icon">download</mat-icon>
@@ -384,7 +452,7 @@
             <button
                 mat-icon-button
                 (click)="openHelpDialog()"
-                matTooltip="Show help page for 'save' mode"
+                matTooltip="Show help page for 'code' mode"
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>help</mat-icon>
