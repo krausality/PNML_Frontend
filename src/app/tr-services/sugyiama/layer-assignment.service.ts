@@ -34,9 +34,11 @@ export class LayerAssignmentService {
 
             const previousLayer = this._layers[layerId - 1];
 
-            const choices = this.getNodeChoicesForLayer(previousLayer);
+            const choices = this.getNodeChoicesForLayer(
+                previousLayer,
+                this._layers[layerId],
+            );
 
-            // console.log(choices);
             const picked = choices.pop();
 
             if (picked) {
@@ -65,7 +67,10 @@ export class LayerAssignmentService {
     }
 
     // gets all nodes that have incoming edges from the given layer
-    private getNodeChoicesForLayer(prevLayer: Node[] | undefined): Node[] {
+    private getNodeChoicesForLayer(
+        prevLayer: Node[] | undefined,
+        currentLayer: Node[] | undefined,
+    ): Node[] {
         const incomingNodes: Node[] = [];
 
         // Get the pre-nodes for each node form the graph map
@@ -87,8 +92,22 @@ export class LayerAssignmentService {
                 let intersection = [...preNode].filter((preNode) =>
                     prevLayer.includes(preNode),
                 );
-                if (intersection.length) {
-                    incomingNodes.push(node);
+                if (intersection.length && currentLayer) {
+                    // a node should only be selected if any connected node is on the same layer
+                    // so we first check if there is a connected node in the so far selected choices...
+                    const choicesIntersection = [...preNode].filter((preNode) =>
+                        incomingNodes.includes(preNode),
+                    );
+                    // ...or on the layer we're currently building
+                    const currentLayerIntersection = [...preNode].filter(
+                        (preNode) => currentLayer.includes(preNode),
+                    );
+
+                    if (
+                        choicesIntersection.length === 0 &&
+                        currentLayerIntersection.length === 0
+                    )
+                        incomingNodes.push(node);
                 }
             }
         }
