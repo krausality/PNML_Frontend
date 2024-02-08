@@ -16,7 +16,6 @@
                     fxLayoutAlign="space-between center"
                     class="action-list-row"
                 >
-
                     <div *ngIf="!containsBreakChar(action)">
                         <span class="action-text">
                             {{ action }}
@@ -27,7 +26,7 @@
                         <span class="action-text">
                             {{ returnLine1(action) }}
                         </span>
-                        <br>
+                        <br />
                         <span class="action-text">
                             {{ returnLine2(action) }}
                         </span>
@@ -58,42 +57,29 @@
     </mat-list>
 </div>
 <div mat-dialog-content class="add-action-input">
-<mat-form-field >
-    <mat-label>Action Line 1</mat-label>
-    <input
-        matInput
-        #newActionInput1
-        type="text"
-        placeholder="New Action"
-
-    />
-</mat-form-field>
-<mat-form-field >
-    <mat-label>Action Line 2 (optional)</mat-label>
-    <input
-        matInput
-        #newActionInput2
-        type="text"
-        placeholder="New Action"
-    />
-</mat-form-field>
-<button mat-stroked-button matSuffix (click)="addAction(newActionInput1, newActionInput2)">
-    Add Action
-</button>
+    <mat-form-field>
+        <mat-label>Action Line 1</mat-label>
+        <input matInput #newActionInput1 type="text" placeholder="New Action" />
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Action Line 2 (optional)</mat-label>
+        <input matInput #newActionInput2 type="text" placeholder="New Action" />
+    </mat-form-field>
+    <button
+        mat-stroked-button
+        matSuffix
+        (click)="addAction(newActionInput1, newActionInput2)"
+    >
+        Add Action
+    </button>
 </div>
 
 <!-- only show this error message if the user tries submitting an empty action -->
-<div
-    class="action-error"
-    *ngIf="(bothActionsEmpty)"
->
+<div class="action-error" *ngIf="bothActionsEmpty">
     <p>Actions cannot be empty.</p>
     <p>At least one Action has to filled.</p>
 </div>
-<div
-    class="action-error"
-    *ngIf="(actionAlreadyExists)"
->
+<div class="action-error" *ngIf="actionAlreadyExists">
     <p>Action already exists.</p>
     <p>Please enter another label.</p>
 </div>

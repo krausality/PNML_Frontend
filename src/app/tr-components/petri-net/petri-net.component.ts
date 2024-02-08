@@ -364,16 +364,15 @@ export class PetriNetComponent {
         }
 
         if (this.uiService.button === ButtonState.Blitz) {
-            if(!this.addElement) {
+            if (!this.addElement) {
                 this.addElement = true;
                 return;
             }
             if (this.nextNode && this.nextNode.position) {
                 // Initialising Blitz-Tool by clickling on an existing Node
                 if (!this.lastNode) {
-
-                    this.dummyArc  = new DummyArc();
-                    this.dummyArc.points[0] = this.nextNode.position
+                    this.dummyArc = new DummyArc();
+                    this.dummyArc.points[0] = this.nextNode.position;
                     this.lastNode = this.nextNode;
                     this.nextNode = null;
                     return;
@@ -487,7 +486,8 @@ export class PetriNetComponent {
             }
         }
         if (
-            (this.uiService.button === ButtonState.Arc || this.uiService.button === ButtonState.Blitz) &&
+            (this.uiService.button === ButtonState.Arc ||
+                this.uiService.button === ButtonState.Blitz) &&
             this.dummyArc?.points.length > 0
         ) {
             // Drawing the drag & drop DummyArc
@@ -555,7 +555,7 @@ export class PetriNetComponent {
                 this.dataService.removePlace(place);
             } else if (event.button == MouseConstants.Left_Click) {
                 // Existing Place is selected as the next Node. Method is called before dispatchSVGClick
-                if(this.lastNode instanceof Place) {
+                if (this.lastNode instanceof Place) {
                     this.addElement = false;
                 } else {
                     this.nextNode = place;
@@ -615,12 +615,11 @@ export class PetriNetComponent {
                 this.dataService.removeTransition(transition);
             } else if (event.button == MouseConstants.Left_Click) {
                 //Existing Transition is selected as the next Node. Method is called before dispatchSVGClick
-                if(this.lastNode instanceof Transition) {
+                if (this.lastNode instanceof Transition) {
                     this.addElement = false;
                 } else {
                     this.nextNode = transition;
                 }
-
             }
         }
 
@@ -818,11 +817,14 @@ export class PetriNetComponent {
                 return arc.from === this.startTransition && arc.to === place;
             }).length;
 
-        if(this.uiService.button === ButtonState.Blitz) {
-            if(!this.lastNode) {
+        if (this.uiService.button === ButtonState.Blitz) {
+            if (!this.lastNode) {
                 return true;
             } else {
-                return this.dataService.isConnectionPossible(this.lastNode,place)
+                return this.dataService.isConnectionPossible(
+                    this.lastNode,
+                    place,
+                );
             }
         }
 
@@ -846,11 +848,14 @@ export class PetriNetComponent {
                 return arc.from === this.startPlace;
             }).length;
 
-        if(this.uiService.button === ButtonState.Blitz) {
-            if(!this.lastNode) {
+        if (this.uiService.button === ButtonState.Blitz) {
+            if (!this.lastNode) {
                 return true;
             } else {
-                return this.dataService.isConnectionPossible(this.lastNode,transition)
+                return this.dataService.isConnectionPossible(
+                    this.lastNode,
+                    transition,
+                );
             }
         }
 
