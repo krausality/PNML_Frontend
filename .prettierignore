@@ -7,7 +7,7 @@ src/app/reference-models/*
 # Ignore environments config
 src/environments/*.ts
 
-# Ignore example petrinets
+# Ignore example petri nets
 src/assets/*.json
 src/assets/*.pnml
 

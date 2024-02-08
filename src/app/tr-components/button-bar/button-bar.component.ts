@@ -17,7 +17,7 @@ import { DataService } from '../../tr-services/data.service';
 import { PlaceInvariantsService } from 'src/app/tr-services/place-invariants.service';
 import { PlaceInvariantsTableComponent } from '../place-invariants-table/place-invariants-table.component';
 import { LayoutSpringEmbedderService } from 'src/app/tr-services/layout-spring-embedder.service';
-import { LayoutSugyiamaService } from 'src/app/tr-services/layout-sugyiama.service';
+import { LayoutSugiyamaService } from 'src/app/tr-services/layout-sugiyama.service';
 
 import { showTooltipDelay } from 'src/app/tr-services/position.constants';
 import { HelpPopupComponent } from '../help-popup/help-popup.component';
@@ -46,7 +46,7 @@ export class ButtonBarComponent {
         private matDialog: MatDialog,
         protected placeInvariantsService: PlaceInvariantsService,
         private layoutSpringEmebdderService: LayoutSpringEmbedderService,
-        private layoutSugyiamaService: LayoutSugyiamaService,
+        private layoutSugiyamaService: LayoutSugiyamaService,
     ) {}
 
     // gets called when a tab is clicked
@@ -117,9 +117,9 @@ export class ButtonBarComponent {
             case 'spring-embedder':
                 this.layoutSpringEmebdderService.layoutSpringEmbedder();
                 break;
-            case 'sugyiama':
+            case 'sugiyama':
                 this.layoutSpringEmebdderService.terminate();
-                this.layoutSugyiamaService.applySugyiamaLayout();
+                this.layoutSugiyamaService.applySugiyamaLayout();
                 break;
             default:
                 this.layoutSpringEmebdderService.terminate();

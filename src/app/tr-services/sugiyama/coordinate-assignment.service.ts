@@ -3,7 +3,7 @@ import { Arc } from 'src/app/tr-classes/petri-net/arc';
 import { Point } from 'src/app/tr-classes/petri-net/point';
 import { DummyNode } from 'src/app/tr-classes/petri-net/dummyNode';
 
-import { LayeredGraph } from 'src/app/tr-services/sugyiama/types';
+import { LayeredGraph } from 'src/app/tr-services/sugiyama/types';
 
 export class CoordinateAssignmentService {
     // Initial set of nodes and arcs

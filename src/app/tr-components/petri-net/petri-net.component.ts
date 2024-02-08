@@ -44,7 +44,7 @@ import { PlaceInvariantsTableComponent } from '../place-invariants-table/place-i
 import { DummyArc } from 'src/app/tr-classes/petri-net/dummyArc';
 import { ErrorPopupComponent } from '../error-popup/error-popup.component';
 import { validateJsonAgainstSchema } from 'src/app/tr-utils/json.utils';
-import { LayoutSugyiamaService } from '../../tr-services/layout-sugyiama.service';
+import { LayoutSugiyamaService } from '../../tr-services/layout-sugiyama.service';
 
 @Component({
     selector: 'app-petri-net',
@@ -69,7 +69,7 @@ export class PetriNetComponent {
         protected tokenGameService: TokenGameService,
         private matDialog: MatDialog,
         protected editMoveElementsService: EditMoveElementsService,
-        private layoutSugyiamaService: LayoutSugyiamaService,
+        private layoutSugiyamaService: LayoutSugiyamaService,
         protected svgCoordinatesService: SvgCoordinatesService,
         protected placeInvariantsService: PlaceInvariantsService,
     ) {
@@ -145,7 +145,7 @@ export class PetriNetComponent {
             this.dataService.actions = actions;
 
             if (this.dataService.hasElementsWithoutPosition()) {
-                this.layoutSugyiamaService.applySugyiamaLayout();
+                this.layoutSugiyamaService.applySugiyamaLayout();
             }
         }
     }
