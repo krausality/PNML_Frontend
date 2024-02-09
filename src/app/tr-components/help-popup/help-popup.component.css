@@ -76,3 +76,7 @@ button.help-text-button {
     pointer-events: none;
     white-space: nowrap;
 }
+
+.reference {
+    opacity: 0.5;
+}
