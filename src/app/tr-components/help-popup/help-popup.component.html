@@ -272,7 +272,7 @@
     <ng-container *ngIf="uiService.tab === TabState.Play">
         <h2>Token game</h2>
 
-        <p>In the token game mode, you can:</p>
+        <p>In Play mode, you can:</p>
         <ul>
             <li>
                 Fire transitions to see how the tokens progress through the
@@ -335,11 +335,15 @@
     <!-- Infotext for Code Tab ******************************************** -->
     <ng-container *ngIf="uiService.tab === TabState.Code">
         <div class="grid">
+            <h2 class="grid-span-2">Code editor actions</h2>
+
             <mat-icon class="help-icon">restart_alt</mat-icon>
             <p>TODO: add description.</p>
 
             <mat-icon class="help-icon">task</mat-icon>
             <p>TODO: add description.</p>
+
+            <h2 class="grid-span-2">Supported formats</h2>
 
             <button mat-stroked-button class="help-text-button">JSON</button>
             <p>Disply source code in JSON format.</p>
