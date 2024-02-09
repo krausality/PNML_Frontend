@@ -241,10 +241,32 @@
 
             <h2 class="grid-span-2">Actions</h2>
             <mat-icon class="help-icon">ads_click</mat-icon>
-            <p>TODO: add description.</p>
+            <div>
+                <p>Action assignment mode:</p>
+                <ul>
+                    <li>
+                        Allows assigning actions to transitions as labels.
+                        Clicking a transition using this tool will open a dialog
+                        that lets you specify which action should be used as
+                        label for this transition. By selecting "-" you can also
+                        remove a set label assignment and turn the selected
+                        transition into a silent transition.
+                    </li>
+                    <li>
+                        You can also hover a transition and use the scroll wheel
+                        to successively switch through all defined actions.
+                    </li>
+                </ul>
+            </div>
 
             <mat-icon class="help-icon">edit_note</mat-icon>
-            <p>TODO: add description.</p>
+            <p>
+                Opens the action management dialog. In this dialog actions can
+                be created and removed. These actions can then be used for
+                assignment as transition labels using the previously mentioned
+                tool. Note that only actions which are not currently used as
+                labels can be deleted.
+            </p>
         </div>
         <div class="grid">
             <h2 class="grid-span-2">Layout</h2>
