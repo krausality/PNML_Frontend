@@ -34,27 +34,56 @@
             <h2 class="grid-span-2">Blitz tool</h2>
             <mat-icon class="help-icon">bolt</mat-icon>
             <div>
-                <p>If a place or transition is selected, an arc from the selected element is shown.</p>
+                <p>
+                    If a place or transition is selected, an arc from the
+                    selected element is shown.
+                </p>
                 <p>Left-Click</p>
-                    <ul>
-                        <li>When no element is set, a place can be created by a click on the canvas.</li>
-                        <li>When no element is set, a click on an existing place or transition sets the node as a starting point for the next action.</li>
-                        <li>When an element is set, a click on an empty place in the canvas creates a new place or transition</li>
-                        <li>When an element is set, a click on an existing node connects both nodes if possible.</li>
-                    </ul>
+                <ul>
+                    <li>
+                        When no element is set, a place can be created by a
+                        click on the canvas.
+                    </li>
+                    <li>
+                        When no element is set, a click on an existing place or
+                        transition sets the node as a starting point for the
+                        next action.
+                    </li>
+                    <li>
+                        When an element is set, a click on an empty place in the
+                        canvas creates a new place or transition
+                    </li>
+                    <li>
+                        When an element is set, a click on an existing node
+                        connects both nodes if possible.
+                    </li>
+                </ul>
                 <p>Right-Click</p>
                 <ul>
                     <li>The selected in the Blitz tool can be reset.</li>
-                    <li>An existing arc or node can be deleted by clicking on it.</li>
+                    <li>
+                        An existing arc or node can be deleted by clicking on
+                        it.
+                    </li>
                 </ul>
                 <p>Scrolling</p>
                 <ul>
-                    <li>By scrolling over an arc the amount of marks can be increased or decreased.</li>
-                    <li>By scrolling over a transition, its label can be changed to the next or the previous action. When scrolling past the last element, the label will be empty.</li>
+                    <li>
+                        By scrolling over an arc the amount of marks can be
+                        increased or decreased.
+                    </li>
+                    <li>
+                        By scrolling over a transition, its label can be changed
+                        to the next or the previous action. When scrolling past
+                        the last element, the label will be empty.
+                    </li>
                 </ul>
                 <p>Mousewheel-Click</p>
                 <ul>
-                    <li>When no element is set, a transition can be created by a click on the canvas.</li>
+                    <li>
+                        When no element is set, a transition can be created by a
+                        click on the canvas.
+                    </li>
                 </ul>
             </div>
 
@@ -222,10 +251,48 @@
             <button mat-stroked-button class="help-text-button">
                 Spring Embedder
             </button>
-            <p>
-                Apply automatic layout to the petri net with a Spring Embedder
-                algorithm. Orphan nodes will stay in their original position
-            </p>
+            <div>
+                <p>
+                    Apply automatic layout to the petri net with a Spring
+                    Embedder algorithm. Orphan nodes will stay in their original
+                    position.
+                </p>
+                <p>
+                    The implementation of the Spring Embedder algorithm is based
+                    on Eades algorithm for force directed graph drawing from
+                    1984. [P. Eades, A heuristic for graph drawing, Congressus
+                    Numerantium, Vol. 42, pp. 149-160, 1984]
+                </p>
+                <p>
+                    For the purpose of drawing the petri net, nodes repel each
+                    other while arcs are implemented to act like springs,
+                    applying directional forces based on being stretched or
+                    compressed. The forces generated are calculated in an
+                    iterative procedure. Each iteration is comprised of the
+                    following steps:
+                </p>
+                <ul>
+                    <li>
+                        A force vector is calculated for each node. This force
+                        vector is composed of the sum of the repulsive forces
+                        from all other nodes in the petri net and the spring
+                        forces from connected nodes.
+                    </li>
+                    <li>
+                        The force vectors are applied the nodes and their
+                        positions are updated.
+                    </li>
+                </ul>
+                <p>The algorithm terminates as soon as either</p>
+                <ul>
+                    <li>
+                        the lengths of all force vectors fall below a certain
+                        threshold (meaning the petri net has settled and any
+                        further change would be minimal) or
+                    </li>
+                    <li>20,000 iterations are reached.</li>
+                </ul>
+            </div>
 
             <button mat-stroked-button class="help-text-button">
                 Sugiyama
