@@ -15,8 +15,6 @@ export class SetActionPopupComponent {
     ) {}
 
     replaceBreakChar(action: string): string {
-        return action.replace("~", "↲")
+        return action.replace('~', '↲');
     }
 }
-
-
