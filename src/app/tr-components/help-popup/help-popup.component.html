@@ -344,7 +344,7 @@
     <ng-container *ngIf="uiService.tab === TabState.Play">
         <h2>Token game</h2>
 
-        <p>In the token game mode, you can:</p>
+        <p>In Play mode, you can:</p>
         <ul>
             <li>
                 Fire transitions to see how the tokens progress through the
@@ -407,6 +407,8 @@
     <!-- Infotext for Code Tab ******************************************** -->
     <ng-container *ngIf="uiService.tab === TabState.Code">
         <div class="grid">
+            <h2 class="grid-span-2">Code editor actions</h2>
+
             <mat-icon class="help-icon">restart_alt</mat-icon>
             <p>
                 Reload the contents of the code editor. This is done via
@@ -423,6 +425,8 @@
                 with the one parsed from the code editor. As of yet schema
                 validation is only available for the JSON format.
             </p>
+
+            <h2 class="grid-span-2">Supported formats</h2>
 
             <button mat-stroked-button class="help-text-button">JSON</button>
             <p>

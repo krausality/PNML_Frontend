@@ -56,7 +56,7 @@ export class CycleRemovalService {
                 // If the node is already included in the stack
                 // this must be a circle and the arc needs to be reversed
                 this._arcsToBeReversed.push(arc);
-                // TODO: Check if it's possibly that a petrinet contains two arcs
+                // TODO: Check if it's possibly that a petri net contains two arcs
                 // leading from and to the same node ? or at least if our data structure
                 // allows that
             } else if (!this._visited.includes(arc.to)) {

@@ -1,4 +1,4 @@
-import { LayeredGraph } from 'src/app/tr-services/sugyiama/types';
+import { LayeredGraph } from 'src/app/tr-services/sugiyama/types';
 import { Node } from 'src/app/tr-interfaces/petri-net/node';
 
 /**

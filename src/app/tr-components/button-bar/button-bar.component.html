@@ -120,7 +120,7 @@
                     uiService.button === ButtonState.Clear ? 'primary' : ''
                 "
                 (click)="openClearDialog()"
-                matTooltip="Delete the whole petrinet"
+                matTooltip="Delete the whole petri net"
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>clear</mat-icon>
@@ -172,21 +172,21 @@
                 mat-stroked-button
                 class="text-button"
                 (click)="applyLayout('spring-embedder')"
-                matTooltip="Apply spring embedder layout to current petrinet"
+                matTooltip="Apply Spring Embedder layout to current petri net"
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 Spring Embedder
             </button>
 
-            <!-- apply sugyiama layout (once) -->
+            <!-- apply sugiyama layout (once) -->
             <button
                 mat-stroked-button
                 class="text-button"
-                (click)="applyLayout('sugyiama')"
-                matTooltip="Apply sugyiama layout to current petrinet"
+                (click)="applyLayout('sugiyama')"
+                matTooltip="Apply Sugiyama layout to current petri net"
                 [matTooltipShowDelay]="showTooltipDelay"
             >
-                Sugyiama
+                Sugiyama
             </button>
 
             <button
@@ -323,7 +323,7 @@
                 mat-stroked-button
                 class="text-button"
                 (click)="exportJsonDataService.exportAsJson()"
-                matTooltip="Export petrinet as JSON"
+                matTooltip="Export petri net as JSON"
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 JSON
@@ -334,7 +334,7 @@
                 mat-stroked-button
                 class="text-button"
                 (click)="pnmlService.writePNML()"
-                matTooltip="Export petrinet as PNML"
+                matTooltip="Export petri net as PNML"
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 PNML
@@ -353,7 +353,7 @@
                         'pngExport.png'
                     )
                 "
-                matTooltip="Save petrinet as PNG image"
+                matTooltip="Save petri net as PNG image"
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 PNG
@@ -364,7 +364,7 @@
                 mat-stroked-button
                 class="text-button"
                 (click)="exportSvgService.exportAsSvg()"
-                matTooltip="Save petrinet as SVG image"
+                matTooltip="Save petri net as SVG image"
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 SVG
@@ -394,7 +394,7 @@
             <!-- reset button -->
             <button
                 mat-icon-button
-                matTooltip="Reset code editor to the current petrinet state"
+                matTooltip="Reset code editor to the current petri net state"
                 [matTooltipShowDelay]="showTooltipDelay"
                 (click)="
                     uiService.codeEditorFormat$.next(
@@ -408,7 +408,7 @@
             <!-- apply button -->
             <button
                 mat-icon-button
-                matTooltip="Apply the source code in the code editor as the new petrinet state"
+                matTooltip="Apply the source code in the code editor as the new petri net state"
                 [matTooltipShowDelay]="showTooltipDelay"
                 (click)="buttonClicked(ButtonState.ApplyCode)"
             >
