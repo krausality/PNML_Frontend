@@ -144,7 +144,10 @@ export class PetriNetComponent {
             this.dataService.arcs = arcs;
             this.dataService.actions = actions;
 
-            if (this.dataService.hasElementsWithoutPosition()) {
+            if (
+                contentType !== CodeEditorFormat.PNML &&
+                this.parserService.incompleteLayoutData
+            ) {
                 this.layoutSugiyamaService.applySugiyamaLayout();
             }
         }

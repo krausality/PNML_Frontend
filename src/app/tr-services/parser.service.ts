@@ -14,11 +14,15 @@ import parseJson from 'json-parse-better-errors';
 export class ParserService {
     constructor() {}
 
+    incompleteLayoutData: boolean = false;
+
     // TODO specify correct return type
     parse(
         text: string,
     ): [Array<Place>, Array<Transition>, Array<Arc>, Array<string>] {
         let rawData: JsonPetriNet;
+
+        this.incompleteLayoutData = false;
 
         // Errors from JSON parse need to be caught & handled when using the parser service
         rawData = parseJson(text) as JsonPetriNet;
@@ -87,6 +91,7 @@ export class ParserService {
             const coords = data.layout[id] as Coords;
             return new Point(coords.x, coords.y);
         } else {
+            this.incompleteLayoutData = true;
             return new Point(0, 0);
         }
     }
