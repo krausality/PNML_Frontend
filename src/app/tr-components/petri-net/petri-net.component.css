@@ -39,10 +39,6 @@
     stroke-width: 2;
 }
 
-/* .place:hover {
-    stroke: orange;
-} */
-
 .transition {
     fill: white;
     stroke: black;
@@ -53,20 +49,11 @@
     fill: black;
 }
 
-/* .transition:hover {
-    stroke: orange;
-} */
-
 .arc {
     fill: none;
     stroke: black;
     stroke-width: 2;
 }
-
-/* .arc:hover,
-.background-arc:hover + .arc {
-    stroke: orange;
-} */
 
 .background-arc {
     fill: none;
@@ -124,29 +111,22 @@
     filter: drop-shadow(0 0 5px rgba(255, 255, 255, 1));
 }
 
-/* Text nodes that follow transitions (here: rects within svg) should not have different cursors in play mode
- * all interaction events should be caught in the wrapper group element */
+/*
+ * Text nodes that follow transitions (here: rects within svg) should not have
+ * different cursors in play mode.
+ * All interaction events should be caught in the wrapper group element.
+ */
 .play-mode .transition.active ~ text {
     cursor: pointer;
 }
 
 /* Styles for 'move' and 'anchor' mode */
 .canvas.move-mode:hover {
-    /* transition: box-shadow 0.2s; */
     cursor: pointer;
 }
 
-/* set box shadow on canvas, but only if:
- * - the canvas an no child element is hovered
- * - the canvas is not currently being dragged
- */
-/* .canvas.move-mode:hover:not(:has(.editable:hover)):not(.dragging) {
-    box-shadow: inset 0 0 3px 5px rgba(255, 0, 0, 0.2);
-} */
-
 .canvas.move-mode.dragging {
     cursor: grabbing;
-    /* box-shadow: inset 0 0 3px 5px rgba(255, 0, 0, 0.8); */
 }
 
 .anchor {
@@ -187,13 +167,18 @@
     cursor: pointer;
 }
 
-/* Add hover effect
- * In general elements should show the "hover"-Style only when they are currently being editable,
- * and the user is doing a mouseover/hover on the element:
- * - Elements with class ".editable" oder ".line-segment" that are currently being hovered
+/*
+ * Add hover effect
+ * In general elements should show the "hover"-Style only when they are
+ * currently being editable and the user is doing a mouseover/hover on
+ * the element:
+ * - Elements with class ".editable" oder ".line-segment" that are currently
+ *   being hovered
  * - Elements with class ".anchor" that also have the ".active" class set
- * - Elements with class ".arc" AND ".editable", that are direct children of the ".arc-group"-Element currently being hovered. This is
- *   needed to be able to highlight the main arcs when line-segments are hovered, as those cannot get a drop shadow since they have no stroke color.
+ * - Elements with class ".arc" AND ".editable", that are direct children of
+ *   the ".arc-group"-Element currently being hovered. This is needed to be
+ *   able to highlight the main arcs when line-segments are hovered, as those
+ *   cannot get a drop shadow since they have no stroke color.
  */
 .editable:hover,
 .line-segment:hover,
