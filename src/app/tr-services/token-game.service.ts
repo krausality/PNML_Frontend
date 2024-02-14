@@ -15,7 +15,7 @@ export class TokenGameService {
     // Method for token game
     fire(transition: Transition) {
         if (transition.isActive) {
-            // whenever a transition is fired the token distribution BEFORE the change
+            // Whenever a transition is fired, the token distribution BEFORE the change
             // is added to our game history stack, so we can later revisit it
             this.saveCurrentGameState();
 
@@ -60,7 +60,7 @@ export class TokenGameService {
 
         this.setGameState(state);
 
-        // clear history as we're starting from the beginning again
+        // Clear history as we're starting from the beginning again
         this.clearGameHistory();
     }
 

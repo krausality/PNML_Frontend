@@ -25,7 +25,7 @@ export class EditMoveElementsService {
 
     // Temporary storage of new anchor.
     // Also an indicator that a new anchor is moved instead of an existing one
-    // when automatic switch to 'move' mode occurs.
+    // when automatic switch to 'Move' mode occurs.
     newAnchor: Point | undefined;
 
     isCanvasDragInProcess: Boolean = false;
@@ -79,7 +79,7 @@ export class EditMoveElementsService {
             this.node.position.y += deltaY;
 
             // Update position of anchor points of arcs connected to the node.
-            // They are shifted by halv the position change of the node.
+            // They are shifted by half the position change of the node.
             this.nodeArcs.forEach((arc) =>
                 arc.anchors.forEach((point) => {
                     point.x += deltaX / 2;
@@ -145,7 +145,7 @@ export class EditMoveElementsService {
 
         this.initialMousePos = { x: 0, y: 0 };
 
-        // return to 'anchor' mode if a newly created anchor was moved
+        // return to 'Anchor' mode if a newly created anchor was moved
         if (this.newAnchor) this.uiService.button = ButtonState.Anchor;
         // Un-register new anchor
         this.newAnchor = undefined;
@@ -176,7 +176,7 @@ export class EditMoveElementsService {
             }
         }
 
-        // Automatic change to 'move' mode so that the newly created anchor can
+        // Automatic change to 'Move' mode so that the newly created anchor can
         // be dragged to its final position
         this.newAnchor = anchor;
         this.uiService.button = ButtonState.Move;
