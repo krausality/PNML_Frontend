@@ -33,10 +33,7 @@ export class LayerAssignmentService {
             counter++;
 
             const previousLayer = this._layers[layerId - 1];
-
             const choices = this.getNodeChoicesForLayer(previousLayer);
-
-            // console.log(choices);
             const picked = choices.pop();
 
             if (picked) {
@@ -54,9 +51,9 @@ export class LayerAssignmentService {
             }
 
             if (layerId > this._nodes.length) {
-                // if there are more layers than vertices
+                // If there are more layers than vertices
                 // something has gone very wrong!
-                console.log('Error during Layer Assignment.');
+                console.error('Error during Layer Assignment.');
                 break;
             }
         }
@@ -64,22 +61,21 @@ export class LayerAssignmentService {
         return this._layers;
     }
 
-    // gets all nodes that have incoming edges from the given layer
+    // Gets all nodes that have incoming edges from the given layer
     private getNodeChoicesForLayer(prevLayer: Node[] | undefined): Node[] {
         const incomingNodes: Node[] = [];
 
         // Get the pre-nodes for each node form the graph map
         // (map contains prenodes indexed by node)
-        // console.log(this._nodeInputMap);
         for (const [node, preNode] of this._nodeInputMap.entries()) {
             if (this._assignedNodes.includes(node)) {
-                // ignore nodes that have already been assigned to a layer
+                // Ignore nodes that have already been assigned to a layer
                 continue;
             }
 
             if (!prevLayer || prevLayer.length === 0) {
-                // If this is the first layer/the previous layer has no nodes
-                // all nodes are potential candidates for the layer
+                // If this is the first layer/the previous layer has no nodes,
+                // so all nodes are potential candidates for the layer
                 if (preNode.length === 0) incomingNodes.push(node);
             } else {
                 // Otherwise only nodes that have prenodes coming from

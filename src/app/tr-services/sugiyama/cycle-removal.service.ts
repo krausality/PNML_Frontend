@@ -53,27 +53,24 @@ export class CycleRemovalService {
         const postArcs = this.getPostArcsForNode(node);
         for (let arc of postArcs) {
             if (this._stack.includes(arc.to)) {
-                // If the node is already included in the stack
+                // If the node is already included in the stack, then
                 // this must be a circle and the arc needs to be reversed
                 this._arcsToBeReversed.push(arc);
-                // TODO: Check if it's possibly that a petri net contains two arcs
-                // leading from and to the same node ? or at least if our data structure
-                // allows that
             } else if (!this._visited.includes(arc.to)) {
-                // if this arc has not been visited before continue the dfs search
-                // starting with the arcs target node
+                // If this arc has not been visited before, continue
+                // the dfs search. Start with the arcs target node.
                 this.depthFirstSearchRemove(arc.to);
             }
         }
         this._stack.pop();
     }
 
-    // Changes the direction of the arcs to eliminate circles
-    // needs to be public as it needs to be called again from
+    // Changes the direction of the arcs to eliminate circles.
+    // Needs to be public as it needs to be called again from
     // the main class to return arcs to original states
     reverseArcs() {
         for (let arc of this._arcsToBeReversed) {
-            // since we're working with references it's enough
+            // Since we're working with references it's enough
             // to just update the arcs to & from nodes
             const newTo = arc.from;
             const newFrom = arc.to;
