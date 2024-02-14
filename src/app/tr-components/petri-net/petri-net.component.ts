@@ -39,10 +39,12 @@ import { SetActionPopupComponent } from '../set-action-popup/set-action-popup.co
 import { Node } from 'src/app/tr-interfaces/petri-net/node';
 import { MouseConstants } from '../../tr-enums/mouse-constants';
 import { SvgCoordinatesService } from 'src/app/tr-services/svg-coordinates-service';
+import { PlaceInvariantsService } from 'src/app/tr-services/place-invariants.service';
+import { PlaceInvariantsTableComponent } from '../place-invariants-table/place-invariants-table.component';
 import { DummyArc } from 'src/app/tr-classes/petri-net/dummyArc';
 import { ErrorPopupComponent } from '../error-popup/error-popup.component';
 import { validateJsonAgainstSchema } from 'src/app/tr-utils/json.utils';
-import { LayoutSugyiamaService } from '../../tr-services/layout-sugyiama.service';
+import { LayoutSugiyamaService } from '../../tr-services/layout-sugiyama.service';
 
 @Component({
     selector: 'app-petri-net',
@@ -54,6 +56,7 @@ export class PetriNetComponent {
 
     lastNode: Node | null = null;
     nextNode: Node | null = null;
+    addElement: boolean = true;
 
     constructor(
         private parserService: ParserService,
@@ -66,11 +69,13 @@ export class PetriNetComponent {
         protected tokenGameService: TokenGameService,
         private matDialog: MatDialog,
         protected editMoveElementsService: EditMoveElementsService,
+        private layoutSugiyamaService: LayoutSugiyamaService,
         protected svgCoordinatesService: SvgCoordinatesService,
-        private layoutSugyiamaService: LayoutSugyiamaService,
+        protected placeInvariantsService: PlaceInvariantsService,
     ) {
         this.uiService.buttonState$.subscribe((buttonState) => {
             if (buttonState !== ButtonState.Blitz) {
+                this.dummyArc.points = [];
                 this.lastNode = null;
             }
         });
@@ -139,8 +144,11 @@ export class PetriNetComponent {
             this.dataService.arcs = arcs;
             this.dataService.actions = actions;
 
-            if (this.dataService.hasElementsWithoutPosition()) {
-                this.layoutSugyiamaService.applySugyiamaLayout();
+            if (
+                contentType !== CodeEditorFormat.PNML &&
+                this.parserService.incompleteLayoutData
+            ) {
+                this.layoutSugiyamaService.applySugiyamaLayout();
             }
         }
     }
@@ -359,9 +367,15 @@ export class PetriNetComponent {
         }
 
         if (this.uiService.button === ButtonState.Blitz) {
-            if (this.nextNode) {
+            if (!this.addElement) {
+                this.addElement = true;
+                return;
+            }
+            if (this.nextNode && this.nextNode.position) {
                 // Initialising Blitz-Tool by clickling on an existing Node
                 if (!this.lastNode) {
+                    this.dummyArc = new DummyArc();
+                    this.dummyArc.points[0] = this.nextNode.position;
                     this.lastNode = this.nextNode;
                     this.nextNode = null;
                     return;
@@ -413,6 +427,7 @@ export class PetriNetComponent {
                     this.lastNode = place;
                 }
             }
+            this.dummyArc.points[0] = this.lastNode.position;
             this.nextNode = null;
         }
     }
@@ -430,6 +445,7 @@ export class PetriNetComponent {
         ) {
             this.lastNode = null;
             this.nextNode = null;
+            this.dummyArc.points = [];
         }
         if (
             this.uiService.button === ButtonState.Blitz &&
@@ -440,6 +456,7 @@ export class PetriNetComponent {
             const transition = this.createTransition(event, drawingArea);
             this.dataService.getTransitions().push(transition);
             this.lastNode = transition;
+            this.dummyArc.points[0] = this.lastNode.position;
         }
         if (
             this.uiService.button === ButtonState.Arc &&
@@ -472,7 +489,8 @@ export class PetriNetComponent {
             }
         }
         if (
-            this.uiService.button === ButtonState.Arc &&
+            (this.uiService.button === ButtonState.Arc ||
+                this.uiService.button === ButtonState.Blitz) &&
             this.dummyArc?.points.length > 0
         ) {
             // Drawing the drag & drop DummyArc
@@ -500,8 +518,10 @@ export class PetriNetComponent {
         // * A successfull deletion of an anchor: mouse up on the anchor element
         //   bubbles up to the svg element and triggers dispatchSVGMouseUp().
         // * An aborted anchor deletion: mouse up does not occur on the original
-        //   anchor but somewhere else on the display area --> the event is captuered
+        //   anchor but somewhere else on the display area --> the event
+        //   is captuered
         //   here as well.
+
         if (this.anchorToDelete) {
             this.anchorToDelete = undefined;
         }
@@ -522,15 +542,27 @@ export class PetriNetComponent {
         if (this.uiService.button === ButtonState.Delete) {
             this.dataService.removePlace(place);
         }
+
+        if (
+            this.uiService.tab === TabState.Analyze &&
+            this.placeInvariantsService.placeInvariantsMatrix
+        ) {
+            this.openPlaceInvariantsTable(place);
+        }
     }
 
     dispatchPlaceMouseDown(event: MouseEvent, place: Place) {
         if (this.uiService.button === ButtonState.Blitz) {
             if (event.button == MouseConstants.Right_Click) {
+                this.dummyArc = new DummyArc();
                 this.dataService.removePlace(place);
             } else if (event.button == MouseConstants.Left_Click) {
                 // Existing Place is selected as the next Node. Method is called before dispatchSVGClick
-                this.nextNode = place;
+                if (this.lastNode instanceof Place) {
+                    this.addElement = false;
+                } else {
+                    this.nextNode = place;
+                }
             }
         }
 
@@ -586,7 +618,11 @@ export class PetriNetComponent {
                 this.dataService.removeTransition(transition);
             } else if (event.button == MouseConstants.Left_Click) {
                 //Existing Transition is selected as the next Node. Method is called before dispatchSVGClick
-                this.nextNode = transition;
+                if (this.lastNode instanceof Transition) {
+                    this.addElement = false;
+                } else {
+                    this.nextNode = transition;
+                }
             }
         }
 
@@ -784,6 +820,17 @@ export class PetriNetComponent {
                 return arc.from === this.startTransition && arc.to === place;
             }).length;
 
+        if (this.uiService.button === ButtonState.Blitz) {
+            if (!this.lastNode) {
+                return true;
+            } else {
+                return this.dataService.isConnectionPossible(
+                    this.lastNode,
+                    place,
+                );
+            }
+        }
+
         return (
             (this.uiService.button === ButtonState.Move &&
                 !this.editMoveElementsService.newAnchor) ||
@@ -803,6 +850,17 @@ export class PetriNetComponent {
             transition.preArcs.filter((arc) => {
                 return arc.from === this.startPlace;
             }).length;
+
+        if (this.uiService.button === ButtonState.Blitz) {
+            if (!this.lastNode) {
+                return true;
+            } else {
+                return this.dataService.isConnectionPossible(
+                    this.lastNode,
+                    transition,
+                );
+            }
+        }
 
         return (
             (this.uiService.button === ButtonState.Move &&
@@ -825,6 +883,11 @@ export class PetriNetComponent {
                 Math.abs(arc.weight) > 1) || // arc weights can only be decreased if the absolute value is > 1
             this.uiService.button === ButtonState.Delete
         );
+    }
+
+    openPlaceInvariantsTable(place: Place) {
+        this.placeInvariantsService.selectedPlaceForPITable = place;
+        this.matDialog.open(PlaceInvariantsTableComponent);
     }
 
     getNextLabel(label: string | undefined): string | undefined {

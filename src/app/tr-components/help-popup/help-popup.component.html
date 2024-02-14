@@ -33,7 +33,59 @@
         <div class="grid">
             <h2 class="grid-span-2">Blitz tool</h2>
             <mat-icon class="help-icon">bolt</mat-icon>
-            <p>TODO: add description.</p>
+            <div>
+                <p>
+                    If a place or transition is selected, an arc from the
+                    selected element is shown.
+                </p>
+                <p>Left-Click</p>
+                <ul>
+                    <li>
+                        When no element is set, a place can be created by a
+                        click on the canvas.
+                    </li>
+                    <li>
+                        When no element is set, a click on an existing place or
+                        transition sets the node as a starting point for the
+                        next action.
+                    </li>
+                    <li>
+                        When an element is set, a click on an empty place in the
+                        canvas creates a new place or transition
+                    </li>
+                    <li>
+                        When an element is set, a click on an existing node
+                        connects both nodes if possible.
+                    </li>
+                </ul>
+                <p>Right-Click</p>
+                <ul>
+                    <li>The selected in the Blitz tool can be reset.</li>
+                    <li>
+                        An existing arc or node can be deleted by clicking on
+                        it.
+                    </li>
+                </ul>
+                <p>Scrolling</p>
+                <ul>
+                    <li>
+                        By scrolling over an arc the amount of marks can be
+                        increased or decreased.
+                    </li>
+                    <li>
+                        By scrolling over a transition, its label can be changed
+                        to the next or the previous action. When scrolling past
+                        the last element, the label will be empty.
+                    </li>
+                </ul>
+                <p>Mousewheel-Click</p>
+                <ul>
+                    <li>
+                        When no element is set, a transition can be created by a
+                        click on the canvas.
+                    </li>
+                </ul>
+            </div>
 
             <h2 class="grid-span-2">Add petri net elements</h2>
 
@@ -189,20 +241,83 @@
 
             <h2 class="grid-span-2">Actions</h2>
             <mat-icon class="help-icon">ads_click</mat-icon>
-            <p>TODO: add description.</p>
+            <div>
+                <p>Action assignment mode:</p>
+                <ul>
+                    <li>
+                        Allows assigning actions to transitions as labels.
+                        Clicking a transition using this tool will open a dialog
+                        that lets you specify which action should be used as
+                        label for this transition. By selecting "-" you can also
+                        remove a set label assignment and turn the selected
+                        transition into a silent transition.
+                    </li>
+                    <li>
+                        You can also hover a transition and use the scroll wheel
+                        to successively switch through all defined actions.
+                    </li>
+                </ul>
+            </div>
 
             <mat-icon class="help-icon">edit_note</mat-icon>
-            <p>TODO: add description.</p>
+            <p>
+                Opens the action management dialog. In this dialog actions can
+                be created and removed. These actions can then be used for
+                assignment as transition labels using the the action assignment
+                tool (described above). Note that only actions which are not
+                currently used as labels can be deleted.
+            </p>
         </div>
         <div class="grid">
             <h2 class="grid-span-2">Layout</h2>
             <button mat-stroked-button class="help-text-button">
                 Spring Embedder
             </button>
-            <p>
-                Apply automatic layout to the petri net with a Spring Embedder
-                algorithm. Orphan nodes will stay in their original position
-            </p>
+            <div>
+                <p>
+                    Apply automatic layout to the petri net with a Spring
+                    Embedder algorithm. Orphan nodes will stay in their original
+                    position.
+                </p>
+                <p>
+                    The implementation of the Spring Embedder algorithm is based
+                    on Eades algorithm for force directed graph drawing from
+                    1984
+                    <span class="reference"
+                        >[P. Eades, A heuristic for graph drawing, Congressus
+                        Numerantium, Vol. 42, pp. 149-160, 1984]</span
+                    >.
+                </p>
+                <p>
+                    For the purpose of drawing the petri net, nodes repel each
+                    other while arcs are implemented to act like springs,
+                    applying directional forces based on being stretched or
+                    compressed. The forces generated are calculated in an
+                    iterative procedure. Each iteration is comprised of the
+                    following steps:
+                </p>
+                <ul>
+                    <li>
+                        A force vector is calculated for each node. This force
+                        vector is composed of the sum of the repulsive forces
+                        from all other nodes in the petri net and the spring
+                        forces from connected nodes.
+                    </li>
+                    <li>
+                        The force vectors are applied to the nodes and their
+                        positions are updated accordingly.
+                    </li>
+                </ul>
+                <p>The algorithm terminates as soon as either</p>
+                <ul>
+                    <li>
+                        the lengths of all force vectors fall below a certain
+                        threshold (meaning the petri net has settled and any
+                        further change would be minimal) or
+                    </li>
+                    <li>20,000 iterations are reached.</li>
+                </ul>
+            </div>
 
             <button mat-stroked-button class="help-text-button">
                 Sugiyama
@@ -225,15 +340,20 @@
                     <li>
                         Each individual node is then assigned to a layer by an
                         implementation of the Longest Path Algorithm proposed by
-                        Tamassia et al. [R. Tamassia, Handbook of Graph Drawing
-                        and Visualization, 2010].
+                        Tamassia et al.
+                        <span class="reference"
+                            >[R. Tamassia, Handbook of Graph Drawing and
+                            Visualization, 2010]</span
+                        >.
                     </li>
                     <li>
                         The nodes are then ordered to minimize arc crossings
                         using the median ordering method with transpose as
-                        proposed by Ganser et al. [E. Gansner, E. Koutsofios, S.
-                        North, and K.-P. Vo, A technique for drawing directed
-                        graphs, 1993].
+                        proposed by Ganser et al.
+                        <span class="reference"
+                            >[E. Gansner, E. Koutsofios, S. North, and K.-P. Vo,
+                            A technique for drawing directed graphs, 1993]</span
+                        >.
                     </li>
                     <li>
                         Finally, new coordinates are assigned to each node
@@ -249,7 +369,7 @@
     <ng-container *ngIf="uiService.tab === TabState.Play">
         <h2>Token game</h2>
 
-        <p>In the token game mode, you can:</p>
+        <p>In Play mode, you can:</p>
         <ul>
             <li>
                 Fire transitions to see how the tokens progress through the
@@ -312,22 +432,152 @@
     <!-- Infotext for Code Tab ******************************************** -->
     <ng-container *ngIf="uiService.tab === TabState.Code">
         <div class="grid">
+            <h2 class="grid-span-2">Code editor actions</h2>
+
             <mat-icon class="help-icon">restart_alt</mat-icon>
-            <p>TODO: add description.</p>
+            <p>
+                Reload the contents of the code editor. This is done via
+                serializing the internal state of the petri net in the selected
+                format and replacing the contents of the editor with the created
+                code.
+            </p>
 
             <mat-icon class="help-icon">task</mat-icon>
-            <p>TODO: add description.</p>
+            <p>
+                Apply the contents of the code editor. If parsing and schema
+                validation indicate that the code is syntactically and
+                semantically correct then the current petri net will be replaced
+                with the one parsed from the code editor. As of yet schema
+                validation is only available for the JSON format.
+            </p>
+
+            <h2 class="grid-span-2">Supported formats</h2>
 
             <button mat-stroked-button class="help-text-button">JSON</button>
-            <p>Disply source code in JSON format.</p>
+            <p>
+                Switches the displayed source code to the JSON format. This
+                action essentially reloads the code editor and will dismiss any
+                changes you have made but not yet applied.
+            </p>
 
             <button mat-stroked-button class="help-text-button">PNML</button>
-            <p>Disply source code in PNML format.</p>
+            <p>
+                Switches the displayed source code to the PNML format. Similarly
+                to the JSON button, this essentially reloads the code editor and
+                will dismiss any changes you have made but not yet applied.
+            </p>
         </div>
     </ng-container>
 
     <!-- Context Help for Analyze Mode ************************************ -->
     <ng-container *ngIf="uiService.tab === TabState.Analyze">
-        <p>Content for Analyze Mode Help</p>
+        <p>
+            In Analyze mode, you can calculate place invariants of the petri net
+            and inspect the results in different ways.
+        </p>
+        <h2>Calculation</h2>
+        <div class="grid">
+            <button mat-stroked-button class="help-text-button">
+                Place Invariants (Farkas)
+            </button>
+            <div>
+                <p>
+                    Pressing this button will calculate place invariants with
+                    the Farkas algorithm. A popup window will appear with the
+                    results of the calculation. It presents a table where each
+                    table row represents one place invariant.
+                </p>
+                <p>
+                    The results of the Farkas algorithm contain all minimal
+                    place invariants, but they may also contain additional place
+                    invariants that are non-minimal. If you want to exclusively
+                    calculate minimal place invariants, use the next calculation
+                    option described below.
+                </p>
+                <p>
+                    The Farkas algorithm for the calculation of place invariants
+                    is described in various publications, for example Martinez &
+                    Silva
+                    <span class="reference"
+                        >[Martínez, J., Silva, M. (1982). A simple and Fast
+                        Algorithm to Obtain all Invariants of a Generalised
+                        Petri Net. In: Girault, C., Reisig, W. (eds) Application
+                        and Theory of Petri Nets. Informatik-Fachberichte, vol
+                        52. Springer, Berlin, Heidelberg.
+                        https://doi.org/10.1007/978-3-642-68353-4_47]</span
+                    >.
+                </p>
+            </div>
+            <button mat-stroked-button class="help-text-button">
+                Minimal Place Invariants
+            </button>
+            <div>
+                <p>Pressing this button will</p>
+                <ul>
+                    <li>
+                        calculate the place invariants with the Farkas algorithm
+                        as above,
+                    </li>
+                    <li>and then remove all non-minimal invariants.</li>
+                </ul>
+                <p>
+                    The results of the calculation will now only contain the
+                    minimal place invariants.
+                </p>
+                <p>
+                    The removal of non-minimal place invariants is implemented
+                    following the algorithm described in Martinez & Silva
+                    <span class="reference">[see above]</span>.
+                </p>
+            </div>
+        </div>
+        <p>
+            After either of the calculations, all places that are part of the
+            support of one or several of the calculated place invariants are
+            highlighted in blue. These places are then also part of the support
+            of the LC place invariant that results from linear combination (LC)
+            of all result place invariants. The non-zero values of this LC place
+            invariant are shown as factors with the place ids in the petri net
+            graph.
+        </p>
+
+        <h2>Place invariants for a specific place</h2>
+        <p>
+            After the calculation of place invariants, you may see the place
+            invariants that have a specific place in their support by clicking
+            on that place in the petri net graph. The place invariants for a
+            specific place may contain both place invariants that have been
+            selected or deselected for the linear combination (see below). Those
+            that are included in the current linear combination are highlighted
+            in blue, those that have been deselected are highlighted in white.
+        </p>
+
+        <h2>Linear Combination</h2>
+        <p>
+            With the 'Linear Combination' functionality you have the option, to
+            further inspect the results of the calculation by selecting specific
+            place invariants (or just one) for linear combination. The resulting
+            LC place invariant is shown above the table as an equation together
+            with its value. It is also shown in the petri net graph as blue
+            highlighted places together with the values of the LC place
+            invariant as factors with the place ids.
+        </p>
+        <div class="grid">
+            <button mat-stroked-button class="help-text-button">
+                Linear Combination
+            </button>
+            <div>
+                <p>
+                    Pressing this button will open a table with all place
+                    invariants of the calculation for linear combination
+                    selection. Directly after the calculation, the linear
+                    combination consists of all place invariants. You may select
+                    or deselect place invariants in any combination by clicking
+                    the respective table rows. Selected place invariants are
+                    highlighted in blue and deselected place invariants are
+                    highlighted in white.
+                </p>
+            </div>
+        </div>
     </ng-container>
 </div>

@@ -1,0 +1,50 @@
+.close-button {
+    margin: 15px;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 4px 8px;
+    border-top: solid 1px white;
+}
+
+th {
+    background-color: white;
+}
+
+td {
+    cursor: pointer;
+    text-align: center;
+}
+
+tr:hover {
+    background-color: rgb(240, 240, 240);
+}
+
+tr.selected-row {
+    background-color: lightblue;
+}
+
+tr.selected-row:hover {
+    background-color: rgb(163, 206, 220);
+}
+
+.not-active {
+    pointer-events: none;
+}
+
+p.lc-hint {
+    font-size: 13px;
+}
+
+p.nothing-selected {
+    opacity: 0.5;
+}
+
+h2.pi-table {
+    font-size: 18px;
+}

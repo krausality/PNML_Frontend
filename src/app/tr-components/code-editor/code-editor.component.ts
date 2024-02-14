@@ -63,7 +63,7 @@ export class CodeEditorComponent implements OnInit {
     public applySourceCode() {
         let sourceCode = this.textareaControl.value;
         // the value of the textareaControl can be null or empty
-        // if this is the case the existing petrinet will be deleted
+        // if this is the case the existing petri net will be deleted
         if (!sourceCode) {
             this.dataService.places = [];
             this.dataService.transitions = [];

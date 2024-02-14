@@ -120,7 +120,7 @@
                     uiService.button === ButtonState.Clear ? 'primary' : ''
                 "
                 (click)="openClearDialog()"
-                matTooltip="Delete the whole petrinet"
+                matTooltip="Delete the whole petri net"
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>clear</mat-icon>
@@ -172,21 +172,21 @@
                 mat-stroked-button
                 class="text-button"
                 (click)="applyLayout('spring-embedder')"
-                matTooltip="Apply spring embedder layout to current petrinet"
+                matTooltip="Apply Spring Embedder layout to current petri net"
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 Spring Embedder
             </button>
 
-            <!-- apply sugyiama layout (once) -->
+            <!-- apply sugiyama layout (once) -->
             <button
                 mat-stroked-button
                 class="text-button"
-                (click)="applyLayout('sugyiama')"
-                matTooltip="Apply sugyiama layout to current petrinet"
+                (click)="applyLayout('sugiyama')"
+                matTooltip="Apply Sugiyama layout to current petri net"
                 [matTooltipShowDelay]="showTooltipDelay"
             >
-                Sugyiama
+                Sugiyama
             </button>
 
             <button
@@ -242,6 +242,74 @@
         </div>
     </mat-tab>
 
+    <mat-tab label="analyze">
+        <ng-template mat-tab-label>
+            <mat-icon class="example-tab-icon">functions</mat-icon>
+            Analyze
+        </ng-template>
+
+        <!-- buttons for tab "analyze" -->
+        <div class="button-container">
+            <!-- Place invariants (Farkas) -->
+            <button
+                mat-stroked-button
+                class="text-button"
+                (click)="
+                    placeInvariantsService.calculatePIs();
+                    openPlaceInvariantsTable()
+                "
+                matTooltip="Calculate place invariants with Farkas algorithm"
+                [matTooltipShowDelay]="showTooltipDelay"
+            >
+                Place Invariants (Farkas)
+            </button>
+
+            <!-- Minimal place invariants -->
+            <button
+                mat-stroked-button
+                class="text-button"
+                (click)="
+                    placeInvariantsService.calculatePIs();
+                    placeInvariantsService.removeNonMinimalPIs();
+                    openPlaceInvariantsTable()
+                "
+                matTooltip="Calculate place invariants with Farkas algorithm AND Remove linearly dependent place invariants"
+                [matTooltipShowDelay]="showTooltipDelay"
+            >
+                Minimal Place Invariants
+            </button>
+
+            <!-- divider -->
+            <div class="divider"></div>
+
+            <!-- Linear combination of place invariants -->
+            <button
+                mat-stroked-button
+                class="text-button"
+                [disabled]="!placeInvariantsService.placeInvariantsMatrix"
+                (click)="
+                    placeInvariantsService.showLCTable = true;
+                    openPlaceInvariantsTable()
+                "
+                matTooltip="Show table with place invariants from latest calculation and select place invariants for linear combination."
+                [matTooltipShowDelay]="showTooltipDelay"
+            >
+                Linear Combination
+            </button>
+        </div>
+
+        <div class="button-container float-right">
+            <button
+                mat-icon-button
+                (click)="openHelpDialog()"
+                matTooltip="Show help page for 'analyze' mode"
+                [matTooltipShowDelay]="showTooltipDelay"
+            >
+                <mat-icon>help</mat-icon>
+            </button>
+        </div>
+    </mat-tab>
+
     <mat-tab label="save">
         <ng-template mat-tab-label>
             <mat-icon class="example-tab-icon">download</mat-icon>
@@ -255,7 +323,7 @@
                 mat-stroked-button
                 class="text-button"
                 (click)="exportJsonDataService.exportAsJson()"
-                matTooltip="Export petrinet as JSON"
+                matTooltip="Export petri net as JSON"
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 JSON
@@ -266,7 +334,7 @@
                 mat-stroked-button
                 class="text-button"
                 (click)="pnmlService.writePNML()"
-                matTooltip="Export petrinet as PNML"
+                matTooltip="Export petri net as PNML"
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 PNML
@@ -285,7 +353,7 @@
                         'pngExport.png'
                     )
                 "
-                matTooltip="Save petrinet as PNG image"
+                matTooltip="Save petri net as PNG image"
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 PNG
@@ -296,7 +364,7 @@
                 mat-stroked-button
                 class="text-button"
                 (click)="exportSvgService.exportAsSvg()"
-                matTooltip="Save petrinet as SVG image"
+                matTooltip="Save petri net as SVG image"
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 SVG
@@ -326,7 +394,7 @@
             <!-- reset button -->
             <button
                 mat-icon-button
-                matTooltip="Reset code editor to the current petrinet state"
+                matTooltip="Reset code editor to the current petri net state"
                 [matTooltipShowDelay]="showTooltipDelay"
                 (click)="
                     uiService.codeEditorFormat$.next(
@@ -340,7 +408,7 @@
             <!-- apply button -->
             <button
                 mat-icon-button
-                matTooltip="Apply the source code in the code editor as the new petrinet state"
+                matTooltip="Apply the source code in the code editor as the new petri net state"
                 [matTooltipShowDelay]="showTooltipDelay"
                 (click)="buttonClicked(ButtonState.ApplyCode)"
             >
@@ -384,7 +452,7 @@
             <button
                 mat-icon-button
                 (click)="openHelpDialog()"
-                matTooltip="Show help page for 'save' mode"
+                matTooltip="Show help page for 'code' mode"
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>help</mat-icon>

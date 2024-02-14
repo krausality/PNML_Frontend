@@ -195,6 +195,28 @@ export class DataService {
         );
     }
 
+    isConnectionPossible(startNode: Node, endNode: Node): boolean {
+        if (startNode instanceof Transition && endNode instanceof Transition) {
+            return false;
+        }
+        if (startNode instanceof Place && endNode instanceof Place) {
+            return false;
+        }
+        if (startNode instanceof Transition && endNode instanceof Place) {
+            const amountOfConnections = startNode.postArcs.filter((arc) => {
+                return arc.to === endNode;
+            }).length;
+            return amountOfConnections === 0;
+        }
+        if (startNode instanceof Place && endNode instanceof Transition) {
+            const amountOfConnections = endNode.preArcs.filter((arc) => {
+                return arc.from === startNode;
+            }).length;
+            return amountOfConnections === 0;
+        }
+        return false;
+    }
+
     mockData() {
         this.places = [
             new Place(4, new Point(100, 200), 'p1'),

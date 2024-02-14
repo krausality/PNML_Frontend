@@ -6,7 +6,8 @@
         dragging: editMoveElementsService.isCanvasDragInProcess,
         'move-mode': uiService.button === ButtonState.Move,
         'play-mode': uiService.tab === TabState.Play,
-        'tab-transitioning': uiService.tabTransitioning
+        'tab-transitioning': uiService.tabTransitioning,
+        'analyze-mode': uiService.tab === TabState.Analyze
     }"
     (drop)="processDropEvent($event)"
     (dragover)="prevent($event)"
@@ -39,11 +40,41 @@
     >
         <g>
             <circle
-                [ngClass]="{ place: true, editable: isPlaceEditable(place) }"
+                [ngClass]="{
+                    place: true,
+                    editable: isPlaceEditable(place),
+                    'place-invariant': placeInvariantsService.placeFactor(
+                        place.id
+                    ),
+                    pointer: placeInvariantsService.placeInvariantsMatrix
+                }"
                 [attr.cx]="place.position.x"
                 [attr.cy]="place.position.y"
                 [attr.r]="radius"
-            />
+            >
+                <!--
+                    Contents of the title element is rendered by browsers as
+                    a tooltip for the enclosing element. Here the enclosing
+                    element is the circle element representing the places of
+                    the petri net. Thus, when in Analyze mode and when place
+                    invariants have been calculated, the title contents will
+                    be shown as a tooltip.
+                -->
+                <title
+                    *ngIf="
+                        uiService.tab === TabState.Analyze &&
+                        placeInvariantsService.placeInvariantsMatrix
+                    "
+                >
+                    Click to show
+                    {{
+                        placeInvariantsService.isMinimal
+                            ? "minimal place invariants"
+                            : "place invariants (Farkas)"
+                    }}
+                    that contain {{ place.id }}
+                </title>
+            </circle>
             <text
                 [ngClass]="{
                     'token-label': true,
@@ -59,11 +90,19 @@
         </g>
         <text
             class="place-id"
+            [ngClass]="{
+                'place-invariant': placeInvariantsService.placeFactor(place.id)
+            }"
             [attr.x]="place.position.x"
             [attr.y]="place.position.y + placeIdYOffset"
             text-anchor="middle"
         >
-            {{ place.id }}
+            {{
+                (placeInvariantsService.placeFactor(place.id) &&
+                uiService.tab === TabState.Analyze
+                    ? placeInvariantsService.placeFactor(place.id) + "*"
+                    : "") + place.id
+            }}
         </text>
     </g>
 
@@ -327,16 +366,16 @@
 
 <div *ngIf="dataService.isEmpty()" class="import-hint">
     <p *ngIf="uiService.tab === TabState.Build">
-        Get started by drawing a petrinet with the toolbar buttons or import a
-        petrinet as JSON or PNML file by dragging it into this space! <br />
+        Get started by drawing a petri net with the toolbar buttons or import a
+        petri net as JSON or PNML file by dragging it into this space! <br />
         The drag-and-drop import option is available in both 'Build' and 'Code'
         mode.
     </p>
     <p *ngIf="![TabState.Build, TabState.Code].includes(uiService.tab)">
-        Please use the "Build" or "Code" tabs to create or import a petrinet.
+        Please use the "Build" or "Code" tabs to create or import a petri net.
     </p>
     <p *ngIf="uiService.tab === TabState.Code">
-        Use the Code editor to create a petrinet, or import a JSON or PNML file
+        Use the Code editor to create a petri net, or import a JSON or PNML file
         by dragging it into this space!
     </p>
     <!-- <p>

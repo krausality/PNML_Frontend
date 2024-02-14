@@ -8,9 +8,7 @@ import { TabState } from 'src/app/tr-enums/ui-state';
     styleUrls: ['./help-popup.component.css'],
 })
 export class HelpPopupComponent {
-    constructor(
-        protected uiService: UiService,
-    ) {}
+    constructor(protected uiService: UiService) {}
 
     readonly TabState = TabState;
 }

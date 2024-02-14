@@ -7,7 +7,7 @@ src/app/reference-models/*
 # Ignore environments config
 src/environments/*.ts
 
-# Ignore example petrinets
+# Ignore example petri nets
 src/assets/*.json
 src/assets/*.pnml
 
@@ -16,3 +16,8 @@ src/assets/*.pnml
 
 # Ignore readme
 README.md
+
+# Ignore place invariant table file, as formatting introduces
+# white space that becomes rendered as leading white space in
+# the table header <h2>
+src/app/tr-components/place-invariants-table/place-invariants-table.component.html

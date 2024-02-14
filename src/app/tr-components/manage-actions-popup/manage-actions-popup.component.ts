@@ -34,9 +34,13 @@ export class ManageActionsPopupComponent {
         } else if (
             !this.isActionEmpty(actionLine1.value) &&
             !this.isActionEmpty(actionLine2.value) &&
-            !this.dataService.getActions().includes(actionLine1.value + '~' +actionLine2.value)
+            !this.dataService
+                .getActions()
+                .includes(actionLine1.value + '~' + actionLine2.value)
         ) {
-            this.dataService.getActions().push(actionLine1.value.trim() + '~' +actionLine2.value);
+            this.dataService
+                .getActions()
+                .push(actionLine1.value.trim() + '~' + actionLine2.value);
             this.bothActionsEmpty = false;
             this.actionAlreadyExists = false;
         } else if (
@@ -48,7 +52,9 @@ export class ManageActionsPopupComponent {
         } else if (
             this.dataService.getActions().includes(actionLine1.value) ||
             this.dataService.getActions().includes(actionLine2.value) ||
-            this.dataService.getActions().includes(actionLine1.value + '~' +actionLine2.value)
+            this.dataService
+                .getActions()
+                .includes(actionLine1.value + '~' + actionLine2.value)
         ) {
             this.bothActionsEmpty = false;
             this.actionAlreadyExists = true;
@@ -63,11 +69,11 @@ export class ManageActionsPopupComponent {
     }
 
     returnLine1(action: string): string {
-        return (action.split("~"))[0];
+        return action.split('~')[0];
     }
 
     returnLine2(action: string): string {
-        return (action.split("~"))[1];
+        return action.split('~')[1];
     }
 
     containsBreakChar(action: string): boolean {

@@ -33,9 +33,6 @@ table p:last-child {
 
 table {
     border-collapse: collapse;
-    /* border-color: black;
-    border-width: 1px;
-    border-style: solid; */
 }
 
 .button-cell,
@@ -78,4 +75,8 @@ mat-icon.help-icon {
 button.help-text-button {
     pointer-events: none;
     white-space: nowrap;
+}
+
+.reference {
+    opacity: 0.5;
 }

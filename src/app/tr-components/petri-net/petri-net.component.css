@@ -182,7 +182,8 @@
     pointer-events: none;
 }
 
-.background-arc.editable:hover {
+.background-arc.editable:hover,
+.analyze-mode .pointer {
     cursor: pointer;
 }
 
@@ -212,4 +213,14 @@ text.label {
     text-anchor: middle;
     dominant-baseline: central;
     font-size: 15px;
+}
+
+/* Styles for Analyze-mode*/
+.analyze-mode .place-invariant {
+    fill: lightblue;
+}
+
+.analyze-mode text.place-invariant {
+    font-weight: bold;
+    fill: rgb(133, 186, 204);
 }
