@@ -325,7 +325,6 @@ export class VertexOrderingService {
         from: Node,
         to: Node,
     ) {
-        // console.log('[Vertex Ordering]: Create dummy for  ' , from, 'to: ', to);
         const dummy = new DummyNode(
             new Point(1, 1),
             `dummyNode-${index}`,
