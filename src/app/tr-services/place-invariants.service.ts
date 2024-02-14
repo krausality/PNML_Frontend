@@ -38,7 +38,7 @@ export class PlaceInvariantsService {
     // Incidence Matrices for Testing *****************************************
 
     // From https://teaching.model.in.tum.de/2021ss/petri/material/petrinets.pdf
-    // page 89 (local file: TUM_petrinets_incl_Farkas.pdf)
+    // page 89
     // tM1: number[][] = [
     //     [-1, 1, 1, -1],
     //     [1, -1, -1, 1],
@@ -52,7 +52,7 @@ export class PlaceInvariantsService {
     // 1 1 0 1 1
 
     // From http://theo.cs.ovgu.de/lehre/lehre08w/petri/petri08-text1.pdf
-    // page 53 (pdf: 36) (local file: Vorlesungsscript-Petrinetze_Magdeburg_2008.pdf)
+    // page 53 (pdf: 36)
     // tM2: number[][] = [
     //     [-1, -1, 1, 0],
     //     [1, -1, 0, 0],
@@ -62,7 +62,7 @@ export class PlaceInvariantsService {
     // 1 1 1
 
     // From http://dbis.informatik.uni-freiburg.de/content/courses/SS09/Spezialvorlesung/Formale%20Grundlagen%20von%20Informationssystemen/folien/3-1-Petri-Netze.pdf
-    // page 66 (local file: 3-1-Petri-Netze.pdf)
+    // page 66
     // tM3: number[][] = [
     //     [1, -1, 0, 0],
     //     [-1, -1, 1, 0],
@@ -72,7 +72,7 @@ export class PlaceInvariantsService {
     // 1 1 1
 
     // From http://dbis.informatik.uni-freiburg.de/content/courses/SS09/Spezialvorlesung/Formale%20Grundlagen%20von%20Informationssystemen/folien/3-1-Petri-Netze.pdf
-    // page 70 (local file: 3-1-Petri-Netze.pdf)
+    // page 70
     // tM4: number[][] = [
     //     [-1, -1, -1, 1, 1, 1],
     //     [1, 0, 0, -1, 0, 0],

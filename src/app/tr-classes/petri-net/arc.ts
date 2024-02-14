@@ -15,9 +15,6 @@ export class Arc {
         weight: number = 1,
         anchors: Point[] = [],
     ) {
-        // if (typeof from === typeof to){
-        //     throw new Error("Mach mal nicht!");
-        // }
         this.from = from;
         this.to = to;
         this.anchors = anchors;
@@ -50,10 +47,6 @@ export class Arc {
     }
 
     get polyLinePointsArray(): Point[] {
-        // ToDo: the application should make sure that no anchor points lie
-        // within the boundaries of the shapes associated with the from and
-        // to nodes
-
         let start: Point;
         let end: Point;
 
