@@ -10,6 +10,7 @@ import { Transition } from '../tr-classes/petri-net/transition';
 import { Node } from '../tr-interfaces/petri-net/node';
 import { Arc } from '../tr-classes/petri-net/arc';
 import { DataService } from './data.service';
+import * as vkbeautify from 'vkbeautify';
 
 @Injectable({
     providedIn: 'root',
@@ -193,11 +194,27 @@ export class PnmlService {
         list.forEach((pnmlArc) => {
             const sourceId = pnmlArc.attributes.source;
             const targetId = pnmlArc.attributes.target;
+
             const sourceNode = this.retrieveNode(places, transitions, sourceId);
             const targetNode = this.retrieveNode(places, transitions, targetId);
 
+            const inscription = pnmlArc.elements.find(
+                (element) => element.name === name_inscription);
+            const inscriptionTextElement = inscription?.elements.find(
+                (element) => element.name === text);
+            const inscriptionText = inscriptionTextElement?.elements.find(
+                (element) => element.type === text);
+
+            let weight = 1;
+            if(inscriptionText) {
+                weight = Number(inscriptionText.text)
+            }
+
+
             if (sourceNode && targetNode) {
                 const arc = new Arc(sourceNode, targetNode);
+                arc.weight = weight;
+                arc.anchors = this.getAnchorPoints(pnmlArc);
                 if (sourceNode instanceof Transition) {
                     sourceNode.postArcs.push(arc);
                 } else if (targetNode instanceof Transition) {
@@ -207,6 +224,25 @@ export class PnmlService {
             }
         });
         return arcs;
+    }
+
+    private getAnchorPoints(arc: PnmlElement): Point[] {
+        const graphics = arc.elements.find(
+            (element) => element.name === name_graphics,
+        );
+        const anchorPointsPNML = graphics?.elements?.filter(
+            (element) => element.name === name_position,
+        );
+
+        const anchorPoints: Point[] = [];
+        anchorPointsPNML?.forEach(anchorPointPNML => {
+            const point = new Point(
+                Number(anchorPointPNML.attributes.x),
+                Number(anchorPointPNML.attributes.y),
+            )
+            anchorPoints.push(point);
+        })
+        return anchorPoints;
     }
 
     writePNML() {
@@ -274,7 +310,26 @@ export class PnmlService {
     }
 
     getArcString(arc: Arc): string {
-        return `      <arc id = "${arc.from.id},${arc.to.id}" source="${arc.from.id}" target = "${arc.to.id}"></arc>`;
+        return `      <arc id="${arc.from.id},${arc.to.id}" source="${arc.from.id}" target = "${arc.to.id}">
+         <inscription>
+           <text>${arc.weight}</text>
+         </inscription>
+         ${this.getArcGraphicsString(arc)}
+      </arc>`;
+    }
+
+    getArcGraphicsString(arc: Arc): string {
+        if (arc.anchors.length === 0) {
+            return "<graphics/>"
+        } else {
+            const positionString = arc.anchors.map(arc => {
+                return `<position x="${arc.x}" y="${arc.y}"/>\n`
+            })
+            return `<graphics>
+        ${positionString}
+</graphics>
+`
+        }
     }
 
     private retrieveNode(
@@ -300,17 +355,17 @@ export class PnmlService {
         const transitions = this.dataServive.getTransitions();
         const arcs = this.dataServive.getArcs();
         const pnmlContent = `<?xml version="1.0" encoding="UTF-8"?>
-  <pnml xmlns="http://www.pnml.org/version-2009/grammar/pnml">
-    <net id="net1" type="http://www.pnml.org/version-2009/grammar/ptnet">
+  <pnml>
+    <net id="net1" type="http://www.informatik.hu-berlin.de/top/pntd/ptNetb">
 ${places.map((place) => this.getPlaceString(place)).join('\n')}
 ${transitions
-    .map((transition) => this.getTransitionString(transition))
-    .join('\n')}
+            .map((transition) => this.getTransitionString(transition))
+            .join('\n')}
 ${arcs.map((arc) => this.getArcString(arc)).join('\n')}
     </net>
   </pnml>`;
 
-        return pnmlContent;
+        return vkbeautify.xml(pnmlContent);
     }
 }
 
@@ -321,6 +376,10 @@ const name_page = 'page';
 const name_place = 'place';
 const name_transition = 'transition';
 const name_arc = 'arc';
+
+const name_graphics = 'graphics';
+const name_position = 'position';
+const name_inscription = 'inscription';
 
 const name_initialMarking = 'initialMarking';
 
