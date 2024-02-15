@@ -13,7 +13,7 @@ export class ManageActionsPopupComponent {
 
     constructor(protected dataService: DataService) {}
 
-    // check that the action is not already present and add it to the dataService
+    // Check that the action is not already present and add it to the dataService
     addAction(actionLine1: HTMLInputElement, actionLine2: HTMLInputElement) {
         if (
             !this.isActionEmpty(actionLine1.value) &&

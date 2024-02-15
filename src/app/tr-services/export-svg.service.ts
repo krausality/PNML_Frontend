@@ -11,7 +11,6 @@ export class ExportSvgService {
         this.httpClient
             .get('assets/petri-net.component.css', { responseType: 'text' })
             .subscribe((data) => {
-                // console.log(data),
                 this.petrinetCss = data;
             });
     }
@@ -30,7 +29,7 @@ export class ExportSvgService {
             var serializer = new XMLSerializer();
             if (svg) {
                 var source = serializer.serializeToString(svg);
-                //add name spaces
+                // Add name spaces
                 if (
                     !source.match(
                         /^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/,
@@ -51,9 +50,9 @@ export class ExportSvgService {
                         '<svg xmlns:xlink="http://www.w3.org/1999/xlink"',
                     );
                 }
-                //add xml declaration
+                // Add xml declaration
                 source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
-                //convert svg source to URI data scheme
+                // Convert svg source to URI data scheme
                 var url =
                     'data:image/svg+xml;charset=utf-8,' +
                     encodeURIComponent(source);

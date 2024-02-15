@@ -569,7 +569,6 @@ export class PetriNetComponent {
         if (this.uiService.button === ButtonState.Move) {
             // Keep event from bubbling up to canvas and e.g. trigger canvas drag & drop
             event.stopPropagation();
-
             this.editMoveElementsService.initializeNodeMove(event, place);
         }
 
@@ -617,7 +616,7 @@ export class PetriNetComponent {
             if (event.button == MouseConstants.Right_Click) {
                 this.dataService.removeTransition(transition);
             } else if (event.button == MouseConstants.Left_Click) {
-                //Existing Transition is selected as the next Node. Method is called before dispatchSVGClick
+                // Existing Transition is selected as the next Node. Method is called before dispatchSVGClick
                 if (this.lastNode instanceof Transition) {
                     this.addElement = false;
                 } else {
@@ -629,7 +628,6 @@ export class PetriNetComponent {
         if (this.uiService.button === ButtonState.Move) {
             // Keep event from bubbling up to canvas and e.g. trigger canvas drag & drop
             event.stopPropagation();
-
             this.editMoveElementsService.initializeNodeMove(event, transition);
         }
 
@@ -812,7 +810,7 @@ export class PetriNetComponent {
             .some((arc) => arc.from === startNode && arc.to === endNote);
     }
 
-    // returns true if the provided place can be edited and should be highlighted
+    // Returns true if the provided place can be edited and should be highlighted
     isPlaceEditable(place: Place): boolean {
         const hasPreArcFromStartTransition =
             this.startTransition &&
@@ -835,15 +833,15 @@ export class PetriNetComponent {
             (this.uiService.button === ButtonState.Move &&
                 !this.editMoveElementsService.newAnchor) ||
             this.uiService.button === ButtonState.Add ||
-            (this.uiService.button === ButtonState.Remove && place.token > 0) || // tokens can only be removed if the number of tokens in a place is > 0
+            (this.uiService.button === ButtonState.Remove && place.token > 0) || // Tokens can only be removed if the number of tokens in a place is > 0
             this.uiService.button === ButtonState.Delete ||
             (this.uiService.button === ButtonState.Arc &&
                 !this.startPlace &&
                 !hasPreArcFromStartTransition)
-        ); // if the user starts dragging an arc from a place he can only finish on a transition --> places are no longer editable
+        ); // If the user starts dragging an arc from a place he can only finish on a transition --> places are no longer editable
     }
 
-    // returns true if transitions can be edited and should be highlighted
+    // Returns true if transitions can be edited and should be highlighted
     isTransitionEditable(transition: Transition): boolean {
         const hasPreArcFromStartPlace =
             this.startPlace &&
@@ -870,17 +868,17 @@ export class PetriNetComponent {
             (this.uiService.button === ButtonState.Arc &&
                 !this.startTransition &&
                 !hasPreArcFromStartPlace)
-        ); // if the user starts dragging an arc from a transition he can only finish on a place --> transitions no longer editable
+        ); // If the user starts dragging an arc from a transition he can only finish on a place --> transitions no longer editable
     }
 
-    // returns true if the provided arc can be edited and should be highlighted
+    // Returns true if the provided arc can be edited and should be highlighted
     isArcEditable(arc: Arc): boolean {
         return (
             this.uiService.button === ButtonState.Anchor ||
             this.editMoveElementsService.newAnchor !== undefined ||
             this.uiService.button === ButtonState.Add ||
             (this.uiService.button === ButtonState.Remove &&
-                Math.abs(arc.weight) > 1) || // arc weights can only be decreased if the absolute value is > 1
+                Math.abs(arc.weight) > 1) || // Arc weights can only be decreased if the absolute value is > 1
             this.uiService.button === ButtonState.Delete
         );
     }
