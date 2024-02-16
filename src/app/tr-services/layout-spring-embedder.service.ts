@@ -78,6 +78,9 @@ export class LayoutSpringEmbedderService {
             }
         });
 
+        // Handle nodes with the same position
+        this.shiftSamePositionNodes(nodes);
+
         let iterations = 1;
         // this is only needed for the first iteration
         let maxForceVectorLength = this.epsilon + 1;
@@ -198,5 +201,39 @@ export class LayoutSpringEmbedderService {
         const v = new Point(p2.x - p1.x, p2.y - p1.y);
         const length = this.calculateVectorLength(v);
         return new Point(v.x / length, v.y / length);
+    }
+
+    // The spring embedder algorithm cannot handle a situation where two nodes are
+    // in the exact same place because we eventually end up dividing by 0 while calculating
+    // the forces. We shift affected nodes by up to 50 pixels in the x and y directions
+    // in order to not modify the meaning of the petri net too much before applying the
+    // spring embedder layout.
+    private shiftSamePositionNodes(nodes: Node[]) {
+        const usedPoints: Point[] = [];
+
+        nodes.forEach(node => {
+            // We have to use 'some' here since the 'includes' function cannot make
+            // the nested comparison between points
+            if (!usedPoints.some(point => point.x === node.position.x && point.y === node.position.y)) {
+                usedPoints.push(node.position);
+                console.log("adding " + node.id);
+            } else {
+                console.log("shifting " + node.id);
+                let pointInUse = true;
+                while (pointInUse) {
+                    const shiftedPoint = this.shiftPoint(node.position);
+                    if (!usedPoints.some(point => point.x === shiftedPoint.x && point.y === shiftedPoint.y)) {
+                        node.position = shiftedPoint;
+                        usedPoints.push(shiftedPoint);
+                        pointInUse = false;
+                    }
+                }
+            }
+        });
+    }
+
+    // Returns a new point that is shifted in the x and y directions by up to 50 pixels randomly
+    private shiftPoint(p: Point): Point {
+        return new Point(p.x + (Math.random() * 100) - 50, p.y + (Math.random() * 100) - 50);
     }
 }
