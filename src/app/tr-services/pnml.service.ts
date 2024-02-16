@@ -212,8 +212,7 @@ export class PnmlService {
 
 
             if (sourceNode && targetNode) {
-                const arc = new Arc(sourceNode, targetNode);
-                arc.weight = weight;
+                const arc = new Arc(sourceNode, targetNode, weight);
                 arc.anchors = this.getAnchorPoints(pnmlArc);
                 if (sourceNode instanceof Transition) {
                     sourceNode.postArcs.push(arc);
@@ -312,7 +311,7 @@ export class PnmlService {
     getArcString(arc: Arc): string {
         return `      <arc id="${arc.from.id},${arc.to.id}" source="${arc.from.id}" target = "${arc.to.id}">
          <inscription>
-           <text>${arc.weight}</text>
+           <text>${Math.abs(arc.weight)}</text>
          </inscription>
          ${this.getArcGraphicsString(arc)}
       </arc>`;
