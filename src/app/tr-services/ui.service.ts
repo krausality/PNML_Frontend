@@ -23,6 +23,8 @@ export class UiService {
     // instantaneously.
     tabTransitioning: boolean = false;
 
+    // BehaviorSubject that changes state when the Button or the Tab is changed
+    // this way the selected Element of the Blitz tool is reset
     buttonState$: BehaviorSubject<ButtonState | null> =
         new BehaviorSubject<ButtonState | null>(this.button);
 

@@ -54,8 +54,11 @@ import { LayoutSugiyamaService } from '../../tr-services/layout-sugiyama.service
 export class PetriNetComponent {
     @Input() buttonState: ButtonState | undefined;
 
+    // Marks selected node in Blitz tool
     lastNode: Node | null = null;
+    // Marks node that will be selected
     nextNode: Node | null = null;
+    // Attribute is set when the user tries to connect two nodes of the same type
     addElement: boolean = true;
 
     constructor(
