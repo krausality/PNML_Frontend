@@ -211,18 +211,28 @@ export class LayoutSpringEmbedderService {
     private shiftSamePositionNodes(nodes: Node[]) {
         const usedPoints: Point[] = [];
 
-        nodes.forEach(node => {
+        nodes.forEach((node) => {
             // We have to use 'some' here since the 'includes' function cannot make
             // the nested comparison between points
-            if (!usedPoints.some(point => point.x === node.position.x && point.y === node.position.y)) {
+            if (
+                !usedPoints.some(
+                    (point) =>
+                        point.x === node.position.x &&
+                        point.y === node.position.y,
+                )
+            ) {
                 usedPoints.push(node.position);
-                console.log("adding " + node.id);
             } else {
-                console.log("shifting " + node.id);
                 let pointInUse = true;
                 while (pointInUse) {
                     const shiftedPoint = this.shiftPoint(node.position);
-                    if (!usedPoints.some(point => point.x === shiftedPoint.x && point.y === shiftedPoint.y)) {
+                    if (
+                        !usedPoints.some(
+                            (point) =>
+                                point.x === shiftedPoint.x &&
+                                point.y === shiftedPoint.y,
+                        )
+                    ) {
                         node.position = shiftedPoint;
                         usedPoints.push(shiftedPoint);
                         pointInUse = false;
@@ -234,6 +244,9 @@ export class LayoutSpringEmbedderService {
 
     // Returns a new point that is shifted in the x and y directions by up to 50 pixels randomly
     private shiftPoint(p: Point): Point {
-        return new Point(p.x + (Math.random() * 100) - 50, p.y + (Math.random() * 100) - 50);
+        return new Point(
+            p.x + Math.random() * 100 - 50,
+            p.y + Math.random() * 100 - 50,
+        );
     }
 }
