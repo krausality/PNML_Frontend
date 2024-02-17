@@ -18,9 +18,13 @@ import * as vkbeautify from 'vkbeautify';
 export class PnmlService {
     constructor(private dataServive: DataService) {}
 
+    incompleteLayoutData: boolean = false;
+
     parse(
         xmlString: string,
     ): [Array<Place>, Array<Transition>, Array<Arc>, Array<string>] {
+        this.incompleteLayoutData = false;
+
         try {
             const result = xml2js(xmlString) as PnmlPetriNet;
             const pnml = result.elements.find(
@@ -120,12 +124,13 @@ export class PnmlService {
             );
 
             let point: Point;
-            if (position?.attributes.x && position.attributes.y) {
+            if (position?.attributes?.x && position.attributes?.y) {
                 point = new Point(
                     Number(position.attributes.x),
                     Number(position.attributes.y),
                 );
             } else {
+                this.incompleteLayoutData = true;
                 point = new Point(0, 0);
             }
             const place = new Place(initialMarkingNumber, point, id, nameText);
@@ -158,12 +163,13 @@ export class PnmlService {
             );
 
             let point: Point;
-            if (position?.attributes.x && position.attributes.y) {
+            if (position?.attributes?.x && position.attributes?.y) {
                 point = new Point(
                     Number(position.attributes.x),
                     Number(position.attributes.y),
                 );
             } else {
+                this.incompleteLayoutData = true;
                 point = new Point(0, 0);
             }
             const transition = new Transition(point, id, nameText);

@@ -150,6 +150,13 @@ export class PetriNetComponent {
             ) {
                 this.layoutSugiyamaService.applySugiyamaLayout();
             }
+
+            if (
+                contentType === CodeEditorFormat.PNML &&
+                this.pnmlService.incompleteLayoutData
+            ) {
+                this.layoutSugiyamaService.applySugiyamaLayout();
+            }
         }
     }
 
