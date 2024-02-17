@@ -124,7 +124,7 @@ export class PnmlService {
             );
 
             let point: Point;
-            if (position?.attributes.x && position.attributes.y) {
+            if (position?.attributes?.x && position.attributes?.y) {
                 point = new Point(
                     Number(position.attributes.x),
                     Number(position.attributes.y),
@@ -163,7 +163,7 @@ export class PnmlService {
             );
 
             let point: Point;
-            if (position?.attributes.x && position.attributes.y) {
+            if (position?.attributes?.x && position.attributes?.y) {
                 point = new Point(
                     Number(position.attributes.x),
                     Number(position.attributes.y),
