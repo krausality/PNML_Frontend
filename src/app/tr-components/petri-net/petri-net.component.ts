@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ParserService } from 'src/app/tr-services/parser.service';
-import { catchError, of, take } from 'rxjs';
+import { take } from 'rxjs';
 import { FileReaderService } from '../../services/file-reader.service';
 import { DataService } from '../../tr-services/data.service';
 
@@ -90,7 +90,7 @@ export class PetriNetComponent {
         contentType: CodeEditorFormat | undefined,
     ) {
         if (content) {
-            // variable to parse the data into
+            // Variable to parse the data into
             let parsedData: [
                 Array<Place>,
                 Array<Transition>,
@@ -132,7 +132,7 @@ export class PetriNetComponent {
                 }
             }
 
-            // destructure the parsed data and overwrite the corresponding parameters
+            // Destructure the parsed data and overwrite the corresponding parameters
             // in the data service
             const [places, transitions, arcs, actions] = parsedData;
             this.dataService.places = places;
@@ -205,7 +205,7 @@ export class PetriNetComponent {
         if (content === undefined) {
             return;
         }
-        // instead of emitting the file content we set the current code editor format as
+        // Instead of emitting the file content we set the current code editor format as
         // next value of the BehaviorSubject in order to have the code editor component
         // load the source code by itself (with our formatting applied)
         this.uiService.codeEditorFormat$.next(
@@ -234,7 +234,7 @@ export class PetriNetComponent {
     }
 
     protected onWheelEventPlace(e: WheelEvent, place: Place) {
-        //Scrolling is allowed in Both Directions with the Blitz-Tool
+        // Scrolling is allowed in Both Directions with the Blitz-Tool
         if (this.uiService.button === ButtonState.Blitz) {
             e.preventDefault();
             e.stopPropagation();
@@ -264,7 +264,7 @@ export class PetriNetComponent {
     }
 
     protected onWheelEventArc(e: WheelEvent, arc: Arc) {
-        //Scrolling is allowed in Both Directions with the Blitz-Tool
+        // Scrolling is allowed in Both Directions with the Blitz-Tool
         if (this.uiService.button === ButtonState.Blitz) {
             e.preventDefault();
             e.stopPropagation();

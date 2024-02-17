@@ -49,9 +49,9 @@ export class ButtonBarComponent {
         private layoutSugiyamaService: LayoutSugiyamaService,
     ) {}
 
-    // gets called when a tab is clicked
-    // sets the "tab" property in the uiService
-    // empties the "button" property in the uiService
+    // Gets called when a tab is clicked
+    // Sets the "tab" property in the uiService
+    // Empties the "button" property in the uiService
     tabClicked(tab: string) {
         this.uiService.tabTransitioning = true;
 
@@ -85,8 +85,8 @@ export class ButtonBarComponent {
         }, 1100);
     }
 
-    // gets called when a button is clicked that needs its state saved globally
-    // sets the "button" property in the uiService
+    // Gets called when a button is clicked that needs its state saved globally
+    // Sets the "button" property in the uiService
     buttonClicked(button: ButtonState) {
         this.uiService.button = button;
         this.uiService.buttonState$.next(button);
@@ -97,7 +97,7 @@ export class ButtonBarComponent {
     }
 
     openClearDialog() {
-        //Necessary To Reset Line-Drawing from Blitz-Tool
+        // Necessary To Reset Line-Drawing from Blitz-Tool
         this.buttonClicked(ButtonState.Clear);
         if (!this.dataService.isEmpty()) {
             this.matDialog.open(ClearPopupComponent);
@@ -128,12 +128,12 @@ export class ButtonBarComponent {
     }
 
     switchCodeEditorFormat(format: CodeEditorFormat) {
-        // only send a new value if it is not the same as the current value
+        // Only send a new value if it is not the same as the current value
         if (format === this.uiService.codeEditorFormat$.value) {
             return;
         }
 
-        // set the new format as next value in the BehaviorSubject
+        // Set the new format as next value in the BehaviorSubject
         this.uiService.codeEditorFormat$.next(format);
     }
 }

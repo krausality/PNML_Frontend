@@ -5,9 +5,9 @@
             Build
         </ng-template>
 
-        <!-- buttons for tab "build" -->
+        <!-- Buttons for tab "build" -->
         <div class="button-container">
-            <!-- blitz tool -->
+            <!-- Blitz tool -->
             <button
                 mat-icon-button
                 [color]="
@@ -20,10 +20,10 @@
                 <mat-icon>bolt</mat-icon>
             </button>
 
-            <!-- divider -->
+            <!-- Divider -->
             <div class="divider"></div>
 
-            <!-- places -->
+            <!-- Places -->
             <button
                 mat-icon-button
                 [color]="
@@ -36,7 +36,7 @@
                 <mat-icon>circle</mat-icon>
             </button>
 
-            <!-- transitions -->
+            <!-- Transitions -->
             <button
                 mat-icon-button
                 [color]="
@@ -49,7 +49,7 @@
                 <mat-icon>square</mat-icon>
             </button>
 
-            <!-- arcs -->
+            <!-- Arcs -->
             <button
                 mat-icon-button
                 [color]="uiService.button === ButtonState.Arc ? 'primary' : ''"
@@ -60,7 +60,7 @@
                 <mat-icon>north_east</mat-icon>
             </button>
 
-            <!-- anchor points -->
+            <!-- Anchor points -->
             <button
                 mat-icon-button
                 [color]="
@@ -73,10 +73,10 @@
                 <mat-icon>linear_scale</mat-icon>
             </button>
 
-            <!-- divider -->
+            <!-- Divider -->
             <div class="divider"></div>
 
-            <!-- add token tool -->
+            <!-- Add token tool -->
             <button
                 mat-icon-button
                 [color]="uiService.button === ButtonState.Add ? 'primary' : ''"
@@ -87,7 +87,7 @@
                 <mat-icon>add</mat-icon>
             </button>
 
-            <!-- remove token tool -->
+            <!-- Remove token tool -->
             <button
                 mat-icon-button
                 [color]="
@@ -100,7 +100,7 @@
                 <mat-icon>remove</mat-icon>
             </button>
 
-            <!-- delete tool -->
+            <!-- Delete tool -->
             <button
                 mat-icon-button
                 [color]="
@@ -113,7 +113,7 @@
                 <mat-icon>delete</mat-icon>
             </button>
 
-            <!-- clear all tool -->
+            <!-- Clear all tool -->
             <button
                 mat-icon-button
                 [color]="
@@ -126,10 +126,10 @@
                 <mat-icon>clear</mat-icon>
             </button>
 
-            <!-- divider -->
+            <!-- Divider -->
             <div class="divider"></div>
 
-            <!-- move tool -->
+            <!-- Move tool -->
             <button
                 mat-icon-button
                 [color]="uiService.button === ButtonState.Move ? 'primary' : ''"
@@ -140,10 +140,10 @@
                 <mat-icon>open_with</mat-icon>
             </button>
 
-            <!-- divider -->
+            <!-- Divider -->
             <div class="divider"></div>
 
-            <!-- select tool -->
+            <!-- Select tool -->
             <button
                 mat-icon-button
                 [color]="
@@ -156,7 +156,7 @@
                 <mat-icon>ads_click</mat-icon>
             </button>
 
-            <!-- customize actions tool -->
+            <!-- Customize actions tool -->
             <button
                 mat-icon-button
                 (click)="openActionDialog()"
@@ -168,6 +168,7 @@
         </div>
 
         <div class="button-container float-right">
+            <!-- Apply spring embedder layout (once) -->
             <button
                 mat-stroked-button
                 class="text-button"
@@ -178,7 +179,7 @@
                 Spring Embedder
             </button>
 
-            <!-- apply sugiyama layout (once) -->
+            <!-- Apply sugiyama layout (once) -->
             <button
                 mat-stroked-button
                 class="text-button"
@@ -206,9 +207,9 @@
             Play
         </ng-template>
 
-        <!-- buttons for tab "play" -->
+        <!-- Buttons for tab "play" -->
         <div class="button-container">
-            <!-- restart tool -->
+            <!-- Restart tool -->
             <button
                 mat-icon-button
                 [disabled]="tokenGameService.isGameHistoryEmpty()"
@@ -219,7 +220,7 @@
                 <mat-icon>restart_alt</mat-icon>
             </button>
 
-            <!-- rewind tool -->
+            <!-- Rewind tool -->
             <button
                 mat-icon-button
                 [disabled]="tokenGameService.isGameHistoryEmpty()"
@@ -248,7 +249,7 @@
             Analyze
         </ng-template>
 
-        <!-- buttons for tab "analyze" -->
+        <!-- Buttons for tab "analyze" -->
         <div class="button-container">
             <!-- Place invariants (Farkas) -->
             <button
@@ -279,7 +280,7 @@
                 Minimal Place Invariants
             </button>
 
-            <!-- divider -->
+            <!-- Divider -->
             <div class="divider"></div>
 
             <!-- Linear combination of place invariants -->
@@ -316,9 +317,9 @@
             Save
         </ng-template>
 
-        <!-- buttons for tab "save" -->
+        <!-- Buttons for tab "save" -->
         <div class="button-container">
-            <!-- export as json -->
+            <!-- Export as json -->
             <button
                 mat-stroked-button
                 class="text-button"
@@ -329,7 +330,7 @@
                 JSON
             </button>
 
-            <!-- export as pnml -->
+            <!-- Export as pnml -->
             <button
                 mat-stroked-button
                 class="text-button"
@@ -340,10 +341,10 @@
                 PNML
             </button>
 
-            <!-- divider -->
+            <!-- Divider -->
             <div class="divider"></div>
 
-            <!-- export as png -->
+            <!-- Export as png -->
             <button
                 mat-stroked-button
                 class="text-button"
@@ -359,7 +360,7 @@
                 PNG
             </button>
 
-            <!-- export as svg -->
+            <!-- Export as svg -->
             <button
                 mat-stroked-button
                 class="text-button"
@@ -389,9 +390,9 @@
             Code
         </ng-template>
 
-        <!-- buttons for tab "code" -->
+        <!-- Buttons for tab "code" -->
         <div class="button-container">
-            <!-- reset button -->
+            <!-- Reset button -->
             <button
                 mat-icon-button
                 matTooltip="Reset code editor to the current petri net state"
@@ -405,7 +406,7 @@
                 <mat-icon>restart_alt</mat-icon>
             </button>
 
-            <!-- apply button -->
+            <!-- Apply button -->
             <button
                 mat-icon-button
                 matTooltip="Apply the source code in the code editor as the new petri net state"
@@ -417,7 +418,7 @@
         </div>
 
         <div class="button-container float-right">
-            <!-- switch code editor to json format -->
+            <!-- Switch code editor to json format -->
             <button
                 mat-stroked-button
                 class="text-button"
@@ -433,7 +434,7 @@
                 JSON
             </button>
 
-            <!-- switch code editor to pnml format -->
+            <!-- Switch code editor to pnml format -->
             <button
                 mat-stroked-button
                 class="text-button"
