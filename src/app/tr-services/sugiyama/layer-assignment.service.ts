@@ -1,5 +1,6 @@
 import { LayeredGraph } from 'src/app/tr-services/sugiyama/types';
 import { Node } from 'src/app/tr-interfaces/petri-net/node';
+import { Arc } from 'src/app/tr-classes/petri-net/arc';
 
 /**
  * Layer Assignment Service
@@ -12,18 +13,22 @@ import { Node } from 'src/app/tr-interfaces/petri-net/node';
 export class LayerAssignmentService {
     // Initial set of nodes and arcs
     private _nodes: Node[] = [];
+    private _arcs: Arc[] = [];
+
     private _nodeInputMap: Map<Node, Node[]> = new Map();
 
     private _assignedNodes: Node[] = [];
 
     private _layers: LayeredGraph = [];
 
-    constructor(nodes: Node[], nodeInputMap: Map<Node, Node[]>) {
+    constructor(nodes: Node[], arcs: Arc[]) {
         this._nodes = nodes;
-        this._nodeInputMap = nodeInputMap;
+        this._arcs = arcs;
     }
 
     assignLayers(): LayeredGraph {
+        this.generateAdjacentNodeMaps();
+
         // Layer which is currently being processed
         let layerId = 0;
         let counter = 0;
@@ -34,9 +39,11 @@ export class LayerAssignmentService {
 
             const previousLayer = this._layers[layerId - 1];
 
-            const choices = this.getNodeChoicesForLayer(previousLayer);
+            const choices = this.getNodeChoicesForLayer(
+                previousLayer,
+                this._layers[layerId],
+            );
 
-            // console.log(choices);
             const picked = choices.pop();
 
             if (picked) {
@@ -65,7 +72,10 @@ export class LayerAssignmentService {
     }
 
     // gets all nodes that have incoming edges from the given layer
-    private getNodeChoicesForLayer(prevLayer: Node[] | undefined): Node[] {
+    private getNodeChoicesForLayer(
+        prevLayer: Node[] | undefined,
+        currentLayer: Node[] | undefined,
+    ): Node[] {
         const incomingNodes: Node[] = [];
 
         // Get the pre-nodes for each node form the graph map
@@ -87,12 +97,41 @@ export class LayerAssignmentService {
                 let intersection = [...preNode].filter((preNode) =>
                     prevLayer.includes(preNode),
                 );
-                if (intersection.length) {
-                    incomingNodes.push(node);
+                if (intersection.length && currentLayer) {
+                    // a node should only be selected if any connected node is on the same layer
+                    // so we first check if there is a connected node in the so far selected choices...
+                    const choicesIntersection = [...preNode].filter((preNode) =>
+                        incomingNodes.includes(preNode),
+                    );
+                    // ...or on the layer we're currently building
+                    const currentLayerIntersection = [...preNode].filter(
+                        (preNode) => currentLayer.includes(preNode),
+                    );
+
+                    if (
+                        choicesIntersection.length === 0 &&
+                        currentLayerIntersection.length === 0
+                    )
+                        incomingNodes.push(node);
                 }
             }
         }
 
         return incomingNodes;
+    }
+
+    private generateAdjacentNodeMaps() {
+        // Reset maps to make sure there are no interferences from
+        // previous runs of the algorithm
+        this._nodeInputMap.clear();
+
+        this._nodes.forEach((node) => {
+            const inputNodes: Node[] = [];
+
+            this._arcs.forEach((arc) => {
+                if (arc.to === node) inputNodes.push(arc.from);
+            });
+            this._nodeInputMap.set(node, inputNodes);
+        });
     }
 }

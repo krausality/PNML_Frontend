@@ -17,19 +17,11 @@ export class LayoutSugiyamaService {
     private _nodes: Node[] = [];
     private _arcs: Arc[] = [];
 
-    // Map parent nodes for each node
-    private _nodeInputMap = new Map();
-    private _nodeOutputMap = new Map();
-
     constructor(protected dataService: DataService) {
         this.dataService = dataService;
     }
 
     applySugiyamaLayout() {
-        // reset to make sure there are no interferences from
-        // previous runs of the algorithm
-        this._nodeInputMap = new Map();
-        this._nodeOutputMap = new Map();
         let layers: LayeredGraph = [];
 
         // copy initial state of datamodel to local datamodel
@@ -50,12 +42,10 @@ export class LayoutSugiyamaService {
         );
         cycleRemovalService.removeCycles();
 
-        this.generateAdjacentNodeMaps();
-
-        // Sugiyama Step 2: assign layers
+        // Sugiyama Step 2: Assign layers
         const layerAssignmentService = new LayerAssignmentService(
             this._nodes,
-            this._nodeInputMap,
+            this._arcs,
         );
         layers = layerAssignmentService.assignLayers();
 
@@ -83,19 +73,5 @@ export class LayoutSugiyamaService {
             this._nodes,
         );
         coordinateAssignmentService.assignCoordinates();
-    }
-
-    generateAdjacentNodeMaps() {
-        this._nodes.forEach((node) => {
-            const inputNodes: Node[] = [];
-            const outputNodes: Node[] = [];
-
-            this._arcs.forEach((arc) => {
-                if (arc.to === node) inputNodes.push(arc.from);
-                if (arc.from === node) outputNodes.push(arc.to);
-            });
-            this._nodeInputMap.set(node, inputNodes);
-            this._nodeOutputMap.set(node, outputNodes);
-        });
     }
 }
