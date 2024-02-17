@@ -24,7 +24,7 @@ export function createJsonSchemaValidator(): ValidatorFn {
         try {
             codeValidationErrors = validateJsonAgainstSchema(value);
         } catch (e) {
-            console.log(e);
+            console.error(e);
             return null;
         }
 

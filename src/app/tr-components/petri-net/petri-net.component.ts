@@ -4,7 +4,6 @@ import { ParserService } from 'src/app/tr-services/parser.service';
 import { catchError, of, take } from 'rxjs';
 import { FileReaderService } from '../../services/file-reader.service';
 import { DataService } from '../../tr-services/data.service';
-import { ExampleFileComponent } from 'src/app/components/example-file/example-file.component';
 
 import {
     anchorRadius,
@@ -132,9 +131,6 @@ export class PetriNetComponent {
                     return;
                 }
             }
-            // schema validation here (?)
-            // show popup with data: { parsingError: false, schemaValidationError: true }
-            // if schema fails to validate
 
             // destructure the parsed data and overwrite the corresponding parameters
             // in the data service
@@ -157,8 +153,8 @@ export class PetriNetComponent {
     public processDropEvent(e: DragEvent) {
         e.preventDefault(); // Prevent opening of the dragged file in a new tab
 
-        // Drag & Drop imports should only be available in Code & Build Mode
-        // to prevent inconsistencies
+        // Drag & Drop imports should only be available in
+        // Code & Build Mode to prevent inconsistencies.
         if (![TabState.Code, TabState.Build].includes(this.uiService.tab)) {
             this.matDialog.open(ErrorPopupComponent, {
                 data: {
@@ -169,37 +165,7 @@ export class PetriNetComponent {
             return;
         }
 
-        const fileLocation = e.dataTransfer?.getData(
-            ExampleFileComponent.META_DATA_CODE,
-        );
-
-        if (fileLocation) {
-            this.fetchFile(fileLocation);
-        } else {
-            this.readFile(e.dataTransfer?.files);
-        }
-    }
-
-    private fetchFile(link: string) {
-        this.httpClient
-            .get(link, {
-                responseType: 'text',
-            })
-            .pipe(
-                catchError((err) => {
-                    console.error(
-                        'Error while fetching file from link',
-                        link,
-                        err,
-                    );
-                    return of(undefined);
-                }),
-                take(1),
-            )
-            .subscribe((content) => {
-                this.parsePetrinetData(content, CodeEditorFormat.JSON);
-                this.emitFileContent(content);
-            });
+        this.readFile(e.dataTransfer?.files);
     }
 
     private readFile(files: FileList | undefined | null) {
@@ -209,7 +175,7 @@ export class PetriNetComponent {
 
         const file = files[0];
 
-        // extract type from file name
+        // Extract type from file name
         const extension = file.name.split('.').pop();
         let fileType: CodeEditorFormat | undefined;
 
@@ -248,7 +214,7 @@ export class PetriNetComponent {
     }
 
     public prevent(e: DragEvent) {
-        // dragover must be prevented for drop to work
+        // Dragover must be prevented for drop to work
         e.preventDefault();
     }
 
