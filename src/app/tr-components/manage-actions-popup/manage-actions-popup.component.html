@@ -8,7 +8,7 @@
 
 <div mat-dialog-content>
     <mat-list>
-        <!-- create one list item and divider for each action in dataService.getActions() -->
+        <!-- Create one list item and divider for each action in dataService.getActions() -->
         <div *ngFor="let action of dataService.getActions(); let last = last">
             <mat-list-item>
                 <div
@@ -32,7 +32,7 @@
                         </span>
                     </div>
 
-                    <!-- only allow deleting an action that is not currently used as transition label -->
+                    <!-- Only allow deleting an action that is not currently used as transition label -->
                     <div
                         matTooltip="Cannot delete actions that are set as labels"
                         [matTooltipDisabled]="
@@ -51,7 +51,7 @@
                 </div>
             </mat-list-item>
 
-            <!-- only draw this diver if it's not the last element -->
+            <!-- Only draw this divider if it's not the last element -->
             <mat-divider *ngIf="!last"></mat-divider>
         </div>
     </mat-list>
@@ -74,11 +74,12 @@
     </button>
 </div>
 
-<!-- only show this error message if the user tries submitting an empty action -->
+<!-- Only show this error message if the user tries submitting an empty action -->
 <div class="action-error" *ngIf="bothActionsEmpty">
     <p>Actions cannot be empty.</p>
     <p>At least one Action has to be filled.</p>
 </div>
+<!-- Only show this error message if the user tries submitting an action that already exists -->
 <div class="action-error" *ngIf="actionAlreadyExists">
     <p>Action already exists.</p>
     <p>Please enter another label.</p>

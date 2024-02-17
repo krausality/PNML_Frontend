@@ -1,10 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ParserService } from 'src/app/tr-services/parser.service';
-import { catchError, of, take } from 'rxjs';
+import { take } from 'rxjs';
 import { FileReaderService } from '../../services/file-reader.service';
 import { DataService } from '../../tr-services/data.service';
-import { ExampleFileComponent } from 'src/app/components/example-file/example-file.component';
 
 import {
     anchorRadius,
@@ -94,7 +93,7 @@ export class PetriNetComponent {
         contentType: CodeEditorFormat | undefined,
     ) {
         if (content) {
-            // variable to parse the data into
+            // Variable to parse the data into
             let parsedData: [
                 Array<Place>,
                 Array<Transition>,
@@ -135,11 +134,8 @@ export class PetriNetComponent {
                     return;
                 }
             }
-            // schema validation here (?)
-            // show popup with data: { parsingError: false, schemaValidationError: true }
-            // if schema fails to validate
 
-            // destructure the parsed data and overwrite the corresponding parameters
+            // Destructure the parsed data and overwrite the corresponding parameters
             // in the data service
             const [places, transitions, arcs, actions] = parsedData;
             this.dataService.places = places;
@@ -160,8 +156,8 @@ export class PetriNetComponent {
     public processDropEvent(e: DragEvent) {
         e.preventDefault(); // Prevent opening of the dragged file in a new tab
 
-        // Drag & Drop imports should only be available in Code & Build Mode
-        // to prevent inconsistencies
+        // Drag & Drop imports should only be available in
+        // Code & Build Mode to prevent inconsistencies.
         if (![TabState.Code, TabState.Build].includes(this.uiService.tab)) {
             this.matDialog.open(ErrorPopupComponent, {
                 data: {
@@ -172,37 +168,7 @@ export class PetriNetComponent {
             return;
         }
 
-        const fileLocation = e.dataTransfer?.getData(
-            ExampleFileComponent.META_DATA_CODE,
-        );
-
-        if (fileLocation) {
-            this.fetchFile(fileLocation);
-        } else {
-            this.readFile(e.dataTransfer?.files);
-        }
-    }
-
-    private fetchFile(link: string) {
-        this.httpClient
-            .get(link, {
-                responseType: 'text',
-            })
-            .pipe(
-                catchError((err) => {
-                    console.error(
-                        'Error while fetching file from link',
-                        link,
-                        err,
-                    );
-                    return of(undefined);
-                }),
-                take(1),
-            )
-            .subscribe((content) => {
-                this.parsePetrinetData(content, CodeEditorFormat.JSON);
-                this.emitFileContent(content);
-            });
+        this.readFile(e.dataTransfer?.files);
     }
 
     private readFile(files: FileList | undefined | null) {
@@ -212,7 +178,7 @@ export class PetriNetComponent {
 
         const file = files[0];
 
-        // extract type from file name
+        // Extract type from file name
         const extension = file.name.split('.').pop();
         let fileType: CodeEditorFormat | undefined;
 
@@ -242,7 +208,7 @@ export class PetriNetComponent {
         if (content === undefined) {
             return;
         }
-        // instead of emitting the file content we set the current code editor format as
+        // Instead of emitting the file content we set the current code editor format as
         // next value of the BehaviorSubject in order to have the code editor component
         // load the source code by itself (with our formatting applied)
         this.uiService.codeEditorFormat$.next(
@@ -251,7 +217,7 @@ export class PetriNetComponent {
     }
 
     public prevent(e: DragEvent) {
-        // dragover must be prevented for drop to work
+        // Dragover must be prevented for drop to work
         e.preventDefault();
     }
 
@@ -271,7 +237,7 @@ export class PetriNetComponent {
     }
 
     protected onWheelEventPlace(e: WheelEvent, place: Place) {
-        //Scrolling is allowed in Both Directions with the Blitz-Tool
+        // Scrolling is allowed in Both Directions with the Blitz-Tool
         if (this.uiService.button === ButtonState.Blitz) {
             e.preventDefault();
             e.stopPropagation();
@@ -301,7 +267,7 @@ export class PetriNetComponent {
     }
 
     protected onWheelEventArc(e: WheelEvent, arc: Arc) {
-        //Scrolling is allowed in Both Directions with the Blitz-Tool
+        // Scrolling is allowed in Both Directions with the Blitz-Tool
         if (this.uiService.button === ButtonState.Blitz) {
             e.preventDefault();
             e.stopPropagation();
@@ -572,7 +538,6 @@ export class PetriNetComponent {
         if (this.uiService.button === ButtonState.Move) {
             // Keep event from bubbling up to canvas and e.g. trigger canvas drag & drop
             event.stopPropagation();
-
             this.editMoveElementsService.initializeNodeMove(event, place);
         }
 
@@ -620,7 +585,7 @@ export class PetriNetComponent {
             if (event.button == MouseConstants.Right_Click) {
                 this.dataService.removeTransition(transition);
             } else if (event.button == MouseConstants.Left_Click) {
-                //Existing Transition is selected as the next Node. Method is called before dispatchSVGClick
+                // Existing Transition is selected as the next Node. Method is called before dispatchSVGClick
                 if (this.lastNode instanceof Transition) {
                     this.addElement = false;
                 } else {
@@ -632,7 +597,6 @@ export class PetriNetComponent {
         if (this.uiService.button === ButtonState.Move) {
             // Keep event from bubbling up to canvas and e.g. trigger canvas drag & drop
             event.stopPropagation();
-
             this.editMoveElementsService.initializeNodeMove(event, transition);
         }
 
@@ -815,7 +779,7 @@ export class PetriNetComponent {
             .some((arc) => arc.from === startNode && arc.to === endNote);
     }
 
-    // returns true if the provided place can be edited and should be highlighted
+    // Returns true if the provided place can be edited and should be highlighted
     isPlaceEditable(place: Place): boolean {
         const hasPreArcFromStartTransition =
             this.startTransition &&
@@ -838,15 +802,15 @@ export class PetriNetComponent {
             (this.uiService.button === ButtonState.Move &&
                 !this.editMoveElementsService.newAnchor) ||
             this.uiService.button === ButtonState.Add ||
-            (this.uiService.button === ButtonState.Remove && place.token > 0) || // tokens can only be removed if the number of tokens in a place is > 0
+            (this.uiService.button === ButtonState.Remove && place.token > 0) || // Tokens can only be removed if the number of tokens in a place is > 0
             this.uiService.button === ButtonState.Delete ||
             (this.uiService.button === ButtonState.Arc &&
                 !this.startPlace &&
                 !hasPreArcFromStartTransition)
-        ); // if the user starts dragging an arc from a place he can only finish on a transition --> places are no longer editable
+        ); // If the user starts dragging an arc from a place he can only finish on a transition --> places are no longer editable
     }
 
-    // returns true if transitions can be edited and should be highlighted
+    // Returns true if transitions can be edited and should be highlighted
     isTransitionEditable(transition: Transition): boolean {
         const hasPreArcFromStartPlace =
             this.startPlace &&
@@ -873,17 +837,17 @@ export class PetriNetComponent {
             (this.uiService.button === ButtonState.Arc &&
                 !this.startTransition &&
                 !hasPreArcFromStartPlace)
-        ); // if the user starts dragging an arc from a transition he can only finish on a place --> transitions no longer editable
+        ); // If the user starts dragging an arc from a transition he can only finish on a place --> transitions no longer editable
     }
 
-    // returns true if the provided arc can be edited and should be highlighted
+    // Returns true if the provided arc can be edited and should be highlighted
     isArcEditable(arc: Arc): boolean {
         return (
             this.uiService.button === ButtonState.Anchor ||
             this.editMoveElementsService.newAnchor !== undefined ||
             this.uiService.button === ButtonState.Add ||
             (this.uiService.button === ButtonState.Remove &&
-                Math.abs(arc.weight) > 1) || // arc weights can only be decreased if the absolute value is > 1
+                Math.abs(arc.weight) > 1) || // Arc weights can only be decreased if the absolute value is > 1
             this.uiService.button === ButtonState.Delete
         );
     }

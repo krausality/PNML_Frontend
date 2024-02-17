@@ -12,7 +12,6 @@ export class CoordinateAssignmentService {
     private _layers: LayeredGraph = [];
 
     // Default values to ensure a pleasing layout
-    // TODO: maybe move these to the position constants?
     private _canvasHeight;
     private _canvasWidth;
 
@@ -42,8 +41,8 @@ export class CoordinateAssignmentService {
         let currentY = 0;
 
         // Calculate spacings between nodes from the max values set above
-        // and the number of nodes and layers in the graph
-        // this is really just for nicer layout and even spacing
+        // and the number of nodes and layers in the graph.
+        // This is need to create a nicer layout and even spacing.
         const columns = this._layers.length;
         const columnSize = Math.max(
             Math.min(this._canvasWidth! / columns, this._maxColumnWidth),
@@ -55,17 +54,17 @@ export class CoordinateAssignmentService {
             this._minRowHeight,
         );
 
-        // remove all anchorpoints as these will have to be re-calculated
+        // Remove all anchorpoints as these will have to be re-calculated
         this._arcs.forEach((arc) => arc.resetAnchors());
 
-        // lay out each layer of the graph
+        // Lay out each layer of the graph
         for (const [layerId, layer] of this._layers.entries()) {
-            // calculate the x position from the layer the node is in
-            const column = layerId + 1; // the layers are zero-indexed so we'll always add 1
+            // Calculate the x position from the layer the node is in
+            const column = layerId + 1; // The layers are zero-indexed so we'll always add 1
             currentX = columnSize * column - columnSize / 2;
 
-            // calculate the initial y position from the max number of nodes in the layer
-            // this will be incremented for each node in the layer
+            // Calculate the initial y position from the max number of nodes in the layer.
+            // This will then be incremented for each node in the layer
             currentY =
                 this._canvasHeight! / 2 - (rowSize * (layer.length - 1)) / 2;
 
@@ -79,7 +78,7 @@ export class CoordinateAssignmentService {
                     node.position = position;
                 }
 
-                // Update the vertical position
+                // Update the y position
                 currentY = currentY + rowSize;
             }
         }
@@ -88,29 +87,28 @@ export class CoordinateAssignmentService {
     private replaceDummyNode(node: DummyNode, position: Point) {
         const anchorpoints = [];
 
-        // find the arcs that connect the dummy node to both sides
+        // Find the arcs that connect the dummy node to both sides
         const [inputArc] = this._arcs.filter((arc) => arc.to === node);
         const [outputArc] = this._arcs.filter((arc) => arc.from === node);
 
         // Create the new long arcs' anchorpoints in the right order:
-        // copy the preArcs anchors in case it was already a long arc
-        // then add the current nodes position
-        // last add the post arcs anchors in case it was already a long arc
-
+        // 1. Copy the preArcs anchors in case it was already a long arc
+        // 2. Then add the current nodes position
+        // 3. Last add the post arcs anchors in case it was already a long arc
         if (inputArc.anchors) anchorpoints.push(...inputArc.anchors);
         anchorpoints.push(position);
         if (outputArc.anchors) anchorpoints.push(...outputArc.anchors);
 
-        // delete the old connecting arcs which are being replaced
+        // Delete the old connecting arcs which are being replaced
         this.removeItemFromArray(inputArc, this._arcs);
         this.removeItemFromArray(outputArc, this._arcs);
 
-        // create a new arc leading from the dummy nodes prenode to its postnode
+        // Create a new arc leading from the dummy node's prenode to its postnode
         this._arcs.push(
             new Arc(inputArc.from, outputArc.to, inputArc.weight, anchorpoints),
         );
 
-        // remove the dummy node itself
+        // Remove the dummy node itself
         this.removeItemFromArray(node, this._nodes);
     }
 

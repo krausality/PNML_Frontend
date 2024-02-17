@@ -30,8 +30,10 @@ export class VertexOrderingService {
         let best = [...this._layers];
         let bestCrossingsNumber = this.totalCrossings(best);
 
-        // 24 iterations is the number taken from paper by Ganser et al.,
-        // they suggest checking wether the algorithm has actually improved anything
+        // 24 iterations is the number taken from paper by Ganser et al.
+        // They suggest checking wether the algorithm has actually improved
+        // anything. That threshold is saved in maxRoundsNoImprovement and
+        // checked after each iteration.
         const maxIterations = 24;
         const maxRoundsNoImprovement = 6;
         let roundsWithNoImprovement = 0;
@@ -56,7 +58,8 @@ export class VertexOrderingService {
             }
 
             // If the optimum (0 crossings) has been reached
-            // or X rounds have passed without any improvements, we'll stop the algorithm early
+            // or X rounds have passed without any improvements,
+            // we'll stop the algorithm early
             if (
                 bestCrossingsNumber === 0 ||
                 roundsWithNoImprovement > maxRoundsNoImprovement
@@ -103,6 +106,7 @@ export class VertexOrderingService {
         }
     }
 
+    // Swaps nodes if that reduces crossings between the layers
     private transpose(currentOrder: LayeredGraph) {
         let improved = true;
 
@@ -113,11 +117,13 @@ export class VertexOrderingService {
             improved = false;
             for (const [layerId, layer] of currentOrder.entries()) {
                 if (layer.length === 1 || !currentOrder[layerId + 1]) {
-                    // console.log('Skipping Layer ' + layerId + ' which has only 1 node or it is the last one');
+                    // Layers that have only one node or no next
+                    // layer to cross with can be skipped.
                     continue;
                 }
 
-                // Check for each pair of nodes if swapping them would reduce the # of crossings
+                // Check for each pair of nodes if swapping them would
+                // reduce the # of layer crossings
                 for (
                     let position = 0;
                     position < layer.length - 1;
@@ -147,7 +153,7 @@ export class VertexOrderingService {
         let crossings = 0;
         for (const [layerId, layer] of currentOrder.entries()) {
             if (layer.length === 1 || !currentOrder[layerId + 1]) {
-                // the last layer or layers with only one node cannot have crossings
+                // The last layer or layers with only one node cannot have crossings
                 continue;
             }
 
@@ -171,7 +177,7 @@ export class VertexOrderingService {
     // Find all crossings between two  nodes in a given layer
     private layerCrossings(nodeA: Node, nodeB: Node, layerId: number) {
         if (this._layers[layerId + 1].length === 1) {
-            // there is only one node in the next layer, there can be no crossings
+            // There is only one node in the next layer, so there can be no crossings
             return 0;
         }
 
@@ -185,8 +191,8 @@ export class VertexOrderingService {
             .map((node) => this._layers[layerId + 1].indexOf(node))
             .filter((item) => item !== -1);
 
-        // For each pair check wether the index of the neighbouring node is bigger
-        // if so, then a crossing has been identified
+        // For each pair check wether the index of the neighbouring node is bigger.
+        // If so, then a crossing has been identified
         for (const indexA of adjacentNodesIndexA) {
             for (const indexB of adjacentNodesIndexB) {
                 if (indexA > indexB) {
@@ -211,10 +217,9 @@ export class VertexOrderingService {
     }
 
     private getMedianValueOfInputNodes(node: Node, layer: Node[]) {
-        // console.log('[Vertex Ordering]: nodes in adjacent layer to node: ', node, layer);
         const inputNodes = this._nodeInputIdMap.get(node.id);
         if (!inputNodes || !inputNodes.length) {
-            // nodes with no adjacent vertices are given a median of -1
+            // Nodes with no adjacent vertices are given a median of -1
             return -1;
         } else {
             const adjacentValues = [];
@@ -226,10 +231,7 @@ export class VertexOrderingService {
                 }
             }
 
-            // console.log('[Vertex Ordering]: adjacent values', adjacentValues);
-
             const mid = Math.floor(adjacentValues.length / 2);
-            // TODO/Optimization: implemented weighted median
             return adjacentValues.length % 2 !== 0
                 ? adjacentValues[mid]
                 : (adjacentValues[mid - 1] + adjacentValues[mid]) / 2;
@@ -237,10 +239,9 @@ export class VertexOrderingService {
     }
 
     private getMedianValueOfOutputNodes(node: Node, layer: Node[]) {
-        // console.log('[Vertex Ordering]: nodes in adjacent layer to node: ', node, layer);
         const outputNodes = this._nodeOutputIdMap.get(node.id);
         if (!outputNodes || !outputNodes.length) {
-            // nodes with no adjacent vertices are given a median of -1
+            // Nodes with no adjacent vertices are given a median of -1
             return -1;
         } else {
             const adjacentValues = [];
@@ -255,7 +256,6 @@ export class VertexOrderingService {
             }
 
             const mid = Math.floor(adjacentValues.length / 2);
-            // TODO/Optimization: implemented weighted median
             return adjacentValues.length % 2 !== 0
                 ? adjacentValues[mid]
                 : (adjacentValues[mid - 1] + adjacentValues[mid]) / 2;
@@ -270,7 +270,7 @@ export class VertexOrderingService {
 
             // Check if there are connected nodes from a layer
             // that is *not* the previous one.
-            // This has to be done seperately for input & output nodes
+            // This has to be done seperately for input & output nodes,
             // so that we can ensure the correct direction of the inserted dummy arcs
             for (let node of nodes) {
                 const preNodes = this._nodeInputIdMap.get(node.id);
@@ -278,8 +278,8 @@ export class VertexOrderingService {
                     for (let preNode of preNodes) {
                         const preNodeLayer = this.findLayerIdForNode(preNode);
 
-                        // If prenode is not on the previous layer
-                        // this is a long edge and a dummy node needs to be inserted
+                        // If prenode is not on the previous layer, this is
+                        // a long edge and a dummy node needs to be inserted
                         if (Math.abs(preNodeLayer) - layerId > 1) {
                             this.addDummyNodeAndArcs(
                                 dummyIndex,
@@ -294,13 +294,13 @@ export class VertexOrderingService {
 
                 const outputNodes = this._nodeOutputIdMap.get(node.id);
                 if (outputNodes) {
-                    // check if there are outgoing edges from a vertex from a layer
-                    // that is *not* the next one
+                    // Check if there are outgoing edges from a vertex
+                    // on a layer that is *not* the next one
                     for (let postNode of outputNodes) {
                         const postNodeLayer = this.findLayerIdForNode(postNode);
 
-                        // If postnode is not on the previous layer
-                        // this is a long edge and a dummy node needs to be inserted
+                        // If postnode is not on the previous layer this is
+                        // a long edge and a dummy node needs to be inserted
                         if (Math.abs(postNodeLayer) - layerId > 1) {
                             this.addDummyNodeAndArcs(
                                 dummyIndex,
@@ -313,7 +313,7 @@ export class VertexOrderingService {
                     }
                 }
 
-                // Update the now outdated node maps to reflect the dummy arcs & nodes
+                // Update the now outdated node maps to include the dummy arcs & nodes
                 this.generateAdjacentNodeMaps();
             }
         }
@@ -325,7 +325,6 @@ export class VertexOrderingService {
         from: Node,
         to: Node,
     ) {
-        // console.log('[Vertex Ordering]: Create dummy for  ' , from, 'to: ', to);
         const dummy = new DummyNode(
             new Point(1, 1),
             `dummyNode-${index}`,
