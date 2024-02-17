@@ -53,8 +53,11 @@ import { LayoutSugiyamaService } from '../../tr-services/layout-sugiyama.service
 export class PetriNetComponent {
     @Input() buttonState: ButtonState | undefined;
 
+    // Marks selected node in Blitz tool
     lastNode: Node | null = null;
+    // Marks node that will be selected
     nextNode: Node | null = null;
+    // Attribute is set when the user tries to connect two nodes of the same type
     addElement: boolean = true;
 
     constructor(
@@ -358,7 +361,6 @@ export class PetriNetComponent {
                 if (this.nextNode instanceof Transition) {
                     // Connecting the Place to an existing Transition
                     const transition = this.nextNode;
-                    // this.dataService.getTransitions().push(transition);
                     this.dataService.connectNodes(this.lastNode, transition);
                     this.lastNode = this.nextNode;
                 } else if (this.nextNode instanceof Place) {
@@ -379,7 +381,6 @@ export class PetriNetComponent {
                 if (this.nextNode instanceof Place) {
                     // Connecting the Transition to an existing Place
                     const place = this.nextNode;
-                    // this.dataService.getPlaces().push(place);
                     this.dataService.connectNodes(this.lastNode, place);
                     this.lastNode = this.nextNode;
                 } else if (this.nextNode instanceof Transition) {
