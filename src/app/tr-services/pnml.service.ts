@@ -331,7 +331,7 @@ export class PnmlService {
                 return `<position x="${arc.x}" y="${arc.y}"/>\n`
             })
             return `<graphics>
-        ${positionString.map((position) => position).join('\n')}
+        ${positionString.join('\n')}
 </graphics>
 `
         }
