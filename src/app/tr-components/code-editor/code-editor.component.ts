@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroupDirective, NgForm } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { ErrorStateMatcher } from '@angular/material/core';
 import { Arc } from 'src/app/tr-classes/petri-net/arc';
 import { Place } from 'src/app/tr-classes/petri-net/place';
 import { Transition } from 'src/app/tr-classes/petri-net/transition';
@@ -39,7 +38,7 @@ export class CodeEditorComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        // reload the source code in a the given format when the
+        // Reload the source code in a the given format when the
         // BehaviorSubject changes its value
         this.uiService.codeEditorFormat$.subscribe((format) => {
             if (format === CodeEditorFormat.JSON) {
@@ -58,11 +57,11 @@ export class CodeEditorComponent implements OnInit {
         });
     }
 
-    // applies the current source code as json or pnml
+    // Applies the current source code as json or pnml
     // depending on which language is selected
     public applySourceCode() {
         let sourceCode = this.textareaControl.value;
-        // the value of the textareaControl can be null or empty
+        // The value of the textareaControl can be null or empty
         // if this is the case the existing petri net will be deleted
         if (!sourceCode) {
             this.dataService.places = [];
@@ -72,7 +71,7 @@ export class CodeEditorComponent implements OnInit {
             return;
         }
 
-        // parse the data as json or pnml based on the selected language
+        // Parse the data as json or pnml based on the selected language
         let parsedData: [
             Array<Place>,
             Array<Transition>,
@@ -80,7 +79,7 @@ export class CodeEditorComponent implements OnInit {
             Array<string>,
         ];
 
-        // validate JSON / XML formats and display popup if formatting rules are broken
+        // Validate JSON / XML formats and display popup if formatting rules are broken
         try {
             if (
                 this.uiService.codeEditorFormat$.value === CodeEditorFormat.JSON
@@ -101,7 +100,6 @@ export class CodeEditorComponent implements OnInit {
 
         // Code was parsed successfully
         // Display results of JSON against Petrinet JSON Schema
-        // TODO: Ideally add XML Schema Validation as well
         if (
             this.uiService.codeEditorFormat$.value === CodeEditorFormat.JSON &&
             this.textareaControl.errors
@@ -115,7 +113,7 @@ export class CodeEditorComponent implements OnInit {
             return;
         }
 
-        // destructure the parsed data and overwrite the corresponding parameters
+        // Destructure the parsed data and overwrite the corresponding parameters
         // in the data service
         const [places, transitions, arcs, actions] = parsedData;
         this.dataService.places = places;

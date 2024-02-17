@@ -6,12 +6,12 @@ import { BehaviorSubject } from 'rxjs';
     providedIn: 'root',
 })
 export class UiService {
-    // stores the active tab
-    // starting value is "TabState.Build", meaning we always start on the build tab
+    // Stores the active tab
+    // Starting value is "TabState.Build", meaning we always start on the build tab
     tab: TabState = TabState.Build;
 
-    // stores the active button inside the build tab
-    // default is empty
+    // Stores the active button inside the build tab
+    // Default is empty
     button: ButtonState | null = null;
 
     // Indicates, when the user switches between tabs.
@@ -27,7 +27,7 @@ export class UiService {
         new BehaviorSubject<ButtonState | null>(this.button);
 
     // BehaviorSubject that changes state when the code format is switched in the button bar
-    // this way the code editor can be notified of the new format without the use of event bindings
+    // This way the code editor can be notified of the new format without the use of event bindings
     codeEditorFormat$: BehaviorSubject<CodeEditorFormat> =
         new BehaviorSubject<CodeEditorFormat>(CodeEditorFormat.JSON);
 

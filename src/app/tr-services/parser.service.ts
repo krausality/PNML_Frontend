@@ -16,7 +16,6 @@ export class ParserService {
 
     incompleteLayoutData: boolean = false;
 
-    // TODO specify correct return type
     parse(
         text: string,
     ): [Array<Place>, Array<Transition>, Array<Arc>, Array<string>] {
@@ -32,7 +31,7 @@ export class ParserService {
         let arcs: Arc[] = [];
         let actions: string[] = [];
 
-        // parse Places
+        // Parse places
         rawData.places.forEach((placeId) => {
             places.push(
                 new Place(
@@ -44,7 +43,7 @@ export class ParserService {
             );
         });
 
-        // parse Transitions
+        // Parse transitions
         rawData.transitions.forEach((transitionId) => {
             transitions.push(
                 new Transition(
@@ -55,14 +54,12 @@ export class ParserService {
             );
         });
 
-        // parse Arcs and append Arcs to Transitions
+        // Parse arcs and append arcs to transitions
         if (rawData.arcs) {
             Object.entries(rawData.arcs).forEach(([arcId, weight]) => {
                 const [fromId, toId]: string[] = arcId.split(',');
                 const fromNode = this.retrieveNode(places, transitions, fromId);
                 const toNode = this.retrieveNode(places, transitions, toId);
-                // TODO error handling
-                // TODO check that fromNode and toNode are not of the same type
                 if (fromNode && toNode) {
                     const anchors = this.retrieveAnchors(rawData, arcId);
                     const arc = new Arc(fromNode, toNode, weight, anchors);
@@ -72,20 +69,18 @@ export class ParserService {
             });
         }
 
-        // parse actions
+        // Parse actions
         if (rawData.actions) {
             rawData.actions.forEach((action: string) => {
                 actions.push(action);
             });
         }
 
-        // TODO store in extra data service
         return [places, transitions, arcs, actions];
     }
 
-    // if contained returns the position from data.layout for the provided id
-    // if not, then (0, 0) will be returned as default
-    // TODO more sensible default value
+    // If contained returns the position from data.layout for the provided id
+    // If not, then (0, 0) will be returned as default
     private retrievePosition(data: JsonPetriNet, id: string): Point {
         if (data.layout && data.layout[id]) {
             const coords = data.layout[id] as Coords;
@@ -133,7 +128,6 @@ export class ParserService {
     private retrieveAnchors(data: JsonPetriNet, id: string): Point[] {
         const points: Point[] = [];
         if (data.layout && data.layout[id]) {
-            // TODO implement checks to allow for both single anchorpoints and arrays
             (data.layout[id] as Coords[]).forEach((position) => {
                 points.push(new Point(position.x, position.y));
             });
