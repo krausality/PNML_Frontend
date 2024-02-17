@@ -12,11 +12,12 @@ export class DummyNode implements Node {
         this.label = label;
     }
 
-    // has to be implemented but is irrelevant for dummy nodes
+    // Has to be implemented but is irrelevant for dummy nodes
     intersectionOfBoundaryWithLineTo(p: Point): Point {
         return this.position;
     }
 
+    // Has to be implemented but is irrelevant for dummy nodes
     pLiesOutsideNodeShapeBoudary(p: Point): boolean {
         return true;
     }
