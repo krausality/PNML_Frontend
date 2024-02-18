@@ -35,7 +35,15 @@
                             },
                             "src/styles.css"
                         ],
-                        "scripts": []
+                        "scripts": [],
+                        "allowedCommonJsDependencies": [
+                            "ajv/dist/2020",
+                            "html2canvas",
+                            "fracturedjsonjs",
+                            "json-parse-better-errors",
+                            "xml-js",
+                            "vkbeautify"
+                        ]
                     },
                     "configurations": {
                         "production": {
