@@ -3,7 +3,6 @@ import { DataService } from './data.service';
 import { JsonPetriNet } from '../classes/json-petri-net';
 import {
     Formatter,
-    CommentPolicy,
     FracturedJsonOptions,
     EolStyle,
 } from 'fracturedjsonjs';
@@ -44,15 +43,15 @@ export class ExportJsonDataService {
         // Alternative serializations with JSON.stringify(data, replacer, space):
 
         // Option 2: compact format *****************************************
-        // serializedJsonObj = JSON.stringify(jsonObj);
+        // const serializedJsonObj = JSON.stringify(this.generateJsonObject());
         // ******************************************************************
 
         // Option 3: expanded format ****************************************
-        // serializedJsonObj = JSON.stringify(jsonObj, null, 4);
+        // const serializedJsonObj = JSON.stringify(this.generateJsonObject(), null, 4);
         // ******************************************************************
 
         // Option 4: mixed format *******************************************
-        // serializedJsonObj = JSON.stringify(jsonObj, (key, value) => {
+        // let serializedJsonObj = JSON.stringify(this.generateJsonObject(), (key, value) => {
         //     if (['places', 'transitions', 'actions'].includes(key)) {
         //         return JSON.stringify(value);
         //     } else {
