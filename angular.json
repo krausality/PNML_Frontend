@@ -17,7 +17,7 @@
                         "index": "src/index.html",
                         "main": "src/main.ts",
                         "polyfills": [
-                            "zone.js"
+                            "zone.js" // Only zone.js needed here typically for polyfills
                         ],
                         "tsConfig": "tsconfig.app.json",
                         "assets": [
@@ -31,7 +31,7 @@
                         ],
                         "styles": [
                             {
-                                "input": "src/tr-red-theme.scss"
+                                "input": "src/tr-red-theme.scss" // Keep the updated theme file reference
                             },
                             "src/styles.css"
                         ],
@@ -42,8 +42,13 @@
                             "fracturedjsonjs",
                             "json-parse-better-errors",
                             "xml-js",
-                            "vkbeautify"
+                            "vkbeautify",
+                            "sax", // Keep sax listed if it helps ensure it's processed correctly
+                            "stream-browserify" // Listing the polyfill itself might help in some edge cases
                         ]
+                        // Removed the invalid 'browser' and 'server' keys from here.
+                        // The 'resolve.fallback' logic is implicitly handled by installing the polyfill
+                        // or potentially via tsconfig paths, not directly configured here without custom builders.
                     },
                     "configurations": {
                         "production": {
@@ -59,7 +64,14 @@
                                     "maximumError": "4kb"
                                 }
                             ],
-                            "outputHashing": "all"
+                            "outputHashing": "all",
+                             // Ensure standard prod settings are correct
+                            "aot": true,
+                            "extractLicenses": true,
+                            "buildOptimizer": true,
+                            "sourceMap": false,
+                            "optimization": true,
+                            "vendorChunk": false // Typically false for prod builds for smaller initial chunks
                         },
                         "development": {
                             "buildOptimizer": false,
@@ -83,6 +95,7 @@
                         }
                     },
                     "defaultConfiguration": "development"
+                    // No specific options needed here usually, inherits or relies on polyfills
                 },
                 "extract-i18n": {
                     "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -96,6 +109,7 @@
                         "polyfills": [
                             "zone.js",
                             "zone.js/testing"
+                            // Remove "stream" from here too, handle via karma.conf.js if needed
                         ],
                         "tsConfig": "tsconfig.spec.json",
                         "assets": [
@@ -103,10 +117,14 @@
                             "src/assets"
                         ],
                         "styles": [
-                            "@angular/material/prebuilt-themes/indigo-pink.css",
+                            // Use the defined theme for consistency
+                            {
+                                "input": "src/tr-red-theme.scss"
+                            },
                             "src/styles.css"
                         ],
                         "scripts": []
+                        // If tests fail due to missing 'stream', you'd add the fallback to karma.conf.js webpack config section.
                     }
                 }
             }

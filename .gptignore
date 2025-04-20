@@ -39,6 +39,8 @@
     "exclude_patterns": [
         "*.png",
         "*.svg",
-        ".git"
+        ".git",
+        ".angular",
+        "node_modules"
     ]
 }
