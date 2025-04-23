@@ -1,29 +1,38 @@
-# ✅ Angular 16 Development Setup auf Windows 11  
-**Von leerem System bis `ng serve` erfolgreich läuft**
+# ✅ Angular 16 Development Setup on Windows 11 & Linux/WSL  
+**From a blank system to a successful `ng serve` run**
 
 ---
 
-## 🧱 Voraussetzungen
+## 🧱 Prerequisites
 
-- Windows 11
-- Terminal: PowerShell oder CMD
-- Internetverbindung
-- Zugriff auf ein Angular 16 Projekt (z. B. via Git oder ZIP)
+- Windows 10/11 or Linux (Ubuntu/Debian recommended) or WSL2
+- Terminal: PowerShell, CMD, or Bash
+- Internet connection
+- Access to an Angular 16 project (e.g., via Git or ZIP)
 
 ---
 
-## 1️⃣ Node.js installieren (über `fnm`)
+## 1️⃣ Install Node.js (using `fnm`)
 
-> `fnm` = Fast Node Manager, für flexible Node-Versionen
+> `fnm` = Fast Node Manager, for flexible Node versions
 
+**Windows:**
 ```powershell
 winget install Schniz.fnm
 fnm install 18
 ```
 
-Danach testen:
+**Linux/WSL:**
+```bash
+sudo apt update && sudo apt install unzip -y
+curl -fsSL https://fnm.vercel.app/install | bash
+# Restart your shell or run the eval command printed by the installer
+fnm install 18
+```
 
-```powershell
+Then test:
+
+```bash
 # Verify the Node.js version:
 node -v # Should print "v18.20.8".
 
@@ -33,86 +42,82 @@ npm -v # Should print "10.8.2".
 
 ---
 
-## 2️⃣ Angular CLI 16 global installieren
+## 2️⃣ Install Angular CLI 16 globally
 
-```powershell
+```bash
 npm install -g @angular/cli@16
 ```
 
-> Warnings bzgl. veralteter Pakete kannst du ignorieren – ist normal.
+> You can ignore warnings about outdated packages – that's normal.
 
 ---
 
-## 3️⃣ Projekt vorbereiten
+## 3️⃣ Prepare the project
 
 Clone repo into folder:
 
-```powershell
+```bash
 git clone https://github.com/krausality/PNML_Frontend.git
 ```
 
-Navigiere zum Repo-ordner:
+Navigate to the repo folder:
 
-```powershell
-cd C:\GITHUB\PNML_Frontend
+```bash
+cd PNML_Frontend
+# or, if you cloned elsewhere:
+cd /path/to/PNML_Frontend
 ```
 
-Dann:
+Then:
 
-```powershell
+```bash
 npm install
 ```
 
-> Das lädt alle Abhängigkeiten aus `package.json`.
+> This downloads all dependencies from `package.json`.
 
 ---
 
-## 4️⃣ Angular Dev-Server starten
+## 4️⃣ Start Angular Dev Server
 
-```powershell
-cmd /c "ng serve --open"
-
-```
-
-oder
-
-```powershell
+```bash
 ng serve --open
 ```
 
-> Öffnet automatisch `http://localhost:4200/` im Browser.
+> On Windows, this will open `http://localhost:4200/` in your default browser.  
+> On Linux/WSL, it will print the URL; open it manually if it doesn't launch automatically.
 
 ---
 
-## 5️⃣ PowerShell Policy Bug umgehen
+## 5️⃣ Work around PowerShell Policy Bug (Windows only)
 
-Wenn `ng` nicht läuft wegen Skript-Blockierung:
+If `ng` doesn't run due to script blocking:
 
 ```powershell
 Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 ```
 
-> Alternativ: Wechsel einfach zu `cmd.exe` oder `Windows Terminal` (funktioniert ohne Probleme):
+> Alternatively: Just switch to `cmd.exe` or `Windows Terminal` (works without issues):
 
 ```powershell
 cmd
 ```
 
+> **Linux/WSL:** No action needed.
+
 ---
 
+## 6️⃣ Possible Warnings & Notes
 
+### ❗ **Webpack error due to missing `stream` module**
 
-## 6️⃣ Mögliche Warnungen & Hinweise
-
-### ❗ **Webpack-Fehler wegen fehlender `stream`-Module**
-
-Falls du ein Node-Modul brauchst, das `stream` verwendet:
+If you need a Node module that uses `stream`:
 
 ```bash
 npm install stream-browserify
 ```
 
-Und ergänze in deiner `angular.json` oder `webpack.config.js` (falls vorhanden):
+And add to your `angular.json` or `webpack.config.js` (if present):
 
 ```js
 resolve: {
@@ -122,7 +127,7 @@ resolve: {
 }
 ```
 
-Oder wenn du das Modul **nicht brauchst**:
+Or if you **don't need** the module:
 
 ```js
 resolve: {
@@ -136,10 +141,10 @@ resolve: {
 
 ### 🎨 **Angular Material Theme Warning**
 
-> Falls du Angular Material verwendest, achte darauf, dass dein Theme korrekt konfiguriert ist:
+> If you use Angular Material, make sure your theme is configured correctly:
 
 ```scss
-// Beispielhafte Theme-Definition:
+// Example theme definition:
 $my-theme: mat.define-light-theme((
   color: (
     primary: mat.define-palette(mat.$indigo-palette),
@@ -151,63 +156,51 @@ $my-theme: mat.define-light-theme((
 ));
 ```
 
-Mehr dazu: [Material theming guide](https://material.angular.io/guide/theming)
+More info: [Material theming guide](https://material.angular.io/guide/theming)
 
 ---
 
-## ✅ Ergebnis
+## ✅ Result
 
-Wenn du alles richtig gemacht hast, siehst du im Terminal:
+If you did everything right, you'll see in the terminal:
 
 ```bash
 ** Angular Live Development Server is listening on localhost:4200 **
 √ Compiled successfully.
 ```
 
-Dann: 🎉 **App läuft im Browser!**
+Then: 🎉 **App is running in the browser!**
 
 ---
 
-Wenn du magst, kann ich dir noch ein Skript basteln, das das alles halbautomatisch ausführt (z. B. für frische Maschinen oder neue Devs im Team). Sag einfach Bescheid!
----
 
-# Old README
-
-## Umgebung
-
-Um den Codegerüst zum Laufen zu bringen, muss man `Node.js` und `npm` installieren. Das Projekt basiert auf Angular 16.
-
-Die Liste von kompatiblen Versionen findet man [hier](https://angular.io/guide/versions). Offizielle Angular Anweisungen zur Entwicklungsumgebung findet man [hier](https://angular.io/guide/setup-local).
-
-## Bibliotheken
-
-Das Projekt enthält die folgenden Bibliotheken:
+The project includes the following libraries:
 
 ### Angular Material
 
-Enthält Komponenten für Benutzeroberflächen. Die [Dokumentation](https://material.angular.io/components/categories) enthält viele Codebeispiele.
+Contains components for user interfaces. The [documentation](https://material.angular.io/components/categories) includes many code examples.
 
 ### Angular Material Icons
 
-Ermöglicht durch die `<mat-icon>` Komponente alle Material Ikonen zu nutzen.
-* [Dokumentation](https://material.angular.io/components/icon/overview)
-* [Liste von Ikonen](https://fonts.google.com/icons)
+Allows you to use all Material icons via the `<mat-icon>` component.
+* [Documentation](https://material.angular.io/components/icon/overview)
+* [List of icons](https://fonts.google.com/icons)
 
 ### Angular Flex Layout
 
-Vereinfacht die Arbeit mit CSS `flex-box` Eigenschaften.
+Simplifies working with CSS `flex-box` properties.
 * [Demo](https://tburleson-layouts-demos.firebaseapp.com/#/docs)
 
 ### RxJs
 
-Vereinfacht die Verarbeitung von asynchron auftauchenden Ereignissen. 
-* [Dokumentation](https://rxjs.dev/guide/overview)
+Simplifies handling of asynchronously occurring events.
+* [Documentation](https://rxjs.dev/guide/overview)
 
-## Petri-Netz Dateiformat
+## Petri Net File Format
 
-Sie finden ein Beispiel .json Petri-Netz Datei in dem `assets` Ordner - [src/assets/example.json](./src/assets/example.json)
+You can find an example .json Petri net file in the `assets` folder - [src/assets/example.json](./src/assets/example.json)
 
-Das Projekt enthält auch drei Referenzmodelle die dasselbe Petri-Netz in anderen Formaten enthalten. Alle Referenzdateien befinden sich unter [src/reference-models](./src/reference-models). Die Dateien kann man mit folgenden Tools öffnen:
-* ILPN Datei - die [I ❤ Petri Nets](https://www.fernuni-hagen.de/ilovepetrinets/petrinets/index.html) Webseite
-* WoPeD Datei - das [Workflow Petri Net Designer](https://woped.dhbw-karlsruhe.de/?page_id=22)
-* Petriflow Datei - das [Netgrif Application Builder](https://builder.netgrif.com/modeler)
+The project also includes three reference models that contain the same Petri net in other formats. All reference files are located under [src/reference-models](./src/reference-models). You can open the files with the following tools:
+* ILPN file - the [I ❤ Petri Nets](https://www.fernuni-hagen.de/ilovepetrinets/petrinets/index.html) website
+* WoPeD file - the [Workflow Petri Net Designer](https://woped.dhbw-karlsruhe.de/?page_id=22)
+* Petriflow file - the [Netgrif Application Builder](https://builder.netgrif.com/modeler)
