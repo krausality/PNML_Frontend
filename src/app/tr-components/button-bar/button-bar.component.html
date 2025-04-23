@@ -165,6 +165,27 @@
             >
                 <mat-icon>edit_note</mat-icon>
             </button>
+
+            <!-- Divider -->
+            <div class="divider"></div>
+
+            <!-- Upload PNML Button -->
+            <input
+                type="file"
+                hidden
+                #pnmlFileInput
+                (change)="uploadPnmlFile($event)"
+                accept=".pnml"
+            />
+            <button
+                mat-stroked-button
+                class="text-button"
+                (click)="pnmlFileInput.click()"
+                matTooltip="Upload PNML file"
+                [matTooltipShowDelay]="showTooltipDelay"
+            >
+                Upload PNML
+            </button>
         </div>
 
         <div class="button-container float-right">

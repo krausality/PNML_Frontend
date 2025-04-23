@@ -21,6 +21,8 @@ import { LayoutSugiyamaService } from 'src/app/tr-services/layout-sugiyama.servi
 
 import { showTooltipDelay } from 'src/app/tr-services/position.constants';
 import { HelpPopupComponent } from '../help-popup/help-popup.component';
+import { ErrorPopupComponent } from '../error-popup/error-popup.component'; // Import ErrorPopupComponent
+
 @Component({
     selector: 'app-button-bar',
     templateUrl: './button-bar.component.html',
@@ -135,5 +137,63 @@ export class ButtonBarComponent {
 
         // Set the new format as next value in the BehaviorSubject
         this.uiService.codeEditorFormat$.next(format);
+    }
+
+    /**
+     * Handles the file input change event for PNML uploads.
+     * Reads the selected file and triggers parsing via PnmlService.
+     * @param event The file input change event.
+     */
+    uploadPnmlFile(event: Event): void {
+        const input = event.target as HTMLInputElement;
+
+        if (!input.files || input.files.length === 0) {
+            return; // No file selected
+        }
+
+        const file = input.files[0];
+
+        // Optional: Check file type although 'accept' attribute helps
+        if (!file.name.toLowerCase().endsWith('.pnml')) {
+            this.matDialog.open(ErrorPopupComponent, {
+                data: {
+                    error: 'Invalid file type. Please select a .pnml file.',
+                },
+            });
+            input.value = ''; // Reset file input
+            return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+            try {
+                const fileContent = reader.result as string;
+                if (!fileContent) {
+                    throw new Error('File content is empty or could not be read.');
+                }
+                // PnmlService.parse already updates DataService and applies layout
+                this.pnmlService.parse(fileContent);
+                // Optional: Add success feedback if needed
+            } catch (error) {
+                console.error('Error parsing PNML file:', error);
+                this.matDialog.open(ErrorPopupComponent, {
+                    data: { parsingError: error },
+                });
+            } finally {
+                // Reset file input to allow uploading the same file again
+                input.value = '';
+            }
+        };
+
+        reader.onerror = (e) => {
+            console.error('Error reading file:', reader.error);
+            this.matDialog.open(ErrorPopupComponent, {
+                data: { error: `Error reading file: ${reader.error?.message}` },
+            });
+            input.value = ''; // Reset file input
+        };
+
+        reader.readAsText(file);
     }
 }
