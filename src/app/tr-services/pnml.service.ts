@@ -11,12 +11,16 @@ import { Node } from '../tr-interfaces/petri-net/node';
 import { Arc } from '../tr-classes/petri-net/arc';
 import { DataService } from './data.service';
 import * as vkbeautify from 'vkbeautify';
+import { LayoutSugiyamaService } from './layout-sugiyama.service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class PnmlService {
-    constructor(private dataServive: DataService) {}
+    constructor(
+        private dataService: DataService,
+        private layoutSugiyamaService: LayoutSugiyamaService
+    ) {}
 
     incompleteLayoutData: boolean = false;
 
@@ -90,6 +94,16 @@ export class PnmlService {
             if (pnmlArcs) {
                 arcs = this.parsePnmlArcs(pnmlArcs, places, transitions);
             }
+
+            // Assign parsed data to DataService using public properties
+            this.dataService.places = places;
+            this.dataService.transitions = transitions;
+            this.dataService.arcs = arcs;
+            this.dataService.actions = actions;
+
+            // Unconditionally apply Sugiyama layout
+            this.layoutSugiyamaService.applySugiyamaLayout();
+
             return [places, transitions, arcs, actions];
         } catch (error) {
             throw new Error(`Error parsing XML to JSON: ${error}`);
@@ -356,9 +370,9 @@ export class PnmlService {
     }
 
     public getPNML(): string {
-        const places = this.dataServive.getPlaces();
-        const transitions = this.dataServive.getTransitions();
-        const arcs = this.dataServive.getArcs();
+        const places = this.dataService.getPlaces();
+        const transitions = this.dataService.getTransitions();
+        const arcs = this.dataService.getArcs();
         const pnmlContent = `<?xml version="1.0" encoding="UTF-8"?>
   <pnml>
     <net id="net1" type="http://www.informatik.hu-berlin.de/top/pntd/ptNetb">
