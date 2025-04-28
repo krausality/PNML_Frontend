@@ -1,3 +1,16 @@
+<!-- Zoom Controls -->
+<div class="zoom-controls">
+    <button mat-icon-button (click)="zoomService.zoomIn()" matTooltip="Zoom In" [matTooltipShowDelay]="showTooltipDelay">
+        <mat-icon>zoom_in</mat-icon>
+    </button>
+    <button mat-icon-button (click)="zoomService.zoomOut()" matTooltip="Zoom Out" [matTooltipShowDelay]="showTooltipDelay">
+        <mat-icon>zoom_out</mat-icon>
+    </button>
+     <button mat-icon-button (click)="zoomService.resetZoom()" matTooltip="Reset Zoom (100%)" [matTooltipShowDelay]="showTooltipDelay" [disabled]="(zoomService.scale$ | async) === 1">
+        <mat-icon>center_focus_strong</mat-icon>
+    </button>
+</div>
+
 <svg
     #drawingArea
     id="drawingArea"
@@ -30,338 +43,332 @@
         </marker>
     </defs>
 
-    <!-- Places -->
-    <g
-        *ngFor="let place of dataService.getPlaces()"
-        (click)="dispatchPlaceClick($event, place)"
-        (mousedown)="dispatchPlaceMouseDown($event, place)"
-        (mouseup)="dispatchPlaceMouseUp($event, place)"
-        (wheel)="onWheelEventPlace($event, place)"
-    >
-        <g>
-            <circle
-                [ngClass]="{
-                    place: true,
-                    editable: isPlaceEditable(place),
-                    'place-invariant': placeInvariantsService.placeFactor(
-                        place.id
-                    ),
-                    pointer: placeInvariantsService.placeInvariantsMatrix
-                }"
-                [attr.cx]="place.position.x"
-                [attr.cy]="place.position.y"
-                [attr.r]="radius"
-            >
-                <!--
-                    Contents of the title element is rendered by browsers as
-                    a tooltip for the enclosing element. Here the enclosing
-                    element is the circle element representing the places of
-                    the petri net. Thus, when in Analyze mode and when place
-                    invariants have been calculated, the title contents will
-                    be shown as a tooltip.
-                -->
-                <title
-                    *ngIf="
-                        uiService.tab === TabState.Analyze &&
-                        placeInvariantsService.placeInvariantsMatrix
-                    "
+    <!-- Wrapper group for zoom/pan -->
+    <g [attr.transform]="'scale(' + (zoomService.scale$ | async) + ')'" transform-origin="0 0">
+        <!-- Places -->
+        <g
+            *ngFor="let place of dataService.getPlaces()"
+            (click)="dispatchPlaceClick($event, place)"
+            (mousedown)="dispatchPlaceMouseDown($event, place)"
+            (mouseup)="dispatchPlaceMouseUp($event, place)"
+            (wheel)="onWheelEventPlace($event, place)"
+        >
+            <g>
+                <circle
+                    [ngClass]="{
+                        place: true,
+                        editable: isPlaceEditable(place),
+                        'place-invariant': placeInvariantsService.placeFactor(
+                            place.id
+                        ),
+                        pointer: placeInvariantsService.placeInvariantsMatrix
+                    }"
+                    [attr.cx]="place.position.x"
+                    [attr.cy]="place.position.y"
+                    [attr.r]="radius"
                 >
-                    Click to show
-                    {{
-                        placeInvariantsService.isMinimal
-                            ? "minimal place invariants"
-                            : "place invariants (Farkas)"
-                    }}
-                    that contain {{ place.id }}
-                </title>
-            </circle>
+                    <!--
+                        Contents of the title element is rendered by browsers as
+                        a tooltip for the enclosing element. Here the enclosing
+                        element is the circle element representing the places of
+                        the petri net. Thus, when in Analyze mode and when place
+                        invariants have been calculated, the title contents will
+                        be shown as a tooltip.
+                    -->
+                    <title
+                        *ngIf="
+                            uiService.tab === TabState.Analyze &&
+                            placeInvariantsService.placeInvariantsMatrix
+                        "
+                    >
+                        Click to show
+                        {{
+                            placeInvariantsService.isMinimal
+                                ? "minimal place invariants"
+                                : "place invariants (Farkas)"
+                        }}
+                        that contain {{ place.id }}
+                    </title>
+                </circle>
+                <text
+                    [ngClass]="{
+                        'token-label': true,
+                        'no-pointer-events': true
+                    }"
+                    [attr.x]="place.position.x"
+                    [attr.y]="place.position.y"
+                    text-anchor="middle"
+                    dominant-baseline="central"
+                >
+                    {{ place.token > 0 ? place.token : "" }}
+                </text>
+            </g>
             <text
+                class="place-id"
                 [ngClass]="{
-                    'token-label': true,
-                    'no-pointer-events': true
+                    'place-invariant': placeInvariantsService.placeFactor(place.id)
                 }"
                 [attr.x]="place.position.x"
-                [attr.y]="place.position.y"
+                [attr.y]="place.position.y + placeIdYOffset"
                 text-anchor="middle"
-                dominant-baseline="central"
             >
-                {{ place.token > 0 ? place.token : "" }}
+                {{
+                    (placeInvariantsService.placeFactor(place.id) &&
+                    uiService.tab === TabState.Analyze
+                        ? placeInvariantsService.placeFactor(place.id) + "*"
+                        : "") + place.id
+                }}
             </text>
         </g>
-        <text
-            class="place-id"
-            [ngClass]="{
-                'place-invariant': placeInvariantsService.placeFactor(place.id)
-            }"
-            [attr.x]="place.position.x"
-            [attr.y]="place.position.y + placeIdYOffset"
-            text-anchor="middle"
-        >
-            {{
-                (placeInvariantsService.placeFactor(place.id) &&
-                uiService.tab === TabState.Analyze
-                    ? placeInvariantsService.placeFactor(place.id) + "*"
-                    : "") + place.id
-            }}
-        </text>
-    </g>
 
-    <!-- Transitions -->
-    <g
-        *ngFor="let transition of dataService.getTransitions()"
-        (click)="dispatchTransitionClick($event, transition)"
-        (mousedown)="dispatchTransitionMouseDown($event, transition)"
-        (mouseup)="dispatchTransitionMouseUp($event, transition)"
-        (wheel)="onWheelEventTransition($event, transition)"
-    >
-        <rect
-            [ngClass]="{
-                transition: true,
-                active: transition.isActive,
-                editable: isTransitionEditable(transition),
-                silent: !transition.label
-            }"
-            [attr.x]="
-                transition.position.x -
-                (transition.label ? transitionXOffset : transSilentXOffset)
-            "
-            [attr.y]="transition.position.y - transitionYOffset"
-            [attr.width]="transition.label ? transitionWidth : transSilentWidth"
-            [attr.height]="transitionHeight"
-        />
-        <g *ngIf="transition.label">
-            <!--Single line label-->
-            <text
-                *ngIf="!transition.label.includes(lineSeparator)"
+        <!-- Transitions -->
+        <g
+            *ngFor="let transition of dataService.getTransitions()"
+            (click)="dispatchTransitionClick($event, transition)"
+            (mousedown)="dispatchTransitionMouseDown($event, transition)"
+            (mouseup)="dispatchTransitionMouseUp($event, transition)"
+            (wheel)="onWheelEventTransition($event, transition)"
+        >
+            <rect
                 [ngClass]="{
-                    label: true,
-                    'no-pointer-events': true
+                    transition: true,
+                    active: transition.isActive,
+                    editable: isTransitionEditable(transition),
+                    silent: !transition.label
                 }"
+                [attr.x]="
+                    transition.position.x -
+                    (transition.label ? transitionXOffset : transSilentXOffset)
+                "
+                [attr.y]="transition.position.y - transitionYOffset"
+                [attr.width]="transition.label ? transitionWidth : transSilentWidth"
+                [attr.height]="transitionHeight"
+            />
+            <g *ngIf="transition.label">
+                <!--Single line label-->
+                <text
+                    *ngIf="!transition.label.includes(lineSeparator)"
+                    [ngClass]="{
+                        label: true,
+                        'no-pointer-events': true
+                    }"
+                    [attr.x]="transition.position.x"
+                    [attr.y]="transition.position.y"
+                >
+                    {{ transition.label }}
+                </text>
+                <!--Double line label-->
+                <g *ngIf="transition.label.includes(lineSeparator)">
+                    <text
+                        [ngClass]="{
+                            label: true,
+                            'no-pointer-events': true
+                        }"
+                        [attr.x]="transition.position.x"
+                        [attr.y]="transition.position.y - 9"
+                    >
+                        {{ transition.label.split(lineSeparator)[0] }}
+                    </text>
+                    <text
+                        [ngClass]="{
+                            label: true,
+                            'no-pointer-events': true
+                        }"
+                        [attr.x]="transition.position.x"
+                        [attr.y]="transition.position.y + 9"
+                    >
+                        {{ transition.label.split(lineSeparator)[1] }}
+                    </text>
+                </g>
+            </g>
+            <text
+                class="transition-id"
                 [attr.x]="transition.position.x"
-                [attr.y]="transition.position.y"
+                [attr.y]="transition.position.y + transitionIdYOffset"
+                text-anchor="middle"
             >
-                {{ transition.label }}
+                {{ transition.id }}
             </text>
-            <!--Double line label-->
-            <g *ngIf="transition.label.includes(lineSeparator)">
-                <text
-                    [ngClass]="{
-                        label: true,
-                        'no-pointer-events': true
-                    }"
-                    [attr.x]="transition.position.x"
-                    [attr.y]="transition.position.y - 9"
-                >
-                    {{ transition.label.split(lineSeparator)[0] }}
-                </text>
-                <text
-                    [ngClass]="{
-                        label: true,
-                        'no-pointer-events': true
-                    }"
-                    [attr.x]="transition.position.x"
-                    [attr.y]="transition.position.y + 9"
-                >
-                    {{ transition.label.split(lineSeparator)[1] }}
-                </text>
-            </g>
         </g>
-        <text
-            class="transition-id"
-            [attr.x]="transition.position.x"
-            [attr.y]="transition.position.y + transitionIdYOffset"
-            text-anchor="middle"
+
+        <!-- Arcs -->
+        <g
+            *ngFor="let arc of dataService.getArcs()"
+            (click)="dispatchArcClick($event, arc)"
+            (wheel)="onWheelEventArc($event, arc)"
+            (mousedown)="dispatchArcMouseDown($event, arc, drawingArea)"
         >
-            {{ transition.id }}
-        </text>
-    </g>
-
-    <!-- Arcs -->
-    <g
-        *ngFor="let arc of dataService.getArcs()"
-        (click)="dispatchArcClick($event, arc)"
-        (wheel)="onWheelEventArc($event, arc)"
-        (mousedown)="dispatchArcMouseDown($event, arc, drawingArea)"
-    >
-        <g class="arc-group">
-            <polyline
-                class="background-arc"
-                [ngClass]="{ editable: isArcEditable(arc) }"
-                [attr.points]="arc.polyLinePoints"
-            ></polyline>
-            <polyline
-                [ngClass]="{ arc, editable: isArcEditable(arc) }"
-                [attr.points]="arc.polyLinePoints"
-                marker-end="url(#arrow)"
-            ></polyline>
-            <g
-                *ngIf="arc.weight > 1 || arc.weight < -1"
-                class="no-pointer-events"
-            >
-                <!-- Weight at Arc without Anchorpoints - Middle of Polyline -->
-                <!-- White Circle for Background -->
-                <circle
-                    *ngIf="arc.anchors.length == 0"
-                    class="arc-weight-background"
-                    [attr.cx]="(arc.from.position.x + arc.to.position.x) / 2"
-                    [attr.cy]="(arc.from.position.y + arc.to.position.y) / 2"
-                    r="12"
-                />
-                <text
-                    *ngIf="arc.anchors.length == 0"
-                    class="arc-weight"
-                    [attr.x]="(arc.from.position.x + arc.to.position.x) / 2"
-                    [attr.y]="(arc.from.position.y + arc.to.position.y) / 2"
-                    text-anchor="middle"
-                    dominant-baseline="central"
+            <g class="arc-group">
+                <polyline
+                    class="background-arc"
+                    [ngClass]="{ editable: isArcEditable(arc) }"
+                    [attr.points]="arc.polyLinePoints"
+                ></polyline>
+                <polyline
+                    [ngClass]="{ arc, editable: isArcEditable(arc) }"
+                    [attr.points]="arc.polyLinePoints"
+                    marker-end="url(#arrow)"
+                ></polyline>
+                <g
+                    *ngIf="arc.weight > 1 || arc.weight < -1"
+                    class="no-pointer-events"
                 >
-                    {{ arc.weight | mathAbs }}
-                </text>
+                    <!-- Weight at Arc without Anchorpoints - Middle of Polyline -->
+                    <!-- White Circle for Background -->
+                    <circle
+                        *ngIf="arc.anchors.length == 0"
+                        class="arc-weight-background"
+                        [attr.cx]="(arc.from.position.x + arc.to.position.x) / 2"
+                        [attr.cy]="(arc.from.position.y + arc.to.position.y) / 2"
+                        r="12"
+                    />
+                    <text
+                        *ngIf="arc.anchors.length == 0"
+                        class="arc-weight"
+                        [attr.x]="(arc.from.position.x + arc.to.position.x) / 2"
+                        [attr.y]="(arc.from.position.y + arc.to.position.y) / 2"
+                        text-anchor="middle"
+                        dominant-baseline="central"
+                    >
+                        {{ arc.weight | mathAbs }}
+                    </text>
 
-                <!-- Weight at Arc with 1 Anchorpoint - At the Anchorpoint -->
-                <!-- White Circle for Background -->
-                <circle
-                    *ngIf="arc.anchors.length == 1"
-                    class="arc-weight-background"
-                    [attr.cx]="arc.anchors[0].x"
-                    [attr.cy]="arc.anchors[0].y"
-                    r="12"
-                />
-                <text
-                    *ngIf="arc.anchors.length == 1"
-                    class="arc-weight"
-                    [attr.x]="arc.anchors[0].x"
-                    [attr.y]="arc.anchors[0].y"
-                    text-anchor="middle"
-                    dominant-baseline="central"
-                >
-                    {{ arc.weight | mathAbs }}
-                </text>
+                    <!-- Weight at Arc with 1 Anchorpoint - At the Anchorpoint -->
+                    <!-- White Circle for Background -->
+                    <circle
+                        *ngIf="arc.anchors.length == 1"
+                        class="arc-weight-background"
+                        [attr.cx]="arc.anchors[0].x"
+                        [attr.cy]="arc.anchors[0].y"
+                        r="12"
+                    />
+                    <text
+                        *ngIf="arc.anchors.length == 1"
+                        class="arc-weight"
+                        [attr.x]="arc.anchors[0].x"
+                        [attr.y]="arc.anchors[0].y"
+                        text-anchor="middle"
+                        dominant-baseline="central"
+                    >
+                        {{ arc.weight | mathAbs }}
+                    </text>
 
-                <!-- Weight at Arc with pair Anchorpoints - Middle of the middle Line -->
-                <!-- White Circle for Background -->
-                <circle
-                    *ngIf="
-                        arc.anchors.length % 2 === 0 && arc.anchors.length >= 2
-                    "
-                    class="arc-weight-background"
-                    [attr.cx]="
-                        (arc.anchors[arc.anchors.length / 2 - 1].x +
-                            arc.anchors[arc.anchors.length / 2].x) /
-                        2
-                    "
-                    [attr.cy]="
-                        (arc.anchors[arc.anchors.length / 2 - 1].y +
-                            arc.anchors[arc.anchors.length / 2].y) /
-                        2
-                    "
-                    r="12"
-                />
-                <text
-                    *ngIf="
-                        arc.anchors.length % 2 === 0 && arc.anchors.length >= 2
-                    "
-                    class="arc-weight"
-                    [attr.x]="
-                        (arc.anchors[arc.anchors.length / 2 - 1].x +
-                            arc.anchors[arc.anchors.length / 2].x) /
-                        2
-                    "
-                    [attr.y]="
-                        (arc.anchors[arc.anchors.length / 2 - 1].y +
-                            arc.anchors[arc.anchors.length / 2].y) /
-                        2
-                    "
-                    text-anchor="middle"
-                    dominant-baseline="central"
-                >
-                    {{ arc.weight | mathAbs }}
-                </text>
+                    <!-- Weight at Arc with pair Anchorpoints - Middle of the middle Line -->
+                    <!-- White Circle for Background -->
+                    <circle
+                        *ngIf="
+                            arc.anchors.length % 2 === 0 && arc.anchors.length >= 2
+                        "
+                        class="arc-weight-background"
+                        [attr.cx]="
+                            (arc.anchors[arc.anchors.length / 2 - 1].x +
+                                arc.anchors[arc.anchors.length / 2].x) /
+                            2
+                        "
+                        [attr.cy]="
+                            (arc.anchors[arc.anchors.length / 2 - 1].y +
+                                arc.anchors[arc.anchors.length / 2].y) /
+                            2
+                        "
+                        r="12"
+                    />
+                    <text
+                        *ngIf="
+                            arc.anchors.length % 2 === 0 && arc.anchors.length >= 2
+                        "
+                        class="arc-weight"
+                        [attr.x]="
+                            (arc.anchors[arc.anchors.length / 2 - 1].x +
+                                arc.anchors[arc.anchors.length / 2].x) /
+                            2
+                        "
+                        [attr.y]="
+                            (arc.anchors[arc.anchors.length / 2 - 1].y +
+                                arc.anchors[arc.anchors.length / 2].y) /
+                            2
+                        "
+                        text-anchor="middle"
+                        dominant-baseline="central"
+                    >
+                        {{ arc.weight | mathAbs }}
+                    </text>
 
-                <!-- Weight at Arc with unpair Anchorpoints - At the middle Anchorpoint -->
-                <!-- White Circle for Background -->
-                <circle
-                    *ngIf="
-                        arc.anchors.length % 2 === 1 && arc.anchors.length >= 2
-                    "
-                    class="arc-weight-background"
-                    [attr.cx]="arc.anchors[arc.anchors.length / 2 - 0.5].x"
-                    [attr.cy]="arc.anchors[arc.anchors.length / 2 - 0.5].y"
-                    r="12"
-                />
-                <text
-                    *ngIf="
-                        arc.anchors.length % 2 === 1 && arc.anchors.length >= 2
-                    "
-                    class="arc-weight"
-                    [attr.x]="arc.anchors[arc.anchors.length / 2 - 0.5].x"
-                    [attr.y]="arc.anchors[arc.anchors.length / 2 - 0.5].y"
-                    text-anchor="middle"
-                    dominant-baseline="central"
-                >
-                    {{ arc.weight | mathAbs }}
-                </text>
+                    <!-- Weight at Arc with unpair Anchorpoints - At the middle Anchorpoint -->
+                    <!-- White Circle for Background -->
+                    <circle
+                        *ngIf="
+                            arc.anchors.length % 2 === 1 && arc.anchors.length >= 2
+                        "
+                        class="arc-weight-background"
+                        [attr.cx]="arc.anchors[arc.anchors.length / 2 - 0.5].x"
+                        [attr.cy]="arc.anchors[arc.anchors.length / 2 - 0.5].y"
+                        r="12"
+                    />
+                    <text
+                        *ngIf="
+                            arc.anchors.length % 2 === 1 && arc.anchors.length >= 2
+                        "
+                        class="arc-weight"
+                        [attr.x]="arc.anchors[arc.anchors.length / 2 - 0.5].x"
+                        [attr.y]="arc.anchors[arc.anchors.length / 2 - 0.5].y"
+                        text-anchor="middle"
+                        dominant-baseline="central"
+                    >
+                        {{ arc.weight | mathAbs }}
+                    </text>
+                </g>
+                <!-- closes grouping of arc weights -->
+
+                <!-- Line segments -->
+                <!-- When in anchor insertion mode, render invisible anchor line segments to capture mousedown events -->
+                <ng-container *ngIf="uiService.button === ButtonState.Anchor">
+                    <line
+                        *ngFor="let lineSegment of arc.lineSegments"
+                        class="line-segment"
+                        [attr.x1]="lineSegment[0].x"
+                        [attr.y1]="lineSegment[0].y"
+                        [attr.x2]="lineSegment[1].x"
+                        [attr.y2]="lineSegment[1].y"
+                        (mousedown)="
+                            dispatchLineSegmentMouseDown(
+                                $event,
+                                arc,
+                                lineSegment,
+                                drawingArea
+                            )
+                        "
+                    ></line>
+                </ng-container>
             </g>
-            <!-- closes grouping of arc weights -->
+            <!-- closes arc-group -->
 
-            <!-- Line segments -->
-            <!-- When in anchor insertion mode, render invisible anchor line segments to capture mousedown events -->
-            <ng-container *ngIf="uiService.button === ButtonState.Anchor">
-                <line
-                    *ngFor="let lineSegment of arc.lineSegments"
-                    class="line-segment"
-                    [attr.x1]="lineSegment[0].x"
-                    [attr.y1]="lineSegment[0].y"
-                    [attr.x2]="lineSegment[1].x"
-                    [attr.y2]="lineSegment[1].y"
-                    (mousedown)="
-                        dispatchLineSegmentMouseDown(
-                            $event,
-                            arc,
-                            lineSegment,
-                            drawingArea
-                        )
-                    "
-                ></line>
+            <!-- Anchor points -->
+            <ng-container
+                *ngIf="
+                    uiService.button === ButtonState.Move ||
+                    uiService.button === ButtonState.Anchor ||
+                    uiService.button === ButtonState.Delete
+                "
+            >
+                <circle
+                    *ngFor="let point of arc.anchors"
+                    [ngClass]="{
+                        anchor: true,
+                        active: point === editMoveElementsService.newAnchor,
+                        editable:
+                            (uiService.button === ButtonState.Move &&
+                                !editMoveElementsService.newAnchor) ||
+                            uiService.button === ButtonState.Delete
+                    }"
+                    [attr.cx]="point.x"
+                    [attr.cy]="point.y"
+                    [attr.r]="anchorRadius"
+                    (mousedown)="dispatchAnchorMouseDown($event, point)"
+                    (mouseup)="dispatchAnchorMouseUp($event, point)"
+                />
             </ng-container>
         </g>
-        <!-- closes arc-group -->
-
-        <!-- Anchor points -->
-        <ng-container
-            *ngIf="
-                uiService.button === ButtonState.Move ||
-                uiService.button === ButtonState.Anchor ||
-                uiService.button === ButtonState.Delete
-            "
-        >
-            <circle
-                *ngFor="let point of arc.anchors"
-                [ngClass]="{
-                    anchor: true,
-                    active: point === editMoveElementsService.newAnchor,
-                    editable:
-                        (uiService.button === ButtonState.Move &&
-                            !editMoveElementsService.newAnchor) ||
-                        uiService.button === ButtonState.Delete
-                }"
-                [attr.cx]="point.x"
-                [attr.cy]="point.y"
-                [attr.r]="anchorRadius"
-                (mousedown)="dispatchAnchorMouseDown($event, point)"
-                (mouseup)="dispatchAnchorMouseUp($event, point)"
-            />
-        </ng-container>
-    </g>
-
-    <!-- DummyArc -->
-    <g *ngIf="dummyArc.points.length > 1">
-        <polyline
-            class="arc no-pointer-events"
-            [attr.points]="dummyArc.polyLinePoints"
-            marker-end="url(#arrow)"
-        ></polyline>
-    </g>
+    </g> <!-- End of wrapper group -->
 </svg>
 
 <div *ngIf="dataService.isEmpty()" class="import-hint">

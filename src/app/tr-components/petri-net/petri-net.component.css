@@ -31,7 +31,35 @@
     transition: background-color 1s;
     user-select: none;
     box-sizing: border-box; /* make border be part of the 100% width */
+    position: relative; /* Needed for absolute positioning of child controls */
+    background-color: white; /* Ensure background for SVG */
 }
+
+/* Zoom Controls Styling */
+.zoom-controls {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10; /* Ensure controls are above SVG content */
+    background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* Optional shadow */
+}
+
+.zoom-controls button {
+    min-width: 40px; /* Ensure buttons have a decent size */
+    min-height: 40px;
+    padding: 0;
+    line-height: 40px;
+}
+
+.zoom-controls button:disabled mat-icon {
+    opacity: 0.5; /* Visually indicate disabled state */
+    cursor: default;
+}
+/* End Zoom Controls Styling */
 
 .place {
     fill: white;

@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ParserService } from 'src/app/tr-services/parser.service';
 import { take } from 'rxjs';
 import { FileReaderService } from '../../services/file-reader.service';
@@ -37,6 +37,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { SetActionPopupComponent } from '../set-action-popup/set-action-popup.component';
 import { Node } from 'src/app/tr-interfaces/petri-net/node';
 import { MouseConstants } from '../../tr-enums/mouse-constants';
+import { ZoomService } from '../../tr-services/zoom.service'; // Import ZoomService
+import { showTooltipDelay } from '../../tr-services/position.constants'; // Import showTooltipDelay
 import { SvgCoordinatesService } from 'src/app/tr-services/svg-coordinates-service';
 import { PlaceInvariantsService } from 'src/app/tr-services/place-invariants.service';
 import { PlaceInvariantsTableComponent } from '../place-invariants-table/place-invariants-table.component';
@@ -44,13 +46,14 @@ import { DummyArc } from 'src/app/tr-classes/petri-net/dummyArc';
 import { ErrorPopupComponent } from '../error-popup/error-popup.component';
 import { validateJsonAgainstSchema } from 'src/app/tr-utils/json.utils';
 import { LayoutSugiyamaService } from '../../tr-services/layout-sugiyama.service';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-petri-net',
     templateUrl: './petri-net.component.html',
     styleUrls: ['./petri-net.component.css'],
 })
-export class PetriNetComponent {
+export class PetriNetComponent implements OnInit, OnDestroy {
     @Input() buttonState: ButtonState | undefined;
 
     // Marks selected node in Blitz tool
@@ -59,6 +62,12 @@ export class PetriNetComponent {
     nextNode: Node | null = null;
     // Attribute is set when the user tries to connect two nodes of the same type
     addElement: boolean = true;
+    public anchorRadius = anchorRadius;
+    public lineSeparator = lineSeparator;
+    public showTooltipDelay = showTooltipDelay; // Expose tooltip delay constant
+
+    private _subs: Subscription[] = [];
+    private _sub?: Subscription;
 
     constructor(
         private parserService: ParserService,
@@ -70,17 +79,27 @@ export class PetriNetComponent {
         protected uiService: UiService,
         protected tokenGameService: TokenGameService,
         private matDialog: MatDialog,
+        public zoomService: ZoomService, // Inject ZoomService
         protected editMoveElementsService: EditMoveElementsService,
         private layoutSugiyamaService: LayoutSugiyamaService,
         protected svgCoordinatesService: SvgCoordinatesService,
         protected placeInvariantsService: PlaceInvariantsService,
-    ) {
+    ) {}
+
+    ngOnInit(): void {
         this.uiService.buttonState$.subscribe((buttonState) => {
             if (buttonState !== ButtonState.Blitz) {
                 this.dummyArc.points = [];
                 this.lastNode = null;
             }
         });
+    }
+
+    ngOnDestroy(): void {
+        this._subs.forEach((sub) => sub.unsubscribe());
+        if (this._sub) {
+            this._sub.unsubscribe();
+        }
     }
 
     startTransition: Transition | undefined;
@@ -160,8 +179,8 @@ export class PetriNetComponent {
     }
 
     // Process Drag & Drop using Observables
-    public processDropEvent(e: DragEvent) {
-        e.preventDefault(); // Prevent opening of the dragged file in a new tab
+    public processDropEvent(event: DragEvent) {
+        event.preventDefault(); // Prevent opening of the dragged file in a new tab
 
         // Drag & Drop imports should only be available in
         // Code & Build Mode to prevent inconsistencies.
@@ -175,7 +194,7 @@ export class PetriNetComponent {
             return;
         }
 
-        this.readFile(e.dataTransfer?.files);
+        this.readFile(event.dataTransfer?.files);
     }
 
     private readFile(files: FileList | undefined | null) {
@@ -223,7 +242,7 @@ export class PetriNetComponent {
         );
     }
 
-    public prevent(e: DragEvent) {
+    public prevent(e: Event) {
         // Dragover must be prevented for drop to work
         e.preventDefault();
     }
@@ -900,10 +919,6 @@ export class PetriNetComponent {
     protected readonly transitionIdYOffset = transitionIdYOffset;
     protected readonly transSilentWidth = transSilentWidth;
     protected readonly transSilentXOffset = transSilentXOffset;
-
-    protected readonly anchorRadius = anchorRadius;
-
-    protected readonly lineSeparator = lineSeparator;
 
     protected readonly TabState = TabState;
     protected readonly ButtonState = ButtonState;
