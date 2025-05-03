@@ -348,6 +348,21 @@ export class PetriNetComponent implements OnInit, OnDestroy {
         }
     }
 
+    /**
+     * Handles mouse wheel events on the SVG canvas for zooming.
+     * @param event The wheel event.
+     */
+    onMouseWheelZoom(event: WheelEvent) {
+        event.preventDefault(); // Prevent page scrolling
+        if (event.deltaY < 0) {
+            // Scrolled up (zoom in)
+            this.zoomService.zoomIn();
+        } else if (event.deltaY > 0) {
+            // Scrolled down (zoom out)
+            this.zoomService.zoomOut();
+        }
+    }
+
     // Dispatch methods for display events ************************************
 
     // SVG

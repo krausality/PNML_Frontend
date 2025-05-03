@@ -29,6 +29,7 @@
     (mousemove)="dispatchSVGMouseMove($event, drawingArea)"
     (mouseup)="dispatchSVGMouseUp($event, drawingArea)"
     (contextmenu)="onContextMenu($event)"
+    (wheel)="onMouseWheelZoom($event)"
 >
     <defs>
         <marker
