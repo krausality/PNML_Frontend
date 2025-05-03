@@ -145,16 +145,20 @@ export class ButtonBarComponent {
      * @param event The file input change event.
      */
     uploadPnmlFile(event: Event): void {
+        console.log('ButtonBarComponent.uploadPnmlFile: Event triggered', event); // Log entry
         const input = event.target as HTMLInputElement;
 
         if (!input.files || input.files.length === 0) {
+            console.warn('ButtonBarComponent.uploadPnmlFile: No files selected.'); // Log no files
             return; // No file selected
         }
 
         const file = input.files[0];
+        console.log('ButtonBarComponent.uploadPnmlFile: File selected:', file.name, file.type, file.size); // Log file info
 
         // Optional: Check file type although 'accept' attribute helps
         if (!file.name.toLowerCase().endsWith('.pnml')) {
+            console.error('ButtonBarComponent.uploadPnmlFile: Invalid file type selected.'); // Log invalid type
             this.matDialog.open(ErrorPopupComponent, {
                 data: {
                     error: 'Invalid file type. Please select a .pnml file.',
@@ -165,35 +169,44 @@ export class ButtonBarComponent {
         }
 
         const reader = new FileReader();
+        console.log('ButtonBarComponent.uploadPnmlFile: FileReader created.'); // Log reader creation
 
         reader.onload = (e) => {
+            console.log('ButtonBarComponent.uploadPnmlFile: FileReader onload triggered.'); // Log onload start
             try {
                 const fileContent = reader.result as string;
                 if (!fileContent) {
+                    console.error('ButtonBarComponent.uploadPnmlFile: File content is empty or null after read.'); // Log empty content
                     throw new Error('File content is empty or could not be read.');
                 }
+                console.log('ButtonBarComponent.uploadPnmlFile: File read successfully (length:', fileContent.length, '). Calling pnmlService.parse...'); // Log success before parse
                 // PnmlService.parse already updates DataService and applies layout
                 this.pnmlService.parse(fileContent);
+                console.log('ButtonBarComponent.uploadPnmlFile: pnmlService.parse completed.'); // Log after parse
+                console.log('ButtonBarComponent.uploadPnmlFile: Explicitly calling dataService.triggerDataChanged()');
+                this.dataService.triggerDataChanged(); // Trigger the update notification
                 // Optional: Add success feedback if needed
             } catch (error) {
-                console.error('Error parsing PNML file:', error);
+                console.error('ButtonBarComponent.uploadPnmlFile: Error during onload (parsing likely):', error); // Log error during parse
                 this.matDialog.open(ErrorPopupComponent, {
                     data: { parsingError: error },
                 });
             } finally {
+                console.log('ButtonBarComponent.uploadPnmlFile: Resetting input value.'); // Log input reset
                 // Reset file input to allow uploading the same file again
                 input.value = '';
             }
         };
 
         reader.onerror = (e) => {
-            console.error('Error reading file:', reader.error);
+            console.error('ButtonBarComponent.uploadPnmlFile: FileReader onerror triggered:', reader.error); // Log reader error
             this.matDialog.open(ErrorPopupComponent, {
                 data: { error: `Error reading file: ${reader.error?.message}` },
             });
             input.value = ''; // Reset file input
         };
 
+        console.log('ButtonBarComponent.uploadPnmlFile: Calling reader.readAsText...'); // Log before readAsText
         reader.readAsText(file);
     }
 }

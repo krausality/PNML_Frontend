@@ -4,7 +4,7 @@ import { Place } from '../tr-classes/petri-net/place';
 import { Transition } from '../tr-classes/petri-net/transition';
 import { Node } from 'src/app/tr-interfaces/petri-net/node';
 import { Point } from '../tr-classes/petri-net/point';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs'; // Import Subject
 
 @Injectable({
     providedIn: 'root',
@@ -15,7 +15,15 @@ export class DataService {
     private _arcs: Arc[] = [];
     private _actions: string[] = [];
 
-    constructor() {}
+    // Subject to notify subscribers when data (including layout) has changed
+    private dataChangedSubject = new Subject<void>();
+    /** Observable that emits when data (places, transitions, arcs, layout) has been updated. */
+    public dataChanged$ = this.dataChangedSubject.asObservable();
+
+
+    constructor() {
+        console.log('DataService Constructed'); // Add log here
+    }
 
     getPlaces(): Place[] {
         return this._places;
@@ -51,18 +59,23 @@ export class DataService {
 
     set places(value: Place[]) {
         this._places = value;
+        // Consider triggering change notification here if needed,
+        // but parsePetrinetData is the main trigger point after layout.
     }
 
     set transitions(value: Transition[]) {
         this._transitions = value;
+        // Consider triggering change notification here if needed.
     }
 
     set arcs(value: Arc[]) {
         this._arcs = value;
+        // Consider triggering change notification here if needed.
     }
 
     set actions(value: string[]) {
         this._actions = value;
+        // Consider triggering change notification here if needed.
     }
 
     removePlace(deletablePlace: Place): Place[] {
@@ -71,6 +84,7 @@ export class DataService {
         );
         deletableArcs.forEach((arc) => this.removeArc(arc));
         this._places = this._places.filter((place) => place !== deletablePlace);
+        this.triggerDataChanged(); // Notify after removal
         return this._places;
     }
 
@@ -84,6 +98,7 @@ export class DataService {
         this._transitions = this._transitions.filter(
             (transition) => transition !== deletableTransition,
         );
+         this.triggerDataChanged(); // Notify after removal
         return this._transitions;
     }
 
@@ -97,6 +112,7 @@ export class DataService {
             const t: Transition = deletableArc.to as Transition;
             t.preArcs = t.preArcs.filter((arc) => arc !== deletableArc);
         }
+        this.triggerDataChanged(); // Notify after removal
         return this._arcs;
     }
 
@@ -109,17 +125,23 @@ export class DataService {
         this._actions = this._actions.filter(
             (action) => action !== deletableAction,
         );
+        // No visual change, so no triggerDataChanged needed? Or maybe for action list updates?
+        // Let's add it for consistency if UI depends on actions list.
+        this.triggerDataChanged();
         return this._actions;
     }
 
     removeAnchor(deletableAnchor: Point) {
+        let changed = false;
         for (let arc of this._arcs) {
-            for (let arcAnchor of arc.anchors) {
-                if (deletableAnchor === arcAnchor) {
-                    const index = arc.anchors.indexOf(deletableAnchor);
-                    arc.anchors.splice(index, 1);
-                }
+            const initialLength = arc.anchors.length;
+            arc.anchors = arc.anchors.filter(anchor => anchor !== deletableAnchor);
+            if (arc.anchors.length !== initialLength) {
+                changed = true;
             }
+        }
+        if (changed) {
+            this.triggerDataChanged(); // Notify if an anchor was removed
         }
     }
 
@@ -131,39 +153,24 @@ export class DataService {
 
     //The Nodes are not added to the Arrays during this function
     connectNodes(from: Node, to: Node): void {
-        if (from instanceof Place && to instanceof Place) {
-            return;
-        }
-        if (from instanceof Transition && to instanceof Transition) {
-            return;
-        }
         if (from instanceof Place && to instanceof Transition) {
-            const preArcs = to.preArcs;
-            if (preArcs.find((arc) => arc.from === from)) {
-                return;
-            } else {
-                const arc = new Arc(from, to);
-                to.preArcs.push(arc);
-                this.getArcs().push(arc);
-            }
+            const arc = new Arc(from, to, 1);
+            this._arcs.push(arc);
+            to.appendPreArc(arc);
+        } else if (from instanceof Transition && to instanceof Place) {
+            const arc = new Arc(from, to, 1);
+            this._arcs.push(arc);
+            from.appendPostArc(arc);
         }
-        if (from instanceof Transition && to instanceof Place) {
-            const postArcs = from.postArcs;
-            if (postArcs.find((arc) => arc.to === to)) {
-                return;
-            } else {
-                const arc = new Arc(from, to);
-                from.postArcs.push(arc);
-                this.getArcs().push(arc);
-            }
-        }
+        this.triggerDataChanged(); // Notify after connection
     }
 
     clearAll(): void {
-        this.places = [];
-        this.transitions = [];
-        this.arcs = [];
-        this.actions = [];
+        this._places = [];
+        this._transitions = [];
+        this._arcs = [];
+        this._actions = [];
+        this.triggerDataChanged(); // Notify after clearing
     }
 
     isEmpty(): boolean {
@@ -217,6 +224,12 @@ export class DataService {
         return false;
     }
 
+    /** Triggers the dataChanged$ observable to notify subscribers. */
+    public triggerDataChanged(): void {
+        console.log('DataService: triggerDataChanged() called'); // <-- ADD THIS LOG
+        this.dataChangedSubject.next();
+    }
+
     mockData() {
         this.places = [
             new Place(4, new Point(100, 200), 'p1'),
@@ -244,5 +257,6 @@ export class DataService {
         this._transitions[0].appendPostArc(this._arcs[1]);
         this._transitions[1].appendPreArc(this._arcs[2]);
         this._transitions[1].appendPostArc(this._arcs[3]);
+        // No need to trigger here, as this is usually for initial setup/testing
     }
 }
