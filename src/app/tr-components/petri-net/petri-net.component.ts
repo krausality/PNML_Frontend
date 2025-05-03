@@ -269,6 +269,15 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit { // 
         }
     }
 
+    /**
+     * Resets the view by fitting the current content to the drawing area.
+     * Called by the reset button.
+     */
+    public resetViewToFitContent(): void {
+        console.log('PetriNetComponent: resetViewToFitContent() called by button.'); // Log button click
+        this.fitContentToView();
+    }
+
     // Process Drag & Drop using Observables
     public processDropEvent(event: DragEvent) {
         event.preventDefault(); // Prevent opening of the dragged file in a new tab
