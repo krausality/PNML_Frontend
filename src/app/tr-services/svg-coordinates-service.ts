@@ -1,22 +1,30 @@
 import { Injectable } from '@angular/core';
 import { Point } from '../tr-classes/petri-net/point';
-import { ZoomService } from './zoom.service'; // Import ZoomService
+// Remove ZoomService import if it's no longer needed here
+// import { ZoomService } from './zoom.service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class SvgCoordinatesService {
-    constructor(private zoomService: ZoomService) {} // Inject ZoomService
+    // Remove ZoomService injection if no longer needed
+    constructor(/* private zoomService: ZoomService */) {}
 
-    // gets the current pointer coordinates relative to the SVG bounding rect, adjusted for zoom
+    // gets the current pointer coordinates relative to the SVG bounding rect
     getRelativeEventCoords(event: MouseEvent, drawingArea: HTMLElement): Point {
         const svgRect = drawingArea.getBoundingClientRect();
-        const scale = this.zoomService.currentScale; // Get current scale
+        // const scale = this.zoomService.currentScale; // Remove scale usage
 
         // Raw coordinates relative to the SVG viewport
         let rawX = event.clientX - svgRect.left;
         let rawY = event.clientY - svgRect.top;
 
+        // Return coordinates relative to the SVG viewport, without manual scaling
+        // The SVG transform handles the scaling and panning
+        return new Point(rawX, rawY);
+
+        // Remove previous scaled calculation
+        /*
         // Adjust coordinates based on scale (assuming transform-origin is 0,0 for the scaled group)
         let scaledX = rawX / scale;
         let scaledY = rawY / scale;
@@ -25,5 +33,6 @@ export class SvgCoordinatesService {
         // TODO: Account for transform-origin if not 0 0
 
         return new Point(scaledX, scaledY);
+        */
     }
 }

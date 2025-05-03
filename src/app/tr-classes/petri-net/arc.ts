@@ -3,7 +3,11 @@ import { Point } from './point';
 import { Place } from './place';
 import { Transition } from './transition';
 
+// Helper for generating unique IDs (simple version)
+let arcIdCounter = 0;
+
 export class Arc {
+    id: string; // Added ID property
     from: Node;
     to: Node;
     weight: number;
@@ -15,6 +19,7 @@ export class Arc {
         weight: number = 1,
         anchors: Point[] = [],
     ) {
+        this.id = `arc_${arcIdCounter++}`; // Initialize ID
         this.from = from;
         this.to = to;
         this.anchors = anchors;

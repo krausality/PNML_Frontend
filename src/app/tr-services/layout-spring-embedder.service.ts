@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { DataService } from './data.service';
 import { Point } from '../tr-classes/petri-net/point';
 import { Node } from '../tr-interfaces/petri-net/node';
+import { CollisionAvoidanceService } from './collision-avoidance.service'; // Importieren
 
 @Injectable({
     providedIn: 'root',
@@ -25,7 +26,10 @@ export class LayoutSpringEmbedderService {
     // determines if the spring embedder algorithm sould terminate before the next iteration of calculating and applying forces
     private shouldTerminate = false;
 
-    constructor(private dataService: DataService) {}
+    constructor(
+        private dataService: DataService,
+        private collisionAvoidanceService: CollisionAvoidanceService // Injizieren
+    ) {}
 
     // Stops the spring embedder algorithm before the next iteration
     terminate() {
@@ -127,6 +131,13 @@ export class LayoutSpringEmbedderService {
             iterations++;
         }
 
+        // Nach dem Layout: Kollisionsprüfung und -korrektur durchführen
+        const changesMade = this.collisionAvoidanceService.runChecksAndCorrections();
+        if (changesMade) {
+            // UI über Änderungen informieren, damit sie neu gezeichnet wird
+            this.dataService.triggerDataChanged();
+        }
+
         // Persist that the spring embedder has terminated and is not running anymore
         this.springEmbedderRunning = false;
     }
@@ -172,15 +183,23 @@ export class LayoutSpringEmbedderService {
 
     // Calculate repulsion vector between two nodes (points)
     private calculateRepulsionForce(u: Point, v: Point): Point {
-        const factor = this.cRep / this.calculateDistance(v, u) ** 2;
+        const distance = this.calculateDistance(v, u);
+        // Add a small epsilon to prevent division by zero if distance is extremely small
+        const factor = this.cRep / (distance * distance + 1e-6);
         const unitVector = this.calculateUnitVector(v, u);
         return new Point(unitVector.x * factor, unitVector.y * factor);
     }
 
     // Calculate spring force (attraction/repulsion) vector between two points
     private calculateSpringForce(u: Point, v: Point): Point {
+        const distance = this.calculateDistance(v, u);
+        // Add a small epsilon inside log10 to prevent log10(0) or negative values
+        // Also handle distance being very close to zero separately
+        if (distance < 1e-6) {
+             return new Point(0, 0); // No force if points are coincident
+        }
         const factor =
-            this.cSpring * Math.log10(this.calculateDistance(v, u) / this.l);
+            this.cSpring * Math.log10(distance / this.l); // Removed +1e-6, handled above
         const unitVector = this.calculateUnitVector(u, v);
         return new Point(unitVector.x * factor, unitVector.y * factor);
     }
@@ -199,37 +218,42 @@ export class LayoutSpringEmbedderService {
     private calculateUnitVector(p1: Point, p2: Point) {
         const v = new Point(p2.x - p1.x, p2.y - p1.y);
         const length = this.calculateVectorLength(v);
+        // Prevent division by zero
+        if (length < 1e-10) {
+            return new Point(0, 0); // Return zero vector if length is negligible
+        }
         return new Point(v.x / length, v.y / length);
     }
 
     // The spring embedder algorithm cannot handle a situation where two nodes are
     // in the exact same place because we eventually end up dividing by 0 while calculating
-    // the forces. We shift affected nodes by up to 50 pixels in the x and y directions
-    // in order to not modify the meaning of the petri net too much before applying the
-    // spring embedder layout.
+    // the forces. We shift affected nodes slightly to avoid this.
     private shiftSamePositionNodes(nodes: Node[]) {
         const usedPoints: Point[] = [];
 
         nodes.forEach((node) => {
             // We have to use 'some' here since the 'includes' function cannot make
-            // the nested comparison between points
+            // the nested comparison between points. Use tolerance for comparison.
             if (
                 !usedPoints.some(
                     (point) =>
-                        point.x === node.position.x &&
-                        point.y === node.position.y,
+                        Math.abs(point.x - node.position.x) < 1e-6 &&
+                        Math.abs(point.y - node.position.y) < 1e-6,
                 )
             ) {
                 usedPoints.push(node.position);
             } else {
                 let pointInUse = true;
-                while (pointInUse) {
+                let attempts = 0; // Prevent infinite loop
+                const MAX_SHIFT_ATTEMPTS = 100;
+                while (pointInUse && attempts < MAX_SHIFT_ATTEMPTS) {
+                    attempts++;
                     const shiftedPoint = this.shiftPoint(node.position);
                     if (
                         !usedPoints.some(
                             (point) =>
-                                point.x === shiftedPoint.x &&
-                                point.y === shiftedPoint.y,
+                                Math.abs(point.x - shiftedPoint.x) < 1e-6 && // Use tolerance
+                                Math.abs(point.y - shiftedPoint.y) < 1e-6,
                         )
                     ) {
                         node.position = shiftedPoint;
@@ -237,15 +261,18 @@ export class LayoutSpringEmbedderService {
                         pointInUse = false;
                     }
                 }
+                 if (attempts >= MAX_SHIFT_ATTEMPTS) {
+                    console.warn(`Could not find a free position for node ${node.id} after ${MAX_SHIFT_ATTEMPTS} attempts.`);
+                }
             }
         });
     }
 
-    // Returns a new point that is shifted in the x and y directions by up to 50 pixels randomly
+    // Returns a new point that is shifted slightly randomly
     private shiftPoint(p: Point): Point {
-        return new Point(
-            p.x + Math.random() * 100 - 50,
-            p.y + Math.random() * 100 - 50,
-        );
+        const shiftRange = 1; // Reduce random shift to minimize visual jump
+        const shiftX = (Math.random() - 0.5) * 2 * shiftRange;
+        const shiftY = (Math.random() - 0.5) * 2 * shiftRange;
+        return new Point(p.x + shiftX, p.y + shiftY);
     }
 }

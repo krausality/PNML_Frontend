@@ -9,6 +9,7 @@ import { CycleRemovalService } from './sugiyama/cycle-removal.service';
 import { LayerAssignmentService } from './sugiyama/layer-assignment.service';
 import { VertexOrderingService } from './sugiyama/vertex-ordering.service';
 import { CoordinateAssignmentService } from './sugiyama/coordinate-assignment.service';
+import { CollisionAvoidanceService } from './collision-avoidance.service'; // Importieren
 
 @Injectable({
     providedIn: 'root',
@@ -17,9 +18,10 @@ export class LayoutSugiyamaService {
     private _nodes: Node[] = [];
     private _arcs: Arc[] = [];
 
-    constructor(protected dataService: DataService) {
-        this.dataService = dataService;
-    }
+    constructor(
+        private dataService: DataService,
+        private collisionAvoidanceService: CollisionAvoidanceService // Injizieren
+    ) {}
 
     applySugiyamaLayout() {
         let layers: LayeredGraph = [];
@@ -71,5 +73,12 @@ export class LayoutSugiyamaService {
             this._nodes,
         );
         coordinateAssignmentService.assignCoordinates();
+
+        // Nach dem Layout: Kollisionsprüfung und -korrektur durchführen
+        const changesMade = this.collisionAvoidanceService.runChecksAndCorrections();
+        if (changesMade) {
+            // UI über Änderungen informieren, damit sie neu gezeichnet wird
+            this.dataService.triggerDataChanged();
+        }
     }
 }

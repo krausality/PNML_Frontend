@@ -6,6 +6,8 @@ import { DataService } from './data.service';
 import { UiService } from './ui.service';
 import { ButtonState } from '../tr-enums/ui-state';
 import { SvgCoordinatesService } from './svg-coordinates-service';
+import { CollisionAvoidanceService } from './collision-avoidance.service';
+import { ZoomService } from './zoom.service'; // Import ZoomService
 
 @Injectable({
     providedIn: 'root',
@@ -34,6 +36,8 @@ export class EditMoveElementsService {
         private dataService: DataService,
         private uiService: UiService,
         private svgCoordinatesService: SvgCoordinatesService,
+        private collisionAvoidanceService: CollisionAvoidanceService,
+        private zoomService: ZoomService // Inject ZoomService
     ) {}
 
     initializePetrinetPanning(event: MouseEvent) {
@@ -68,73 +72,90 @@ export class EditMoveElementsService {
     }
 
     moveNodeByMousePositionChange(event: MouseEvent) {
-        // If a node is registered, this node will be moved
         if (this.node) {
-            // Shift increment in x and y direction
+            const currentScale = this.zoomService.currentScale;
+            // Prevent division by zero or near-zero scale
+            if (currentScale < 0.01) return;
+
+            // Screen delta
             const deltaX = event.clientX - this.initialMousePos.x;
             const deltaY = event.clientY - this.initialMousePos.y;
 
-            // Update node position
-            this.node.position.x += deltaX;
-            this.node.position.y += deltaY;
+            // Convert screen delta to SVG delta
+            const svgDeltaX = deltaX / currentScale;
+            const svgDeltaY = deltaY / currentScale;
 
-            // Update position of anchor points of arcs connected to the node.
-            // They are shifted by half the position change of the node.
+            // Update node position with SVG delta
+            this.node.position.x += svgDeltaX;
+            this.node.position.y += svgDeltaY;
+
+            // Update anchor positions with SVG delta (keeping the /2 heuristic for now)
             this.nodeArcs.forEach((arc) =>
                 arc.anchors.forEach((point) => {
-                    point.x += deltaX / 2;
-                    point.y += deltaY / 2;
+                    point.x += svgDeltaX / 2;
+                    point.y += svgDeltaY / 2;
                 }),
             );
 
             // Update initialMousePos for next move increment
             this.initialMousePos.x = event.clientX;
             this.initialMousePos.y = event.clientY;
+
+            // Trigger redraw
+            this.dataService.triggerDataChanged();
         }
     }
 
     moveAnchorByMousePositionChange(event: MouseEvent) {
-        // If an anchor is registered, this anchor will be moved
         if (this.anchor) {
-            // Shift increment in x and y direction
+            const currentScale = this.zoomService.currentScale;
+            // Prevent division by zero or near-zero scale
+            if (currentScale < 0.01) return;
+
+            // Screen delta
             const deltaX = event.clientX - this.initialMousePos.x;
             const deltaY = event.clientY - this.initialMousePos.y;
 
-            // Update anchor position
-            this.anchor.x += deltaX;
-            this.anchor.y += deltaY;
+            // Convert screen delta to SVG delta
+            const svgDeltaX = deltaX / currentScale;
+            const svgDeltaY = deltaY / currentScale;
+
+            // Update anchor position with SVG delta
+            this.anchor.x += svgDeltaX;
+            this.anchor.y += svgDeltaY;
 
             // Update initialMousePos for next move increment
             this.initialMousePos.x = event.clientX;
             this.initialMousePos.y = event.clientY;
+
+            // Trigger redraw
+            this.dataService.triggerDataChanged();
         }
     }
 
     movePetrinetPositionByMousePositionChange(event: MouseEvent) {
+        // Calculate screen delta
         const deltaX = event.clientX - this.initialMousePos.x;
         const deltaY = event.clientY - this.initialMousePos.y;
 
-        [
-            ...this.dataService.getPlaces(),
-            ...this.dataService.getTransitions(),
-        ].forEach((node) => {
-            node.position.x += deltaX;
-            node.position.y += deltaY;
-        });
-
-        this.dataService.getArcs().forEach((arc) => {
-            arc.anchors.forEach((point) => {
-                point.x += deltaX;
-                point.y += deltaY;
-            });
-        });
+        // Call zoomService.pan with the screen delta
+        this.zoomService.pan(deltaX, deltaY);
 
         // Update initialMousePos for next move increment
         this.initialMousePos = { x: event.clientX, y: event.clientY };
+
+        // No data change trigger needed here, as zoomService handles the view transform
+        // this.dataService.triggerDataChanged(); // REMOVED
     }
 
     finalizeMove() {
         // Finalizes move of both nodes and anchors
+
+        // Run collision check AFTER the move is finalized but BEFORE resetting state
+        let changesMade = false;
+        if (this.node || this.anchor || this.newAnchor) { // Only run if something was actually moved
+             changesMade = this.collisionAvoidanceService.runChecksAndCorrections();
+        }
 
         // Un-register elements of move of existing nodes/anchors
         this.node = null;
@@ -149,37 +170,76 @@ export class EditMoveElementsService {
         if (this.newAnchor) this.uiService.button = ButtonState.Anchor;
         // Un-register new anchor
         this.newAnchor = undefined;
+
+        // Trigger final redraw if collision avoidance made changes
+        if (changesMade) {
+            this.dataService.triggerDataChanged();
+        }
+        // Always trigger redraw at the end of a move operation?
+        // Might be redundant if already triggered during move or by collision avoidance.
+        // Let's keep it simple for now and rely on the trigger within collision avoidance.
+        // If visual glitches occur, uncomment the line below.
+        // else { this.dataService.triggerDataChanged(); }
     }
 
     insertAnchorIntoLineSegmentStart(
         event: MouseEvent,
         arc: Arc,
-        lineSegment: Point[],
+        lineSegment: Point[], // Assuming this contains [startPoint, endPoint] of the segment clicked
         drawingArea: HTMLElement,
     ) {
-        // Create new anchor at mouse coordinate
+        // Get coordinates relative to SVG viewport (unscaled, untranslated)
         const anchor = this.svgCoordinatesService.getRelativeEventCoords(
             event,
             drawingArea,
         );
 
-        // Insert new anchor into the anchors array of the arc that was clicked on
-        if (
-            arc.anchors.length === 0 ||
-            arc.anchors.indexOf(lineSegment[0]) === arc.anchors.length - 1
-        ) {
-            arc.anchors.push(anchor);
-        } else {
-            const indexLineEnd = arc.anchors.indexOf(lineSegment[1]);
-            if (indexLineEnd !== -1) {
-                arc.anchors.splice(indexLineEnd, 0, anchor);
+        // The coordinates obtained from getRelativeEventCoords are in the SVG's
+        // coordinate system *before* the main <g> transform is applied.
+        // Since the anchor point will live *inside* the transformed <g>,
+        // we need to convert these viewport-relative coordinates into the
+        // coordinate system of the transformed <g>.
+
+        const currentScale = this.zoomService.currentScale;
+        const currentOffset = this.zoomService.currentOffset;
+
+        // Inverse transform: (viewportX - offsetX) / scale
+        const transformedX = (anchor.x - currentOffset.x) / currentScale;
+        const transformedY = (anchor.y - currentOffset.y) / currentScale;
+
+        const transformedAnchor = new Point(transformedX, transformedY);
+
+        // Find insertion index (existing logic)
+        const polylinePoints = arc.polyLinePointsArray;
+        let startIndex = -1;
+        const tolerance = 1e-6;
+        for(let i = 0; i < polylinePoints.length -1; i++) {
+            if (Math.abs(polylinePoints[i].x - lineSegment[0].x) < tolerance &&
+                Math.abs(polylinePoints[i].y - lineSegment[0].y) < tolerance &&
+                Math.abs(polylinePoints[i+1].x - lineSegment[1].x) < tolerance &&
+                Math.abs(polylinePoints[i+1].y - lineSegment[1].y) < tolerance) {
+                startIndex = i;
+                break;
             }
         }
 
-        // Automatic change to 'Move' mode so that the newly created anchor can
-        // be dragged to its final position
-        this.newAnchor = anchor;
+        // Insert the *transformed* anchor
+        if (startIndex !== -1) {
+             arc.anchors.splice(startIndex, 0, transformedAnchor);
+             console.debug(`Neuer Anker eingefügt für Bogen ${arc.id} an Index ${startIndex}`);
+        } else {
+             console.warn(`Konnte Segment für neuen Anker in Bogen ${arc.id} nicht finden. Füge am Ende hinzu.`);
+             arc.anchors.push(transformedAnchor);
+        }
+
+        // Initialize move for the *transformed* anchor
+        this.newAnchor = transformedAnchor;
         this.uiService.button = ButtonState.Move;
-        this.initializeAnchorMove(event, anchor);
+        // initializeAnchorMove expects screen coordinates for initialMousePos,
+        // but the anchor itself is the transformed one.
+        this.initializeAnchorMove(event, transformedAnchor);
+
+        // Trigger redraw
+        this.dataService.triggerDataChanged();
     }
 }
