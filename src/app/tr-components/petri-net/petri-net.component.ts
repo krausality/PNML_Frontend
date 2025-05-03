@@ -441,12 +441,12 @@ export class PetriNetComponent implements OnInit, OnDestroy {
     }
 
     dispatchSVGMouseDown(event: MouseEvent, drawingArea: HTMLElement) {
-        // If the move button is activated and the canvas (not one of the elements on it!)
-        // is drag & dropped the whole SVG should be panned
-        if (this.uiService.button === ButtonState.Move) {
+        // Default Panning: Initiate panning only if the click target is the SVG canvas itself
+        if (event.target === drawingArea) {
             this.editMoveElementsService.initializePetrinetPanning(event);
         }
 
+        // Existing logic for other button states (Blitz, Arc)
         if (
             this.uiService.button === ButtonState.Blitz &&
             event.button == MouseConstants.Right_Click
@@ -480,22 +480,18 @@ export class PetriNetComponent implements OnInit, OnDestroy {
     }
 
     dispatchSVGMouseMove(event: MouseEvent, drawingArea: HTMLElement) {
-        if (this.uiService.button === ButtonState.Move) {
-            // If the move button is activated and the canvas (not one of the elements on it!)
-            // is drag & dropped the whole SVG should be panned
-            if (this.editMoveElementsService.isCanvasDragInProcess) {
-                this.editMoveElementsService.movePetrinetPositionByMousePositionChange(
-                    event,
-                );
-            } else {
-                this.editMoveElementsService.moveNodeByMousePositionChange(
-                    event,
-                );
-                this.editMoveElementsService.moveAnchorByMousePositionChange(
-                    event,
-                );
-            }
+        // Always delegate to service, it checks internally if panning is active
+        if (this.editMoveElementsService.isCanvasDragInProcess) {
+            this.editMoveElementsService.movePetrinetPositionByMousePositionChange(
+                event,
+            );
+        } else if (this.uiService.button === ButtonState.Move) {
+            // Only move nodes/anchors if explicitly in Move mode
+            this.editMoveElementsService.moveNodeByMousePositionChange(event);
+            this.editMoveElementsService.moveAnchorByMousePositionChange(event);
         }
+
+        // Existing logic for Arc/Blitz dummy line
         if (
             (this.uiService.button === ButtonState.Arc ||
                 this.uiService.button === ButtonState.Blitz) &&
@@ -511,10 +507,10 @@ export class PetriNetComponent implements OnInit, OnDestroy {
     }
 
     dispatchSVGMouseUp(event: MouseEvent, drawingArea: HTMLElement) {
-        if (this.uiService.button === ButtonState.Move) {
-            this.editMoveElementsService.finalizeMove();
-        }
+        // Always finalize/reset potential panning/moving state in the service
+        this.editMoveElementsService.finalizeMove();
 
+        // Existing logic for Arc/Anchor deletion
         // Reset for both cancellation or finalization (bubble-up) of arc drawing
         if (this.uiService.button === ButtonState.Arc) {
             this.startTransition = undefined;
