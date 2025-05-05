@@ -1,7 +1,24 @@
 .footer-font {
     text-align: right;
     font-weight: 300;
-    font-size: 18px;
+    font-size: 14px; /* Etwas kleiner für Credits */
     margin: 0;
+    line-height: 1.4;
+    color: #555; /* Etwas dezenter */
+    padding: 10px 20px; /* Add some padding */
+}
+
+.footer-font a {
+    color: #337ab7; /* Standard-Linkfarbe */
+    text-decoration: none;
+}
+
+.footer-font a:hover {
+    text-decoration: underline;
+}
+
+/* Optional: Add specific styles for the credits sections */
+.footer-font > div {
+    margin-bottom: 5px;
 }
 

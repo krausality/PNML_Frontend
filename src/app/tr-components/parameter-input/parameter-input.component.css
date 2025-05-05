@@ -1,0 +1,55 @@
+.parameter-container {
+    padding: 20px;
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    background-color: #f9f9f9;
+}
+
+.parameter-textarea-field {
+    width: 100%;
+}
+
+textarea {
+     font-family: 'Courier New', Courier, monospace;
+     font-size: 0.9em;
+     line-height: 1.4;
+     background-color: #fff;
+     border: 1px solid #ccc;
+     padding: 8px;
+     box-sizing: border-box;
+     min-height: 150px; /* Start height */
+     resize: vertical; /* Allow vertical resize */
+}
+
+ /* Ensures spinner aligns well within the button */
+ button mat-progress-spinner {
+     display: inline-block;
+     vertical-align: middle;
+     margin: 0 5px 0 0; /* Adjust spacing */
+ }
+
+ /* Style for button text next to spinner */
+ button span {
+    vertical-align: middle;
+ }
+
+
+ .status-message {
+     margin-top: 10px;
+     padding: 10px;
+     border-radius: 4px;
+     border: 1px solid transparent; /* Base border */
+ }
+
+ .status-message.success {
+    background-color: #e0ffe0; /* Light green for success */
+    border-color: #a0d0a0;
+    color: #006400; /* Darker green text */
+ }
+
+ .status-message.error {
+     background-color: #ffe0e0; /* Light red for errors */
+     border-color: #d0a0a0;
+     color: #a00000; /* Darker red text */
+ }

@@ -4,6 +4,7 @@
 
 export const environment = {
     production: false,
+    backendApiUrl: 'http://localhost:9040/l3s-offshore-2' // Development URL
 };
 
 /*

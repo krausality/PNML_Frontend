@@ -1,0 +1,38 @@
+<div class="parameter-container" fxLayout="column" fxLayoutGap="10px">
+    <h2>Simulation Parameters</h2>
+    <mat-form-field appearance="fill" class="parameter-textarea-field">
+        <mat-label>Planning Request (JSON)</mat-label>
+        <textarea matInput
+                  cdkTextareaAutosize
+                  #autosize="cdkTextareaAutosize"
+                  cdkAutosizeMinRows="10"
+                  cdkAutosizeMaxRows="20"
+                  [formControl]="parameterControl"
+                  placeholder="Enter Planning Request JSON here or load defaults...">
+        </textarea>
+        <mat-error *ngIf="parameterControl.hasError('required')">
+            Eingabe erforderlich.
+        </mat-error>
+        <mat-error *ngIf="parameterControl.hasError('jsonInvalid')">
+            Ungültiges JSON-Format.
+        </mat-error>
+    </mat-form-field>
+
+    <div fxLayout="row" fxLayoutGap="10px">
+        <button mat-raised-button color="primary" (click)="loadDefaults()" [disabled]="isLoadingDefaults">
+            <mat-icon *ngIf="!isLoadingDefaults">download</mat-icon>
+            <mat-progress-spinner *ngIf="isLoadingDefaults" mode="indeterminate" diameter="20"></mat-progress-spinner>
+            <span *ngIf="!isLoadingDefaults">Defaults Laden</span>
+             <span *ngIf="isLoadingDefaults">Lade...</span>
+        </button>
+        <button mat-raised-button color="accent" (click)="runSimulation()" [disabled]="isLoadingSimulation || parameterControl.invalid">
+            <mat-icon *ngIf="!isLoadingSimulation">play_arrow</mat-icon>
+            <mat-progress-spinner *ngIf="isLoadingSimulation" mode="indeterminate" diameter="20"></mat-progress-spinner>
+             <span *ngIf="!isLoadingSimulation">Simulation Starten</span>
+             <span *ngIf="isLoadingSimulation">Starte...</span>
+        </button>
+    </div>
+    <div *ngIf="statusMessage" class="status-message" [ngClass]="{'error': hasError, 'success': !hasError}">
+        {{ statusMessage }}
+    </div>
+</div>

@@ -30,6 +30,9 @@ import { PlaceInvariantsTableComponent } from './tr-components/place-invariants-
 import { CodeEditorComponent } from './tr-components/code-editor/code-editor.component';
 import { ErrorPopupComponent } from './tr-components/error-popup/error-popup.component';
 import { HelpPopupComponent } from './tr-components/help-popup/help-popup.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { TextFieldModule } from '@angular/cdk/text-field';
+import { ParameterInputComponent } from './tr-components/parameter-input/parameter-input.component';
 
 @NgModule({
     declarations: [
@@ -53,18 +56,21 @@ import { HelpPopupComponent } from './tr-components/help-popup/help-popup.compon
         BrowserModule,
         FlexLayoutModule,
         BrowserAnimationsModule,
+        HttpClientModule,
+        ReactiveFormsModule,
         MatFormFieldModule,
         MatInputModule,
         MatButtonModule,
         MatIconModule,
+        MatProgressSpinnerModule,
+        TextFieldModule,
         MatSelectModule,
         MatTabsModule,
         MatDialogModule,
         MatListModule,
         MatMenuModule,
         MatTooltipModule,
-        ReactiveFormsModule,
-        HttpClientModule,
+        ParameterInputComponent,
     ],
     providers: [
         {
