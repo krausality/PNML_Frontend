@@ -10,7 +10,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { TextFieldModule } from '@angular/cdk/text-field'; // Import TextFieldModule
 
-
 // Helper for JSON validation
 function jsonValidator(control: FormControl): { [key: string]: any } | null {
     try {
@@ -23,6 +22,59 @@ function jsonValidator(control: FormControl): { [key: string]: any } | null {
     }
 }
 
+// Helper function to replace null values recursively
+function replaceNullWithDefaults(obj: any): any {
+    if (obj === null) {
+        // Decide default based on context if possible, otherwise use generic defaults
+        // This part might need refinement based on specific field requirements
+        return ''; // Defaulting null to empty string might work for some fields
+                   // but might need adjustment (e.g., [] for arrays, 0 for numbers)
+                   // Let's refine based on the error messages
+    }
+
+    if (Array.isArray(obj)) {
+        return obj.map(item => replaceNullWithDefaults(item));
+    }
+
+    if (typeof obj === 'object' && obj !== null) {
+        const newObj: { [key: string]: any } = {};
+        for (const key in obj) {
+            if (Object.prototype.hasOwnProperty.call(obj, key)) {
+                const value = obj[key];
+                if (value === null) {
+                    // Replace null based on known problematic keys from the error
+                    switch (key) {
+                        case 'description':
+                        case 'historical_data_start':
+                        case 'historical_data_end':
+                            newObj[key] = ''; // Replace null strings with empty string
+                            break;
+                        case 'required_skills':
+                        case 'skills':
+                        case 'work_rulesets':
+                        case 'personnel':
+                            newObj[key] = []; // Replace null arrays with empty array
+                            break;
+                        case 'depth_limit':
+                        case 'random_seed':
+                            newObj[key] = 0; // Replace null integers with 0 (adjust if another default is better)
+                            break;
+                        default:
+                            // Keep null if we don't have specific instructions,
+                            // or choose a generic default like empty string
+                            newObj[key] = ''; // Or keep as null: obj[key];
+                            break;
+                    }
+                } else {
+                    newObj[key] = replaceNullWithDefaults(value); // Recurse for nested objects/arrays
+                }
+            }
+        }
+        return newObj;
+    }
+
+    return obj; // Return primitives and non-null values as is
+}
 
 @Component({
     selector: 'app-parameter-input',
@@ -99,8 +151,12 @@ export class ParameterInputComponent implements OnInit {
              return;
         }
 
+        // *** WORKAROUND: Replace null values before sending ***
+        const cleanedPlanningData = replaceNullWithDefaults(planningData);
+        console.log("Cleaned planning data:", cleanedPlanningData); // Log the data being sent
 
-        this.planningService.runPlanning(planningData)
+        // Use the cleaned data for the API call
+        this.planningService.runPlanning(cleanedPlanningData)
             .pipe(finalize(() => this.isLoadingSimulation = false))
             .subscribe({
                 next: (response) => {
