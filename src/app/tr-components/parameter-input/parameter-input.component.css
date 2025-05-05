@@ -18,8 +18,8 @@ textarea {
      border: 1px solid #ccc;
      padding: 8px;
      box-sizing: border-box;
-     min-height: 150px; /* Start height */
-     resize: vertical; /* Allow vertical resize */
+     height: 200px; /* Set a fixed height */
+     overflow-y: auto; /* Enable vertical scrolling */
 }
 
  /* Ensures spinner aligns well within the button */

@@ -3,10 +3,6 @@
     <mat-form-field appearance="fill" class="parameter-textarea-field">
         <mat-label>Planning Request (JSON)</mat-label>
         <textarea matInput
-                  cdkTextareaAutosize
-                  #autosize="cdkTextareaAutosize"
-                  cdkAutosizeMinRows="10"
-                  cdkAutosizeMaxRows="20"
                   [formControl]="parameterControl"
                   placeholder="Enter Planning Request JSON here or load defaults...">
         </textarea>
