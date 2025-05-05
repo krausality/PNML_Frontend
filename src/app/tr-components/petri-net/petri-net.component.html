@@ -6,7 +6,8 @@
     <button mat-icon-button (click)="zoomService.zoomOut()" matTooltip="Zoom Out" [matTooltipShowDelay]="showTooltipDelay">
         <mat-icon>zoom_out</mat-icon>
     </button>
-     <button mat-icon-button (click)="zoomService.resetZoom()" matTooltip="Reset Zoom (100%)" [matTooltipShowDelay]="showTooltipDelay" [disabled]="(zoomService.scale$ | async) === 1">
+    <!-- Changed click handler to call the new method in PetriNetComponent -->
+    <button mat-icon-button (click)="resetViewToFitContent()" matTooltip="Reset View to Fit Content" [matTooltipShowDelay]="showTooltipDelay">
         <mat-icon>center_focus_strong</mat-icon>
     </button>
 </div>
@@ -29,6 +30,7 @@
     (mousemove)="dispatchSVGMouseMove($event, drawingArea)"
     (mouseup)="dispatchSVGMouseUp($event, drawingArea)"
     (contextmenu)="onContextMenu($event)"
+    (wheel)="onMouseWheelZoom($event)"
 >
     <defs>
         <marker
@@ -44,7 +46,8 @@
     </defs>
 
     <!-- Wrapper group for zoom/pan -->
-    <g [attr.transform]="'scale(' + (zoomService.scale$ | async) + ')'" transform-origin="0 0">
+    <!-- Corrected transform binding to use zoomService.transform$ -->
+    <g [attr.transform]="zoomService.transform$ | async" transform-origin="0 0">
         <!-- Places -->
         <g
             *ngFor="let place of dataService.getPlaces()"

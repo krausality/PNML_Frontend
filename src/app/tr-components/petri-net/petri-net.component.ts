@@ -1,7 +1,15 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import {
+    Component,
+    Input,
+    OnDestroy,
+    OnInit,
+    ViewChild, // Import ViewChild
+    ElementRef, // Import ElementRef
+    AfterViewInit, // Import AfterViewInit
+} from '@angular/core';
 import { ParserService } from 'src/app/tr-services/parser.service';
-import { take } from 'rxjs';
+import { take, Subscription } from 'rxjs';
 import { FileReaderService } from '../../services/file-reader.service';
 import { DataService } from '../../tr-services/data.service';
 
@@ -17,6 +25,7 @@ import {
     transSilentWidth,
     transSilentXOffset,
     lineSeparator,
+    showTooltipDelay,
 } from '../../tr-services/position.constants';
 
 import { PnmlService } from '../../tr-services/pnml.service';
@@ -38,7 +47,6 @@ import { SetActionPopupComponent } from '../set-action-popup/set-action-popup.co
 import { Node } from 'src/app/tr-interfaces/petri-net/node';
 import { MouseConstants } from '../../tr-enums/mouse-constants';
 import { ZoomService } from '../../tr-services/zoom.service'; // Import ZoomService
-import { showTooltipDelay } from '../../tr-services/position.constants'; // Import showTooltipDelay
 import { SvgCoordinatesService } from 'src/app/tr-services/svg-coordinates-service';
 import { PlaceInvariantsService } from 'src/app/tr-services/place-invariants.service';
 import { PlaceInvariantsTableComponent } from '../place-invariants-table/place-invariants-table.component';
@@ -46,14 +54,13 @@ import { DummyArc } from 'src/app/tr-classes/petri-net/dummyArc';
 import { ErrorPopupComponent } from '../error-popup/error-popup.component';
 import { validateJsonAgainstSchema } from 'src/app/tr-utils/json.utils';
 import { LayoutSugiyamaService } from '../../tr-services/layout-sugiyama.service';
-import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-petri-net',
     templateUrl: './petri-net.component.html',
     styleUrls: ['./petri-net.component.css'],
 })
-export class PetriNetComponent implements OnInit, OnDestroy {
+export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit { // Implement AfterViewInit
     @Input() buttonState: ButtonState | undefined;
 
     // Marks selected node in Blitz tool
@@ -66,8 +73,11 @@ export class PetriNetComponent implements OnInit, OnDestroy {
     public lineSeparator = lineSeparator;
     public showTooltipDelay = showTooltipDelay; // Expose tooltip delay constant
 
+    @ViewChild('drawingArea') drawingArea!: ElementRef<SVGElement>; // Add ViewChild for SVG element
+
     private _subs: Subscription[] = [];
     private _sub?: Subscription;
+    private viewInitialized = false; // Flag to track if view is ready
 
     constructor(
         private parserService: ParserService,
@@ -93,6 +103,24 @@ export class PetriNetComponent implements OnInit, OnDestroy {
                 this.lastNode = null;
             }
         });
+        this._subs.push(
+            this.dataService.dataChanged$.subscribe(() => {
+                console.log('Data changed, view initialized:', this.viewInitialized); // Log data change
+                if (this.viewInitialized) {
+                    this.fitContentToView();
+                }
+            })
+        );
+    }
+
+    ngAfterViewInit(): void {
+        this.viewInitialized = true;
+        console.log('View initialized.'); // Log view init
+        // Fit content initially if data is already present and view is ready
+        if (!this.dataService.isEmpty()) {
+            console.log('View initialized with existing data, fitting content.'); // Log initial fit
+            this.fitContentToView();
+        }
     }
 
     ngOnDestroy(): void {
@@ -111,7 +139,9 @@ export class PetriNetComponent implements OnInit, OnDestroy {
         content: string | undefined,
         contentType: CodeEditorFormat | undefined,
     ) {
+        console.log('parsePetrinetData: Started', { contentType }); // Log start
         if (content) {
+            console.log('parsePetrinetData: Content exists'); // Log content check
             // Variable to parse the data into
             let parsedData: [
                 Array<Place>,
@@ -121,21 +151,27 @@ export class PetriNetComponent implements OnInit, OnDestroy {
             ];
 
             try {
+                console.log('parsePetrinetData: Entering parsing try block'); // Log try block
                 // Use pnml parser if file type is pnml
                 // we'll try the json parser for all other cases
                 if (contentType === CodeEditorFormat.PNML) {
+                    console.log('parsePetrinetData: Using PnmlService.parse'); // Log PNML parse
                     parsedData = this.pnmlService.parse(content);
                 } else {
+                    console.log('parsePetrinetData: Using ParserService.parse'); // Log JSON parse
                     parsedData = this.parserService.parse(content);
                 }
+                console.log('parsePetrinetData: Parsing successful'); // Log parse success
             } catch (error) {
+                console.error('parsePetrinetData: Parsing error caught', error); // Log error
                 this.matDialog.open(ErrorPopupComponent, {
                     data: {
                         parsingError: error,
                         schemaValidationErrors: false,
                     },
                 });
-                return;
+                console.log('parsePetrinetData: Exiting due to parsing error'); // Log exit on error
+                return; // Exit if parsing fails
             }
 
             if (contentType === CodeEditorFormat.JSON) {
@@ -154,6 +190,7 @@ export class PetriNetComponent implements OnInit, OnDestroy {
                 }
             }
 
+            console.log('parsePetrinetData: Destructuring parsed data'); // Log data assignment
             // Destructure the parsed data and overwrite the corresponding parameters
             // in the data service
             const [places, transitions, arcs, actions] = parsedData;
@@ -161,21 +198,84 @@ export class PetriNetComponent implements OnInit, OnDestroy {
             this.dataService.transitions = transitions;
             this.dataService.arcs = arcs;
             this.dataService.actions = actions;
+            console.log(`parsePetrinetData: DataService updated with ${places.length}p, ${transitions.length}t, ${arcs.length}a`); // Log data update
 
+            // Apply layout if needed
+            let layoutApplied = false;
+            console.log('parsePetrinetData: Checking if layout is needed'); // Log layout check
             if (
                 contentType !== CodeEditorFormat.PNML &&
                 this.parserService.incompleteLayoutData
             ) {
+                console.log('parsePetrinetData: Applying Sugiyama layout (JSON incomplete)'); // Log layout apply (JSON)
                 this.layoutSugiyamaService.applySugiyamaLayout();
+                layoutApplied = true;
             }
 
             if (
                 contentType === CodeEditorFormat.PNML &&
                 this.pnmlService.incompleteLayoutData
             ) {
+                console.log('parsePetrinetData: Applying Sugiyama layout (PNML incomplete)'); // Log layout apply (PNML)
                 this.layoutSugiyamaService.applySugiyamaLayout();
+                layoutApplied = true;
             }
+            console.log('parsePetrinetData: Layout check complete. Layout applied:', layoutApplied); // Log layout result
+
+            // Trigger data changed event AFTER potential layout changes
+            // This will trigger fitContentToView via the subscription
+            console.log('parsePetrinetData: About to call triggerDataChanged()'); // Log before trigger
+            this.dataService.triggerDataChanged();
+            console.log('parsePetrinetData: triggerDataChanged() called successfully'); // Log after trigger
+
+        } else {
+            console.warn('parsePetrinetData: Content was empty or undefined'); // Log empty content case
+            // If content is empty/undefined, clear data and trigger change
+            this.dataService.clearAll(); // clearAll already triggers dataChanged
         }
+        console.log('parsePetrinetData: Finished'); // Log end
+    }
+
+    /**
+     * Calls the ZoomService to fit the content to the current view dimensions.
+     */
+    private fitContentToView(): void {
+        console.log('Attempting fitContentToView...'); // Log entry
+        // Ensure the drawing area element is available and view is initialized
+        if (this.drawingArea?.nativeElement && this.viewInitialized) {
+            const rect = this.drawingArea.nativeElement.getBoundingClientRect();
+            console.log('Drawing area rect:', rect.width, 'x', rect.height); // Log dimensions
+            if (rect.width > 0 && rect.height > 0) {
+                this.zoomService.fitContent(rect.width, rect.height);
+            } else {
+                console.log('Drawing area dimensions are 0, using requestAnimationFrame fallback.'); // Log fallback
+                // Fallback or retry logic if dimensions are 0 initially
+                // For example, use setTimeout to try again shortly after
+                // Use requestAnimationFrame for better timing related to rendering
+                requestAnimationFrame(() => {
+                    if (this.drawingArea?.nativeElement) {
+                        const currentRect = this.drawingArea.nativeElement.getBoundingClientRect();
+                        console.log('Drawing area rect (fallback):', currentRect.width, 'x', currentRect.height); // Log fallback dimensions
+                        if (currentRect.width > 0 && currentRect.height > 0) {
+                            this.zoomService.fitContent(currentRect.width, currentRect.height);
+                        } else {
+                            console.error('Drawing area dimensions still 0 in fallback.'); // Log error if still 0
+                        }
+                    }
+                });
+            }
+        } else {
+            console.warn('fitContentToView called but drawingArea or view not ready.', this.drawingArea, this.viewInitialized); // Log warning if called too early
+        }
+    }
+
+    /**
+     * Resets the view by fitting the current content to the drawing area.
+     * Called by the reset button.
+     */
+    public resetViewToFitContent(): void {
+        console.log('PetriNetComponent: resetViewToFitContent() called by button.'); // Log button click
+        this.fitContentToView();
     }
 
     // Process Drag & Drop using Observables
@@ -198,11 +298,14 @@ export class PetriNetComponent implements OnInit, OnDestroy {
     }
 
     private readFile(files: FileList | undefined | null) {
+        console.log('PetriNetComponent.readFile: Called with files:', files); // Log entry
         if (files === undefined || files === null || files.length === 0) {
+            console.warn('PetriNetComponent.readFile: No files provided.'); // Log no files
             return;
         }
 
         const file = files[0];
+        console.log('PetriNetComponent.readFile: Processing file:', file.name, file.type); // Log file info
 
         // Extract type from file name
         const extension = file.name.split('.').pop();
@@ -220,14 +323,26 @@ export class PetriNetComponent implements OnInit, OnDestroy {
                 fileType = undefined;
                 break;
         }
+        console.log('PetriNetComponent.readFile: Determined fileType:', fileType); // Log file type
 
+        console.log('PetriNetComponent.readFile: Calling FileReaderService.readFile'); // Log before service call
         this.fileReaderService
             .readFile(files[0])
             .pipe(take(1))
-            .subscribe((content) => {
-                this.parsePetrinetData(content, fileType);
-                this.emitFileContent(content);
+            .subscribe({
+                next: (content) => {
+                    console.log('PetriNetComponent.readFile: FileReaderService emitted content (length:', content?.length, ')'); // Log success
+                    this.parsePetrinetData(content, fileType);
+                    this.emitFileContent(content);
+                },
+                error: (err) => {
+                    console.error('PetriNetComponent.readFile: FileReaderService threw error:', err); // Log error
+                },
+                complete: () => {
+                    console.log('PetriNetComponent.readFile: FileReaderService completed.'); // Log completion
+                }
             });
+        console.log('PetriNetComponent.readFile: Subscription to FileReaderService set up.'); // Log subscription setup
     }
 
     private emitFileContent(content: string | undefined) {
@@ -348,6 +463,21 @@ export class PetriNetComponent implements OnInit, OnDestroy {
         }
     }
 
+    /**
+     * Handles mouse wheel events on the SVG canvas for zooming.
+     * @param event The wheel event.
+     */
+    onMouseWheelZoom(event: WheelEvent) {
+        event.preventDefault(); // Prevent page scrolling
+        if (event.deltaY < 0) {
+            // Scrolled up (zoom in)
+            this.zoomService.zoomIn();
+        } else if (event.deltaY > 0) {
+            // Scrolled down (zoom out)
+            this.zoomService.zoomOut();
+        }
+    }
+
     // Dispatch methods for display events ************************************
 
     // SVG
@@ -381,6 +511,7 @@ export class PetriNetComponent implements OnInit, OnDestroy {
                 // Initialising Blitz-Tool by clickling on the Canvas
                 const place = this.createPlace(event, drawingArea);
                 this.dataService.getPlaces().push(place);
+                this.dataService.triggerDataChanged(); // Trigger change after adding place
                 this.lastNode = place;
             } else if (this.lastNode instanceof Place) {
                 // Last Node was a Place
@@ -388,6 +519,7 @@ export class PetriNetComponent implements OnInit, OnDestroy {
                     // Connecting the Place to an existing Transition
                     const transition = this.nextNode;
                     this.dataService.connectNodes(this.lastNode, transition);
+                    this.dataService.triggerDataChanged(); // Trigger change after adding arc
                     this.lastNode = this.nextNode;
                 } else if (this.nextNode instanceof Place) {
                     // If a Place is clicked the selected Node is changed
@@ -399,7 +531,9 @@ export class PetriNetComponent implements OnInit, OnDestroy {
                         drawingArea,
                     );
                     this.dataService.getTransitions().push(transition);
+                    this.dataService.triggerDataChanged(); // Trigger change after adding transition
                     this.dataService.connectNodes(this.lastNode, transition);
+                    this.dataService.triggerDataChanged(); // Trigger change after adding arc
                     this.lastNode = transition;
                 }
             } else if (this.lastNode instanceof Transition) {
@@ -408,6 +542,7 @@ export class PetriNetComponent implements OnInit, OnDestroy {
                     // Connecting the Transition to an existing Place
                     const place = this.nextNode;
                     this.dataService.connectNodes(this.lastNode, place);
+                    this.dataService.triggerDataChanged(); // Trigger change after adding arc
                     this.lastNode = this.nextNode;
                 } else if (this.nextNode instanceof Transition) {
                     // If a Transition is clicked the selected Node is changed
@@ -416,7 +551,9 @@ export class PetriNetComponent implements OnInit, OnDestroy {
                     // Click on the Canvas
                     const place = this.createPlace(event, drawingArea);
                     this.dataService.getPlaces().push(place);
+                    this.dataService.triggerDataChanged(); // Trigger change after adding place
                     this.dataService.connectNodes(this.lastNode, place);
+                    this.dataService.triggerDataChanged(); // Trigger change after adding arc
                     this.lastNode = place;
                 }
             }
@@ -426,12 +563,12 @@ export class PetriNetComponent implements OnInit, OnDestroy {
     }
 
     dispatchSVGMouseDown(event: MouseEvent, drawingArea: HTMLElement) {
-        // If the move button is activated and the canvas (not one of the elements on it!)
-        // is drag & dropped the whole SVG should be panned
-        if (this.uiService.button === ButtonState.Move) {
+        // Default Panning: Initiate panning only if the click target is the SVG canvas itself
+        if (event.target === drawingArea) {
             this.editMoveElementsService.initializePetrinetPanning(event);
         }
 
+        // Existing logic for other button states (Blitz, Arc)
         if (
             this.uiService.button === ButtonState.Blitz &&
             event.button == MouseConstants.Right_Click
@@ -448,6 +585,7 @@ export class PetriNetComponent implements OnInit, OnDestroy {
             event.preventDefault();
             const transition = this.createTransition(event, drawingArea);
             this.dataService.getTransitions().push(transition);
+            this.dataService.triggerDataChanged(); // Trigger change after adding transition
             this.lastNode = transition;
             this.dummyArc.points[0] = this.lastNode.position;
         }
@@ -465,22 +603,18 @@ export class PetriNetComponent implements OnInit, OnDestroy {
     }
 
     dispatchSVGMouseMove(event: MouseEvent, drawingArea: HTMLElement) {
-        if (this.uiService.button === ButtonState.Move) {
-            // If the move button is activated and the canvas (not one of the elements on it!)
-            // is drag & dropped the whole SVG should be panned
-            if (this.editMoveElementsService.isCanvasDragInProcess) {
-                this.editMoveElementsService.movePetrinetPositionByMousePositionChange(
-                    event,
-                );
-            } else {
-                this.editMoveElementsService.moveNodeByMousePositionChange(
-                    event,
-                );
-                this.editMoveElementsService.moveAnchorByMousePositionChange(
-                    event,
-                );
-            }
+        // Always delegate to service, it checks internally if panning is active
+        if (this.editMoveElementsService.isCanvasDragInProcess) {
+            this.editMoveElementsService.movePetrinetPositionByMousePositionChange(
+                event,
+            );
+        } else if (this.uiService.button === ButtonState.Move) {
+            // Only move nodes/anchors if explicitly in Move mode
+            this.editMoveElementsService.moveNodeByMousePositionChange(event);
+            this.editMoveElementsService.moveAnchorByMousePositionChange(event);
         }
+
+        // Existing logic for Arc/Blitz dummy line
         if (
             (this.uiService.button === ButtonState.Arc ||
                 this.uiService.button === ButtonState.Blitz) &&
@@ -496,10 +630,10 @@ export class PetriNetComponent implements OnInit, OnDestroy {
     }
 
     dispatchSVGMouseUp(event: MouseEvent, drawingArea: HTMLElement) {
-        if (this.uiService.button === ButtonState.Move) {
-            this.editMoveElementsService.finalizeMove();
-        }
+        // Always finalize/reset potential panning/moving state in the service
+        this.editMoveElementsService.finalizeMove();
 
+        // Existing logic for Arc/Anchor deletion
         // Reset for both cancellation or finalization (bubble-up) of arc drawing
         if (this.uiService.button === ButtonState.Arc) {
             this.startTransition = undefined;
@@ -582,6 +716,7 @@ export class PetriNetComponent implements OnInit, OnDestroy {
             const newArc: Arc = new Arc(this.startTransition, place, 1);
             this.startTransition.appendPostArc(newArc);
             this.dataService.getArcs().push(newArc);
+            this.dataService.triggerDataChanged(); // Trigger change after adding arc
         }
     }
 
@@ -641,6 +776,7 @@ export class PetriNetComponent implements OnInit, OnDestroy {
             const newArc: Arc = new Arc(this.startPlace, transition, 1);
             transition.appendPreArc(newArc);
             this.dataService.getArcs().push(newArc);
+            this.dataService.triggerDataChanged(); // Trigger change after adding arc
         }
     }
 
@@ -707,6 +843,7 @@ export class PetriNetComponent implements OnInit, OnDestroy {
                 lineSegment,
                 drawingArea,
             );
+            this.dataService.triggerDataChanged(); // Trigger change after adding anchor
         }
 
         if (this.uiService.button === ButtonState.Move) {
@@ -729,7 +866,7 @@ export class PetriNetComponent implements OnInit, OnDestroy {
 
     dispatchAnchorMouseUp(event: MouseEvent, anchor: Point) {
         if (this.anchorToDelete === anchor) {
-            this.dataService.removeAnchor(anchor);
+            this.dataService.removeAnchor(anchor); // removeAnchor already triggers dataChanged
         }
     }
 
@@ -738,6 +875,7 @@ export class PetriNetComponent implements OnInit, OnDestroy {
     addPlace(event: MouseEvent, drawingArea: HTMLElement) {
         const place = this.createPlace(event, drawingArea);
         this.dataService.getPlaces().push(place);
+        this.dataService.triggerDataChanged(); // Trigger change after adding place
     }
 
     createPlace(event: MouseEvent, drawingArea: HTMLElement): Place {
@@ -751,6 +889,7 @@ export class PetriNetComponent implements OnInit, OnDestroy {
     addTransition(event: MouseEvent, drawingArea: HTMLElement) {
         const transition = this.createTransition(event, drawingArea);
         this.dataService.getTransitions().push(transition);
+        this.dataService.triggerDataChanged(); // Trigger change after adding transition
     }
 
     createTransition(event: MouseEvent, drawingArea: HTMLElement): Transition {
@@ -885,7 +1024,7 @@ export class PetriNetComponent implements OnInit, OnDestroy {
         const actions = this.dataService.getActions();
         if (label) {
             const labelIndex = actions.indexOf(label);
-            if (labelIndex - 1 < actions.length) {
+            if (labelIndex + 1 < actions.length) { // Corrected boundary check
                 return actions[labelIndex + 1];
             }
         } else {
@@ -893,25 +1032,24 @@ export class PetriNetComponent implements OnInit, OnDestroy {
                 return actions[0];
             }
         }
-        return;
+        return; // Return undefined if no next label
     }
 
     getLastLabel(label: string | undefined): string | undefined {
         const actions = this.dataService.getActions();
         if (label) {
             const labelIndex = actions.indexOf(label);
-            if (labelIndex !== 0) {
+            if (labelIndex > 0) { // Corrected boundary check
                 return actions[labelIndex - 1];
             }
         } else if (actions.length > 0) {
             return actions[actions.length - 1];
         }
-        return;
+        return; // Return undefined if no previous label
     }
 
     protected readonly radius = radius;
     protected readonly placeIdYOffset = placeIdYOffset;
-
     protected readonly transitionWidth = transitionWidth;
     protected readonly transitionHeight = transitionHeight;
     protected readonly transitionXOffset = transitionXOffset;
