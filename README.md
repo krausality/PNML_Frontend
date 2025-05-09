@@ -1,3 +1,6 @@
+⚠️ Hinweis: Dieses Repository ist ein Fork des Projekts "fapra-teamrot", das derzeit keine Lizenzdatei enthält. Eine Anfrage zur Nutzung und Weiterentwicklung wurde an die ursprünglichen Urheber gestellt. Dieses Repository dient ausschließlich nicht-kommerziellen Forschungszwecken.
+GitHub-Repository: [https://github.com/fapra-teamrot/fapra-teamrot](https://github.com/fapra-teamrot/fapra-teamrot)
+
 # ✅ Angular 16 Development Setup on Windows 11 & Linux/WSL  
 **From a blank system to a successful `ng serve` run**
 
