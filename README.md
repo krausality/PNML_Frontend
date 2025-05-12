@@ -81,13 +81,15 @@ npm install
 
 ---
 
-## 4️⃣ Start Angular Dev Server
+## 4️⃣ Start the PNML Tool
+
+This command starts the PNML visualizer and editor tool. It will compile the application and open it in your default web browser. You can then use the tool to load, view, edit, and simulate Petri nets.
 
 ```bash
 ng serve --open
 ```
 
-> On Windows, this will open `http://localhost:4200/` in your default browser.  
+> On Windows, this will open `http://localhost:4200/` in your default browser.  \  
 > On Linux/WSL, it will print the URL; open it manually if it doesn't launch automatically.
 
 ---
@@ -176,6 +178,79 @@ Then: 🎉 **App is running in the browser!**
 
 ---
 
+Natürlich! Hier ist eine kompakte, englische **Turbo Debug FAQ (Q\&A)**-Sektion, die du am Ende deiner README einfügen kannst:
+
+---
+
+## 🛠 Quick Debug FAQ (PowerShell + fnm + npm)
+
+### `npm` or `node` not recognized?
+
+You probably installed Node with `fnm`, but your shell isn't initialized properly yet.
+
+### Quick fix (per session):
+
+```powershell
+# Auto-initialize fnm and Node.js
+fnm env --shell=powershell | Out-String | Invoke-Expression
+fnm use 18
+```
+
+Then verify:
+
+```powershell
+npm -v
+node -v
+```
+
+---
+
+### Why did it work before and now it doesn’t?
+
+* You probably had the `fnm` initialization in your PowerShell profile.
+* A recent system or shell reset (or using a different terminal) may have removed that setup.
+
+---
+
+### Permanent fix:
+
+1. Open your PowerShell profile:
+
+   ```powershell
+   notepad $PROFILE
+   ```
+1.1. When getting 'file not found' using Command from 1.:
+    ```powershell
+    New-Item -ItemType File -Path $PROFILE -Force
+    ```
+
+2. Add this at the bottom:
+
+   ```powershell
+   # Auto-initialize fnm and Node.js
+   fnm env --shell=powershell | Out-String | Invoke-Expression
+   fnm use 18
+   ```
+
+3. Save and restart PowerShell.
+
+---
+
+### Still not working?
+
+Make sure `fnm` is installed:
+
+```powershell
+fnm --version
+```
+
+Reinstall if needed:
+
+```powershell
+winget install Schniz.fnm
+```
+
+---
 
 The project includes the following libraries:
 

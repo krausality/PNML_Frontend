@@ -209,4 +209,9 @@ export class ButtonBarComponent {
         console.log('ButtonBarComponent.uploadPnmlFile: Calling reader.readAsText...'); // Log before readAsText
         reader.readAsText(file);
     }
+
+    startSimulation(): void {
+        // TODO: Implement actual simulation start logic
+        console.log('Start Simulation button clicked');
+    }
 }

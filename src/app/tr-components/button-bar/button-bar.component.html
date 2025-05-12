@@ -7,6 +7,20 @@
 
         <!-- Buttons for tab "Build" -->
         <div class="button-container">
+            <!-- Start Simulation Button -->
+            <button
+                mat-stroked-button
+                class="text-button"
+                (click)="startSimulation()"
+                matTooltip="Start Simulation"
+                [matTooltipShowDelay]="showTooltipDelay"
+            >
+                Start Simulation
+            </button>
+
+            <!-- Divider -->
+            <div class="divider"></div>
+
             <!-- Blitz tool -->
             <button
                 mat-icon-button
@@ -30,10 +44,11 @@
                     uiService.button === ButtonState.Place ? 'primary' : ''
                 "
                 (click)="buttonClicked(ButtonState.Place)"
-                matTooltip="Add place"
+                matTooltip="Add a new place to the Petri net"
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>circle</mat-icon>
+                <span class="button-text-label">Add Place</span>
             </button>
 
             <!-- Transitions -->
@@ -43,10 +58,11 @@
                     uiService.button === ButtonState.Transition ? 'primary' : ''
                 "
                 (click)="buttonClicked(ButtonState.Transition)"
-                matTooltip="Add transition"
+                matTooltip="Add a new transition to the Petri net"
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>square</mat-icon>
+                <span class="button-text-label">Add Transition</span>
             </button>
 
             <!-- Arcs -->
@@ -54,7 +70,7 @@
                 mat-icon-button
                 [color]="uiService.button === ButtonState.Arc ? 'primary' : ''"
                 (click)="buttonClicked(ButtonState.Arc)"
-                matTooltip="Add arc"
+                matTooltip="Add a new arc to connect elements"
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>north_east</mat-icon>
@@ -194,7 +210,7 @@
                 mat-stroked-button
                 class="text-button"
                 (click)="applyLayout('spring-embedder')"
-                matTooltip="Apply Spring Embedder layout to current petri net"
+                matTooltip="Arranges the Petri net using a force-directed algorithm to improve layout aesthetics."
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 Spring Embedder
@@ -205,7 +221,7 @@
                 mat-stroked-button
                 class="text-button"
                 (click)="applyLayout('sugiyama')"
-                matTooltip="Apply Sugiyama layout to current petri net"
+                matTooltip="Arranges the Petri net using the Sugiyama layered graph drawing algorithm to minimize edge crossings."
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 Sugiyama
