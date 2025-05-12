@@ -1,32 +1,34 @@
-<div fxLayout="column" fxLayoutAlign="start stretch">
-    <!--  Header durch Parameter-Komponente ersetzen -->
-    <app-parameter-input></app-parameter-input>
-    <!-- Ende Header Ersatz -->
-
-    <!--    Main content    -->
-
-    <!-- button bar and layout switch -->
-    <div fxLayout="row" fxLayoutAlign="space-between end">
-        <app-button-bar fxFlex></app-button-bar>
+<div fxLayout="row" fxLayoutAlign="start stretch" style="min-height:100vh;">
+    <!-- Left column: Parameter input -->
+    <div fxFlex="25" style="border-right:1px solid #ccc; padding:8px;">
+        <app-parameter-input></app-parameter-input>
     </div>
 
-    <div class="petri-net-container" fxLayout="row">
-        <!-- petri net component -->
-        <app-petri-net
-            [ngClass]="{
-                'petri-net': true,
-                active: uiService.tab === TabState.Code
-            }"
-        ></app-petri-net>
-        <app-code-editor
-            [ngClass]="{
-                'code-editor': true,
-                active: uiService.tab === TabState.Code
-            }"
-        ></app-code-editor>
-    </div>
+    <!-- Right column: Petri net + code editor + footer -->
+    <div fxFlex="75" style="padding:8px;">
+        <!-- button bar and layout switch -->
+        <div fxLayout="row" fxLayoutAlign="space-between end">
+            <app-button-bar fxFlex></app-button-bar>
+        </div>
 
-    <!--  Footer  -->
-    <hr />
-    <app-footer></app-footer>
+        <div class="petri-net-container" fxLayout="row">
+            <!-- petri net component -->
+            <app-petri-net
+                [ngClass]="{
+                    'petri-net': true,
+                    active: uiService.tab === TabState.Code
+                }"
+            ></app-petri-net>
+            <app-code-editor
+                [ngClass]="{
+                    'code-editor': true,
+                    active: uiService.tab === TabState.Code
+                }"
+            ></app-code-editor>
+        </div>
+
+        <!--  Footer  -->
+        <hr />
+        <app-footer></app-footer>
+    </div>
 </div>

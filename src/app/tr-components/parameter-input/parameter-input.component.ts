@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators, ReactiveFormsModule } from '@angular/forms'; // Import ReactiveFormsModule
+import { FormControl, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms'; // Import ReactiveFormsModule and FormsModule
 import { PlanningService } from '../../tr-services/planning.service';
 import { finalize } from 'rxjs/operators';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -85,6 +85,7 @@ function replaceNullWithDefaults(obj: any): any {
     imports: [ // Import necessary modules here
         CommonModule,
         ReactiveFormsModule,
+        FormsModule, // <-- Add FormsModule here
         MatFormFieldModule,
         MatInputModule,
         MatButtonModule,
@@ -101,32 +102,35 @@ export class ParameterInputComponent implements OnInit {
     statusMessage: string | null = null;
     hasError: boolean = false;
 
+    parametersText = `{
+  "parameter_name": "string",
+  "another_param": 42,
+  "a_boolean_flag": true
+}`;
+
     constructor(private planningService: PlanningService) { }
+
+    // Basic placeholder for loading defaults
+    loadDefaults(): void {
+        // TODO: If you want to fetch from /planning/defaults:
+        // this.http.get('/planning/defaults').subscribe( resp => {
+        //     this.parametersText = JSON.stringify(resp, null, 2);
+        // });
+        // For now, just show a mock structure:
+        this.parametersText = JSON.stringify(
+            {
+                parameter_name: 'string',
+                another_param: 42,
+                a_boolean_flag: true,
+            },
+            null,
+            2
+        );
+    }
 
     ngOnInit(): void {
          // Optional: Load defaults on init?
          // this.loadDefaults();
-    }
-
-    loadDefaults(): void {
-        this.isLoadingDefaults = true;
-        this.statusMessage = null;
-        this.hasError = false;
-        this.planningService.getDefaults()
-            .pipe(finalize(() => this.isLoadingDefaults = false))
-            .subscribe({
-                next: (defaults) => {
-                    this.parameterControl.setValue(JSON.stringify(defaults, null, 2)); // Pretty print
-                    this.statusMessage = 'Defaults geladen.';
-                    this.parameterControl.markAsPristine(); // Reset validation state after loading
-                    this.parameterControl.updateValueAndValidity();
-                },
-                error: (err) => {
-                    this.statusMessage = `Fehler beim Laden der Defaults: ${err.message || err}`;
-                    this.hasError = true;
-                    console.error(err);
-                }
-            });
     }
 
     runSimulation(): void {

@@ -31,4 +31,15 @@
     <div *ngIf="statusMessage" class="status-message" [ngClass]="{'error': hasError, 'success': !hasError}">
         {{ statusMessage }}
     </div>
+
+    <button mat-stroked-button (click)="loadDefaults()" style="margin-bottom: 8px;">
+      Load Defaults
+    </button>
+
+    <textarea
+      cdkTextareaAutosize
+      [(ngModel)]="parametersText"
+      rows="10"
+      style="width:100%;"
+    ></textarea>
 </div>
