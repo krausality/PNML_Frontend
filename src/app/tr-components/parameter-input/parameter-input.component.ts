@@ -9,6 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { TextFieldModule } from '@angular/cdk/text-field'; // Import TextFieldModule
+import { ParameterTableComponent } from '../parameter-table/parameter-table.component'; // Import the new table component
 
 // Helper for JSON validation
 function jsonValidator(control: FormControl): { [key: string]: any } | null {
@@ -91,7 +92,8 @@ function replaceNullWithDefaults(obj: any): any {
         MatButtonModule,
         MatIconModule,
         MatProgressSpinnerModule,
-        TextFieldModule // For cdkTextareaAutosize
+        TextFieldModule, // For cdkTextareaAutosize
+        ParameterTableComponent // Add ParameterTableComponent here
     ]
     // --- End standalone imports ---
 })
@@ -101,6 +103,7 @@ export class ParameterInputComponent implements OnInit {
     isLoadingSimulation = false;
     statusMessage: string | null = null;
     hasError: boolean = false;
+    loadedDefaultsForTable: any = {}; // To pass to the parameter-table component
 
     parametersText = `{
   "parameter_name": "string",
@@ -112,20 +115,38 @@ export class ParameterInputComponent implements OnInit {
 
     // Basic placeholder for loading defaults
     loadDefaults(): void {
-        // TODO: If you want to fetch from /planning/defaults:
-        // this.http.get('/planning/defaults').subscribe( resp => {
-        //     this.parametersText = JSON.stringify(resp, null, 2);
-        // });
-        // For now, just show a mock structure:
-        this.parametersText = JSON.stringify(
-            {
-                parameter_name: 'string',
-                another_param: 42,
-                a_boolean_flag: true,
+        this.isLoadingDefaults = true;
+        this.statusMessage = null;
+        this.hasError = false;
+        this.planningService.getDefaults().subscribe({
+            next: (defaults) => {
+                // It's generally better to let the backend provide defaults that are already valid
+                // and avoid aggressive client-side manipulation like replaceNullWithDefaults
+                // For now, we'll use the raw defaults for the table and the (potentially modified) for the textarea.
+                this.loadedDefaultsForTable = defaults; // Use raw defaults for the table
+
+                // The original replaceNullWithDefaults is problematic.
+                // Consider if it's truly needed or if backend can provide better defaults.
+                // For now, let's assume we might still want to show a stringified version in the textarea.
+                // const processedData = replaceNullWithDefaults(defaults);
+                // this.parameterControl.setValue(JSON.stringify(processedData, null, 2));
+
+                // Simpler: just display what the backend sent, assuming it's valid JSON.
+                this.parameterControl.setValue(JSON.stringify(defaults, null, 2));
+
+                this.isLoadingDefaults = false;
+                this.statusMessage = 'Default parameters loaded successfully.';
+                this.hasError = false;
             },
-            null,
-            2
-        );
+            error: (err) => {
+                console.error('Error loading default parameters:', err);
+                this.parameterControl.setValue('// Failed to load default parameters.\\n// Check console for errors.');
+                this.loadedDefaultsForTable = {}; // Clear table data on error
+                this.isLoadingDefaults = false;
+                this.statusMessage = 'Failed to load default parameters. See console for details.';
+                this.hasError = true;
+            }
+        });
     }
 
     ngOnInit(): void {
@@ -184,5 +205,9 @@ export class ParameterInputComponent implements OnInit {
                     console.error(err);
                 }
             });
+    }
+
+    getRawParameters(): string {
+      return this.parameterControl.value || '';
     }
 }

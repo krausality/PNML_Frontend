@@ -1,0 +1,38 @@
+<div class="parameter-table-container mat-elevation-z2">
+    <table mat-table [dataSource]="dataSource" class="mat-table">
+  
+      <!-- Parameter Path Column -->
+      <ng-container matColumnDef="path">
+        <th mat-header-cell *matHeaderCellDef> Parameter Path </th>
+        <td mat-cell *matCellDef="let element"> {{element.path}} </td>
+      </ng-container>
+  
+      <!-- Expected Type Column -->
+      <ng-container matColumnDef="type">
+        <th mat-header-cell *matHeaderCellDef> Expected Type </th>
+        <td mat-cell *matCellDef="let element"> {{element.type}} </td>
+      </ng-container>
+  
+      <!-- Required Column -->
+      <ng-container matColumnDef="required">
+        <th mat-header-cell *matHeaderCellDef> Required? </th>
+        <td mat-cell *matCellDef="let element"> {{element.required}} </td>
+      </ng-container>
+
+      <!-- Current Value Column -->
+      <ng-container matColumnDef="value">
+        <th mat-header-cell *matHeaderCellDef> Current Value </th>
+        <td mat-cell *matCellDef="let element"> 
+          <span *ngIf="isPrimitive(element.value)">{{ element.value }}</span>
+          <span *ngIf="isArray(element.value)">{{ getDisplayValue(element.value) }}</span>
+          <span *ngIf="isObject(element.value)">
+            <pre>{{ element.value | json }}</pre>
+          </span>
+          <span *ngIf="element.value === null || element.value === undefined">N/A</span>
+        </td>
+      </ng-container>
+  
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>

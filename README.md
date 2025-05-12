@@ -77,13 +77,24 @@ Then:
 npm install
 ```
 
-> This downloads all dependencies from `package.json`.
+> This downloads all project dependencies listed in the `package.json` file, which are necessary to run the application.
 
 ---
 
-## 4️⃣ Start the PNML Tool
+## 4️⃣ Start the PNML Tool (Frontend Development Server)
 
-This command starts the PNML visualizer and editor tool. It will compile the application and open it in your default web browser. You can then use the tool to load, view, edit, and simulate Petri nets.
+This command starts the PNML (Petri Net Markup Language) visualizer and editor tool's frontend development server. It will compile the Angular application and automatically open it in your default web browser (usually at `http://localhost:4200/`).
+
+**What the tool does:**
+The PNML tool allows you to create, visualize, edit, and simulate Petri nets. You can import existing PNML or JSON files, modify the nets using a graphical interface, and analyze their behavior. The simulation parameters section allows you to configure and run simulations based on the designed Petri net.
+
+Once started, you can use the tool to:
+*   Design Petri nets from scratch.
+*   Import and export Petri nets in PNML and JSON formats.
+*   Visually edit places, transitions, and arcs.
+*   Configure simulation parameters.
+*   Run simulations and observe the token game.
+*   Analyze properties of the Petri net.
 
 ```bash
 ng serve --open
