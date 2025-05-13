@@ -30,7 +30,3 @@
     display: block;
     margin-top: -2px; /* Adjust as needed */
 }
-
-::ng-deep .mat-tooltip {
-    font-size: 14px !important; /* Adjust as needed */
-}

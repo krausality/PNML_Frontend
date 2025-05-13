@@ -10,3 +10,24 @@ body {
     padding: 50px;
     font-family: "Courier New", sans-serif;
 }
+
+/* Global Styles */
+
+/* You may need to ensure this file is included in your Angular project's build configuration (angular.json) if it's newly created. */
+
+/* Disfunctional! - For older Angular Material versions - targeting 14px */
+.mat-tooltip {
+    font-size: 300px !important;
+}
+
+/* Disfunctional! - For MDC-based Angular Material components (e.g., Angular 15+) */
+/* This targets the surface of the tooltip where the text resides */
+.mdc-tooltip__surface {
+    font-size: 300px !important;
+}
+
+/* If the above is not enough, the panel itself might need styling or a more specific selector */
+.mat-mdc-tooltip-panel .mdc-tooltip__surface, /* More specific for panel context */
+.mat-mdc-tooltip-panel { /* General style for the panel if it dictates font context */
+    font-size: 17px !important;
+}
