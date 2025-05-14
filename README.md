@@ -6,7 +6,50 @@ GitHub-Repository: [https://github.com/fapra-teamrot/fapra-teamrot](https://gith
 
 ---
 
-## 🧱 Prerequisites
+## 🚀 Quick Install & Quick Start
+
+For users looking for the fastest way to get the PNML Frontend running, follow these steps. These commands will download the project, set up the necessary tools, and start the application.
+
+1.  **Download the Project Code:**
+    This command copies the project files to your computer.
+    ```bash
+    git clone https://github.com/krausality/PNML_Frontend.git
+    cd PNML_Frontend
+    ```
+2.  **Set Up the Right Environment:**
+    This step ensures your system is ready to run the project. If you're doing this for the first time, the detailed guide below has more information.
+    ```bash
+    # This command selects the correct version of the runtime environment.
+    fnm use 18 
+    node -v # This checks if the correct version is active.
+    ```
+    *For a first-time setup of the runtime environment, see the [Detailed Node.js Installation](#1%EF%B8%8F%E2%83%A3-install-nodejs-using-fnm) section further down.*
+
+3.  **Install a Tool to Manage the Project:**
+    (You can skip this if you've run this or a similar project before)
+    This command installs a helper tool needed to build and run the application.
+    ```bash
+    npm install -g @angular/cli@16
+    ```
+4.  **Install Project-Specific Components:**
+    This command downloads all the additional pieces of software the project needs to work.
+    ```bash
+    npm install
+    ```
+5.  **Start the Application:**
+    This command starts the PNML tool and opens it in your web browser.
+    ```bash
+    ng serve --open
+    ```
+This will open the PNML tool in your browser, usually at `http://localhost:4200/`.
+
+For a comprehensive step-by-step guide, especially if you're setting up a new environment, please proceed to the [📖 Detailed Setup Guide](#%F0%9F%93%96-detailed-setup-guide).
+
+---
+
+## 📖 Detailed Setup Guide
+
+### 🧱 Prerequisites
 
 - Windows 10/11 or Linux (Ubuntu/Debian recommended) or WSL2
 - Terminal: PowerShell, CMD, or Bash
@@ -15,7 +58,7 @@ GitHub-Repository: [https://github.com/fapra-teamrot/fapra-teamrot](https://gith
 
 ---
 
-## 1️⃣ Install Node.js (using `fnm`)
+### 1️⃣ Install Node.js (using `fnm`)
 
 > `fnm` = Fast Node Manager, for flexible Node versions
 
@@ -45,7 +88,7 @@ npm -v # Should print "10.8.2".
 
 ---
 
-## 2️⃣ Install Angular CLI 16 globally
+### 2️⃣ Install Angular CLI 16 globally
 
 ```bash
 npm install -g @angular/cli@16
@@ -55,7 +98,7 @@ npm install -g @angular/cli@16
 
 ---
 
-## 3️⃣ Prepare the project
+### 3️⃣ Prepare the project
 
 Clone repo into folder:
 
@@ -81,7 +124,7 @@ npm install
 
 ---
 
-## 4️⃣ Start the PNML Tool (Frontend Development Server)
+### 4️⃣ Start the PNML Tool (Frontend Development Server)
 
 This command starts the PNML (Petri Net Markup Language) visualizer and editor tool's frontend development server. It will compile the Angular application and automatically open it in your default web browser (usually at `http://localhost:4200/`).
 
@@ -105,7 +148,22 @@ ng serve --open
 
 ---
 
-## 5️⃣ Work around PowerShell Policy Bug (Windows only)
+### ✅ Expected Result
+
+If you did everything right, you'll see in the terminal:
+
+```bash
+** Angular Live Development Server is listening on localhost:4200 **
+√ Compiled successfully.
+```
+
+Then: 🎉 **App is running in the browser!**
+
+---
+
+## 🛠️ Troubleshooting & Advanced
+
+### Windows PowerShell Execution Policy
 
 If `ng` doesn't run due to script blocking:
 
@@ -123,9 +181,7 @@ cmd
 
 ---
 
-## 6️⃣ Possible Warnings & Notes
-
-### ❗ **Webpack error due to missing `stream` module**
+### Webpack: `stream` module error
 
 If you need a Node module that uses `stream`:
 
@@ -155,7 +211,7 @@ resolve: {
 
 ---
 
-### 🎨 **Angular Material Theme Warning**
+### Angular Material: Theme Warning
 
 > If you use Angular Material, make sure your theme is configured correctly:
 
@@ -176,24 +232,7 @@ More info: [Material theming guide](https://material.angular.io/guide/theming)
 
 ---
 
-## ✅ Result
-
-If you did everything right, you'll see in the terminal:
-
-```bash
-** Angular Live Development Server is listening on localhost:4200 **
-√ Compiled successfully.
-```
-
-Then: 🎉 **App is running in the browser!**
-
----
-
-Natürlich! Hier ist eine kompakte, englische **Turbo Debug FAQ (Q\&A)**-Sektion, die du am Ende deiner README einfügen kannst:
-
----
-
-## 🛠 Quick Debug FAQ (PowerShell + fnm + npm)
+### 🛠 Quick Debug FAQ (PowerShell + fnm + npm)
 
 ### `npm` or `node` not recognized?
 
@@ -262,6 +301,8 @@ winget install Schniz.fnm
 ```
 
 ---
+
+## ℹ️ Project & Libraries
 
 The project includes the following libraries:
 
