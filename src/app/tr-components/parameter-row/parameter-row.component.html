@@ -1,0 +1,28 @@
+<div class="parameter-row-container" [matTooltip]="parameter.description || 'No description available'" matTooltipPosition="above">
+  <mat-form-field class="parameter-input-field" appearance="outline">
+    <mat-label>
+      {{ parameterName }}
+      <span *ngIf="parameter.required === 'Yes'" class="required-indicator">*</span>
+    </mat-label>
+
+    <!-- Boolean Input -->
+    <ng-container *ngIf="isBoolean()">
+      <mat-checkbox [formControl]="formControl" class="parameter-checkbox"></mat-checkbox>
+    </ng-container>
+
+    <!-- Number Input -->
+    <ng-container *ngIf="isNumber()">
+      <input matInput type="number" [formControl]="formControl" [required]="parameter.required === 'Yes'">
+    </ng-container>
+
+    <!-- String or other Input -->
+    <ng-container *ngIf="isStringOrOther()">
+      <input matInput type="text" [formControl]="formControl" [required]="parameter.required === 'Yes'">
+    </ng-container>
+
+    <mat-error *ngIf="formControl.invalid && formControl.touched">
+      <span *ngIf="formControl.hasError('required')">This field is required.</span>
+      <!-- Add other specific error messages if needed -->
+    </mat-error>
+  </mat-form-field>
+</div>
