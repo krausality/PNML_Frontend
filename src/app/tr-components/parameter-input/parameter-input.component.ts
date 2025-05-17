@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core'; // Import ChangeDetectorRef
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormControl, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { PlanningService } from '../../tr-services/planning.service';
 import { finalize } from 'rxjs/operators';
@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { ParameterRowComponent } from '../parameter-row/parameter-row.component';
 import { ParameterDefinition } from '../../tr-interfaces/parameter-definition.interface';
+import { FlexLayoutModule } from '@angular/flex-layout'; // ENSURE THIS IS PRESENT AND CORRECT
 
 @Component({
     selector: 'app-parameter-input',
@@ -27,10 +28,14 @@ import { ParameterDefinition } from '../../tr-interfaces/parameter-definition.in
         MatIconModule,
         MatProgressSpinnerModule,
         TextFieldModule,
-        ParameterRowComponent
+        ParameterRowComponent,
+        FlexLayoutModule // ENSURE THIS IS IMPORTED AND ADDED HERE
     ]
 })
 export class ParameterInputComponent implements OnInit {
+    private static instanceCounter = 0;
+    private instanceId: number;
+
     parameterFormGroup: FormGroup = new FormGroup({});
     parameterDefinitions: ParameterDefinition[] = [];
 
@@ -41,18 +46,26 @@ export class ParameterInputComponent implements OnInit {
 
     constructor(
         private planningService: PlanningService,
-        private cdr: ChangeDetectorRef // Inject ChangeDetectorRef
-    ) { }
+        private cdr: ChangeDetectorRef
+    ) {
+        this.instanceId = ++ParameterInputComponent.instanceCounter;
+        console.log(`[CONSTRUCTOR ${this.instanceId}] ParameterInputComponent constructed.`);
+    }
 
     ngOnInit(): void {
-        this.loadDefaults();
+        console.log(`[NGONINIT ${this.instanceId}] ParameterInputComponent ngOnInit. isLoadingDefaults: ${this.isLoadingDefaults}, definitions.length: ${this.parameterDefinitions.length}`);
+        if (!this.isLoadingDefaults && this.parameterDefinitions.length === 0) {
+            this.loadDefaults();
+        } else {
+            console.log(`[NGONINIT ${this.instanceId}] Skipping loadDefaults call. isLoadingDefaults: ${this.isLoadingDefaults}, definitions.length: ${this.parameterDefinitions.length}`);
+        }
     }
 
     private parseJsonToParameterDefinitions(obj: any, pathPrefix: string = '', definitions: ParameterDefinition[] = []): ParameterDefinition[] {
         for (const key in obj) {
             if (Object.prototype.hasOwnProperty.call(obj, key)) {
                 if (key === null || key === undefined || key.trim() === '') {
-                    console.warn(`parseJsonToParameterDefinitions: Skipping parameter with empty or invalid key at path prefix: '${pathPrefix}'`);
+                    console.warn(`[DEBUG ${this.instanceId}] parseJsonToParameterDefinitions: Skipping parameter with empty or invalid key at path prefix: '${pathPrefix}'`);
                     continue;
                 }
 
@@ -63,25 +76,17 @@ export class ParameterInputComponent implements OnInit {
 
                 if (Array.isArray(value)) {
                     paramType = 'array';
-                    // For arrays that might contain objects, ensure they are stringified if they are to be edited as text.
-                    // If they are handled by sub-components or specific logic, this might differ.
-                    paramValue = JSON.stringify(value); 
+                    paramValue = JSON.stringify(value);
                     definitions.push({
                         path: currentPath,
                         type: paramType,
-                        required: 'No', // This would typically come from a schema
+                        required: 'No', 
                         value: paramValue,
                         description: `Parameter for ${currentPath}`
                     });
-                    // Note: If array items need individual controls, this parsing needs to be deeper.
-                    // The current setup treats the whole array as a single (stringified) value.
                 } else if (typeof value === 'object' && value !== null) {
-                    // Recursive call for nested objects
                     this.parseJsonToParameterDefinitions(value, currentPath, definitions);
-                    // No definition is added for the object container itself, only its leaf properties.
-                    continue; 
                 } else {
-                    // Primitive types (string, number, boolean, null)
                     paramType = (value === null) ? 'null' : typeof value;
                     paramValue = value;
                     definitions.push({
@@ -98,45 +103,58 @@ export class ParameterInputComponent implements OnInit {
     }
 
     loadDefaults(): void {
+        console.log(`[LOADDEFAULTS_START ${this.instanceId}] loadDefaults called. Current isLoadingDefaults: ${this.isLoadingDefaults}`);
+        if (this.isLoadingDefaults) {
+            console.warn(`[LOADDEFAULTS_START ${this.instanceId}] Aborting loadDefaults because isLoadingDefaults is true for this instance.`);
+            return; 
+        }
+
         this.isLoadingDefaults = true;
         this.statusMessage = null;
         this.hasError = false;
+        this.parameterFormGroup = new FormGroup({});
+        this.parameterDefinitions = [];
+
         const newFormGroup = new FormGroup({});
         let newDefinitions: ParameterDefinition[] = [];
+        
+        console.log(`[LOADDEFAULTS_HTTP ${this.instanceId}] Calling planningService.getDefaults().`);
 
         this.planningService.getDefaults().subscribe({
             next: (defaults) => {
-                console.log('loadDefaults: Raw defaults received from backend:', JSON.parse(JSON.stringify(defaults)));
+                console.log(`[LOADDEFAULTS_NEXT ${this.instanceId}] Raw defaults received from backend.`);
                 newDefinitions = this.parseJsonToParameterDefinitions(defaults);
-                console.log('loadDefaults: Parsed parameter definitions:', newDefinitions);
+                console.log(`[LOADDEFAULTS_NEXT ${this.instanceId}] Parsed ${newDefinitions.length} parameter definitions.`);
 
                 newDefinitions.forEach(paramDef => {
                     const control = new FormControl(paramDef.value, paramDef.required === 'Yes' ? Validators.required : null);
                     newFormGroup.addControl(paramDef.path, control);
                 });
-                console.log('loadDefaults: Controls added to new FormGroup:', newFormGroup.value);
+                console.log(`[LOADDEFAULTS_NEXT ${this.instanceId}] Added ${Object.keys(newFormGroup.controls).length} controls to new FormGroup.`);
 
                 this.parameterFormGroup = newFormGroup;
                 this.parameterDefinitions = newDefinitions;
                 
-                // Manually trigger change detection
-                this.cdr.detectChanges(); // <--- ADDED THIS LINE
+                console.log(`[LOADDEFAULTS_BEFORE_CDR ${this.instanceId}] Instance FormGroup and Definitions assigned. isLoadingDefaults: ${this.isLoadingDefaults}`);
+                console.log(`[LOADDEFAULTS_BEFORE_CDR ${this.instanceId}] Instance FormGroup has ${Object.keys(this.parameterFormGroup.controls).length} controls. Keys:`, Object.keys(this.parameterFormGroup.controls).slice(0,5));
+                console.log(`[LOADDEFAULTS_BEFORE_CDR ${this.instanceId}] Instance ParameterDefinitions length: ${this.parameterDefinitions.length}. First 3 paths:`, this.parameterDefinitions.slice(0,3).map(p=>p.path));
 
-                console.log('loadDefaults: New FormGroup final value:', this.parameterFormGroup.value);
+                this.cdr.detectChanges();
+                console.log(`[LOADDEFAULTS_AFTER_CDR ${this.instanceId}] detectChanges completed.`);
 
                 this.statusMessage = 'Default parameters loaded successfully.';
                 this.isLoadingDefaults = false;
-                // It's possible the status message update also needs change detection if the previous cycle was problematic
-                // this.cdr.detectChanges(); // Optionally, call again if status message doesn't appear
+                console.log(`[LOADDEFAULTS_SUCCESS ${this.instanceId}] Success. isLoadingDefaults set to: ${this.isLoadingDefaults}. Status: ${this.statusMessage}`);
+                this.cdr.detectChanges(); 
             },
             error: (err) => {
-                console.error('Error loading default parameters:', err);
+                console.error(`[LOADDEFAULTS_ERROR ${this.instanceId}] Error loading default parameters:`, err);
                 this.parameterDefinitions = [];
                 this.parameterFormGroup = new FormGroup({});
                 this.isLoadingDefaults = false;
                 this.statusMessage = 'Failed to load default parameters. See console for details.';
                 this.hasError = true;
-                this.cdr.detectChanges(); // Also detect changes on error
+                this.cdr.detectChanges();
             }
         });
     }
@@ -168,24 +186,32 @@ export class ParameterInputComponent implements OnInit {
                         this.statusMessage = `Simulation abgeschlossen. Antwort: ${JSON.stringify(response)}`;
                         this.hasError = false; 
                     }
-                    this.cdr.detectChanges(); // Update view with status
+                    this.cdr.detectChanges();
                 },
                 error: (err: any) => {
                     this.statusMessage = `Fehler beim Starten der Simulation: ${err.message || err}`;
                     this.hasError = true;
                     console.error(err);
-                    this.cdr.detectChanges(); // Update view with status
+                    this.cdr.detectChanges();
                 }
             });
     }
 
     public getFormControl(path: string): FormControl {
-        // console.log(`getFormControl called for path: '${path}'`); // DEBUG LOG
-        const control = this.parameterFormGroup.get(path) as FormControl;
-        // if (!control) { // DEBUG LOG
-        //     console.error(`Control NOT FOUND for path: '${path}' in FormGroup. Available paths:`, Object.keys(this.parameterFormGroup.controls));
-        // }
-        return control;
+        // *** MODIFIED FOR DETAILED LOGGING ***
+        const numControlsInGroup = this.parameterFormGroup ? Object.keys(this.parameterFormGroup.controls).length : -1;
+        console.log(`[GETFORMCONTROL ${this.instanceId}] Path: '${path}'. FormGroup (instance ${this.instanceId}) has ${numControlsInGroup} controls.`);
+
+        if (!this.parameterFormGroup || numControlsInGroup === 0 && this.parameterDefinitions.length > 0) { 
+            // Added "&& this.parameterDefinitions.length > 0" to only log error if definitions ARE present but group is empty
+            console.error(`[GETFORMCONTROL ${this.instanceId}] CRITICAL: For path '${path}', this.parameterFormGroup is ${this.parameterFormGroup ? 'empty' : 'null/undefined'} when accessed by template, but definitions exist.`);
+            return null as any; 
+        }
+        const control = this.parameterFormGroup.get(path);
+        if (!control && this.parameterDefinitions.length > 0) { // Only warn if definitions are expected
+            console.warn(`[GETFORMCONTROL ${this.instanceId}] Control NOT FOUND for path '${path}'.`);
+        }
+        return control as FormControl;
     }
 
     private reconstructNestedObject(flatObject: { [key: string]: any }): any {

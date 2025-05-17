@@ -4,23 +4,15 @@
     <div [formGroup]="parameterFormGroup" class="parameters-form-container">
         <!-- Iterate over parameterDefinitions -->
         <ng-container *ngFor="let paramDef of parameterDefinitions">
-            <!--
-                Ensure the FormControl exists before attempting to render the row.
-                We call getFormControl here which returns FormControl | null.
-                The *ngIf will only render if it's not null.
-            -->
-            <div *ngIf="getFormControl(paramDef.path) as specificControl" class="parameter-row-wrapper">
+            <div *ngIf="parameterFormGroup.get(paramDef.path) as specificControlFromGet" class="parameter-row-wrapper">
                 <app-parameter-row
                     [parameter]="paramDef"
-                    [formControl]="specificControl"> <!-- Pass the specificControl which is now known to be a FormControl -->
+                    [formControl]="$any(specificControlFromGet)"> <!-- Use $any to bypass strict AbstractControl vs FormControl -->
                 </app-parameter-row>
             </div>
-            <!--
-                Optional: For debugging, show a message if a control is missing for a specific path.
-            -->
-            <ng-container *ngIf="!getFormControl(paramDef.path) && paramDef.path">
+            <ng-container *ngIf="!(parameterFormGroup.get(paramDef.path)) && paramDef.path">
                 <div class="parameter-row-wrapper" style="color: red; border: 1px dashed red; padding: 4px; margin-bottom: 5px; font-size: 0.9em;">
-                    <strong>Debug:</strong> Control not found for path: <code>{{ paramDef.path }}</code>
+                    <strong>Debug (Direct Get):</strong> Control not found for path: <code>{{ paramDef.path }}</code>
                 </div>
             </ng-container>
             <ng-container *ngIf="!paramDef.path">
