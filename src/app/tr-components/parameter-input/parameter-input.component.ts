@@ -13,6 +13,12 @@ import { ParameterRowComponent } from '../parameter-row/parameter-row.component'
 import { ParameterDefinition } from '../../tr-interfaces/parameter-definition.interface';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
+// New interface for the combined data
+export interface ParameterRowData {
+    definition: ParameterDefinition;
+    control: FormControl;
+}
+
 @Component({
     selector: 'app-parameter-input',
     templateUrl: './parameter-input.component.html',
@@ -37,8 +43,11 @@ export class ParameterInputComponent implements OnInit {
     private instanceId: number;
     private initialLoadDone = false;
 
-    parameterFormGroup: FormGroup = new FormGroup({}); // Initialize here
-    parameterDefinitions: ParameterDefinition[] = [];
+    parameterFormGroup: FormGroup = new FormGroup({}); 
+    // parameterDefinitions: ParameterDefinition[] = []; // Will be replaced by combinedDataForRows
+    
+    // New property to hold combined data for template iteration
+    combinedDataForRows: ParameterRowData[] = [];
 
     isLoadingDefaults = false;
     isLoadingSimulation = false;
@@ -61,15 +70,18 @@ export class ParameterInputComponent implements OnInit {
     }
 
     private parseJsonToParameterDefinitions(obj: any, pathPrefix: string = '', definitions: ParameterDefinition[] = []): ParameterDefinition[] {
-        for (const key in obj) {
+        for (let key in obj) { 
             if (Object.prototype.hasOwnProperty.call(obj, key)) {
-                if (key === null || key === undefined || key.trim() === '') {
-                    // console.warn(`[DEBUG ${this.instanceId}] parseJsonToParameterDefinitions: Skipping parameter with empty or invalid key at path prefix: '${pathPrefix}'`);
+                const originalKey = key; 
+                const trimmedKey = key.trim(); 
+
+                if (trimmedKey === null || trimmedKey === undefined || trimmedKey === '') {
+                    // console.warn(`[DEBUG ${this.instanceId}] parseJsonToParameterDefinitions: Skipping parameter with empty or invalid key (original: "${originalKey}") at path prefix: '${pathPrefix}'`);
                     continue;
                 }
 
-                const value = obj[key];
-                const currentPath = pathPrefix ? `${pathPrefix}.${key}` : key;
+                const value = obj[originalKey]; 
+                const currentPath = pathPrefix ? `${pathPrefix}.${trimmedKey}` : trimmedKey; // Use trimmedKey for path
                 let paramType: string;
                 let paramValue: any;
 
@@ -77,7 +89,7 @@ export class ParameterInputComponent implements OnInit {
                     paramType = 'array';
                     paramValue = JSON.stringify(value);
                     definitions.push({
-                        path: currentPath,
+                        path: currentPath, 
                         type: paramType,
                         required: 'No', 
                         value: paramValue,
@@ -89,7 +101,7 @@ export class ParameterInputComponent implements OnInit {
                     paramType = (value === null) ? 'null' : typeof value;
                     paramValue = value;
                     definitions.push({
-                        path: currentPath,
+                        path: currentPath, 
                         type: paramType,
                         required: 'No',
                         value: paramValue,
@@ -112,8 +124,6 @@ export class ParameterInputComponent implements OnInit {
         this.statusMessage = null;
         this.hasError = false;
         
-        // Create a new FormGroup instance for this load operation.
-        // This ensures Angular sees a new object reference.
         const localNewFormGroup = new FormGroup({});
         let localNewDefinitions: ParameterDefinition[] = [];
         
@@ -125,45 +135,48 @@ export class ParameterInputComponent implements OnInit {
                 localNewDefinitions = this.parseJsonToParameterDefinitions(defaults);
                 console.log(`[LOADDEFAULTS_NEXT ${this.instanceId}] Parsed ${localNewDefinitions.length} parameter definitions.`);
                 
+                const tempCombinedData: ParameterRowData[] = [];
+
                 localNewDefinitions.forEach(paramDef => {
                     const control = new FormControl(paramDef.value, paramDef.required === 'Yes' ? Validators.required : null);
                     localNewFormGroup.addControl(paramDef.path, control);
+                    tempCombinedData.push({ definition: paramDef, control: control }); // Store pair
                 });
-                console.log(`[LOADDEFAULTS_NEXT ${this.instanceId}] Local FormGroup populated with ${Object.keys(localNewFormGroup.controls).length} controls.`);
+                console.log(`[LOADDEFAULTS_NEXT ${this.instanceId}] Local FormGroup populated with ${Object.keys(localNewFormGroup.controls).length} controls and ${tempCombinedData.length} combined rows created.`);
 
-                // Assign the new instances to the component properties
                 this.parameterFormGroup = localNewFormGroup;
-                this.parameterDefinitions = localNewDefinitions;
+                // this.parameterDefinitions = localNewDefinitions; // No longer directly used by template for rows
+                this.combinedDataForRows = tempCombinedData; // Assign the new combined data
                 
                 this.initialLoadDone = true;
-                console.log(`[LOADDEFAULTS_BEFORE_CDR ${this.instanceId}] Instance FormGroup and Definitions RE-ASSIGNED. isLoadingDefaults: ${this.isLoadingDefaults}, initialLoadDone: ${this.initialLoadDone}`);
-                console.log(`[LOADDEFAULTS_BEFORE_CDR ${this.instanceId}] Instance FormGroup has ${Object.keys(this.parameterFormGroup.controls).length} controls. Keys:`, Object.keys(this.parameterFormGroup.controls).slice(0,5));
-                console.log(`[LOADDEFAULTS_BEFORE_CDR ${this.instanceId}] Instance ParameterDefinitions length: ${this.parameterDefinitions.length}. First 3 paths:`, this.parameterDefinitions.slice(0,3).map(p=>p.path));
+                console.log(`[LOADDEFAULTS_BEFORE_CDR ${this.instanceId}] Instance FormGroup and CombinedData ASSIGNED. isLoadingDefaults: ${this.isLoadingDefaults}, initialLoadDone: ${this.initialLoadDone}`);
+                console.log(`[LOADDEFAULTS_BEFORE_CDR ${this.instanceId}] Instance FormGroup has ${Object.keys(this.parameterFormGroup.controls).length} controls.`);
+                console.log(`[LOADDEFAULTS_BEFORE_CDR ${this.instanceId}] Instance CombinedDataForRows length: ${this.combinedDataForRows.length}.`);
                 
                 this.isLoadingDefaults = false;
                 this.statusMessage = 'Default parameters loaded successfully.';
-                console.log(`[LOADDEFAULTS_SUCCESS ${this.instanceId}] Success. isLoadingDefaults set to: ${this.isLoadingDefaults}. Status: ${this.statusMessage}`);
+                console.log(`[LOADDEFAULTS_SUCCESS ${this.instanceId}] Success. isLoadingDefaults: ${this.isLoadingDefaults}. Status: ${this.statusMessage}`);
                 
                 this.cdr.detectChanges(); 
-                console.log(`[LOADDEFAULTS_AFTER_CDR ${this.instanceId}] detectChanges completed.`);
+                console.log(`[LOADDEFAULTS_AFTER_CDR ${this.instanceId}] Final detectChanges completed.`);
 
             },
             error: (err) => {
                 console.error(`[LOADDEFAULTS_ERROR ${this.instanceId}] Error loading default parameters:`, err);
-                // Even on error, reset to empty state for clarity if it was the first attempt
-                this.parameterDefinitions = [];
+                // this.parameterDefinitions = [];
+                this.combinedDataForRows = [];
                 this.parameterFormGroup = new FormGroup({});
                 
                 this.isLoadingDefaults = false;
                 this.statusMessage = 'Failed to load default parameters. See console for details.';
                 this.hasError = true;
-                this.initialLoadDone = true; // Mark as "done" to prevent ngOnInit loop on error
+                this.initialLoadDone = true; 
                 this.cdr.detectChanges();
             }
         });
     }
 
-    // ... (runSimulation and other methods remain the same) ...
+    // ... runSimulation and reconstructNestedObject remain the same ...
     runSimulation(): void {
         if (!this.initialLoadDone) {
             this.statusMessage = "Please load default parameters first.";
@@ -207,19 +220,9 @@ export class ParameterInputComponent implements OnInit {
             });
     }
 
-    public getFormControl(path: string): FormControl {
-        const numControlsInGroup = this.parameterFormGroup ? Object.keys(this.parameterFormGroup.controls).length : -1;
-        // console.log(`[GETFORMCONTROL ${this.instanceId}] Path: '${path}'. FormGroup (instance ${this.instanceId}) has ${numControlsInGroup} controls.`);
-
-        if (!this.parameterFormGroup || (numControlsInGroup === 0 && this.parameterDefinitions.length > 0 && this.initialLoadDone)) { 
-            console.error(`[GETFORMCONTROL ${this.instanceId}] CRITICAL: For path '${path}', this.parameterFormGroup is ${this.parameterFormGroup ? 'empty' : 'null/undefined'} when accessed by template, but definitions exist and initial load was done.`);
-            return null as any; 
-        }
-        const control = this.parameterFormGroup.get(path);
-        if (!control && this.parameterDefinitions.length > 0 && this.initialLoadDone) { 
-            // console.warn(`[GETFORMCONTROL ${this.instanceId}] Control NOT FOUND for path '${path}'.`);
-        }
-        return control as FormControl;
+    // getFormControl is not strictly needed by the template if combinedDataForRows is used
+    public getFormControl(path: string): FormControl | null {
+        return this.parameterFormGroup.get(path) as FormControl | null;
     }
 
     private reconstructNestedObject(flatObject: { [key: string]: any }): any {
