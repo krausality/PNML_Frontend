@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { ParameterRowComponent } from '../parameter-row/parameter-row.component';
 import { ParameterDefinition } from '../../tr-interfaces/parameter-definition.interface';
-import { FlexLayoutModule } from '@angular/flex-layout'; // ENSURE THIS IS PRESENT AND CORRECT
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 @Component({
     selector: 'app-parameter-input',
@@ -29,14 +29,15 @@ import { FlexLayoutModule } from '@angular/flex-layout'; // ENSURE THIS IS PRESE
         MatProgressSpinnerModule,
         TextFieldModule,
         ParameterRowComponent,
-        FlexLayoutModule // ENSURE THIS IS IMPORTED AND ADDED HERE
+        FlexLayoutModule
     ]
 })
 export class ParameterInputComponent implements OnInit {
     private static instanceCounter = 0;
     private instanceId: number;
+    private initialLoadDone = false;
 
-    parameterFormGroup: FormGroup = new FormGroup({});
+    parameterFormGroup: FormGroup = new FormGroup({}); // Initialize here
     parameterDefinitions: ParameterDefinition[] = [];
 
     isLoadingDefaults = false;
@@ -53,11 +54,9 @@ export class ParameterInputComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        console.log(`[NGONINIT ${this.instanceId}] ParameterInputComponent ngOnInit. isLoadingDefaults: ${this.isLoadingDefaults}, definitions.length: ${this.parameterDefinitions.length}`);
-        if (!this.isLoadingDefaults && this.parameterDefinitions.length === 0) {
+        console.log(`[NGONINIT ${this.instanceId}] ParameterInputComponent ngOnInit. initialLoadDone: ${this.initialLoadDone}`);
+        if (!this.initialLoadDone) {
             this.loadDefaults();
-        } else {
-            console.log(`[NGONINIT ${this.instanceId}] Skipping loadDefaults call. isLoadingDefaults: ${this.isLoadingDefaults}, definitions.length: ${this.parameterDefinitions.length}`);
         }
     }
 
@@ -65,7 +64,7 @@ export class ParameterInputComponent implements OnInit {
         for (const key in obj) {
             if (Object.prototype.hasOwnProperty.call(obj, key)) {
                 if (key === null || key === undefined || key.trim() === '') {
-                    console.warn(`[DEBUG ${this.instanceId}] parseJsonToParameterDefinitions: Skipping parameter with empty or invalid key at path prefix: '${pathPrefix}'`);
+                    // console.warn(`[DEBUG ${this.instanceId}] parseJsonToParameterDefinitions: Skipping parameter with empty or invalid key at path prefix: '${pathPrefix}'`);
                     continue;
                 }
 
@@ -105,61 +104,72 @@ export class ParameterInputComponent implements OnInit {
     loadDefaults(): void {
         console.log(`[LOADDEFAULTS_START ${this.instanceId}] loadDefaults called. Current isLoadingDefaults: ${this.isLoadingDefaults}`);
         if (this.isLoadingDefaults) {
-            console.warn(`[LOADDEFAULTS_START ${this.instanceId}] Aborting loadDefaults because isLoadingDefaults is true for this instance.`);
+            console.warn(`[LOADDEFAULTS_START ${this.instanceId}] Aborting loadDefaults because isLoadingDefaults is true.`);
             return; 
         }
 
         this.isLoadingDefaults = true;
         this.statusMessage = null;
         this.hasError = false;
-        this.parameterFormGroup = new FormGroup({});
-        this.parameterDefinitions = [];
-
-        const newFormGroup = new FormGroup({});
-        let newDefinitions: ParameterDefinition[] = [];
+        
+        // Create a new FormGroup instance for this load operation.
+        // This ensures Angular sees a new object reference.
+        const localNewFormGroup = new FormGroup({});
+        let localNewDefinitions: ParameterDefinition[] = [];
         
         console.log(`[LOADDEFAULTS_HTTP ${this.instanceId}] Calling planningService.getDefaults().`);
 
         this.planningService.getDefaults().subscribe({
             next: (defaults) => {
                 console.log(`[LOADDEFAULTS_NEXT ${this.instanceId}] Raw defaults received from backend.`);
-                newDefinitions = this.parseJsonToParameterDefinitions(defaults);
-                console.log(`[LOADDEFAULTS_NEXT ${this.instanceId}] Parsed ${newDefinitions.length} parameter definitions.`);
-
-                newDefinitions.forEach(paramDef => {
-                    const control = new FormControl(paramDef.value, paramDef.required === 'Yes' ? Validators.required : null);
-                    newFormGroup.addControl(paramDef.path, control);
-                });
-                console.log(`[LOADDEFAULTS_NEXT ${this.instanceId}] Added ${Object.keys(newFormGroup.controls).length} controls to new FormGroup.`);
-
-                this.parameterFormGroup = newFormGroup;
-                this.parameterDefinitions = newDefinitions;
+                localNewDefinitions = this.parseJsonToParameterDefinitions(defaults);
+                console.log(`[LOADDEFAULTS_NEXT ${this.instanceId}] Parsed ${localNewDefinitions.length} parameter definitions.`);
                 
-                console.log(`[LOADDEFAULTS_BEFORE_CDR ${this.instanceId}] Instance FormGroup and Definitions assigned. isLoadingDefaults: ${this.isLoadingDefaults}`);
+                localNewDefinitions.forEach(paramDef => {
+                    const control = new FormControl(paramDef.value, paramDef.required === 'Yes' ? Validators.required : null);
+                    localNewFormGroup.addControl(paramDef.path, control);
+                });
+                console.log(`[LOADDEFAULTS_NEXT ${this.instanceId}] Local FormGroup populated with ${Object.keys(localNewFormGroup.controls).length} controls.`);
+
+                // Assign the new instances to the component properties
+                this.parameterFormGroup = localNewFormGroup;
+                this.parameterDefinitions = localNewDefinitions;
+                
+                this.initialLoadDone = true;
+                console.log(`[LOADDEFAULTS_BEFORE_CDR ${this.instanceId}] Instance FormGroup and Definitions RE-ASSIGNED. isLoadingDefaults: ${this.isLoadingDefaults}, initialLoadDone: ${this.initialLoadDone}`);
                 console.log(`[LOADDEFAULTS_BEFORE_CDR ${this.instanceId}] Instance FormGroup has ${Object.keys(this.parameterFormGroup.controls).length} controls. Keys:`, Object.keys(this.parameterFormGroup.controls).slice(0,5));
                 console.log(`[LOADDEFAULTS_BEFORE_CDR ${this.instanceId}] Instance ParameterDefinitions length: ${this.parameterDefinitions.length}. First 3 paths:`, this.parameterDefinitions.slice(0,3).map(p=>p.path));
-
-                this.cdr.detectChanges();
+                
+                this.isLoadingDefaults = false;
+                this.statusMessage = 'Default parameters loaded successfully.';
+                console.log(`[LOADDEFAULTS_SUCCESS ${this.instanceId}] Success. isLoadingDefaults set to: ${this.isLoadingDefaults}. Status: ${this.statusMessage}`);
+                
+                this.cdr.detectChanges(); 
                 console.log(`[LOADDEFAULTS_AFTER_CDR ${this.instanceId}] detectChanges completed.`);
 
-                this.statusMessage = 'Default parameters loaded successfully.';
-                this.isLoadingDefaults = false;
-                console.log(`[LOADDEFAULTS_SUCCESS ${this.instanceId}] Success. isLoadingDefaults set to: ${this.isLoadingDefaults}. Status: ${this.statusMessage}`);
-                this.cdr.detectChanges(); 
             },
             error: (err) => {
                 console.error(`[LOADDEFAULTS_ERROR ${this.instanceId}] Error loading default parameters:`, err);
+                // Even on error, reset to empty state for clarity if it was the first attempt
                 this.parameterDefinitions = [];
                 this.parameterFormGroup = new FormGroup({});
+                
                 this.isLoadingDefaults = false;
                 this.statusMessage = 'Failed to load default parameters. See console for details.';
                 this.hasError = true;
+                this.initialLoadDone = true; // Mark as "done" to prevent ngOnInit loop on error
                 this.cdr.detectChanges();
             }
         });
     }
 
+    // ... (runSimulation and other methods remain the same) ...
     runSimulation(): void {
+        if (!this.initialLoadDone) {
+            this.statusMessage = "Please load default parameters first.";
+            this.hasError = true;
+            return;
+        }
         if (this.parameterFormGroup.invalid) {
             this.statusMessage = "Please correct the invalid parameters before running the simulation.";
             this.hasError = true;
@@ -198,18 +208,16 @@ export class ParameterInputComponent implements OnInit {
     }
 
     public getFormControl(path: string): FormControl {
-        // *** MODIFIED FOR DETAILED LOGGING ***
         const numControlsInGroup = this.parameterFormGroup ? Object.keys(this.parameterFormGroup.controls).length : -1;
-        console.log(`[GETFORMCONTROL ${this.instanceId}] Path: '${path}'. FormGroup (instance ${this.instanceId}) has ${numControlsInGroup} controls.`);
+        // console.log(`[GETFORMCONTROL ${this.instanceId}] Path: '${path}'. FormGroup (instance ${this.instanceId}) has ${numControlsInGroup} controls.`);
 
-        if (!this.parameterFormGroup || numControlsInGroup === 0 && this.parameterDefinitions.length > 0) { 
-            // Added "&& this.parameterDefinitions.length > 0" to only log error if definitions ARE present but group is empty
-            console.error(`[GETFORMCONTROL ${this.instanceId}] CRITICAL: For path '${path}', this.parameterFormGroup is ${this.parameterFormGroup ? 'empty' : 'null/undefined'} when accessed by template, but definitions exist.`);
+        if (!this.parameterFormGroup || (numControlsInGroup === 0 && this.parameterDefinitions.length > 0 && this.initialLoadDone)) { 
+            console.error(`[GETFORMCONTROL ${this.instanceId}] CRITICAL: For path '${path}', this.parameterFormGroup is ${this.parameterFormGroup ? 'empty' : 'null/undefined'} when accessed by template, but definitions exist and initial load was done.`);
             return null as any; 
         }
         const control = this.parameterFormGroup.get(path);
-        if (!control && this.parameterDefinitions.length > 0) { // Only warn if definitions are expected
-            console.warn(`[GETFORMCONTROL ${this.instanceId}] Control NOT FOUND for path '${path}'.`);
+        if (!control && this.parameterDefinitions.length > 0 && this.initialLoadDone) { 
+            // console.warn(`[GETFORMCONTROL ${this.instanceId}] Control NOT FOUND for path '${path}'.`);
         }
         return control as FormControl;
     }

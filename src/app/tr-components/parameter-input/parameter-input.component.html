@@ -1,29 +1,47 @@
 <div class="parameter-container" fxLayout="column" fxLayoutGap="10px">
     <h2>Simulation Parameters</h2>
 
+    <!-- Bind to the component's parameterFormGroup -->
     <div [formGroup]="parameterFormGroup" class="parameters-form-container">
-        <!-- Iterate over parameterDefinitions -->
-        <ng-container *ngFor="let paramDef of parameterDefinitions">
-            <div *ngIf="parameterFormGroup.get(paramDef.path) as specificControlFromGet" class="parameter-row-wrapper">
-                <app-parameter-row
-                    [parameter]="paramDef"
-                    [formControl]="$any(specificControlFromGet)"> <!-- Use $any to bypass strict AbstractControl vs FormControl -->
-                </app-parameter-row>
-            </div>
-            <ng-container *ngIf="!(parameterFormGroup.get(paramDef.path)) && paramDef.path">
-                <div class="parameter-row-wrapper" style="color: red; border: 1px dashed red; padding: 4px; margin-bottom: 5px; font-size: 0.9em;">
-                    <strong>Debug (Direct Get):</strong> Control not found for path: <code>{{ paramDef.path }}</code>
-                </div>
-            </ng-container>
-            <ng-container *ngIf="!paramDef.path">
-                <div class="parameter-row-wrapper" style="color: red; border: 1px dashed red; padding: 4px; margin-bottom: 5px; font-size: 0.9em;">
-                    <strong>Error:</strong> Parameter definition has an invalid path: <code>{{ paramDef | json }}</code>
-                </div>
+
+        <!-- Only proceed if parameterDefinitions has items AND parameterFormGroup has controls -->
+        <ng-container *ngIf="parameterDefinitions.length > 0 && (parameterFormGroup.controls | keyvalue).length > 0">
+            <ng-container *ngFor="let paramDef of parameterDefinitions">
+                <!--
+                    Attempt to get the control for the current paramDef.
+                    'currentControl' will be the FormControl instance or null.
+                -->
+                <ng-container *ngIf="parameterFormGroup.get(paramDef.path) as currentControl">
+                    <div class.parameter-row-wrapper>
+                        <app-parameter-row
+                            [parameter]="paramDef"
+                            [formControl]="$any(currentControl)"> <!-- Use $any for AbstractControl vs FormControl -->
+                        </app-parameter-row>
+                    </div>
+                </ng-container>
+
+                <!-- Debug message if control is NOT found for a valid path -->
+                <ng-container *ngIf="!(parameterFormGroup.get(paramDef.path)) && paramDef.path">
+                    <div class="parameter-row-wrapper" style="color: red; border: 1px dashed red; padding: 4px; margin-bottom: 5px; font-size: 0.9em;">
+                        <strong>Debug (Loop):</strong> Control not found for path: <code>{{ paramDef.path }}</code>
+                    </div>
+                </ng-container>
+                <!-- Debug message if paramDef itself has no path -->
+                <ng-container *ngIf="!paramDef.path">
+                    <div class="parameter-row-wrapper" style="color: red; border: 1px dashed red; padding: 4px; margin-bottom: 5px; font-size: 0.9em;">
+                        <strong>Error (Loop):</strong> Parameter definition has an invalid path: <code>{{ paramDef | json }}</code>
+                    </div>
+                </ng-container>
             </ng-container>
         </ng-container>
 
+        <!-- Message if definitions are empty (and not loading) -->
         <div *ngIf="parameterDefinitions.length === 0 && !isLoadingDefaults" class="no-parameters-message">
             No parameters loaded or defined. Click "Load Defaults" to fetch them.
+        </div>
+        <!-- Message if definitions exist but form group appears empty (and not loading) -->
+        <div *ngIf="parameterDefinitions.length > 0 && (parameterFormGroup.controls | keyvalue).length === 0 && !isLoadingDefaults" class="no-parameters-message" style="color: orange;">
+            Parameters are defined, but the form group appears empty.
         </div>
     </div>
 
@@ -32,7 +50,7 @@
             <mat-icon *ngIf="!isLoadingDefaults">download</mat-icon>
             <mat-progress-spinner *ngIf="isLoadingDefaults" mode="indeterminate" diameter="20"></mat-progress-spinner>
             <span *ngIf="!isLoadingDefaults">Load Defaults</span>
-             <span *ngIf="isLoadingDefaults">Loading...</span>
+            <span *ngIf="isLoadingDefaults">Loading...</span>
         </button>
     </div>
     <div *ngIf="statusMessage" class="status-message" [ngClass]="{'error': hasError, 'success': !hasError}">
