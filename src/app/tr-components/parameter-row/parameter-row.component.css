@@ -6,6 +6,7 @@
 
 .parameter-input-field {
   flex-grow: 1; /* Allow the input field to take available space */
+  width: 100%; /* Ensure the form field itself takes full width */
 }
 
 .mat-mdc-form-field-subscript-wrapper {

@@ -4,6 +4,45 @@
     border-radius: 5px;
     margin-bottom: 20px;
     background-color: #f9f9f9;
+    /* Ensure the container itself can grow if needed, and allows children to scroll if content overflows */
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; /* Add scroll for the whole parameter section if it gets too long */
+    max-height: calc(100vh - 200px); /* Example max-height, adjust as needed based on surrounding layout */
+}
+
+/* NEW styles for the form container */
+.parameters-form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Space between parameter rows */
+  width: 100%; /* Ensure it takes full width of its parent */
+  overflow-y: auto; /* Allow scrolling for parameter rows if they exceed container height */
+  padding-right: 5px; /* Add a little padding if scrollbar appears */
+  flex-grow: 1; /* Allows this container to take available vertical space */
+  min-height: 0; /* Crucial for scrollable flex children */
+}
+
+/* NEW styles for the wrapper of each row, if needed for spacing or borders */
+.parameter-row-wrapper {
+  width: 100%; /* Ensure each wrapper takes full width */
+  /* margin-bottom: 5px; /* Example: if 'gap' in parent is not enough */
+}
+
+.no-parameters-message {
+    padding: 10px;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    text-align: center;
+    color: #555;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+h2 {
+    margin-bottom: 15px; /* Add some space below the title */
+    font-size: 1.2em; /* Slightly adjust title size */
+    color: #333;
 }
 
 .parameter-textarea-field {

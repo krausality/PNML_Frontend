@@ -41,7 +41,7 @@ export class ParameterRowComponent {
 
   // Helper to determine if the input should be a number
   isNumber(): boolean {
-    return this.parameter && this.parameter.type === 'integer' || this.parameter.type === 'float';
+    return this.parameter && this.parameter.type === 'number'; // Corrected to check for 'number'
   }
 
   // Helper to determine if the input should be a string or other

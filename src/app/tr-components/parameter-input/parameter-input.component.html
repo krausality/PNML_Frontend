@@ -1,25 +1,39 @@
 <div class="parameter-container" fxLayout="column" fxLayoutGap="10px">
     <h2>Simulation Parameters</h2>
 
-    <!-- Parameter Table Display - REMOVED -->
-    <!-- <app-parameter-table [loadedParameters]="loadedDefaultsForTable"></app-parameter-table> -->
+    <div [formGroup]="parameterFormGroup" class="parameters-form-container">
+        <!-- Iterate over parameterDefinitions -->
+        <ng-container *ngFor="let paramDef of parameterDefinitions">
+            <!--
+                Ensure the FormControl exists before attempting to render the row.
+                We call getFormControl here which returns FormControl | null.
+                The *ngIf will only render if it's not null.
+            -->
+            <div *ngIf="getFormControl(paramDef.path) as specificControl" class="parameter-row-wrapper">
+                <app-parameter-row
+                    [parameter]="paramDef"
+                    [formControl]="specificControl"> <!-- Pass the specificControl which is now known to be a FormControl -->
+                </app-parameter-row>
+            </div>
+            <!--
+                Optional: For debugging, show a message if a control is missing for a specific path.
+            -->
+            <ng-container *ngIf="!getFormControl(paramDef.path) && paramDef.path">
+                <div class="parameter-row-wrapper" style="color: red; border: 1px dashed red; padding: 4px; margin-bottom: 5px; font-size: 0.9em;">
+                    <strong>Debug:</strong> Control not found for path: <code>{{ paramDef.path }}</code>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="!paramDef.path">
+                <div class="parameter-row-wrapper" style="color: red; border: 1px dashed red; padding: 4px; margin-bottom: 5px; font-size: 0.9em;">
+                    <strong>Error:</strong> Parameter definition has an invalid path: <code>{{ paramDef | json }}</code>
+                </div>
+            </ng-container>
+        </ng-container>
 
-    <mat-form-field appearance="fill" class="parameter-textarea-field">
-        <mat-label>Planning Request (JSON)</mat-label>
-        <textarea matInput
-                  cdkTextareaAutosize
-                  cdkAutosizeMinRows="5"
-                  cdkAutosizeMaxRows="15"
-                  [formControl]="parameterControl"
-                  placeholder="Enter Planning Request JSON here or load defaults...">
-        </textarea>
-        <mat-error *ngIf="parameterControl.hasError('required')">
-            Planning request is required.
-        </mat-error>
-        <mat-error *ngIf="parameterControl.hasError('jsonInvalid')">
-            Invalid JSON format. Please check the syntax.
-        </mat-error>
-    </mat-form-field>
+        <div *ngIf="parameterDefinitions.length === 0 && !isLoadingDefaults" class="no-parameters-message">
+            No parameters loaded or defined. Click "Load Defaults" to fetch them.
+        </div>
+    </div>
 
     <div fxLayout="row" fxLayoutGap="10px">
         <button mat-raised-button color="primary" (click)="loadDefaults()" [disabled]="isLoadingDefaults" matTooltip="Load default parameters from the server into the table and text area.">
@@ -28,7 +42,6 @@
             <span *ngIf="!isLoadingDefaults">Load Defaults</span>
              <span *ngIf="isLoadingDefaults">Loading...</span>
         </button>
-        <!-- "Start Simulation" button was moved to button-bar.component.html -->
     </div>
     <div *ngIf="statusMessage" class="status-message" [ngClass]="{'error': hasError, 'success': !hasError}">
         {{ statusMessage }}
