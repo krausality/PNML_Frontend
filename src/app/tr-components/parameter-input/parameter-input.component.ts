@@ -44,9 +44,7 @@ export class ParameterInputComponent implements OnInit {
     private initialLoadDone = false;
 
     parameterFormGroup: FormGroup = new FormGroup({}); 
-    // parameterDefinitions: ParameterDefinition[] = []; // Will be replaced by combinedDataForRows
-    
-    // New property to hold combined data for template iteration
+        
     combinedDataForRows: ParameterRowData[] = [];
 
     isLoadingDefaults = false;
@@ -81,7 +79,7 @@ export class ParameterInputComponent implements OnInit {
                 }
 
                 const value = obj[originalKey]; 
-                const currentPath = pathPrefix ? `${pathPrefix}.${trimmedKey}` : trimmedKey; // Use trimmedKey for path
+                const currentPath = pathPrefix ? `${pathPrefix}.${trimmedKey}` : trimmedKey;
                 let paramType: string;
                 let paramValue: any;
 
@@ -140,13 +138,12 @@ export class ParameterInputComponent implements OnInit {
                 localNewDefinitions.forEach(paramDef => {
                     const control = new FormControl(paramDef.value, paramDef.required === 'Yes' ? Validators.required : null);
                     localNewFormGroup.addControl(paramDef.path, control);
-                    tempCombinedData.push({ definition: paramDef, control: control }); // Store pair
+                    tempCombinedData.push({ definition: paramDef, control: control });
                 });
                 console.log(`[LOADDEFAULTS_NEXT ${this.instanceId}] Local FormGroup populated with ${Object.keys(localNewFormGroup.controls).length} controls and ${tempCombinedData.length} combined rows created.`);
 
                 this.parameterFormGroup = localNewFormGroup;
-                // this.parameterDefinitions = localNewDefinitions; // No longer directly used by template for rows
-                this.combinedDataForRows = tempCombinedData; // Assign the new combined data
+                this.combinedDataForRows = tempCombinedData;
                 
                 this.initialLoadDone = true;
                 console.log(`[LOADDEFAULTS_BEFORE_CDR ${this.instanceId}] Instance FormGroup and CombinedData ASSIGNED. isLoadingDefaults: ${this.isLoadingDefaults}, initialLoadDone: ${this.initialLoadDone}`);
@@ -163,7 +160,6 @@ export class ParameterInputComponent implements OnInit {
             },
             error: (err) => {
                 console.error(`[LOADDEFAULTS_ERROR ${this.instanceId}] Error loading default parameters:`, err);
-                // this.parameterDefinitions = [];
                 this.combinedDataForRows = [];
                 this.parameterFormGroup = new FormGroup({});
                 
@@ -176,7 +172,6 @@ export class ParameterInputComponent implements OnInit {
         });
     }
 
-    // ... runSimulation and reconstructNestedObject remain the same ...
     runSimulation(): void {
         if (!this.initialLoadDone) {
             this.statusMessage = "Please load default parameters first.";
@@ -220,7 +215,6 @@ export class ParameterInputComponent implements OnInit {
             });
     }
 
-    // getFormControl is not strictly needed by the template if combinedDataForRows is used
     public getFormControl(path: string): FormControl | null {
         return this.parameterFormGroup.get(path) as FormControl | null;
     }
