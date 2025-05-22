@@ -1,19 +1,19 @@
-<div class="parameter-row-container" *ngIf="parameter && formControl">
+<div class="parameter-row-container" *ngIf="parameter && controlName">
     <!-- Boolean Type -->
     <ng-container *ngIf="isBoolean()">
-        <mat-checkbox 
-            [formControl]="formControl" 
-            class="parameter-checkbox" 
+        <mat-checkbox
+            [formControlName]="controlName"
+            [name]="getSafeName() + '_checkbox'"
+            class="parameter-checkbox"
             [id]="parameter.path + '-checkbox'"
-            [name]="parameter.path" 
-            [matTooltip]="parameter.description || 'No description available'" 
+            [matTooltip]="parameter.description || 'No description available'"
             matTooltipPosition="above">
             {{ parameterName }}
             <span *ngIf="parameter.required === 'Yes'" class="required-indicator">*</span>
         </mat-checkbox>
     </ng-container>
 
-    <!-- Number, Text or other Types (handled by mat-form-field) -->
+    <!-- Number, Text or other Types -->
     <ng-container *ngIf="!isBoolean()">
         <mat-form-field class="parameter-input-field" appearance="outline"
             [matTooltip]="parameter.description || 'No description available'" matTooltipPosition="above">
@@ -22,19 +22,20 @@
                 <span *ngIf="parameter.required === 'Yes'" class="required-indicator">*</span>
             </mat-label>
 
-            <input *ngIf="isNumber()" matInput type="number" 
-                [formControl]="formControl" 
-                [name]="parameter.path" 
-                [id]="parameter.path + '-input-number'" 
+            <input *ngIf="isNumber()" matInput type="number"
+                [formControlName]="controlName"
+                [name]="getSafeName() + '_input_number'"
+                [id]="parameter.path + '-input-number'"
                 [required]="parameter.required === 'Yes'">
-            <input *ngIf="isStringOrOther()" matInput type="text" 
-                [formControl]="formControl" 
-                [name]="parameter.path" 
-                [id]="parameter.path + '-input-text'" 
+            <input *ngIf="isStringOrOther()" matInput type="text"
+                [formControlName]="controlName"
+                [name]="getSafeName() + '_input_text'"
+                [id]="parameter.path + '-input-text'"
                 [required]="parameter.required === 'Yes'">
 
-            <mat-error *ngIf="formControl.invalid && formControl.touched">
-                <span *ngIf="formControl.hasError('required')">This field is required.</span>
+            <mat-error *ngIf="currentFormControl?.invalid && currentFormControl?.touched">
+                <span *ngIf="currentFormControl?.hasError('required')">This field is required.</span>
+                <!-- Add other error messages as needed, e.g., for min, max, pattern -->
             </mat-error>
         </mat-form-field>
     </ng-container>

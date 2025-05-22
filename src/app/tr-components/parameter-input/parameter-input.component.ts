@@ -13,7 +13,6 @@ import { ParameterRowComponent } from '../parameter-row/parameter-row.component'
 import { ParameterDefinition } from '../../tr-interfaces/parameter-definition.interface';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
-// New interface for the combined data
 export interface ParameterRowData {
     definition: ParameterDefinition;
     control: FormControl;
@@ -43,10 +42,13 @@ export class ParameterInputComponent implements OnInit {
     private instanceId: number;
     private initialLoadDone = false;
 
-    parameterFormGroup: FormGroup = new FormGroup({}); 
-        
-    combinedDataForRows: ParameterRowData[] = [];
+    trackByPath(index: number, rowData: ParameterRowData): string {
+        return rowData.definition.path;
+    }
 
+
+    parameterFormGroup: FormGroup = new FormGroup({}); 
+    combinedDataForRows: ParameterRowData[] = [];
     isLoadingDefaults = false;
     isLoadingSimulation = false;
     statusMessage: string | null = null;
@@ -57,26 +59,23 @@ export class ParameterInputComponent implements OnInit {
         private cdr: ChangeDetectorRef
     ) {
         this.instanceId = ++ParameterInputComponent.instanceCounter;
-        console.log(`[CONSTRUCTOR ${this.instanceId}] ParameterInputComponent constructed.`);
+        console.log(`[CONSTRUCTOR ${this.instanceId}] ParameterInputComponent constructed. Timestamp: ${Date.now()}`);
     }
 
     ngOnInit(): void {
-        console.log(`[NGONINIT ${this.instanceId}] ParameterInputComponent ngOnInit. initialLoadDone: ${this.initialLoadDone}`);
+        console.log(`[NGONINIT ${this.instanceId}] ngOnInit. initialLoadDone: ${this.initialLoadDone}. Timestamp: ${Date.now()}`);
         if (!this.initialLoadDone) {
             this.loadDefaults();
         }
     }
 
     private parseJsonToParameterDefinitions(obj: any, pathPrefix: string = '', definitions: ParameterDefinition[] = []): ParameterDefinition[] {
+        // console.log(`[DEBUG ${this.instanceId}] parseJsonToParameterDefinitions called for pathPrefix: '${pathPrefix}'. Current definitions count: ${definitions.length}. Timestamp: ${Date.now()}`);
         for (let key in obj) { 
             if (Object.prototype.hasOwnProperty.call(obj, key)) {
                 const originalKey = key; 
                 const trimmedKey = key.trim(); 
-
-                if (trimmedKey === null || trimmedKey === undefined || trimmedKey === '') {
-                    // console.warn(`[DEBUG ${this.instanceId}] parseJsonToParameterDefinitions: Skipping parameter with empty or invalid key (original: "${originalKey}") at path prefix: '${pathPrefix}'`);
-                    continue;
-                }
+                if (trimmedKey === null || trimmedKey === undefined || trimmedKey === '') continue;
 
                 const value = obj[originalKey]; 
                 const currentPath = pathPrefix ? `${pathPrefix}.${trimmedKey}` : trimmedKey;
@@ -85,26 +84,14 @@ export class ParameterInputComponent implements OnInit {
 
                 if (Array.isArray(value)) {
                     paramType = 'array';
-                    paramValue = JSON.stringify(value);
-                    definitions.push({
-                        path: currentPath, 
-                        type: paramType,
-                        required: 'No', 
-                        value: paramValue,
-                        description: `Parameter for ${currentPath}`
-                    });
+                    paramValue = JSON.stringify(value); 
+                    definitions.push({ path: currentPath, type: paramType, required: 'No', value: paramValue, description: `Parameter for ${currentPath}` });
                 } else if (typeof value === 'object' && value !== null) {
                     this.parseJsonToParameterDefinitions(value, currentPath, definitions);
                 } else {
                     paramType = (value === null) ? 'null' : typeof value;
                     paramValue = value;
-                    definitions.push({
-                        path: currentPath, 
-                        type: paramType,
-                        required: 'No',
-                        value: paramValue,
-                        description: `Parameter for ${currentPath}`
-                    });
+                    definitions.push({ path: currentPath, type: paramType, required: 'No', value: paramValue, description: `Parameter for ${currentPath}` });
                 }
             }
         }
@@ -112,70 +99,101 @@ export class ParameterInputComponent implements OnInit {
     }
 
     loadDefaults(): void {
-        console.log(`[LOADDEFAULTS_START ${this.instanceId}] loadDefaults called. Current isLoadingDefaults: ${this.isLoadingDefaults}`);
-        if (this.isLoadingDefaults) {
-            console.warn(`[LOADDEFAULTS_START ${this.instanceId}] Aborting loadDefaults because isLoadingDefaults is true.`);
-            return; 
+        const operationStartTime = Date.now();
+        console.log(`[LOADDEFAULTS_START ${this.instanceId}] Called. isLoadingDefaults: ${this.isLoadingDefaults}, initialLoadDone: ${this.initialLoadDone}. Timestamp: ${operationStartTime}`);
+        
+        if (this.isLoadingDefaults && this.initialLoadDone) {
+            console.warn(`[LOADDEFAULTS_WARN ${this.instanceId}] Already loading or load completed and not reset. Aborting. Timestamp: ${Date.now()}`);
+            return;
         }
 
         this.isLoadingDefaults = true;
-        this.statusMessage = null;
+        this.statusMessage = 'Loading default parameters...';
         this.hasError = false;
+        console.log(`[LOADDEFAULTS_STATE_SET ${this.instanceId}] isLoadingDefaults=true, statusMessage set. Forcing CDR. Timestamp: ${Date.now()}`);
+        this.cdr.detectChanges(); 
+        console.log(`[LOADDEFAULTS_POST_INITIAL_CDR ${this.instanceId}] Initial CDR completed. UI should show spinner. Timestamp: ${Date.now()}`);
         
-        const localNewFormGroup = new FormGroup({});
-        let localNewDefinitions: ParameterDefinition[] = [];
-        
-        console.log(`[LOADDEFAULTS_HTTP ${this.instanceId}] Calling planningService.getDefaults().`);
+        // Defer the HTTP call and subsequent heavy processing
+        setTimeout(() => {
+            const timeoutStartTime = Date.now();
+            console.log(`[LOADDEFAULTS_TIMEOUT_START ${this.instanceId}] setTimeout callback executing. Timestamp: ${timeoutStartTime}`);
+            console.time(`[PERF ${this.instanceId}] SERVICE_CALL_getDefaults`);
 
-        this.planningService.getDefaults().subscribe({
-            next: (defaults) => {
-                console.log(`[LOADDEFAULTS_NEXT ${this.instanceId}] Raw defaults received from backend.`);
-                localNewDefinitions = this.parseJsonToParameterDefinitions(defaults);
-                console.log(`[LOADDEFAULTS_NEXT ${this.instanceId}] Parsed ${localNewDefinitions.length} parameter definitions.`);
-                
-                const tempCombinedData: ParameterRowData[] = [];
+            this.planningService.getDefaults().subscribe({
+                next: (rawDefaults) => {
+                    const httpEndTime = Date.now();
+                    console.timeEnd(`[PERF ${this.instanceId}] SERVICE_CALL_getDefaults`);
+                    console.log(`[LOADDEFAULTS_NEXT_ENTRY ${this.instanceId}] Raw defaults received. isLoadingDefaults (from outer scope): ${this.isLoadingDefaults}. Timestamp: ${httpEndTime} (HTTP took ${httpEndTime - timeoutStartTime}ms from setTimeout start)`);
 
-                localNewDefinitions.forEach(paramDef => {
-                    const control = new FormControl(paramDef.value, paramDef.required === 'Yes' ? Validators.required : null);
-                    localNewFormGroup.addControl(paramDef.path, control);
-                    tempCombinedData.push({ definition: paramDef, control: control });
-                });
-                console.log(`[LOADDEFAULTS_NEXT ${this.instanceId}] Local FormGroup populated with ${Object.keys(localNewFormGroup.controls).length} controls and ${tempCombinedData.length} combined rows created.`);
+                    console.time(`[PERF ${this.instanceId}] parseJsonToParameterDefinitions_IN_NEXT`);
+                    const definitions = this.parseJsonToParameterDefinitions(rawDefaults);
+                    console.timeEnd(`[PERF ${this.instanceId}] parseJsonToParameterDefinitions_IN_NEXT`);
+                    const parseEndTime = Date.now();
+                    console.log(`[LOADDEFAULTS_NEXT_PARSED ${this.instanceId}] Parsed ${definitions.length} definitions. Timestamp: ${parseEndTime} (Parsing took ${parseEndTime - httpEndTime}ms)`);
 
-                this.parameterFormGroup = localNewFormGroup;
-                this.combinedDataForRows = tempCombinedData;
-                
-                this.initialLoadDone = true;
-                console.log(`[LOADDEFAULTS_BEFORE_CDR ${this.instanceId}] Instance FormGroup and CombinedData ASSIGNED. isLoadingDefaults: ${this.isLoadingDefaults}, initialLoadDone: ${this.initialLoadDone}`);
-                console.log(`[LOADDEFAULTS_BEFORE_CDR ${this.instanceId}] Instance FormGroup has ${Object.keys(this.parameterFormGroup.controls).length} controls.`);
-                console.log(`[LOADDEFAULTS_BEFORE_CDR ${this.instanceId}] Instance CombinedDataForRows length: ${this.combinedDataForRows.length}.`);
-                
-                this.isLoadingDefaults = false;
-                this.statusMessage = 'Default parameters loaded successfully.';
-                console.log(`[LOADDEFAULTS_SUCCESS ${this.instanceId}] Success. isLoadingDefaults: ${this.isLoadingDefaults}. Status: ${this.statusMessage}`);
-                
-                this.cdr.detectChanges(); 
-                console.log(`[LOADDEFAULTS_AFTER_CDR ${this.instanceId}] Final detectChanges completed.`);
+                    const newCombinedData: ParameterRowData[] = [];
+                    const controls: { [key: string]: FormControl } = {};
 
-            },
-            error: (err) => {
-                console.error(`[LOADDEFAULTS_ERROR ${this.instanceId}] Error loading default parameters:`, err);
-                this.combinedDataForRows = [];
-                this.parameterFormGroup = new FormGroup({});
-                
-                this.isLoadingDefaults = false;
-                this.statusMessage = 'Failed to load default parameters. See console for details.';
-                this.hasError = true;
-                this.initialLoadDone = true; 
-                this.cdr.detectChanges();
-            }
-        });
+                    console.time(`[PERF ${this.instanceId}] formControlCreation_IN_NEXT`);
+                    definitions.forEach(def => {
+                        const control = new FormControl(def.value, /* add validators if needed */);
+                        controls[def.path] = control;
+                        newCombinedData.push({ definition: def, control: control });
+                    });
+                    console.timeEnd(`[PERF ${this.instanceId}] formControlCreation_IN_NEXT`);
+                    const formCreationTime = Date.now();
+                    console.log(`[LOADDEFAULTS_NEXT_FORM_POPULATED ${this.instanceId}] Form controls created. Controls: ${Object.keys(controls).length}. Rows: ${newCombinedData.length}. Timestamp: ${formCreationTime} (Form creation took ${formCreationTime - parseEndTime}ms)`);
+                    
+                    console.time(`[PERF ${this.instanceId}] Total_DataProcessing_and_FormCreation_IN_TIMEOUT`);
+                    this.parameterFormGroup = new FormGroup(controls);
+                    this.combinedDataForRows = newCombinedData;
+                    console.timeEnd(`[PERF ${this.instanceId}] Total_DataProcessing_and_FormCreation_IN_TIMEOUT`);
+                    console.log(`[LOADDEFAULTS_NEXT_DATA_ASSIGNED ${this.instanceId}] Instance data assigned. Timestamp: ${Date.now()}`);
+
+                    this.initialLoadDone = true;
+                    this.statusMessage = 'Default parameters loaded successfully.';
+                    this.hasError = false;
+                    // Set isLoadingDefaults to false before the CDR call that renders the rows
+                    this.isLoadingDefaults = false; 
+                    console.log(`[LOADDEFAULTS_SUCCESS_PRE_CDR ${this.instanceId}] Success state updated. isLoadingDefaults: ${this.isLoadingDefaults}. Status: ${this.statusMessage}. Timestamp: ${Date.now()}`);
+                    
+                    // Directly call detectChanges, removing the Promise.resolve().then() wrapper
+                    console.log(`[LOADDEFAULTS_PRE_ROW_CDR ${this.instanceId}] Calling CDR for rendering rows. Timestamp: ${Date.now()}`);
+                    console.time(`[PERF ${this.instanceId}] CDR_FOR_ROWS_DIRECT`);
+                    try {
+                        this.cdr.detectChanges(); 
+                    } catch (error) {
+                        console.error(`[LOADDEFAULTS_ROW_CDR_ERROR ${this.instanceId}] Error during direct CDR for rows:`, error);
+                        this.statusMessage = 'Error rendering parameters.';
+                        this.hasError = true;
+                        // Optionally, trigger another CDR if the error message itself needs to be displayed immediately
+                        // this.cdr.detectChanges(); 
+                    }
+                    console.timeEnd(`[PERF ${this.instanceId}] CDR_FOR_ROWS_DIRECT`);
+                    console.log(`[LOADDEFAULTS_POST_ROW_CDR ${this.instanceId}] Direct CDR for rows completed. Timestamp: ${Date.now()}`);
+                },
+                error: (err) => {
+                    console.timeEnd(`[PERF ${this.instanceId}] SERVICE_CALL_getDefaults`); // End timer in case of error too
+                    console.error(`[LOADDEFAULTS_ERROR ${this.instanceId}] Error fetching defaults:`, err);
+                    this.statusMessage = `Failed to load default parameters: ${err.message || 'Unknown server error'}`;
+                    this.hasError = true;
+                    this.isLoadingDefaults = false;
+                    this.initialLoadDone = true; // Or false, depending on desired retry behavior
+                    this.cdr.detectChanges();
+                }
+            });
+        }, 0);
+        console.log(`[LOADDEFAULTS_METHOD_END_SYNC ${this.instanceId}] loadDefaults method finished. setTimeout scheduled. Timestamp: ${Date.now()}`);
     }
 
     runSimulation(): void {
+        const operationStartTime = Date.now();
+        console.log(`[RUNSIMULATION_START ${this.instanceId}] initialLoadDone: ${this.initialLoadDone}. Timestamp: ${operationStartTime}`);
         if (!this.initialLoadDone) {
             this.statusMessage = "Please load default parameters first.";
             this.hasError = true;
+            this.cdr.detectChanges();
             return;
         }
         if (this.parameterFormGroup.invalid) {
@@ -184,35 +202,54 @@ export class ParameterInputComponent implements OnInit {
             Object.values(this.parameterFormGroup.controls).forEach(control => {
                 control.markAsTouched();
             });
+            this.cdr.detectChanges();
             return;
         }
 
         this.isLoadingSimulation = true;
-        this.statusMessage = null;
+        this.statusMessage = 'Running simulation...';
         this.hasError = false;
-        const planningData = this.reconstructNestedObject(this.parameterFormGroup.value);
+        console.log(`[RUNSIMULATION_STATE_SET ${this.instanceId}] isLoadingSimulation=true. Forcing CDR. Timestamp: ${Date.now()}`);
+        this.cdr.detectChanges(); 
+        console.log(`[RUNSIMULATION_POST_INITIAL_CDR ${this.instanceId}] Initial CDR completed. Timestamp: ${Date.now()}`);
 
+        console.time(`[PERF ${this.instanceId}] reconstructNestedObject_SIM`);
+        const planningData = this.reconstructNestedObject(this.parameterFormGroup.value);
+        console.timeEnd(`[PERF ${this.instanceId}] reconstructNestedObject_SIM`);
+        const afterReconstructTime = Date.now();
+        console.log(`[RUNSIMULATION_DATA_RECONSTRUCTED ${this.instanceId}] Planning data reconstructed. Timestamp: ${afterReconstructTime} (Reconstruction took ${afterReconstructTime - operationStartTime}ms so far)`);
+
+        console.time(`[PERF ${this.instanceId}] SERVICE_CALL_runPlanning`);
         this.planningService.runPlanning(planningData)
-            .pipe(finalize(() => this.isLoadingSimulation = false))
+            .pipe(finalize(() => {
+                this.isLoadingSimulation = false;
+                console.log(`[RUNSIMULATION_FINALIZE ${this.instanceId}] Finalized. isLoadingSimulation: ${this.isLoadingSimulation}. Timestamp: ${Date.now()}`);
+                this.cdr.detectChanges(); 
+                console.log(`[RUNSIMULATION_FINALIZE_POST_CDR ${this.instanceId}] CDR after setting isLoadingSimulation=false in finalize. Timestamp: ${Date.now()}`);
+            }))
             .subscribe({
                 next: (response: any) => {
-                    console.log('Simulation Response:', response);
+                    console.timeEnd(`[PERF ${this.instanceId}] SERVICE_CALL_runPlanning`);
+                    const afterHttpSimTime = Date.now();
+                    console.log(`[RUNSIMULATION_NEXT ${this.instanceId}] Simulation Response:`, response, `. Timestamp: ${afterHttpSimTime} (Sim HTTP took ${afterHttpSimTime - afterReconstructTime}ms)`);
                     if (response && typeof response === 'object') {
-                        this.statusMessage = `Simulation gestartet/beendet: ${response.message || response.status || 'Keine detaillierte Meldung.'}`;
-                        this.hasError = !(response.status && response.status.toUpperCase() === 'SUCCESS');
+                        this.statusMessage = `Simulation completed: ${response.message || response.status || 'No detailed message.'}`;
+                        this.hasError = !(response.status && String(response.status).toUpperCase() === 'SUCCESS');
                     } else {
-                        this.statusMessage = `Simulation abgeschlossen. Antwort: ${JSON.stringify(response)}`;
+                        this.statusMessage = `Simulation completed. Response: ${JSON.stringify(response)}`;
                         this.hasError = false; 
                     }
-                    this.cdr.detectChanges();
+                    console.log(`[RUNSIMULATION_SUCCESS_TOTAL_TIME ${this.instanceId}] Total time for successful runSimulation (from call to this point): ${Date.now() - operationStartTime}ms`);
                 },
                 error: (err: any) => {
-                    this.statusMessage = `Fehler beim Starten der Simulation: ${err.message || err}`;
+                    console.timeEnd(`[PERF ${this.instanceId}] SERVICE_CALL_runPlanning`);
+                    this.statusMessage = `Error running simulation: ${err.message || err}`;
                     this.hasError = true;
-                    console.error(err);
-                    this.cdr.detectChanges();
+                    console.error(`[RUNSIMULATION_ERROR ${this.instanceId}] Simulation error. Timestamp: ${Date.now()}`, err);
+                    console.log(`[RUNSIMULATION_ERROR_TOTAL_TIME ${this.instanceId}] Total time for failed runSimulation (from call to this point): ${Date.now() - operationStartTime}ms`);
                 }
             });
+        console.log(`[RUNSIMULATION_METHOD_END_SYNC ${this.instanceId}] runSimulation synchronous part finished. HTTP request pending. Timestamp: ${Date.now()}`);
     }
 
     public getFormControl(path: string): FormControl | null {
@@ -226,26 +263,46 @@ export class ParameterInputComponent implements OnInit {
                 const keys = path.split('.');
                 let currentLevel: { [key: string]: any } = nestedObject;
                 keys.forEach((key, index) => {
-                    if (index === keys.length - 1) {
-                        try {
-                            const valueToParse = flatObject[path];
-                            if (typeof valueToParse === 'string') {
-                                if (valueToParse.trim().startsWith('[') && valueToParse.trim().endsWith(']')) {
-                                    currentLevel[key] = JSON.parse(valueToParse);
-                                } else if (valueToParse.trim().startsWith('{') && valueToParse.trim().endsWith('}')) {
-                                    currentLevel[key] = JSON.parse(valueToParse);
-                                } else {
-                                    currentLevel[key] = valueToParse;
+                    const isLastKey = index === keys.length - 1;
+                    
+                    const arrayMatch = key.match(/^(.+)\[\.\.\.\]$/);
+                    let actualKey = arrayMatch ? arrayMatch[1] : key;
+
+                    if (isLastKey) {
+                        let valueToSet = flatObject[path];
+                        if (typeof valueToSet === 'string') {
+                            const trimmedValue = valueToSet.trim();
+                            if ((trimmedValue.startsWith('[') && trimmedValue.endsWith(']')) ||
+                                (trimmedValue.startsWith('{') && trimmedValue.endsWith('}'))) {
+                                try {
+                                    valueToSet = JSON.parse(trimmedValue);
+                                } catch (e) {
+                                    // console.warn(`Failed to parse potential JSON string for path ${path}: ${valueToSet}`, e);
                                 }
-                            } else {
-                                currentLevel[key] = valueToParse;
                             }
-                        } catch (e) {
-                            currentLevel[key] = flatObject[path];
                         }
+                        currentLevel[actualKey] = valueToSet;
                     } else {
-                        currentLevel[key] = currentLevel[key] || {};
-                        currentLevel = currentLevel[key];
+                        if (!currentLevel[actualKey]) {
+                            const nextKeyRaw = keys[index+1];
+                            const nextKeyArrayMatch = nextKeyRaw ? nextKeyRaw.match(/^(.+)\[\.\.\.\]$/) : null;
+                            if (nextKeyArrayMatch) { 
+                                 currentLevel[actualKey] = [];
+                            } else {
+                                 currentLevel[actualKey] = {};
+                            }
+                        }
+                        if (typeof currentLevel[actualKey] !== 'object' || currentLevel[actualKey] === null) {
+                            console.warn(`[RECONSTRUCT ${this.instanceId}] Path conflict for key '${actualKey}' at '${path}'. Current value is not an object/array as expected by nesting. Overwriting as object/array based on next key.`);
+                            const nextKeyRaw = keys[index+1];
+                            const nextKeyArrayMatch = nextKeyRaw ? nextKeyRaw.match(/^(.+)\[\.\.\.\]$/) : null;
+                            if (nextKeyArrayMatch) {
+                                currentLevel[actualKey] = [];
+                            } else {
+                                currentLevel[actualKey] = {};
+                            }
+                        }
+                        currentLevel = currentLevel[actualKey];
                     }
                 });
             }

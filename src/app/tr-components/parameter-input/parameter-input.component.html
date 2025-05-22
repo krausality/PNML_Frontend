@@ -15,11 +15,11 @@
 
             <!-- Iterate over the combined data structure -->
             <ng-container *ngIf="combinedDataForRows.length > 0">
-                <ng-container *ngFor="let rowData of combinedDataForRows">
+                <ng-container *ngFor="let rowData of combinedDataForRows; trackBy: trackByPath">
                      <div class="parameter-row-wrapper">
                         <app-parameter-row
                             [parameter]="rowData.definition"
-                            [formControl]="rowData.control"> <!-- Directly pass the pre-resolved control -->
+                            [controlName]="rowData.definition.path"> 
                         </app-parameter-row>
                     </div>
                 </ng-container>
@@ -36,7 +36,7 @@
     </div>
 
     <div fxLayout="row" fxLayoutGap="10px">
-        <button mat-raised-button color="primary" (click)="loadDefaults()" [disabled]="isLoadingDefaults" matTooltip="Load default parameters from the server into the table and text area.">
+        <button mat-raised-button color="primary" (click)="loadDefaults()" [disabled]="isLoadingDefaults" matTooltip="Load default parameters from the server.">
             <mat-icon *ngIf="!isLoadingDefaults">download</mat-icon>
             <mat-progress-spinner *ngIf="isLoadingDefaults" mode="indeterminate" diameter="20"></mat-progress-spinner>
             <span *ngIf="!isLoadingDefaults">Load Defaults</span>
