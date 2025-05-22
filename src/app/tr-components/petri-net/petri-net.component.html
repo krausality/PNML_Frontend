@@ -1,13 +1,13 @@
 <!-- Zoom Controls -->
 <div class="zoom-controls">
-    <button mat-icon-button (click)="zoomService.zoomIn()" matTooltip="Zoom In" [matTooltipShowDelay]="showTooltipDelay">
+    <button mat-icon-button (click)="zoomService.zoomIn()" matTooltip="Zoom in on the net" [matTooltipShowDelay]="showTooltipDelay">
         <mat-icon>zoom_in</mat-icon>
     </button>
-    <button mat-icon-button (click)="zoomService.zoomOut()" matTooltip="Zoom Out" [matTooltipShowDelay]="showTooltipDelay">
+    <button mat-icon-button (click)="zoomService.zoomOut()" matTooltip="Zoom out of the net" [matTooltipShowDelay]="showTooltipDelay">
         <mat-icon>zoom_out</mat-icon>
     </button>
     <!-- Changed click handler to call the new method in PetriNetComponent -->
-    <button mat-icon-button (click)="resetViewToFitContent()" matTooltip="Reset View to Fit Content" [matTooltipShowDelay]="showTooltipDelay">
+    <button mat-icon-button (click)="resetViewToFitContent()" matTooltip="Reset view to fit entire net" [matTooltipShowDelay]="showTooltipDelay">
         <mat-icon>center_focus_strong</mat-icon>
     </button>
 </div>

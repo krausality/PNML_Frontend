@@ -46,3 +46,5 @@ seafile
 backend
 parameters_full.csv
 parameters_full.md
+swagger-parser.py
+

@@ -12,7 +12,7 @@
                 mat-stroked-button
                 class="text-button"
                 (click)="startSimulation()"
-                matTooltip="Start Simulation"
+                matTooltip="Start simulation with current parameters."
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 Start Simulation
@@ -28,7 +28,7 @@
                     uiService.button === ButtonState.Blitz ? 'primary' : ''
                 "
                 (click)="buttonClicked(ButtonState.Blitz)"
-                matTooltip="Blitz tool"
+                matTooltip="Multi-tool: Create, connect, edit, or delete elements."
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>bolt</mat-icon>
@@ -44,7 +44,7 @@
                     uiService.button === ButtonState.Place ? 'primary' : ''
                 "
                 (click)="buttonClicked(ButtonState.Place)"
-                matTooltip="Add a new place to the Petri net"
+                matTooltip="Add a new place."
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>circle</mat-icon>
@@ -57,7 +57,7 @@
                     uiService.button === ButtonState.Transition ? 'primary' : ''
                 "
                 (click)="buttonClicked(ButtonState.Transition)"
-                matTooltip="Add a new transition to the Petri net"
+                matTooltip="Add a new transition."
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>square</mat-icon>
@@ -68,7 +68,7 @@
                 mat-icon-button
                 [color]="uiService.button === ButtonState.Arc ? 'primary' : ''"
                 (click)="buttonClicked(ButtonState.Arc)"
-                matTooltip="Add a new arc to connect elements"
+                matTooltip="Add an arc to connect places and transitions."
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>north_east</mat-icon>
@@ -81,7 +81,7 @@
                     uiService.button === ButtonState.Anchor ? 'primary' : ''
                 "
                 (click)="buttonClicked(ButtonState.Anchor)"
-                matTooltip="Add anchor point"
+                matTooltip="Add anchor point to an existing arc to reshape."
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>linear_scale</mat-icon>
@@ -95,7 +95,7 @@
                 mat-icon-button
                 [color]="uiService.button === ButtonState.Add ? 'primary' : ''"
                 (click)="buttonClicked(ButtonState.Add)"
-                matTooltip="Increase tokens or weight"
+                matTooltip="Increase place tokens or arc weight."
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>add</mat-icon>
@@ -108,7 +108,7 @@
                     uiService.button === ButtonState.Remove ? 'primary' : ''
                 "
                 (click)="buttonClicked(ButtonState.Remove)"
-                matTooltip="Decrease tokens or weight"
+                matTooltip="Decrease place tokens or arc weight (min. 1)."
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>remove</mat-icon>
@@ -121,7 +121,7 @@
                     uiService.button === ButtonState.Delete ? 'primary' : ''
                 "
                 (click)="buttonClicked(ButtonState.Delete)"
-                matTooltip="Delete single element"
+                matTooltip="Delete a single selected element (node, arc, anchor)."
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>delete</mat-icon>
@@ -134,7 +134,7 @@
                     uiService.button === ButtonState.Clear ? 'primary' : ''
                 "
                 (click)="openClearDialog()"
-                matTooltip="Delete the whole petri net"
+                matTooltip="Delete the entire current net."
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>clear</mat-icon>
@@ -148,7 +148,7 @@
                 mat-icon-button
                 [color]="uiService.button === ButtonState.Move ? 'primary' : ''"
                 (click)="buttonClicked(ButtonState.Move)"
-                matTooltip="Move individual elements or the complete petri net (canvas drag)"
+                matTooltip="Move elements or pan the entire net."
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>open_with</mat-icon>
@@ -164,7 +164,7 @@
                     uiService.button === ButtonState.Select ? 'primary' : ''
                 "
                 (click)="buttonClicked(ButtonState.Select)"
-                matTooltip="Add action label to a transition"
+                matTooltip="Assign or change an action label for a transition."
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>ads_click</mat-icon>
@@ -174,7 +174,7 @@
             <button
                 mat-icon-button
                 (click)="openActionDialog()"
-                matTooltip="Edit action label options"
+                matTooltip="Manage available action labels (create, edit, delete)."
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>edit_note</mat-icon>
@@ -195,7 +195,7 @@
                 mat-stroked-button
                 class="text-button"
                 (click)="pnmlFileInput.click()"
-                matTooltip="Upload PNML file"
+                matTooltip="Upload a net from a PNML file."
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 Upload PNML
@@ -208,7 +208,7 @@
                 mat-stroked-button
                 class="text-button"
                 (click)="applyLayout('spring-embedder')"
-                matTooltip="Arranges the Petri net using a force-directed algorithm to improve layout aesthetics."
+                matTooltip="Rearrange net for lowest edge crossings."
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 Spring Embedder
@@ -219,7 +219,7 @@
                 mat-stroked-button
                 class="text-button"
                 (click)="applyLayout('sugiyama')"
-                matTooltip="Arranges the Petri net using the Sugiyama layered graph drawing algorithm to minimize edge crossings."
+                matTooltip="Rearrange net for lower edge crossings."
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 Sugiyama
@@ -249,7 +249,7 @@
                 mat-icon-button
                 [disabled]="tokenGameService.isGameHistoryEmpty()"
                 (click)="tokenGameService.resetGame()"
-                matTooltip="Reset to start"
+                matTooltip="Reset token game to its initial marking."
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>restart_alt</mat-icon>
@@ -260,7 +260,7 @@
                 mat-icon-button
                 [disabled]="tokenGameService.isGameHistoryEmpty()"
                 (click)="tokenGameService.revertToPreviousState()"
-                matTooltip="Go back one step"
+                matTooltip="Undo the last step in the token game."
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 <mat-icon>fast_rewind</mat-icon>
@@ -294,7 +294,7 @@
                     placeInvariantsService.calculatePIs();
                     openPlaceInvariantsTable()
                 "
-                matTooltip="Calculate place invariants with Farkas algorithm"
+                matTooltip="Calculate and show all place invariants (Farkas)."
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 Place Invariants (Farkas)
@@ -309,7 +309,7 @@
                     placeInvariantsService.removeNonMinimalPIs();
                     openPlaceInvariantsTable()
                 "
-                matTooltip="Calculate place invariants with Farkas algorithm AND Remove linearly dependent place invariants"
+                matTooltip="Calculate and show only minimal place invariants."
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 Minimal Place Invariants
@@ -327,7 +327,7 @@
                     placeInvariantsService.showLCTable = true;
                     openPlaceInvariantsTable()
                 "
-                matTooltip="Show table with place invariants from latest calculation and select place invariants for linear combination."
+                matTooltip="Select calculated invariants for linear combination display."
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 Linear Combination
@@ -359,7 +359,7 @@
                 mat-stroked-button
                 class="text-button"
                 (click)="exportJsonDataService.exportAsJson()"
-                matTooltip="Export petri net as JSON"
+                matTooltip="Export current net as a JSON file."
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 JSON
@@ -370,7 +370,7 @@
                 mat-stroked-button
                 class="text-button"
                 (click)="pnmlService.writePNML()"
-                matTooltip="Export petri net as PNML"
+                matTooltip="Export current net as a PNML file."
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 PNML
@@ -389,7 +389,7 @@
                         'pngExport.png'
                     )
                 "
-                matTooltip="Save petri net as PNG image"
+                matTooltip="Save current view as a PNG image."
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 PNG
@@ -400,7 +400,7 @@
                 mat-stroked-button
                 class="text-button"
                 (click)="exportSvgService.exportAsSvg()"
-                matTooltip="Save petri net as SVG image"
+                matTooltip="Save current view as an SVG image."
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 SVG
@@ -430,7 +430,7 @@
             <!-- Reset button -->
             <button
                 mat-icon-button
-                matTooltip="Reset code editor to the current petri net state"
+                matTooltip="Reload editor with code from current visible net."
                 [matTooltipShowDelay]="showTooltipDelay"
                 (click)="
                     uiService.codeEditorFormat$.next(
@@ -444,7 +444,7 @@
             <!-- Apply button -->
             <button
                 mat-icon-button
-                matTooltip="Apply the source code in the code editor as the new petri net state"
+                matTooltip="Apply editor code to replace current visible net."
                 [matTooltipShowDelay]="showTooltipDelay"
                 (click)="buttonClicked(ButtonState.ApplyCode)"
             >
@@ -463,7 +463,7 @@
                         : ''
                 "
                 (click)="switchCodeEditorFormat(CodeEditorFormat.JSON)"
-                matTooltip="Switch the code editor format to JSON"
+                matTooltip="Switch editor to JSON format. Unapplied changes lost."
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 JSON
@@ -479,7 +479,7 @@
                         : ''
                 "
                 (click)="switchCodeEditorFormat(CodeEditorFormat.PNML)"
-                matTooltip="Switch the code editor format to PNML"
+                matTooltip="Switch editor to PNML format. Unapplied changes lost."
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 PNML

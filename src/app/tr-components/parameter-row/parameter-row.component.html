@@ -6,7 +6,7 @@
             [name]="getSafeName() + '_checkbox'"
             class="parameter-checkbox"
             [id]="parameter.path + '-checkbox'"
-            [matTooltip]="parameter.description || 'No description available'"
+            [matTooltip]="parameter.description || 'More details about this parameter.'"
             matTooltipPosition="above">
             {{ parameterName }}
             <span *ngIf="parameter.required === 'Yes'" class="required-indicator">*</span>
@@ -16,7 +16,7 @@
     <!-- Number, Text or other Types -->
     <ng-container *ngIf="!isBoolean()">
         <mat-form-field class="parameter-input-field" appearance="outline"
-            [matTooltip]="parameter.description || 'No description available'" matTooltipPosition="above">
+            [matTooltip]="parameter.description || 'More details about this parameter.'" matTooltipPosition="above">
             <mat-label>
                 {{ parameterName }}
                 <span *ngIf="parameter.required === 'Yes'" class="required-indicator">*</span>

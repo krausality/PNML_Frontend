@@ -34,7 +34,7 @@
 
                     <!-- Only allow deleting an action that is not currently used as transition label -->
                     <div
-                        matTooltip="Cannot delete actions that are set as labels"
+                        matTooltip="Cannot delete used action labels."
                         [matTooltipDisabled]="
                             !dataService.checkActionUsed(action)
                         "
