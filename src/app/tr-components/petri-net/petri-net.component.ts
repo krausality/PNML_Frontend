@@ -1,3 +1,51 @@
+/**
+ * @file petri-net.component.ts
+ * @description This component is the core visual representation of the Petri net.
+ * It handles the rendering of places, transitions, and arcs on an SVG canvas,
+ * and manages user interactions with these elements, such as dragging, clicking,
+ * adding new elements, and zooming/panning.
+ *
+ * Modularity and Responsibilities:
+ * The `PetriNetComponent` acts as the primary view and controller for the Petri net diagram.
+ * Its modularity comes from several aspects:
+ *   - **View Logic Encapsulation**: All logic related to rendering the SVG elements (places, transitions, arcs)
+ *     and handling direct user interactions (mouse events, drag-and-drop for file import) is contained within this component.
+ *   - **Service-Based Architecture**: It delegates complex tasks to various specialized services:
+ *     - `DataService`: For accessing and modifying the underlying Petri net data (places, transitions, arcs).
+ *     - `ParserService`: (Potentially, though direct usage isn't prominent in the provided snippet for parsing dropped files).
+ *     - `ExportJsonDataService`, `PnmlService`: For exporting the diagram in different formats.
+ *     - `UiService`: For managing UI state (e.g., current tool selected, interaction mode).
+ *     - `TokenGameService`: For handling token game logic if applicable.
+ *     - `ZoomService`: For managing zoom and pan functionality of the SVG canvas.
+ *     - `EditMoveElementsService`: For handling the logic of moving and editing elements.
+ *     - `LayoutSugiyamaService`: For applying automated layout algorithms.
+ *     - `SvgCoordinatesService`: For converting between screen and SVG coordinates.
+ *     - `PlaceInvariantsService`: For calculations related to place invariants.
+ *     - `HttpClient`, `FileReaderService`: For loading example files or handling file drops.
+ *   - **Input/Output**: It can receive data via `@Input()` (e.g., `buttonState`) and could emit events via `@Output()`
+ *     (though not explicitly shown in the snippet) to communicate with parent components.
+ *   - **Clear Separation from Business Logic**: While it orchestrates many interactions, the core business logic
+ *     (e.g., Petri net semantics, parsing algorithms, layout algorithms) resides in the injected services.
+ *
+ * Key Functionalities:
+ *   - **Rendering**: Dynamically creates and updates SVG elements based on data from `DataService`.
+ *   - **User Interaction Handling**:
+ *     - Dispatches various mouse events (click, mousedown, mousemove, mouseup) on SVG elements (places, transitions, arcs, anchors) and the SVG canvas itself.
+ *     - Handles drag-and-drop events for importing files.
+ *     - Manages context menu events.
+ *     - Implements wheel events for zooming (delegated to `ZoomService`) and potentially other element-specific interactions.
+ *   - **Element Creation**: Provides methods like `addPlace`, `addTransition` to allow users to add new elements to the diagram.
+ *   - **View Manipulation**: Includes functionality like `resetViewToFitContent` (delegating to `ZoomService`).
+ *   - **State Management**: Manages internal state related to interactions, such as `startTransition`, `startPlace` for creating arcs, or `lastNode`, `nextNode` for tool-specific highlighting.
+ *
+ * Lifecycle Hooks:
+ *   - `ngOnInit`: For initialization tasks.
+ *   - `ngAfterViewInit`: To interact with the `@ViewChild('drawingArea')` after the view is initialized (e.g., for setting up zoom or initial rendering).
+ *   - `ngOnDestroy`: For cleanup, such as unsubscribing from observables.
+ *
+ * This component is central to the user experience, providing the interactive canvas for working with Petri nets.
+ * Its reliance on various services for specific tasks keeps its own logic focused on view management and interaction orchestration.
+ */
 import { HttpClient } from '@angular/common/http';
 import {
     Component,

@@ -1,3 +1,10 @@
+/**
+ * @file dummyNode.ts
+ * @description This file defines the DummyNode class, representing a temporary node used during arc creation in the Petri net editor.
+ * It implements the Node interface and serves as a placeholder, for example, for the target of an arc that is currently being drawn.
+ * It is not a functional part of the Petri net itself but aids in the UI interactions.
+ */
+
 import { Node } from 'src/app/tr-interfaces/petri-net/node';
 import { Point } from './point';
 

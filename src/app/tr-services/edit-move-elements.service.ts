@@ -1,12 +1,20 @@
 import { Injectable } from '@angular/core';
-import { Point } from '../tr-classes/petri-net/point';
 import { Arc } from '../tr-classes/petri-net/arc';
 import { Node } from '../tr-interfaces/petri-net/node';
+import { Point } from '../tr-classes/petri-net/point';
 import { DataService } from './data.service';
+import { SvgCoordinatesService } from './svg-coordinates-service';
 import { UiService } from './ui.service';
 import { ButtonState } from '../tr-enums/ui-state';
-import { SvgCoordinatesService } from './svg-coordinates-service';
 
+/**
+ * @service EditMoveElementsService
+ * @description This service handles the logic for moving elements (nodes and arc anchors)
+ * on the SVG canvas during drag operations.
+ * It keeps track of the initial mouse position, the element being moved, and related arcs.
+ * This modularization separates the complex logic of element manipulation via dragging
+ * from other UI or data concerns.
+ */
 @Injectable({
     providedIn: 'root',
 })
@@ -36,6 +44,11 @@ export class EditMoveElementsService {
         private svgCoordinatesService: SvgCoordinatesService,
     ) {}
 
+    /**
+     * @description Initializes the panning of the entire Petri net canvas.
+     * Stores the initial mouse position to calculate the pan offset during dragging.
+     * @param event The mouse event that initiated the panning.
+     */
     initializePetrinetPanning(event: MouseEvent) {
         // Register initial mouse position
         this.initialMousePos.x = event.clientX;
@@ -44,6 +57,12 @@ export class EditMoveElementsService {
         this.isCanvasDragInProcess = true;
     }
 
+    /**
+     * @description Initializes the movement of a node (place or transition).
+     * Stores the initial mouse position and the node being moved, along with its connected arcs.
+     * @param event The mouse event that initiated the node move.
+     * @param node The node to be moved.
+     */
     initializeNodeMove(event: MouseEvent, node: Node) {
         // Register node to be moved
         this.node = node;
@@ -58,6 +77,12 @@ export class EditMoveElementsService {
         this.initialMousePos.y = event.clientY;
     }
 
+    /**
+     * @description Initializes the movement of an arc anchor point.
+     * Stores the initial mouse position and the anchor point being moved.
+     * @param event The mouse event that initiated the anchor move.
+     * @param anchor The anchor point to be moved.
+     */
     initializeAnchorMove(event: MouseEvent, anchor: Point) {
         // Register anchor to be moved
         this.anchor = anchor;

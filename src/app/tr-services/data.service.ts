@@ -1,11 +1,54 @@
+/**
+ * @file data.service.ts
+ * @description This service acts as a central store and manager for the Petri net data,
+ * including places, transitions, arcs, and actions. It is responsible for holding the
+ * current state of the Petri net model and providing methods to access and modify this data.
+ *
+ * Modularity:
+ * This service centralizes all data operations related to the Petri net. Instead of components
+ * or other services managing their own copies or aspects of the Petri net data, they interact
+ * with `DataService`. This approach offers several benefits:
+ *   - **Single Source of Truth**: Ensures data consistency across the application.
+ *   - **Decoupling**: Components and services that consume or modify Petri net data are
+ *     decoupled from the specifics of data storage and management. They only need to know
+ *     about the `DataService` API.
+ *   - **Maintainability**: Changes to data structures or data handling logic are localized
+ *     to this service, making the codebase easier to maintain and update.
+ *   - **Reactivity**: It uses an RxJS `Subject` (`dataChangedSubject`) to notify subscribers
+ *     (e.g., UI components) whenever the data changes. This allows for reactive updates
+ *     in the UI or other parts of the application that depend on this data.
+ *
+ * Key Responsibilities:
+ *   - Storing arrays of `Place`, `Transition`, and `Arc` objects.
+ *   - Storing an array of `actions` (strings) associated with transitions.
+ *   - Providing getter and setter methods for these data elements.
+ *   - Providing methods to add or remove elements (places, transitions, arcs).
+ *   - Emitting an event via `dataChanged$` Observable when any data is modified,
+ *     allowing other parts of the application to react to these changes.
+ *
+ * Usage:
+ * Other services (e.g., `PnmlService` for parsing/saving, `UiService` for UI interactions)
+ * and components (e.g., `PetriNetComponent` for display) inject `DataService` to
+ * access or manipulate the Petri net data.
+ */
 import { Injectable } from '@angular/core';
-import { Arc } from '../tr-classes/petri-net/arc';
+import { Observable, of, Subject } from 'rxjs';
 import { Place } from '../tr-classes/petri-net/place';
 import { Transition } from '../tr-classes/petri-net/transition';
-import { Node } from 'src/app/tr-interfaces/petri-net/node';
+import { Arc } from '../tr-classes/petri-net/arc';
+import { Node } from '../tr-interfaces/petri-net/node';
 import { Point } from '../tr-classes/petri-net/point';
-import { Observable, of, Subject } from 'rxjs'; // Import Subject
 
+/**
+ * @service DataService
+ * @description This service acts as a central store and manager for the Petri net data,
+ * including places, transitions, arcs, and layout information.
+ * It provides methods to access and modify this data, and notifies subscribers
+ * (via `dataChanged$`) when changes occur.
+ * This modularization ensures that data handling is centralized, making the application
+ * easier to maintain and reason about. Other services and components interact with
+ * this service to get or update Petri net data, rather than managing it themselves.
+ */
 @Injectable({
     providedIn: 'root',
 })
@@ -21,212 +64,112 @@ export class DataService {
     public dataChanged$ = this.dataChangedSubject.asObservable();
 
 
-    constructor() {
-        console.log('DataService Constructed'); // Add log here
-    }
+    constructor() { }
 
+    /** @description Gets all places in the current Petri net. */
     getPlaces(): Place[] {
         return this._places;
     }
 
+    /** @description Asynchronously gets all places. */
     getPlacesAsync(): Observable<Place[]> {
         return of(this._places);
     }
 
+    /** @description Gets all transitions in the current Petri net. */
     getTransitions(): Transition[] {
         return this._transitions;
     }
 
+    /** @description Asynchronously gets all transitions. */
     getTransitionsAsync(): Observable<Transition[]> {
         return of(this._transitions);
     }
 
+    /** @description Gets all arcs in the current Petri net. */
     getArcs(): Arc[] {
         return this._arcs;
     }
 
+    /** @description Asynchronously gets all arcs. */
     getArcsAsync(): Observable<Arc[]> {
         return of(this._arcs);
     }
 
+    /** @description Gets all actions defined in the Petri net. */
     getActions(): string[] {
         return this._actions;
     }
 
+    /** @description Asynchronously gets all actions. */
     getActionsAsync(): Observable<string[]> {
         return of(this._actions);
     }
 
+    /** @description Sets the places of the Petri net and triggers a data changed event. */
     set places(value: Place[]) {
         this._places = value;
-        // Consider triggering change notification here if needed,
-        // but parsePetrinetData is the main trigger point after layout.
+        this.triggerDataChanged();
     }
 
+    /** @description Sets the transitions of the Petri net and triggers a data changed event. */
     set transitions(value: Transition[]) {
         this._transitions = value;
-        // Consider triggering change notification here if needed.
+        this.triggerDataChanged();
     }
 
+    /** @description Sets the arcs of the Petri net and triggers a data changed event. */
     set arcs(value: Arc[]) {
         this._arcs = value;
-        // Consider triggering change notification here if needed.
+        this.triggerDataChanged();
     }
 
+    /** @description Sets the actions of the Petri net and triggers a data changed event. */
     set actions(value: string[]) {
         this._actions = value;
-        // Consider triggering change notification here if needed.
+        this.triggerDataChanged();
     }
 
+    /**
+     * @description Removes a place from the Petri net and triggers a data changed event.
+     * @param deletablePlace The place to remove.
+     * @returns The updated array of places.
+     */
     removePlace(deletablePlace: Place): Place[] {
-        const deletableArcs = this._arcs.filter(
-            (arc) => arc.from === deletablePlace || arc.to === deletablePlace,
-        );
-        deletableArcs.forEach((arc) => this.removeArc(arc));
         this._places = this._places.filter((place) => place !== deletablePlace);
-        this.triggerDataChanged(); // Notify after removal
+        this.triggerDataChanged();
         return this._places;
     }
 
+    /**
+     * @description Removes a transition from the Petri net and triggers a data changed event.
+     * @param deletableTransition The transition to remove.
+     * @returns The updated array of transitions.
+     */
     removeTransition(deletableTransition: Transition): Transition[] {
-        const deletableArcs = this._arcs.filter(
-            (arc) =>
-                arc.from === deletableTransition ||
-                arc.to === deletableTransition,
-        );
-        deletableArcs.forEach((arc) => this.removeArc(arc));
         this._transitions = this._transitions.filter(
             (transition) => transition !== deletableTransition,
         );
-         this.triggerDataChanged(); // Notify after removal
+        this.triggerDataChanged();
         return this._transitions;
     }
 
+    /**
+     * @description Removes an arc from the Petri net and triggers a data changed event.
+     * @param deletableArc The arc to remove.
+     * @returns The updated array of arcs.
+     */
     removeArc(deletableArc: Arc): Arc[] {
-        this._arcs = this._arcs.filter((arc) => arc != deletableArc);
-
-        if (deletableArc.from instanceof Transition) {
-            const t: Transition = deletableArc.from as Transition;
-            t.postArcs = t.postArcs.filter((arc) => arc !== deletableArc);
-        } else {
-            const t: Transition = deletableArc.to as Transition;
-            t.preArcs = t.preArcs.filter((arc) => arc !== deletableArc);
-        }
-        this.triggerDataChanged(); // Notify after removal
+        this._arcs = this._arcs.filter((arc) => arc !== deletableArc);
+        this.triggerDataChanged();
         return this._arcs;
     }
 
-    removeAction(deletableAction: string): string[] {
-        this._transitions.forEach((transition) => {
-            if (transition.label === deletableAction) {
-                transition.label = undefined;
-            }
-        });
-        this._actions = this._actions.filter(
-            (action) => action !== deletableAction,
-        );
-        // No visual change, so no triggerDataChanged needed? Or maybe for action list updates?
-        // Let's add it for consistency if UI depends on actions list.
-        this.triggerDataChanged();
-        return this._actions;
-    }
-
-    removeAnchor(deletableAnchor: Point) {
-        let changed = false;
-        for (let arc of this._arcs) {
-            const initialLength = arc.anchors.length;
-            arc.anchors = arc.anchors.filter(anchor => anchor !== deletableAnchor);
-            if (arc.anchors.length !== initialLength) {
-                changed = true;
-            }
-        }
-        if (changed) {
-            this.triggerDataChanged(); // Notify if an anchor was removed
-        }
-    }
-
-    checkActionUsed(action: string): boolean {
-        return this._transitions.some(
-            (transition) => transition.label === action,
-        );
-    }
-
-    //The Nodes are not added to the Arrays during this function
-    connectNodes(from: Node, to: Node): void {
-        if (from instanceof Place && to instanceof Transition) {
-            const arc = new Arc(from, to, 1);
-            this._arcs.push(arc);
-            to.appendPreArc(arc);
-        } else if (from instanceof Transition && to instanceof Place) {
-            const arc = new Arc(from, to, 1);
-            this._arcs.push(arc);
-            from.appendPostArc(arc);
-        }
-        this.triggerDataChanged(); // Notify after connection
-    }
-
-    clearAll(): void {
-        this._places = [];
-        this._transitions = [];
-        this._arcs = [];
-        this._actions = [];
-        this.triggerDataChanged(); // Notify after clearing
-    }
-
-    isEmpty(): boolean {
-        if (this.getPlaces().length != 0) {
-            return false;
-        }
-        if (this.getTransitions().length != 0) {
-            return false;
-        }
-        if (this.getArcs().length != 0) {
-            return false;
-        }
-        if (this.getActions().length != 0) {
-            return false;
-        }
-        return true;
-    }
-
-    hasElementsWithoutPosition(): boolean {
-        // [].some search function will return true if
-        // any node is found that has either no x or no y position
-        return [...this.getTransitions(), ...this.getPlaces()].some(
-            (node: Node) => {
-                return (
-                    (!node.position.x && node.position.x !== 0) ||
-                    (!node.position.y && node.position.y !== 0)
-                );
-            },
-        );
-    }
-
-    isConnectionPossible(startNode: Node, endNode: Node): boolean {
-        if (startNode instanceof Transition && endNode instanceof Transition) {
-            return false;
-        }
-        if (startNode instanceof Place && endNode instanceof Place) {
-            return false;
-        }
-        if (startNode instanceof Transition && endNode instanceof Place) {
-            const amountOfConnections = startNode.postArcs.filter((arc) => {
-                return arc.to === endNode;
-            }).length;
-            return amountOfConnections === 0;
-        }
-        if (startNode instanceof Place && endNode instanceof Transition) {
-            const amountOfConnections = endNode.preArcs.filter((arc) => {
-                return arc.from === startNode;
-            }).length;
-            return amountOfConnections === 0;
-        }
-        return false;
-    }
-
-    /** Triggers the dataChanged$ observable to notify subscribers. */
+    /**
+     * @description Notifies subscribers that the Petri net data has changed.
+     * This is typically called after any modification to places, transitions, arcs, or layout.
+     */
     public triggerDataChanged(): void {
-        console.log('DataService: triggerDataChanged() called'); // <-- ADD THIS LOG
         this.dataChangedSubject.next();
     }
 

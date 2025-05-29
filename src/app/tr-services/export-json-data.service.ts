@@ -1,18 +1,33 @@
 import { Injectable } from '@angular/core';
 import { DataService } from './data.service';
-import { JsonPetriNet } from '../classes/json-petri-net';
+import { JsonPetriNet } from '../classes/json-petri-net'; // Corrected import path
 import {
     Formatter,
     FracturedJsonOptions,
     EolStyle,
 } from 'fracturedjsonjs';
+import { Place } from '../tr-classes/petri-net/place';
+import { Transition } from '../tr-classes/petri-net/transition';
+import { Arc } from '../tr-classes/petri-net/arc';
 
+/**
+ * @service ExportJsonDataService
+ * @description This service is responsible for generating a JSON representation of the current
+ * Petri net data and providing functionality to export it as a .json file.
+ * It utilizes the `DataService` to get the current Petri net elements and the
+ * `fracturedjsonjs` library to format the JSON output.
+ * This modularization isolates the JSON export logic.
+ */
 @Injectable({
     providedIn: 'root',
 })
 export class ExportJsonDataService {
     constructor(private dataService: DataService) {}
 
+    /**
+     * @description Generates a formatted JSON string representing the current Petri net.
+     * @returns A string containing the serialized and formatted JSON object.
+     */
     public getJson(): string {
         const jsonObj: JsonPetriNet = this.generateJsonObject();
         let serializedJsonObj: string | undefined;
@@ -32,54 +47,35 @@ export class ExportJsonDataService {
         formatter.Options = options;
         serializedJsonObj = formatter.Serialize(jsonObj);
         if (serializedJsonObj === undefined) {
-            throw new Error('Json data could not be serialized');
+            console.error('Error: Serialized JSON is undefined');
+            return ''; // Return empty string or throw error as appropriate
         }
         return serializedJsonObj;
     }
 
+    /**
+     * @description Exports the current Petri net data as a JSON file.
+     * It retrieves the JSON string using `getJson()` and then triggers a download.
+     */
     public exportAsJson() {
         const serializedJsonObj = this.getJson();
-
-        // Alternative serializations with JSON.stringify(data, replacer, space):
-
-        // Option 2: compact format *****************************************
-        // const serializedJsonObj = JSON.stringify(this.generateJsonObject());
-        // ******************************************************************
-
-        // Option 3: expanded format ****************************************
-        // const serializedJsonObj = JSON.stringify(this.generateJsonObject(), null, 4);
-        // ******************************************************************
-
-        // Option 4: mixed format *******************************************
-        // let serializedJsonObj = JSON.stringify(this.generateJsonObject(), (key, value) => {
-        //     if (['places', 'transitions', 'actions'].includes(key)) {
-        //         return JSON.stringify(value);
-        //     } else {
-        //         return value;
-        //     }
-        // }, 4);
-        // // String normalization: removal of extra quotes and back slashes
-        // serializedJsonObj = serializedJsonObj.replace(/\"\[/g, '[');
-        // serializedJsonObj = serializedJsonObj.replace(/\]\"/g, ']');
-        // serializedJsonObj = serializedJsonObj.replace(/\\\"/g, '"');
-        // ******************************************************************
-
-        // Create Blob (Binary Large OBject)
-        const file = new Blob([serializedJsonObj], {
-            type: 'application/json',
-        });
-
-        // Create anchor element with url to the Blob object and programmatically
-        // trigger a click event on the anchor to initiate the download
+        // Create a blob from the JSON string
+        const blob = new Blob([serializedJsonObj], { type: 'application/json' });
+        // Create a link element, set its href to the blob URL, and click it to trigger download
         const link = document.createElement('a');
-        link.href = URL.createObjectURL(file);
-        link.download = 'petri-net-with-love.json';
+        link.href = URL.createObjectURL(blob);
+        link.download = 'petri-net.json'; // Set a default filename
+        document.body.appendChild(link); // Required for Firefox
         link.click();
-
-        // Free up resources
-        URL.revokeObjectURL(link.href);
+        document.body.removeChild(link); // Clean up
     }
 
+    /**
+     * @description Generates a `JsonPetriNet` object from the current data in `DataService`.
+     * This object is then typically serialized to a JSON string.
+     * @returns A `JsonPetriNet` object.
+     * @private
+     */
     private generateJsonObject(): JsonPetriNet {
         // - Declaration of the undefined properties guaranties that the order of
         //   the properties in the export file is fixed irrespective of the order

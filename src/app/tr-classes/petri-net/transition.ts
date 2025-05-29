@@ -1,4 +1,12 @@
-import { Node } from 'src/app/tr-interfaces/petri-net/node';
+/**
+ * @file transition.ts
+ * @description This file defines the Transition class, a fundamental element in a Petri net.
+ * A Transition represents an event or action that can occur. It is connected to Places via Arcs.
+ * A transition can be 'active' (or 'enabled') if its pre-conditions (input places having enough tokens) are met.
+ * It implements the Node interface, providing properties like position, id, label, and methods for geometric calculations and activity status.
+ */
+import { Arc } from './arc';
+import { Node } from '../../tr-interfaces/petri-net/node';
 import { Point } from './point';
 import { Arc } from './arc';
 import { Place } from './place';
