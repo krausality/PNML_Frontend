@@ -1,37 +1,3 @@
-/**
- * @file app.module.ts
- * @description This file defines the root module of the PNML_Frontend application.
- * It imports and declares all the necessary Angular Material modules, custom components,
- * services, and pipes required for the application to function.
- *
- * The application is structured modularly to enhance maintainability and scalability.
- * Key modules and their roles:
- * - **BrowserModule**: Essential for running Angular applications in a browser.
- * - **FlexLayoutModule**: Provides a flexible layout system for arranging components.
- * - **BrowserAnimationsModule**: Enables Angular animations.
- * - **HttpClientModule**: Allows the application to make HTTP requests.
- * - **ReactiveFormsModule**: Supports reactive forms for handling user input.
- * - **Angular Material Modules (MatFormFieldModule, MatInputModule, etc.)**:
- *   Provide a rich set of UI components following Material Design principles.
- *
- * Custom components are organized into logical groups:
- * - `components`: Contains general-purpose UI components like `DisplayComponent` and `FooterComponent`.
- * - `tr-components`: Contains components specific to the Petri Net functionality,
- *   such as `PetriNetComponent`, `ButtonBarComponent`, and various pop-up dialogs.
- *
- * Services are grouped under `services` and `tr-services`:
- * - `services`: General application services like `FileReaderService`.
- * - `tr-services`: Services dedicated to Petri Net logic, including parsing, layout,
- *   export, and the token game. This separation helps in isolating core business logic.
- *
- * Pipes, like `mathAbsPipe`, are located in `tr-pipes` and provide custom data transformations.
- *
- * This modular structure allows for:
- * - **Clear Separation of Concerns**: Different functionalities are encapsulated in their respective modules/components/services.
- * - **Improved Reusability**: Components and services can be reused across different parts of the application.
- * - **Easier Maintenance**: Changes in one module are less likely to affect others, simplifying debugging and updates.
- * - **Scalability**: New features can be added as new modules or components without significantly impacting existing code.
- */
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';

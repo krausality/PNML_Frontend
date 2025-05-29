@@ -1,10 +1,3 @@
-/**
- * @file place.ts
- * @description This file defines the Place class, a fundamental element in a Petri net.
- * A Place can hold tokens and is connected to Transitions via Arcs.
- * It implements the Node interface, providing properties like position, id, label, and methods for geometric calculations.
- */
-
 import { Node } from 'src/app/tr-interfaces/petri-net/node';
 import { Point } from './point';
 import { radius } from 'src/app/tr-services/position.constants';
