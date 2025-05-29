@@ -7,35 +7,98 @@ import { UiService } from './ui.service';
 import { ButtonState } from '../tr-enums/ui-state';
 import { SvgCoordinatesService } from './svg-coordinates-service';
 
+/**
+ * @Injectable
+ * Provided in 'root', making this service a singleton available throughout the application.
+ *
+ * @description
+ * The `EditMoveElementsService` is responsible for managing the interactive editing
+ * operations related to moving Petri net elements on the SVG canvas. This includes
+ * moving nodes (places and transitions), arc anchors, and panning the entire Petri net.
+ * It orchestrates the state changes during drag operations and interacts with other
+ * services to update the data model and UI.
+ *
+ * Modularity:
+ * This service exemplifies a modular design by focusing solely on the logic of
+ * element manipulation (moving, dragging, inserting anchors). It achieves this by:
+ * - Delegating Petri net data management to {@link DataService}: It retrieves element
+ *   information (nodes, arcs) and updates their properties (positions) via `DataService`.
+ *   This keeps the core data model concerns separate.
+ * - Collaborating with {@link UiService}: It interacts with `UiService` to manage
+ *   UI states, such as switching the active tool (e.g., to 'Move' mode after
+ *   inserting an anchor). This decouples UI state logic from the element
+ *   manipulation logic.
+ * - Utilizing {@link SvgCoordinatesService}: It uses `SvgCoordinatesService` to
+ *   translate mouse event coordinates into the SVG canvas's coordinate system,
+ *   abstracting away the complexities of zoom and pan transformations.
+ *
+ * This separation of concerns enhances maintainability by making the codebase
+ * easier to understand, test, and modify. Each service has a well-defined
+ * responsibility.
+ */
 @Injectable({
     providedIn: 'root',
 })
 export class EditMoveElementsService {
-    // Mouse position before next drag step
+    /**
+     * Stores the mouse position recorded at the beginning of a drag operation
+     * or the last processed mouse move event. Used to calculate the delta
+     * for subsequent movements.
+     */
     initialMousePos: Point = { x: 0, y: 0 };
 
-    // For moving nodes: Node which will be moved
+    /**
+     * The Petri net node (Place or Transition) that is currently selected for being moved.
+     * It is `null` if no node is being moved.
+     */
     node: Node | null = null;
-    // Arcs that start or end at the selected node
-    // -->  anchor points of these arcs will be moved automatically with the node
+    /**
+     * An array of Arcs that are connected (either starting from or ending at)
+     * the currently selected `node`. The anchor points of these arcs are
+     * adjusted automatically when the `node` is moved.
+     */
     nodeArcs: Arc[] = [];
 
-    // For moving anchor points: anchor which will be moved
+    /**
+     * The specific anchor point of an Arc that is currently selected for being moved.
+     * It is `null` if no anchor is being moved.
+     */
     anchor: Point | null = null;
 
-    // Temporary storage of new anchor.
-    // Also an indicator that a new anchor is moved instead of an existing one
-    // when automatic switch to 'Move' mode occurs.
+    /**
+     * Temporarily stores a newly created anchor point.
+     * This property also serves as an indicator that a new anchor (rather than an
+     * existing one) is being moved, which can trigger specific UI behavior,
+     * such as automatically switching back to 'Anchor' mode upon finalization.
+     * It is `undefined` if no new anchor is currently being handled.
+     */
     newAnchor: Point | undefined;
 
+    /**
+     * A boolean flag indicating whether a canvas drag (panning of the entire Petri net)
+     * is currently in progress.
+     * `true` if the canvas is being panned, `false` otherwise.
+     */
     isCanvasDragInProcess: Boolean = false;
 
+    /**
+     * Constructs the EditMoveElementsService.
+     * @param dataService Service for accessing and manipulating Petri net data.
+     * @param uiService Service for managing UI states and interactions.
+     * @param svgCoordinatesService Service for converting screen to SVG coordinates.
+     */
     constructor(
         private dataService: DataService,
         private uiService: UiService,
         private svgCoordinatesService: SvgCoordinatesService,
     ) {}
 
+    /**
+     * Initializes the panning operation for the entire Petri net.
+     * It records the initial mouse position and sets the flag indicating
+     * that a canvas drag is in process.
+     * @param event The mouse event that triggered the panning operation (e.g., mousedown on canvas).
+     */
     initializePetrinetPanning(event: MouseEvent) {
         // Register initial mouse position
         this.initialMousePos.x = event.clientX;
@@ -44,6 +107,13 @@ export class EditMoveElementsService {
         this.isCanvasDragInProcess = true;
     }
 
+    /**
+     * Initializes the move operation for a specific Petri net node.
+     * It registers the node to be moved, identifies all arcs connected to it,
+     * and records the initial mouse position.
+     * @param event The mouse event that triggered the node move (e.g., mousedown on a node).
+     * @param node The Petri net node (Place or Transition) to be moved.
+     */
     initializeNodeMove(event: MouseEvent, node: Node) {
         // Register node to be moved
         this.node = node;
@@ -58,6 +128,12 @@ export class EditMoveElementsService {
         this.initialMousePos.y = event.clientY;
     }
 
+    /**
+     * Initializes the move operation for a specific arc anchor point.
+     * It registers the anchor to be moved and records the initial mouse position.
+     * @param event The mouse event that triggered the anchor move (e.g., mousedown on an anchor).
+     * @param anchor The anchor point (Point object) to be moved.
+     */
     initializeAnchorMove(event: MouseEvent, anchor: Point) {
         // Register anchor to be moved
         this.anchor = anchor;
@@ -67,6 +143,13 @@ export class EditMoveElementsService {
         this.initialMousePos.y = event.clientY;
     }
 
+    /**
+     * Updates the position of the currently selected node and its connected arc anchors
+     * based on the change in mouse position during a drag operation.
+     * This method should be called on mousemove events when a node move is active.
+     * The connected arc anchors are shifted by half the delta of the node's movement.
+     * @param event The mouse event containing the current mouse position.
+     */
     moveNodeByMousePositionChange(event: MouseEvent) {
         // If a node is registered, this node will be moved
         if (this.node) {
@@ -93,6 +176,12 @@ export class EditMoveElementsService {
         }
     }
 
+    /**
+     * Updates the position of the currently selected arc anchor based on the change
+     * in mouse position during a drag operation.
+     * This method should be called on mousemove events when an anchor move is active.
+     * @param event The mouse event containing the current mouse position.
+     */
     moveAnchorByMousePositionChange(event: MouseEvent) {
         // If an anchor is registered, this anchor will be moved
         if (this.anchor) {
@@ -110,6 +199,12 @@ export class EditMoveElementsService {
         }
     }
 
+    /**
+     * Pans the entire Petri net by shifting the positions of all nodes and arc anchors
+     * based on the change in mouse position during a canvas drag operation.
+     * This method should be called on mousemove events when a canvas pan is active.
+     * @param event The mouse event containing the current mouse position.
+     */
     movePetrinetPositionByMousePositionChange(event: MouseEvent) {
         const deltaX = event.clientX - this.initialMousePos.x;
         const deltaY = event.clientY - this.initialMousePos.y;
@@ -133,6 +228,13 @@ export class EditMoveElementsService {
         this.initialMousePos = { x: event.clientX, y: event.clientY };
     }
 
+    /**
+     * Finalizes any ongoing move operation (node, anchor, or canvas pan).
+     * It resets the service's state, clearing references to moved elements
+     * and drag status. If a newly created anchor was being moved, it may
+     * also trigger a UI state change (e.g., back to 'Anchor' mode).
+     * This method should typically be called on mouseup events.
+     */
     finalizeMove() {
         // Finalizes move of both nodes and anchors
 
@@ -151,6 +253,21 @@ export class EditMoveElementsService {
         this.newAnchor = undefined;
     }
 
+    /**
+     * Inserts a new anchor point into an existing arc at the clicked position
+     * on one of its line segments.
+     * After creating the anchor, it automatically switches the UI to 'Move' mode
+     * and initializes a move operation for the new anchor, allowing the user
+     * to immediately drag it to its final position.
+     * @param event The mouse event (e.g., click) on an arc's line segment.
+     * @param arc The arc to which the new anchor will be added.
+     * @param lineSegment An array of two Points representing the start and end
+     *                    of the specific line segment of the arc that was clicked.
+     *                    This is used to determine where to insert the new anchor
+     *                    within the arc's existing anchors array.
+     * @param drawingArea The HTML SVG element representing the drawing area,
+     *                    used for coordinate conversion.
+     */
     insertAnchorIntoLineSegmentStart(
         event: MouseEvent,
         arc: Arc,
