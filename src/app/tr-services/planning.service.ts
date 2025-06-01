@@ -9,6 +9,7 @@ import { environment } from '../../environments/environment';
 })
 export class PlanningService {
     private apiUrl = `${environment.backendApiUrl}/model-x/planning`;
+    private simpleSimApiUrl = `${environment.backendApiUrl}/simulation-petri-nets/simple-sim`; // Added for the new endpoint
 
     constructor(private http: HttpClient) { }
 
@@ -28,6 +29,19 @@ export class PlanningService {
     updatePlanning(planningData: any): Observable<any> {
         return this.http.put<any>(this.apiUrl, planningData)
            .pipe(catchError(this.handleError));
+    }
+
+    // Sendet die PNML-Datei für eine einfache Simulation an das Backend
+    runSimpleSimulation(pnmlFile: File): Observable<any> {
+        const formData = new FormData();
+        formData.append('pnml_model', pnmlFile, pnmlFile.name);
+
+        // Wichtig: Setzen Sie den Content-Type Header NICHT manuell.
+        // Der Browser erledigt das korrekt für multipart/form-data, wenn ein FormData-Objekt übergeben wird.
+        return this.http.post<any>(this.simpleSimApiUrl, formData)
+            .pipe(
+                catchError(this.handleError)
+            );
     }
 
     private handleError(error: HttpErrorResponse) {

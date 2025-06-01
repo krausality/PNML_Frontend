@@ -33,5 +33,7 @@ export class UiService {
     codeEditorFormat$: BehaviorSubject<CodeEditorFormat> =
         new BehaviorSubject<CodeEditorFormat>(CodeEditorFormat.JSON);
 
+    simulationResults$: BehaviorSubject<any | null> = new BehaviorSubject<any | null>(null);
+
     constructor() {}
 }

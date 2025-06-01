@@ -237,3 +237,20 @@ text.label {
     font-weight: bold;
     fill: rgb(133, 186, 204);
 }
+
+/* Simulation animation styles */
+.sim-enabled-transition {
+    fill: lightblue !important; /* Or any other suitable color */
+}
+
+.sim-fired-transition {
+    fill: lightcoral !important; /* Or any other suitable color */
+}
+
+/* Optional: if you want a general highlight for the current step,
+   you might not need it if enabled/fired transition highlighting is enough. */
+/*
+.sim-active-step-highlight {
+    some-other-style: value;
+}
+*/

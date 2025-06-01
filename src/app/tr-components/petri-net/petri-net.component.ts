@@ -60,7 +60,7 @@ import { LayoutSugiyamaService } from '../../tr-services/layout-sugiyama.service
     templateUrl: './petri-net.component.html',
     styleUrls: ['./petri-net.component.css'],
 })
-export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit { // Implement AfterViewInit
+export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
     @Input() buttonState: ButtonState | undefined;
 
     // Marks selected node in Blitz tool
@@ -73,11 +73,16 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit { // 
     public lineSeparator = lineSeparator;
     public showTooltipDelay = showTooltipDelay; // Expose tooltip delay constant
 
-    @ViewChild('drawingArea') drawingArea!: ElementRef<SVGElement>; // Add ViewChild for SVG element
+    @ViewChild('drawingArea') drawingArea!: ElementRef<SVGElement>; // Added for type safety
+
+    // Simulation related variables
+    simulationFiringSeq: any | null = null;
+    simulationDetailedLog: any | null = null;
+    currentSimulationStep: number = 0;
+    isSimulating: boolean = false;
 
     private _subs: Subscription[] = [];
-    private _sub?: Subscription;
-    private viewInitialized = false; // Flag to track if view is ready
+    private viewInitialized = false; // Flag to track if view is initialized
 
     constructor(
         private parserService: ParserService,
@@ -94,7 +99,10 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit { // 
         private layoutSugiyamaService: LayoutSugiyamaService,
         protected svgCoordinatesService: SvgCoordinatesService,
         protected placeInvariantsService: PlaceInvariantsService,
-    ) {}
+    ) {
+        // Log constructor call
+        console.log('PetriNetComponent Constructed');
+    }
 
     ngOnInit(): void {
         this.uiService.buttonState$.subscribe((buttonState) => {
@@ -108,6 +116,15 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit { // 
                 console.log('Data changed, view initialized:', this.viewInitialized); // Log data change
                 if (this.viewInitialized) {
                     this.fitContentToView();
+                }
+            })
+        );
+
+        this._subs.push(
+            this.uiService.simulationResults$.subscribe(results => {
+                if (results) {
+                    console.log('PetriNetComponent: Received simulation results from UiService', results);
+                    this.startAnimation(results);
                 }
             })
         );
@@ -125,9 +142,6 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit { // 
 
     ngOnDestroy(): void {
         this._subs.forEach((sub) => sub.unsubscribe());
-        if (this._sub) {
-            this._sub.unsubscribe();
-        }
     }
 
     startTransition: Transition | undefined;
@@ -170,7 +184,7 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit { // 
                         schemaValidationErrors: false,
                     },
                 });
-                console.log('parsePetrinetData: Exiting due to parsing error'); // Log exit on error
+                console.log('parsePetrinetData: Exiting due to parsing error', error); // Log exit on error
                 return; // Exit if parsing fails
             }
 
@@ -1060,4 +1074,16 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit { // 
 
     protected readonly TabState = TabState;
     protected readonly ButtonState = ButtonState;
+
+    // Method to start the simulation animation
+    startAnimation(results: { firing_seq: any, detailed_log: any }): void {
+        console.log('PetriNetComponent: startAnimation called with', results);
+        this.simulationFiringSeq = results.firing_seq;
+        this.simulationDetailedLog = results.detailed_log;
+        this.currentSimulationStep = 0;
+        this.isSimulating = true;
+        console.log('PetriNetComponent: Simulation data stored, isSimulating set to true.');
+        // TODO: Call animateNextStep() in Phase 1.3
+        // this.animateNextStep(); 
+    }
 }

@@ -22,6 +22,7 @@ import { LayoutSugiyamaService } from 'src/app/tr-services/layout-sugiyama.servi
 import { showTooltipDelay } from 'src/app/tr-services/position.constants';
 import { HelpPopupComponent } from '../help-popup/help-popup.component';
 import { ErrorPopupComponent } from '../error-popup/error-popup.component'; // Import ErrorPopupComponent
+import { PlanningService } from '../../tr-services/planning.service'; // Import PlanningService
 
 @Component({
     selector: 'app-button-bar',
@@ -49,6 +50,7 @@ export class ButtonBarComponent {
         protected placeInvariantsService: PlaceInvariantsService,
         private layoutSpringEmebdderService: LayoutSpringEmbedderService,
         private layoutSugiyamaService: LayoutSugiyamaService,
+        private planningService: PlanningService // Inject PlanningService
     ) {}
 
     // Gets called when a tab is clicked
@@ -149,8 +151,8 @@ export class ButtonBarComponent {
         const input = event.target as HTMLInputElement;
 
         if (!input.files || input.files.length === 0) {
-            console.warn('ButtonBarComponent.uploadPnmlFile: No files selected.'); // Log no files
-            return; // No file selected
+            console.warn('ButtonBarComponent.uploadPnmlFile: No files selected.');
+            return;
         }
 
         const file = input.files[0];
@@ -158,7 +160,7 @@ export class ButtonBarComponent {
 
         // Optional: Check file type although 'accept' attribute helps
         if (!file.name.toLowerCase().endsWith('.pnml')) {
-            console.error('ButtonBarComponent.uploadPnmlFile: Invalid file type selected.'); // Log invalid type
+            console.error('ButtonBarComponent.uploadPnmlFile: Invalid file type selected.');
             this.matDialog.open(ErrorPopupComponent, {
                 data: {
                     error: 'Invalid file type. Please select a .pnml file.',
@@ -172,28 +174,54 @@ export class ButtonBarComponent {
         console.log('ButtonBarComponent.uploadPnmlFile: FileReader created.'); // Log reader creation
 
         reader.onload = (e) => {
-            console.log('ButtonBarComponent.uploadPnmlFile: FileReader onload triggered.'); // Log onload start
+            console.log('ButtonBarComponent.uploadPnmlFile: FileReader onload triggered.');
             try {
-                const fileContent = reader.result as string;
-                if (!fileContent) {
-                    console.error('ButtonBarComponent.uploadPnmlFile: File content is empty or null after read.'); // Log empty content
-                    throw new Error('File content is empty or could not be read.');
+                const pnmlContent = e.target?.result as string;
+                if (pnmlContent) {
+                    console.log('ButtonBarComponent.uploadPnmlFile: File content read successfully.');
+                    // Bestehende Logik zum Parsen und Anzeigen der PNML
+                    // this.dataService.loadPetriNetFromPnml(pnmlContent); // ERROR: Method does not exist
+                    this.pnmlService.parse(pnmlContent); // CORRECTED: Use PnmlService to parse and load
+                    console.log('ButtonBarComponent.uploadPnmlFile: PNML content passed to pnmlService for parsing.');
+
+                    // Start simple simulation
+                    this.planningService.runSimpleSimulation(file).subscribe({
+                        next: (results) => {
+                            if (results && results.results) {
+                                console.log('ButtonBarComponent.uploadPnmlFile: Simulation results received, passing to UiService.', results.results);
+                                this.uiService.simulationResults$.next(results.results);
+                            } else {
+                                console.warn('ButtonBarComponent.uploadPnmlFile: Simulation results received, but "results" property is missing or empty:', results);
+                                this.matDialog.open(ErrorPopupComponent, {
+                                    data: { error: 'Simulation API call successful, but "results" property is missing.' },
+                                });
+                            }
+                        },
+                        error: (err) => {
+                            console.error('ButtonBarComponent.uploadPnmlFile: Simple simulation failed:', err);
+                            this.matDialog.open(ErrorPopupComponent, {
+                                data: { error: 'Simulation API call failed. Check console for errors.' },
+                            });
+                        }
+                    });
+
+                } else {
+                    console.error('ButtonBarComponent.uploadPnmlFile: File content is null or undefined.');
+                    this.matDialog.open(ErrorPopupComponent, {
+                        data: { error: 'Failed to read file content.' },
+                    });
                 }
-                console.log('ButtonBarComponent.uploadPnmlFile: File read successfully (length:', fileContent.length, '). Calling pnmlService.parse...'); // Log success before parse
-                // PnmlService.parse already updates DataService and applies layout
-                this.pnmlService.parse(fileContent);
-                console.log('ButtonBarComponent.uploadPnmlFile: pnmlService.parse completed.'); // Log after parse
-                console.log('ButtonBarComponent.uploadPnmlFile: Explicitly calling dataService.triggerDataChanged()');
-                this.dataService.triggerDataChanged(); // Trigger the update notification
-                // Optional: Add success feedback if needed
             } catch (error) {
-                console.error('ButtonBarComponent.uploadPnmlFile: Error during onload (parsing likely):', error); // Log error during parse
+                console.error('ButtonBarComponent.uploadPnmlFile: Error processing PNML file:', error);
+                let errorMessage = 'Error processing PNML file.';
+                if (error instanceof Error) {
+                    errorMessage += ` Details: ${error.message}`;
+                }
                 this.matDialog.open(ErrorPopupComponent, {
-                    data: { parsingError: error },
+                    data: { error: errorMessage },
                 });
             } finally {
-                console.log('ButtonBarComponent.uploadPnmlFile: Resetting input value.'); // Log input reset
-                // Reset file input to allow uploading the same file again
+                // Reset file input to allow uploading the same file again if needed
                 input.value = '';
             }
         };
