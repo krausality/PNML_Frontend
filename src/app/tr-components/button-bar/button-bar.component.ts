@@ -236,10 +236,18 @@ export class ButtonBarComponent {
 
         console.log('ButtonBarComponent.uploadPnmlFile: Calling reader.readAsText...'); // Log before readAsText
         reader.readAsText(file);
-    }
-
-    startSimulation(): void {
+    }    startSimulation(): void {
         // TODO: Implement actual simulation start logic
         console.log('Start Simulation button clicked');
+    }
+
+    startAutoplay(): void {
+        console.log('ButtonBarComponent: startAutoplay called');
+        this.uiService.startAnimation();
+    }
+
+    stopAutoplay(): void {
+        console.log('ButtonBarComponent: stopAutoplay called');
+        this.uiService.stopAnimation();
     }
 }

@@ -240,10 +240,38 @@
         <ng-template mat-tab-label>
             <mat-icon class="example-tab-icon">play_arrow</mat-icon>
             Play
-        </ng-template>
-
-        <!-- Buttons for tab "Play" -->
+        </ng-template>        <!-- Buttons for tab "Play" -->
         <div class="button-container">
+            <!-- Autoplay Button (only visible when simulation data is available) -->
+            <button
+                *ngIf="uiService.hasSimulationData()"
+                mat-stroked-button
+                class="text-button"
+                [disabled]="uiService.isAnimationRunning()"
+                (click)="startAutoplay()"
+                matTooltip="Start automatic animation of simulation sequence."
+                [matTooltipShowDelay]="showTooltipDelay"
+            >
+                <mat-icon>play_circle_filled</mat-icon>
+                Autoplay
+            </button>
+
+            <!-- Stop Animation Button (only visible during animation) -->
+            <button
+                *ngIf="uiService.isAnimationRunning()"
+                mat-stroked-button
+                class="text-button"
+                (click)="stopAutoplay()"
+                matTooltip="Stop the current animation."
+                [matTooltipShowDelay]="showTooltipDelay"
+            >
+                <mat-icon>stop</mat-icon>
+                Stop
+            </button>
+
+            <!-- Divider (only show if simulation controls are present) -->
+            <div *ngIf="uiService.hasSimulationData()" class="divider"></div>
+
             <!-- Restart tool -->
             <button
                 mat-icon-button

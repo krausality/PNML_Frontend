@@ -131,14 +131,14 @@
             (mousedown)="dispatchTransitionMouseDown($event, transition)"
             (mouseup)="dispatchTransitionMouseUp($event, transition)"
             (wheel)="onWheelEventTransition($event, transition)"
-        >
-            <rect
+        >            <rect
                 [ngClass]="{
                     transition: true,
                     active: transition.isActive,
                     editable: isTransitionEditable(transition),
                     silent: !transition.label
                 }"
+                [attr.data-transition-id]="transition.id"
                 [attr.x]="
                     transition.position.x -
                     (transition.label ? transitionXOffset : transSilentXOffset)

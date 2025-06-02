@@ -73,13 +73,18 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
     public lineSeparator = lineSeparator;
     public showTooltipDelay = showTooltipDelay; // Expose tooltip delay constant
 
-    @ViewChild('drawingArea') drawingArea!: ElementRef<SVGElement>; // Added for type safety
-
-    // Simulation related variables
+    @ViewChild('drawingArea') drawingArea!: ElementRef<SVGElement>; // Added for type safety    // Simulation related variables
     simulationFiringSeq: any | null = null;
     simulationDetailedLog: any | null = null;
     currentSimulationStep: number = 0;
     isSimulating: boolean = false;
+
+    // Local data copies for animation (to prevent data service errors)
+    private animationPlaces: Place[] = [];
+    private animationTransitions: Transition[] = [];
+    private animationArcs: Arc[] = [];
+    private animationTimer: any = null;
+    private readonly ANIMATION_DELAY = 1500; // 1.5 seconds between steps
 
     private _subs: Subscription[] = [];
     private viewInitialized = false; // Flag to track if view is initialized
@@ -118,13 +123,23 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.fitContentToView();
                 }
             })
-        );
-
-        this._subs.push(
+        );        this._subs.push(
             this.uiService.simulationResults$.subscribe(results => {
                 if (results) {
                     console.log('PetriNetComponent: Received simulation results from UiService', results);
                     this.startAnimation(results);
+                }
+            })
+        );
+
+        this._subs.push(
+            this.uiService.getAnimationState$().subscribe(isRunning => {
+                if (isRunning && this.uiService.tab === TabState.Play) {
+                    console.log('PetriNetComponent: Starting autoplay animation');
+                    this.startAutoplayAnimation();
+                } else if (!isRunning) {
+                    console.log('PetriNetComponent: Stopping animation');
+                    this.stopAnimation();
                 }
             })
         );
@@ -138,10 +153,19 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
             console.log('View initialized with existing data, fitting content.'); // Log initial fit
             this.fitContentToView();
         }
-    }
-
-    ngOnDestroy(): void {
+    }    ngOnDestroy(): void {
         this._subs.forEach((sub) => sub.unsubscribe());
+        
+        // Clean up animation if running
+        if (this.animationTimer) {
+            clearTimeout(this.animationTimer);
+            this.animationTimer = null;
+        }
+        
+        // Stop any running animation
+        if (this.uiService.isAnimationRunning()) {
+            this.uiService.stopAnimation();
+        }
     }
 
     startTransition: Transition | undefined;
@@ -1073,17 +1097,162 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
     protected readonly transSilentXOffset = transSilentXOffset;
 
     protected readonly TabState = TabState;
-    protected readonly ButtonState = ButtonState;
-
-    // Method to start the simulation animation
+    protected readonly ButtonState = ButtonState;    // Method to start the simulation animation
     startAnimation(results: { firing_seq: any, detailed_log: any }): void {
         console.log('PetriNetComponent: startAnimation called with', results);
         this.simulationFiringSeq = results.firing_seq;
         this.simulationDetailedLog = results.detailed_log;
         this.currentSimulationStep = 0;
         this.isSimulating = true;
+        
+        // Create local copies of data to prevent "this.dataService.transitions is undefined" errors
+        this.createAnimationDataCopies();
+        
         console.log('PetriNetComponent: Simulation data stored, isSimulating set to true.');
-        // TODO: Call animateNextStep() in Phase 1.3
-        // this.animateNextStep(); 
+        
+        // Only start animation automatically if we're in the Play tab
+        // Otherwise, animation will be triggered manually via Autoplay button
+        if (this.uiService.tab === TabState.Play) {
+            console.log('PetriNetComponent: In Play tab, ready for autoplay');
+        } else {
+            console.log('PetriNetComponent: Not in Play tab, animation stored for later use');
+        }
+    }    private createAnimationDataCopies(): void {
+        console.log('PetriNetComponent: Creating local data copies for animation');
+        try {
+            // Deep copy places with their current token state
+            this.animationPlaces = this.dataService.getPlaces().map(place => {
+                const copy = new Place(place.token, place.position, place.id, place.label);
+                return copy;
+            });
+
+            // Deep copy transitions 
+            this.animationTransitions = this.dataService.getTransitions().map(transition => {
+                const copy = new Transition(transition.position, transition.id, transition.label);
+                return copy;
+            });
+
+            // Deep copy arcs
+            this.animationArcs = this.dataService.getArcs().map(arc => {
+                const copy = new Arc(arc.from, arc.to, arc.weight);
+                copy.anchors = [...arc.anchors];
+                return copy;
+            });
+
+            console.log('PetriNetComponent: Animation data copies created successfully');
+        } catch (error) {
+            console.error('PetriNetComponent: Error creating animation data copies:', error);
+        }
+    }
+
+    startAutoplayAnimation(): void {
+        console.log('PetriNetComponent: startAutoplayAnimation called');
+        if (!this.simulationFiringSeq || !this.isSimulating) {
+            console.warn('PetriNetComponent: No simulation data available for autoplay');
+            return;
+        }
+
+        if (this.uiService.tab !== TabState.Play) {
+            console.warn('PetriNetComponent: Autoplay can only run in Play tab');
+            return;
+        }
+
+        // Reset to beginning
+        this.currentSimulationStep = 0;
+        console.log('PetriNetComponent: Starting autoplay animation from step 0');
+        this.animateNextStep();
+    }
+
+    private animateNextStep(): void {
+        console.log(`PetriNetComponent: animateNextStep called, current step: ${this.currentSimulationStep}`);
+        
+        if (!this.simulationFiringSeq || this.currentSimulationStep >= this.simulationFiringSeq.length) {
+            console.log('PetriNetComponent: Animation complete');
+            this.uiService.stopAnimation();
+            return;
+        }
+
+        if (!this.uiService.isAnimationRunning()) {
+            console.log('PetriNetComponent: Animation stopped by user');
+            return;
+        }
+
+        const currentStep = this.simulationFiringSeq[this.currentSimulationStep];
+        console.log(`PetriNetComponent: Processing animation step ${this.currentSimulationStep}:`, currentStep);
+
+        // Highlight the transition that will fire
+        if (currentStep && currentStep.transition_id) {
+            this.highlightTransition(currentStep.transition_id, 'enabled');
+            
+            // After a short delay, fire the transition and update tokens
+            setTimeout(() => {
+                this.fireTransitionInAnimation(currentStep.transition_id);
+                this.highlightTransition(currentStep.transition_id, 'fired');
+                
+                // Move to next step
+                this.currentSimulationStep++;
+                
+                // Schedule next animation step
+                this.animationTimer = setTimeout(() => {
+                    this.animateNextStep();
+                }, this.ANIMATION_DELAY);
+            }, 500); // 0.5 second highlight before firing
+        } else {
+            console.warn('PetriNetComponent: Invalid step data:', currentStep);
+            this.currentSimulationStep++;
+            this.animateNextStep();
+        }
+    }
+
+    private highlightTransition(transitionId: string, state: 'enabled' | 'fired'): void {
+        console.log(`PetriNetComponent: Highlighting transition ${transitionId} as ${state}`);
+        
+        // Find the transition in the actual data service (for visual updates)
+        const transition = this.dataService.getTransitions().find(t => t.id === transitionId);
+        if (transition) {
+            // Add CSS classes for highlighting (we'll need to add these to the CSS)
+            const transitionElement = document.querySelector(`rect[data-transition-id="${transitionId}"]`);
+            if (transitionElement) {
+                transitionElement.classList.remove('animation-enabled', 'animation-fired');
+                transitionElement.classList.add(`animation-${state}`);
+            }
+        }
+    }
+
+    private fireTransitionInAnimation(transitionId: string): void {
+        console.log(`PetriNetComponent: Firing transition ${transitionId} in animation`);
+        
+        // Update tokens based on the transition firing
+        // This should update the actual data service so the UI reflects the changes
+        const transition = this.dataService.getTransitions().find(t => t.id === transitionId);
+        if (!transition) {
+            console.warn(`PetriNetComponent: Transition ${transitionId} not found`);
+            return;
+        }
+
+        // Fire the transition using the token game service
+        // This ensures proper token management and state updates
+        try {
+            this.tokenGameService.fire(transition);
+            console.log(`PetriNetComponent: Transition ${transitionId} fired successfully`);
+        } catch (error) {
+            console.error(`PetriNetComponent: Error firing transition ${transitionId}:`, error);
+        }
+    }
+
+    stopAnimation(): void {
+        console.log('PetriNetComponent: stopAnimation called');
+        if (this.animationTimer) {
+            clearTimeout(this.animationTimer);
+            this.animationTimer = null;
+        }
+
+        // Remove all animation highlights
+        const animatedElements = document.querySelectorAll('.animation-enabled, .animation-fired');
+        animatedElements.forEach(element => {
+            element.classList.remove('animation-enabled', 'animation-fired');
+        });
+
+        console.log('PetriNetComponent: Animation stopped and cleaned up');
     }
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ButtonState, CodeEditorFormat, TabState } from '../tr-enums/ui-state';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
@@ -35,5 +35,46 @@ export class UiService {
 
     simulationResults$: BehaviorSubject<any | null> = new BehaviorSubject<any | null>(null);
 
+    // Animation state: true if animation is running
+    animationRunning$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    // Emits when autoplay is requested (e.g. via button)
+    requestAutoplay$: Subject<void> = new Subject<void>();
+
     constructor() {}
+
+    /**
+     * Call to request starting the animation (autoplay)
+     */
+    startAnimation() {
+        this.animationRunning$.next(true);
+        this.requestAutoplay$.next();
+    }
+
+    /**
+     * Call to request stopping the animation
+     */
+    stopAnimation() {
+        this.animationRunning$.next(false);
+    }
+
+    /**
+     * Returns true if animation is currently running
+     */
+    isAnimationRunning(): boolean {
+        return this.animationRunning$.getValue();
+    }
+
+    /**
+     * Returns the animation state as observable
+     */
+    getAnimationState$() {
+        return this.animationRunning$.asObservable();
+    }
+
+    /**
+     * Returns true if simulation data is available
+     */
+    hasSimulationData(): boolean {
+        return this.simulationResults$.getValue() !== null;
+    }
 }

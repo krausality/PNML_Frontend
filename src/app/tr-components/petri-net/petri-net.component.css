@@ -248,9 +248,15 @@ text.label {
 }
 
 /* Optional: if you want a general highlight for the current step,
-   you might not need it if enabled/fired transition highlighting is enough. */
-/*
-.sim-active-step-highlight {
-    some-other-style: value;
+   /* Animation styles for simulation playback */
+.animation-enabled {
+    fill: orange !important;
+    filter: drop-shadow(0 0 5px rgba(255, 165, 0, 0.8)) !important;
+    transition: all 0.3s ease-in-out;
 }
-*/
+
+.animation-fired {
+    fill: lightgreen !important;
+    filter: drop-shadow(0 0 5px rgba(144, 238, 144, 0.8)) !important;
+    transition: all 0.3s ease-in-out;
+}
