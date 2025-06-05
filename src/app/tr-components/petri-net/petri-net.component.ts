@@ -89,6 +89,15 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
     private _subs: Subscription[] = [];
     private viewInitialized = false; // Flag to track if view is initialized
 
+    // --- Animation State (Vorbereitung für PNML-Animation) ---
+    private animationFiringSeq: any = null;
+    private animationDetailedLog: any = null;
+    private animationStepIndex: number = 0;
+    private animationTimerId: any = null;
+    private isAnimationRunning: boolean = false;
+    private animationSubscriptions: Subscription[] = [];
+    // --------------------------------------------------------
+
     constructor(
         private parserService: ParserService,
         private httpClient: HttpClient,
@@ -1100,16 +1109,91 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
     protected readonly ButtonState = ButtonState;    // Method to start the simulation animation
     startAnimation(results: { firing_seq: any, detailed_log: any }): void {
         console.log('PetriNetComponent: startAnimation called with', results);
-        this.simulationFiringSeq = results.firing_seq;
+        // --- Robustly convert firing_seq to array of {transition_id} steps ---
+        // The backend may return firing_seq as an array or as an object mapping step indices to transition indices or IDs.
+        // We must ensure that each step in the animation sequence is a valid transition in the current Petri net.
+        // This mapping is robust: it only includes steps that can be mapped to a real transition, and skips invalid ones.
+        let firingSeq = results.firing_seq;
+        const transitions = this.dataService.getTransitions(); // Get the current list of transitions for ID lookup
+        if (Array.isArray(firingSeq)) {
+            // If firing_seq is already an array, map each step to a {transition_id} object if possible
+            firingSeq = firingSeq.map((step: any) => {
+                if (typeof step === 'string') {
+                    // If the step is a string, check if it matches a transition ID
+                    const t = transitions.find(tr => tr.id === step);
+                    if (t) {
+                        // Valid transition ID found, use it
+                        return { transition_id: t.id };
+                    }
+                    // If not found, skip this step (return null)
+                    return null;
+                } else if (typeof step === 'number') {
+                    // If the step is a number, treat it as an index into the transitions array
+                    const t = transitions[step];
+                    if (t) {
+                        // Valid index, use the transition's ID
+                        return { transition_id: t.id };
+                    }
+                    // Invalid index, skip this step
+                    return null;
+                } else if (step && typeof step === 'object' && 'transition_id' in step) {
+                    // If the step is already an object with a transition_id, check if it's valid
+                    const t = transitions.find(tr => tr.id === step.transition_id);
+                    if (t) {
+                        // Valid transition_id, keep the step
+                        return step;
+                    }
+                    // Invalid transition_id, skip
+                    return null;
+                } else {
+                    // Unrecognized step format, skip
+                    return null;
+                }
+            }).filter((step: any) => step !== null); // Remove all invalid/null steps
+        } else if (firingSeq && typeof firingSeq === 'object') {
+            // If firing_seq is an object, sort the keys numerically and map each value
+            const keys = Object.keys(firingSeq).sort((a: string, b: string) => Number(a) - Number(b));
+            firingSeq = keys.map((key: string) => {
+                const value = firingSeq[key];
+                if (typeof value === 'string') {
+                    // If the value is a string, check if it matches a transition ID
+                    const t = transitions.find(tr => tr.id === value);
+                    if (t) {
+                        // Valid transition ID, use it
+                        return { transition_id: t.id };
+                    }
+                    // Invalid transition ID, skip
+                    return null;
+                } else if (typeof value === 'number') {
+                    // If the value is a number, treat it as an index into the transitions array
+                    const t = transitions[value];
+                    if (t) {
+                        // Valid index, use the transition's ID
+                        return { transition_id: t.id };
+                    }
+                    // Invalid index, skip
+                    return null;
+                } else {
+                    // Unrecognized value, skip
+                    return null;
+                }
+            }).filter((step: any) => step !== null); // Remove all invalid/null steps
+            // Log the final robustly mapped and filtered firing sequence for debugging
+            console.log('[+5σ] firing_seq converted from object to array (robust mapping & filtering):', firingSeq);
+        } else {
+            // If firing_seq is neither an array nor an object, log an error and set to empty array
+            console.error('[+5σ] firing_seq has unexpected type:', typeof firingSeq, firingSeq);
+            firingSeq = [];
+        }
+        // At this point, firingSeq is guaranteed to be an array of valid {transition_id} objects only
+        // This prevents animation errors and ensures only real transitions are animated
+        this.simulationFiringSeq = firingSeq;
         this.simulationDetailedLog = results.detailed_log;
         this.currentSimulationStep = 0;
         this.isSimulating = true;
-        
         // Create local copies of data to prevent "this.dataService.transitions is undefined" errors
         this.createAnimationDataCopies();
-        
         console.log('PetriNetComponent: Simulation data stored, isSimulating set to true.');
-        
         // Only start animation automatically if we're in the Play tab
         // Otherwise, animation will be triggered manually via Autoplay button
         if (this.uiService.tab === TabState.Play) {
@@ -1164,44 +1248,51 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     private animateNextStep(): void {
-        console.log(`PetriNetComponent: animateNextStep called, current step: ${this.currentSimulationStep}`);
-        
-        if (!this.simulationFiringSeq || this.currentSimulationStep >= this.simulationFiringSeq.length) {
-            console.log('PetriNetComponent: Animation complete');
+        // +5 Sigma Debug: Datenstruktur und Schrittzahl prüfen
+        let totalSteps = 0;
+        let stepData: any = undefined;
+        if (Array.isArray(this.simulationFiringSeq)) {
+            totalSteps = this.simulationFiringSeq.length;
+            stepData = this.simulationFiringSeq[this.currentSimulationStep];
+        } else if (this.simulationFiringSeq && typeof this.simulationFiringSeq === 'object') {
+            // Wenn firing_seq ein Objekt ist, sortiere die Keys numerisch (falls möglich)
+            const keys = Object.keys(this.simulationFiringSeq).sort((a, b) => Number(a) - Number(b));
+            totalSteps = keys.length;
+            const currentKey = keys[this.currentSimulationStep];
+            stepData = this.simulationFiringSeq[currentKey];
+            console.log('[+5σ] simulationFiringSeq ist Objekt, keys:', keys, 'currentKey:', currentKey);
+        } else {
+            console.error('[+5σ] simulationFiringSeq hat unerwarteten Typ:', typeof this.simulationFiringSeq, this.simulationFiringSeq);
             this.uiService.stopAnimation();
             return;
         }
-
-        if (!this.uiService.isAnimationRunning()) {
-            console.log('PetriNetComponent: Animation stopped by user');
+        console.log(`[+5σ] animateNextStep called, current step: ${this.currentSimulationStep} / ${totalSteps}`);
+        if (this.currentSimulationStep >= totalSteps) {
+            console.log('[+5σ] Animation complete (Schrittzahl erreicht)');
+            this.uiService.stopAnimation();
             return;
         }
-
-        const currentStep = this.simulationFiringSeq[this.currentSimulationStep];
-        console.log(`PetriNetComponent: Processing animation step ${this.currentSimulationStep}:`, currentStep);
-
-        // Highlight the transition that will fire
-        if (currentStep && currentStep.transition_id) {
-            this.highlightTransition(currentStep.transition_id, 'enabled');
-            
-            // After a short delay, fire the transition and update tokens
-            setTimeout(() => {
-                this.fireTransitionInAnimation(currentStep.transition_id);
-                this.highlightTransition(currentStep.transition_id, 'fired');
-                
-                // Move to next step
-                this.currentSimulationStep++;
-                
-                // Schedule next animation step
-                this.animationTimer = setTimeout(() => {
-                    this.animateNextStep();
-                }, this.ANIMATION_DELAY);
-            }, 500); // 0.5 second highlight before firing
-        } else {
-            console.warn('PetriNetComponent: Invalid step data:', currentStep);
-            this.currentSimulationStep++;
-            this.animateNextStep();
+        if (!this.uiService.isAnimationRunning()) {
+            console.log('[+5σ] Animation gestoppt durch User');
+            return;
         }
+        console.log(`[+5σ] Processing animation step ${this.currentSimulationStep}:`, stepData);
+        if (!stepData || !stepData.transition_id) {
+            console.warn('[+5σ] Invalid step data, Animation wird gestoppt:', stepData);
+            this.uiService.stopAnimation();
+            return;
+        }
+        // Highlighting vorbereiten
+        this.clearAllTransitionHighlights();
+        this.highlightTransition(stepData.transition_id, 'enabled');
+        setTimeout(() => {
+            this.fireTransitionInAnimation(stepData.transition_id);
+            this.highlightTransition(stepData.transition_id, 'fired');
+            this.currentSimulationStep++;
+            this.animationTimer = setTimeout(() => {
+                this.animateNextStep();
+            }, this.ANIMATION_DELAY);
+        }, 500);
     }
 
     private highlightTransition(transitionId: string, state: 'enabled' | 'fired'): void {
@@ -1254,5 +1345,26 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
         });
 
         console.log('PetriNetComponent: Animation stopped and cleaned up');
+    }
+
+    /**
+     * Entfernt alle Animation-Highlight-Klassen von Transitionen im SVG
+     */
+    clearAllTransitionHighlights(): void {
+        // Selektiere alle Transition-Elemente mit Highlight-Klassen
+        const highlighted = document.querySelectorAll('.animation-enabled, .animation-fired');
+        highlighted.forEach(el => {
+            el.classList.remove('animation-enabled', 'animation-fired');
+        });
+        // Debug-Log
+        console.log('clearAllTransitionHighlights: Alle Animation-Highlights entfernt');
+    }
+
+    /**
+     * Stoppt die aktuelle Animation und räumt auf (Stub)
+     */
+    stopCurrentAnimationLogic(): void {
+        // TODO: Implement logic in next step
+        console.log('Stub: stopCurrentAnimationLogic');
     }
 }
