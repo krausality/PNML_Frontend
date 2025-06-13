@@ -69,8 +69,26 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
     nextNode: Node | null = null;
     // Attribute is set when the user tries to connect two nodes of the same type
     addElement: boolean = true;
+
+    /**
+     * Radius für Ankerpunkte auf Kanten. Beeinflusst die Größe der klickbaren/sichtbaren Bereiche
+     * für die Manipulation von Kantenverläufen.
+     * Wird vermutlich durch eine importierte Konstante initialisiert.
+     */
     public anchorRadius = anchorRadius;
+
+    /**
+     * Trennzeichen, das in Beschriftungen verwendet wird, um Zeilenumbrüche zu signalisieren.
+     * Nützlich für die Darstellung von mehrzeiligen Namen oder Bezeichnern.
+     * Wird vermutlich durch eine importierte Konstante initialisiert.
+     */
     public lineSeparator = lineSeparator;
+
+    /**
+     * Verzögerungszeit in Millisekunden, bevor ein Tooltip angezeigt wird, wenn der Benutzer
+     * mit der Maus über ein Element fährt. Verhindert störendes Aufblitzen bei schnellen Mausbewegungen.
+     * Wird vermutlich durch eine importierte Konstante initialisiert.
+     */
     public showTooltipDelay = showTooltipDelay; // Expose tooltip delay constant
 
     @ViewChild('drawingArea') drawingArea!: ElementRef<SVGElement>; // Added for type safety    // Simulation related variables

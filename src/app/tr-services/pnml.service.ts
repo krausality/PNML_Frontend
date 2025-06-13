@@ -13,6 +13,63 @@ import { DataService } from './data.service';
 import * as vkbeautify from 'vkbeautify';
 import { LayoutSugiyamaService } from './layout-sugiyama.service';
 
+/**
+ * -----------------------------------------------------------------------------
+ * PnmlService: PNML Import/Export, Mapping, and Data Model Synchronization
+ * -----------------------------------------------------------------------------
+ * This service is responsible for all logic related to the PNML (Petri Net Markup Language)
+ * format, including parsing, serialization, and mapping between the XML-based PNML
+ * representation and the application's internal data model (Place, Transition, Arc, Point).
+ *
+ * Key Responsibilities:
+ * - Parsing PNML XML into the app's data structures, handling missing or partial layout data.
+ * - Serializing the current Petri net state to valid PNML XML for export or download.
+ * - Ensuring that all mapping logic (IDs, labels, positions, weights, anchors) is robust and
+ *   future-proof against schema changes or new Petri net features.
+ * - Applying a default layout (Sugiyama) if the imported PNML lacks position data, to guarantee
+ *   a usable initial visualization.
+ * - Maintaining a flag (incompleteLayoutData) to signal when imported PNML is missing layout
+ *   information, so that downstream services/components can react accordingly.
+ *
+ * Design Decisions:
+ * - All mapping between PNML and the internal model is centralized here for maintainability.
+ * - Uses xml2js for XML parsing and vkbeautify for pretty-printing output.
+ * - The parse() method always updates the DataService with the parsed data, ensuring that
+ *   the application's state is in sync with the imported file.
+ * - The service is stateless except for the incompleteLayoutData flag, which is reset on each parse.
+ * - All serialization helpers (getPlaceString, getTransitionString, getArcString) are kept
+ *   private to encapsulate PNML formatting logic.
+ *
+ * Interface Overview:
+ * - parse(xmlString): Parses PNML XML and returns [places, transitions, arcs, actions].
+ * - writePNML(): Triggers a browser download of the current net as a PNML file.
+ * - getPNML(): Returns the current net as a formatted PNML XML string.
+ * - getActionsfromTransitions(): Extracts unique action labels from transitions.
+ * - All mapping between PNML and the internal model is handled here for maintainability.
+ *
+ * Example Usage:
+ *   // Importing a PNML file:
+ *   const [places, transitions, arcs, actions] = pnmlService.parse(xmlString);
+ *   // Exporting the current net:
+ *   pnmlService.writePNML();
+ *
+ * Maintenance Notes:
+ * - If the PNML schema changes or new elements are needed, update the parse and
+ *   serialization logic here. Always keep mapping logic robust to missing/extra fields.
+ * - For new Petri net features (e.g., arc types, colored tokens), extend the mapping logic.
+ * - Always update the incompleteLayoutData flag if layout information is missing or incomplete.
+ * - This service should not contain UI logic; it is for data mapping and file I/O only.
+ * - When adding new fields to Place, Transition, or Arc, update both parse and serialization.
+ * - If you change the XML library, ensure all edge cases (empty elements, attributes, etc.) are handled.
+ *
+ * Edge Cases & Hints:
+ * - If a PNML file is missing position data, all elements are placed at (0,0) and incompleteLayoutData is set.
+ * - If an arc references a non-existent node, it is skipped (no error thrown, but maintainers should log if needed).
+ * - All IDs must be unique; if duplicates are found, only the first is used (enforced by find()).
+ * - When exporting, all anchors are included as <position> elements under <graphics>.
+ * - The XML output is always pretty-printed for readability.
+ * -----------------------------------------------------------------------------
+ */
 @Injectable({
     providedIn: 'root',
 })
@@ -24,6 +81,14 @@ export class PnmlService {
 
     incompleteLayoutData: boolean = false;
 
+    /**
+     * Parses a PNML XML string and returns the corresponding places, transitions,
+     * arcs, and actions.
+     *
+     * @param xmlString - The PNML XML string to parse.
+     * @returns A tuple containing arrays of places, transitions, arcs, and actions.
+     * @throws Error if there is a problem parsing the XML string.
+     */
     parse(
         xmlString: string,
     ): [Array<Place>, Array<Transition>, Array<Arc>, Array<string>] {
@@ -192,6 +257,12 @@ export class PnmlService {
         return places;
     }
 
+    /**
+     * Extracts unique action labels from an array of transitions.
+     *
+     * @param transitions - The array of transitions to extract actions from.
+     * @returns An array of unique action labels.
+     */
     getActionsfromTransitions(transitions: Array<Transition>): string[] {
         const actions: string[] = [];
 
@@ -264,6 +335,12 @@ export class PnmlService {
         return anchorPoints;
     }
 
+    /**
+     * Triggers a download of the current Petri net as a PNML file.
+     *
+     * This method generates the PNML content from the current Petri net data and
+     * initiates a download in the browser.
+     */
     writePNML() {
         const fileName = 'petri-net-with-love.pnml';
         const pnmlContent = this.getPNML();
@@ -369,6 +446,15 @@ export class PnmlService {
         }
     }
 
+    /**
+     * Returns the current Petri net as a formatted PNML XML string.
+     *
+     * This method retrieves the current places, transitions, and arcs from the
+     * data service and generates the PNML XML content. The XML is then
+     * pretty-printed for readability.
+     *
+     * @returns The formatted PNML XML string.
+     */
     public getPNML(): string {
         const places = this.dataService.getPlaces();
         const transitions = this.dataService.getTransitions();

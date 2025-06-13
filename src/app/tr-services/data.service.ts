@@ -6,6 +6,44 @@ import { Node } from 'src/app/tr-interfaces/petri-net/node';
 import { Point } from '../tr-classes/petri-net/point';
 import { Observable, of, Subject } from 'rxjs'; // Import Subject
 
+// -----------------------------------------------------------------------------
+// DataService: Central Data Model Management for Petri Net Frontend
+// -----------------------------------------------------------------------------
+// This service is the single source of truth for all Petri net data in the application.
+// It manages the core model: places, transitions, arcs, and actions (labels).
+//
+// Design Decisions:
+// - Singleton service (providedIn: 'root') for global data consistency.
+// - Encapsulates all Petri net state and exposes a clear API for access and mutation.
+// - Emits change notifications via RxJS Subject/Observable for reactive UI updates.
+// - All data-modifying methods trigger dataChanged$ to keep the UI in sync.
+// - No direct UI logic: this service is purely for data/model management.
+//
+// Interface Overview:
+// - Use getPlaces(), getTransitions(), getArcs(), getActions() for direct access.
+// - Use removePlace(), removeTransition(), removeArc(), removeAction(), removeAnchor() for deletion.
+// - Use connectNodes() to create new arcs between nodes.
+// - Use clearAll() to reset the model.
+// - Use isConnectionPossible() to check Petri net rules before connecting nodes.
+// - Use dataChanged$ to subscribe to all model changes (for UI or other services).
+//
+// Example Usage:
+//   // In a component or service:
+//   constructor(private dataService: DataService) {}
+//   ngOnInit() {
+//     this.dataService.dataChanged$.subscribe(() => { ... });
+//   }
+//   ...
+//   this.dataService.removePlace(place);
+//   this.dataService.connectNodes(place, transition);
+//
+// Maintenance Notes:
+// - If you add new Petri net elements, update all relevant getters/setters and clearAll().
+// - Always call triggerDataChanged() after any mutation to ensure UI stays in sync.
+// - Avoid storing UI state here; this service is for model data only.
+// - For new features (e.g., colored tokens, arc types), extend the model classes and update this service accordingly.
+// -----------------------------------------------------------------------------
+
 /**
  * @Injectable
  * Provided in 'root', making this service a singleton available throughout the application.
