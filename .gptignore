@@ -38,6 +38,7 @@
     ],
     "exclude_patterns": [
         "*.png",
+        "dist",
         "*.svg",
         ".git",
         ".angular",

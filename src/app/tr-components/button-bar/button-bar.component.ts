@@ -101,21 +101,85 @@ export class ButtonBarComponent {
     }
 
     openClearDialog() {
-        // Necessary To Reset Line-Drawing from Blitz-Tool
-        this.buttonClicked(ButtonState.Clear);
-        if (!this.dataService.isEmpty()) {
-            this.matDialog.open(ClearPopupComponent);
-        }
-    }
-
-    openPlaceInvariantsTable() {
-        this.matDialog.open(PlaceInvariantsTableComponent);
+        this.matDialog.open(ClearPopupComponent);
     }
 
     openHelpDialog() {
         this.matDialog.open(HelpPopupComponent);
     }
 
+    openErrorDialog(errorMessage: string) {
+        // Method to open the error dialog
+        this.matDialog.open(ErrorPopupComponent, {
+            data: { message: errorMessage },
+        });
+    }
+
+    openPlaceInvariantsTable() {
+        this.matDialog.open(PlaceInvariantsTableComponent, {
+            width: '80vw',
+            height: '80vh',
+            panelClass: 'no-padding-dialog', // Optional: if you need custom styling for the dialog panel
+        });
+    }
+
+    // --- Simulation and Animation Controls ---
+
+    /**
+     * Triggers a request to run the simulation via UiService.
+     * ParameterInputComponent listens to this request.
+     */
+    public startSimulation(): void {
+        this.uiService.runSimulationRequest$.next();
+    }
+
+    /**
+     * Starts or resumes the animation playback.
+     */
+    public play(): void {
+        this.uiService.startAnimation();
+    }
+
+    /**
+     * Pauses the animation playback.
+     */
+    public pause(): void {
+        this.uiService.stopAnimation();
+    }
+
+    /**
+     * Stops the animation playback and resets the timeline to the initial state.
+     */
+    public stop(): void {
+        this.uiService.stopAnimation();
+        this.uiService.setCurrentSimulationStep(0);
+    }
+
+    /**
+     * Checks if the animation is currently playing.
+     * @returns True if animation is running, false otherwise.
+     */
+    public get isPlaying(): boolean {
+        return this.uiService.isAnimationRunning();
+    }
+
+    /**
+     * Gets the current step/state index of the simulation timeline.
+     * @returns The current 0-indexed simulation step.
+     */
+    public get currentStep(): number {
+        return this.uiService.getCurrentSimulationStep();
+    }
+
+    /**
+     * Gets the total number of steps/states in the simulation timeline.
+     * @returns The total number of simulation states.
+     */
+    public get totalSteps(): number {
+        return this.uiService.getTotalSimulationSteps();
+    }
+
+    // --- Layout Controls ---
     applyLayout(layoutAlgorithm: string) {
         switch (layoutAlgorithm) {
             case 'spring-embedder':
@@ -236,18 +300,5 @@ export class ButtonBarComponent {
 
         console.log('ButtonBarComponent.uploadPnmlFile: Calling reader.readAsText...'); // Log before readAsText
         reader.readAsText(file);
-    }    startSimulation(): void {
-        // TODO: Implement actual simulation start logic
-        console.log('Start Simulation button clicked');
-    }
-
-    startAutoplay(): void {
-        console.log('ButtonBarComponent: startAutoplay called');
-        this.uiService.startAnimation();
-    }
-
-    stopAutoplay(): void {
-        console.log('ButtonBarComponent: stopAutoplay called');
-        this.uiService.stopAnimation();
     }
 }

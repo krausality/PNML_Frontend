@@ -1,0 +1,12 @@
+<div class="speed-control-container" matTooltip="Controls simulation speed. 0x pauses animation.">
+  <mat-icon class="speed-icon">speed</mat-icon>
+  <mat-slider class="speed-slider"
+              [min]="0"
+              [max]="speedMap.length - 1"
+              [step]="1"
+              [discrete]="true"
+              [displayWith]="formatLabel.bind(this)">
+    <input matSliderThumb [(ngModel)]="sliderValue" (ngModelChange)="onSpeedChange($event)">
+  </mat-slider>
+  <span class="speed-label">{{ formatLabel(sliderValue) }}</span>
+</div>

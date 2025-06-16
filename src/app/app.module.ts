@@ -67,7 +67,11 @@ import { ErrorPopupComponent } from './tr-components/error-popup/error-popup.com
 import { HelpPopupComponent } from './tr-components/help-popup/help-popup.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TextFieldModule } from '@angular/cdk/text-field';
-import { ParameterInputComponent } from './tr-components/parameter-input/parameter-input.component';
+import { ParameterInputComponent } from './tr-components/parameter-input/parameter-input.component'; // Import ParameterInputComponent
+import { MatSliderModule } from '@angular/material/slider'; // Import MatSliderModule
+import { TimelineComponent } from './tr-components/timeline/timeline.component'; // Import TimelineComponent
+import { FormsModule as AngularFormsModule } from '@angular/forms'; // Import FormsModule for ngModel
+import { SpeedControlComponent } from './tr-components/speed-control/speed-control.component'; // Import SpeedControlComponent
 
 @NgModule({
     declarations: [
@@ -86,6 +90,8 @@ import { ParameterInputComponent } from './tr-components/parameter-input/paramet
         PlaceInvariantsTableComponent,
         CodeEditorComponent,
         ErrorPopupComponent,
+        TimelineComponent, // Add TimelineComponent
+        SpeedControlComponent, // Add SpeedControlComponent
     ],
     imports: [
         BrowserModule,
@@ -97,15 +103,18 @@ import { ParameterInputComponent } from './tr-components/parameter-input/paramet
         MatInputModule,
         MatButtonModule,
         MatIconModule,
-        MatProgressSpinnerModule,
-        TextFieldModule,
         MatSelectModule,
         MatTabsModule,
         MatDialogModule,
         MatListModule,
         MatMenuModule,
         MatTooltipModule,
-        ParameterInputComponent,
+        ReactiveFormsModule,
+        AngularFormsModule, // Add FormsModule here for ngModel if not already present
+        MatSliderModule, // Add MatSliderModule here
+        MatProgressSpinnerModule,
+        TextFieldModule,
+        ParameterInputComponent, // Add standalone ParameterInputComponent here
     ],
     providers: [
         {

@@ -1,0 +1,23 @@
+.speed-control-container {
+  display: flex;
+  align-items: center;
+  padding: 0 8px; /* Reduced padding for tighter fit in button bar */
+  gap: 8px;
+  min-width: 180px; /* Ensure enough space for slider and labels */
+}
+
+.speed-icon {
+  font-size: 20px; /* Adjust icon size if needed */
+}
+
+.speed-slider {
+  flex-grow: 1;
+  min-width: 100px; 
+  max-width: 150px; 
+}
+
+.speed-label {
+  min-width: 30px; /* Ensure space for labels like "0.5x" */
+  text-align: right;
+  font-size: 0.9em;
+}

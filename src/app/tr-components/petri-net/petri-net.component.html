@@ -374,6 +374,14 @@
     </g> <!-- End of wrapper group -->
 </svg>
 
+<!-- Timeline Component -->
+<app-timeline
+    *ngIf="uiService.hasSimulationData()"
+    [totalSteps]="(uiService.totalSimulationSteps$ | async) ?? 0"
+    [currentStep]="(uiService.currentSimulationStep$ | async) ?? 0"
+    (stepChanged)="onTimelineStepChanged($event)">
+</app-timeline>
+
 <div *ngIf="dataService.isEmpty()" class="import-hint">
     <p *ngIf="uiService.tab === TabState.Build">
         Get started by drawing a petri net with the toolbar buttons or import a

@@ -101,19 +101,21 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
     private animationPlaces: Place[] = [];
     private animationTransitions: Transition[] = [];
     private animationArcs: Arc[] = [];
-    private animationTimer: any = null;
-    private readonly ANIMATION_DELAY = 1500; // 1.5 seconds between steps
+    private initialMarkings: Map<string, number> = new Map();
+    private currentStepBeingDisplayed: number = -1; // To avoid re-processing the same step
+    private animationTimer: any = null; // Added to manage setTimeout
+    private readonly ANIMATION_DELAY = 1000; // Example delay
 
     private _subs: Subscription[] = [];
     private viewInitialized = false; // Flag to track if view is initialized
 
     // --- Animation State (Vorbereitung für PNML-Animation) ---
-    private animationFiringSeq: any = null;
-    private animationDetailedLog: any = null;
-    private animationStepIndex: number = 0;
-    private animationTimerId: any = null;
-    private isAnimationRunning: boolean = false;
-    private animationSubscriptions: Subscription[] = [];
+    // private animationFiringSeq: any = null; // Duplicate, remove this line
+    // private animationDetailedLog: any = null; // Duplicate, remove this line
+    // private animationStepIndex: number = 0; // Duplicate, remove this line
+    // private animationTimerId: any = null; // Duplicate, remove this line
+    // private isAnimationRunning: boolean = false; // Duplicate, remove this line
+    // private animationSubscriptions: Subscription[] = []; // Duplicate, remove this line
     // --------------------------------------------------------
 
     constructor(
@@ -123,10 +125,10 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
         protected dataService: DataService,
         protected exportJsonDataService: ExportJsonDataService,
         protected pnmlService: PnmlService,
-        protected uiService: UiService,
+        public uiService: UiService, // Ensure UiService is public if accessed in template, or use getter
         protected tokenGameService: TokenGameService,
         private matDialog: MatDialog,
-        public zoomService: ZoomService, // Inject ZoomService
+        public zoomService: ZoomService,
         protected editMoveElementsService: EditMoveElementsService,
         private layoutSugiyamaService: LayoutSugiyamaService,
         protected svgCoordinatesService: SvgCoordinatesService,
@@ -150,23 +152,48 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.fitContentToView();
                 }
             })
-        );        this._subs.push(
+        );
+        this._subs.push(
             this.uiService.simulationResults$.subscribe(results => {
-                if (results) {
+                if (results && results.firing_seq) {
                     console.log('PetriNetComponent: Received simulation results from UiService', results);
-                    this.startAnimation(results);
+                    this.initializeAnimationAndTimeline(results); // Method name was startAnimation, changed to initializeAnimationAndTimeline
+                } else if (!results) {
+                    console.log('PetriNetComponent: Simulation results cleared.');
+                    this.uiService.resetSimulationSteps();
+                    this.isSimulating = false;
+                    this.simulationFiringSeq = null;
+                    this.simulationDetailedLog = null;
+                    this.initialMarkings.clear();
+                    this.currentStepBeingDisplayed = -1;
+                    this.clearAllTransitionHighlights();
+                    this.dataService.triggerDataChanged();
                 }
             })
         );
 
+        // Subscribe to animation state to start/stop autoplay
         this._subs.push(
             this.uiService.getAnimationState$().subscribe(isRunning => {
-                if (isRunning && this.uiService.tab === TabState.Play) {
-                    console.log('PetriNetComponent: Starting autoplay animation');
-                    this.startAutoplayAnimation();
+                if (isRunning && this.uiService.tab === TabState.Play && this.isSimulating) {
+                    console.log('PetriNetComponent: Starting/Resuming autoplay animation');
+                    this.animateNextStep();
                 } else if (!isRunning) {
-                    console.log('PetriNetComponent: Stopping animation');
-                    this.stopAnimation();
+                    console.log('PetriNetComponent: Animation state is false.');
+                    if (this.animationTimer) {
+                        clearTimeout(this.animationTimer);
+                        this.animationTimer = null;
+                    }
+                }
+            })
+        );
+
+        // Subscribe to currentTimelineStep$ from UiService to update display on scrub/step
+        this._subs.push(
+            this.uiService.currentSimulationStep$.subscribe(step => {
+                if (this.uiService.hasSimulationData() && !this.uiService.isAnimationRunning() && step !== this.currentStepBeingDisplayed) {
+                    console.log(`PetriNetComponent: currentSimulationStep$ changed to ${step} via UI, updating display.`);
+                    this.displayStateForStep(step);
                 }
             })
         );
@@ -1125,100 +1152,50 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
 
     protected readonly TabState = TabState;
     protected readonly ButtonState = ButtonState;    // Method to start the simulation animation
-    startAnimation(results: { firing_seq: any, detailed_log: any }): void {
-        console.log('PetriNetComponent: startAnimation called with', results);
-        // --- Robustly convert firing_seq to array of {transition_id} steps ---
-        // The backend may return firing_seq as an array or as an object mapping step indices to transition indices or IDs.
-        // We must ensure that each step in the animation sequence is a valid transition in the current Petri net.
-        // This mapping is robust: it only includes steps that can be mapped to a real transition, and skips invalid ones.
-        let firingSeq = results.firing_seq;
-        const transitions = this.dataService.getTransitions(); // Get the current list of transitions for ID lookup
-        if (Array.isArray(firingSeq)) {
-            // If firing_seq is already an array, map each step to a {transition_id} object if possible
-            firingSeq = firingSeq.map((step: any) => {
-                if (typeof step === 'string') {
-                    // If the step is a string, check if it matches a transition ID
-                    const t = transitions.find(tr => tr.id === step);
-                    if (t) {
-                        // Valid transition ID found, use it
-                        return { transition_id: t.id };
-                    }
-                    // If not found, skip this step (return null)
-                    return null;
-                } else if (typeof step === 'number') {
-                    // If the step is a number, treat it as an index into the transitions array
-                    const t = transitions[step];
-                    if (t) {
-                        // Valid index, use the transition's ID
-                        return { transition_id: t.id };
-                    }
-                    // Invalid index, skip this step
-                    return null;
-                } else if (step && typeof step === 'object' && 'transition_id' in step) {
-                    // If the step is already an object with a transition_id, check if it's valid
-                    const t = transitions.find(tr => tr.id === step.transition_id);
-                    if (t) {
-                        // Valid transition_id, keep the step
-                        return step;
-                    }
-                    // Invalid transition_id, skip
-                    return null;
-                } else {
-                    // Unrecognized step format, skip
-                    return null;
-                }
-            }).filter((step: any) => step !== null); // Remove all invalid/null steps
-        } else if (firingSeq && typeof firingSeq === 'object') {
-            // If firing_seq is an object, sort the keys numerically and map each value
-            const keys = Object.keys(firingSeq).sort((a: string, b: string) => Number(a) - Number(b));
-            firingSeq = keys.map((key: string) => {
-                const value = firingSeq[key];
-                if (typeof value === 'string') {
-                    // If the value is a string, check if it matches a transition ID
-                    const t = transitions.find(tr => tr.id === value);
-                    if (t) {
-                        // Valid transition ID, use it
-                        return { transition_id: t.id };
-                    }
-                    // Invalid transition ID, skip
-                    return null;
-                } else if (typeof value === 'number') {
-                    // If the value is a number, treat it as an index into the transitions array
-                    const t = transitions[value];
-                    if (t) {
-                        // Valid index, use the transition's ID
-                        return { transition_id: t.id };
-                    }
-                    // Invalid index, skip
-                    return null;
-                } else {
-                    // Unrecognized value, skip
-                    return null;
-                }
-            }).filter((step: any) => step !== null); // Remove all invalid/null steps
-            // Log the final robustly mapped and filtered firing sequence for debugging
-            console.log('[+5σ] firing_seq converted from object to array (robust mapping & filtering):', firingSeq);
+    // Renamed to initializeAnimationAndTimeline to avoid conflict and match usage
+    private initializeAnimationAndTimeline(results: { firing_seq: any, detailed_log: any }): void {
+        console.log('PetriNetComponent: initializeAnimationAndTimeline called with', results);
+
+        let firingSeqArray: { transition_id: string }[] = [];
+        const transitions = this.dataService.getTransitions();
+
+        if (Array.isArray(results.firing_seq)) {
+            firingSeqArray = results.firing_seq.map((step: any) => {
+                if (typeof step === 'string') return transitions.find(t => t.id === step) ? { transition_id: step } : null;
+                if (typeof step === 'number' && transitions[step]) return { transition_id: transitions[step].id };
+                if (step && typeof step === 'object' && step.transition_id && transitions.find(t => t.id === step.transition_id)) return step;
+                return null;
+            }).filter((s: any): s is { transition_id: string } => s !== null);
+        } else if (results.firing_seq && typeof results.firing_seq === 'object') {
+            const keys = Object.keys(results.firing_seq).sort((a, b) => Number(a) - Number(b));
+            firingSeqArray = keys.map(key => {
+                const val = results.firing_seq[key];
+                if (typeof val === 'string' && transitions.find(t => t.id === val)) return { transition_id: val };
+                if (typeof val === 'number' && transitions[val]) return { transition_id: transitions[val].id };
+                return null;
+            }).filter((s: any): s is { transition_id: string } => s !== null);
         } else {
-            // If firing_seq is neither an array nor an object, log an error and set to empty array
-            console.error('[+5σ] firing_seq has unexpected type:', typeof firingSeq, firingSeq);
-            firingSeq = [];
+            console.error('Invalid firing_seq format:', results.firing_seq);
+            this.uiService.resetSimulationSteps();
+            return;
         }
-        // At this point, firingSeq is guaranteed to be an array of valid {transition_id} objects only
-        // This prevents animation errors and ensures only real transitions are animated
-        this.simulationFiringSeq = firingSeq;
+
+        this.simulationFiringSeq = firingSeqArray;
         this.simulationDetailedLog = results.detailed_log;
-        this.currentSimulationStep = 0;
         this.isSimulating = true;
-        // Create local copies of data to prevent "this.dataService.transitions is undefined" errors
-        this.createAnimationDataCopies();
-        console.log('PetriNetComponent: Simulation data stored, isSimulating set to true.');
-        // Only start animation automatically if we're in the Play tab
-        // Otherwise, animation will be triggered manually via Autoplay button
-        if (this.uiService.tab === TabState.Play) {
-            console.log('PetriNetComponent: In Play tab, ready for autoplay');
-        } else {
-            console.log('PetriNetComponent: Not in Play tab, animation stored for later use');
-        }
+
+        this.initialMarkings.clear();
+        this.dataService.getPlaces().forEach(place => {
+            this.initialMarkings.set(place.id, place.token);
+        });
+        console.log('PetriNetComponent: Initial markings stored:', this.initialMarkings);
+
+        this.uiService.setTotalSimulationSteps(this.simulationFiringSeq.length);
+        this.uiService.setCurrentSimulationStep(0);
+        this.currentStepBeingDisplayed = -1; 
+        this.displayStateForStep(0);
+
+        console.log('PetriNetComponent: Simulation data initialized for timeline and animation.');
     }    private createAnimationDataCopies(): void {
         console.log('PetriNetComponent: Creating local data copies for animation');
         try {
@@ -1266,123 +1243,198 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     private animateNextStep(): void {
-        // +5 Sigma Debug: Datenstruktur und Schrittzahl prüfen
-        let totalSteps = 0;
-        let stepData: any = undefined;
-        if (Array.isArray(this.simulationFiringSeq)) {
-            totalSteps = this.simulationFiringSeq.length;
-            stepData = this.simulationFiringSeq[this.currentSimulationStep];
-        } else if (this.simulationFiringSeq && typeof this.simulationFiringSeq === 'object') {
-            // Wenn firing_seq ein Objekt ist, sortiere die Keys numerisch (falls möglich)
-            const keys = Object.keys(this.simulationFiringSeq).sort((a, b) => Number(a) - Number(b));
-            totalSteps = keys.length;
-            const currentKey = keys[this.currentSimulationStep];
-            stepData = this.simulationFiringSeq[currentKey];
-            console.log('[+5σ] simulationFiringSeq ist Objekt, keys:', keys, 'currentKey:', currentKey);
-        } else {
-            console.error('[+5σ] simulationFiringSeq hat unerwarteten Typ:', typeof this.simulationFiringSeq, this.simulationFiringSeq);
+        if (!this.isSimulating || !this.uiService.isAnimationRunning() || !this.simulationFiringSeq) {
+            this.uiService.stopAnimation(); 
+            return;
+        }
+
+        const currentStep = this.uiService.getCurrentSimulationStep(); // Use getter
+        const totalSteps = this.uiService.getTotalSimulationSteps(); // Use getter
+
+        if (currentStep >= totalSteps) {
+            console.log('PetriNetComponent: Animation complete.');
             this.uiService.stopAnimation();
+            if (totalSteps > 0) {
+                this.displayStateForStep(totalSteps - 1, true);
+            }
             return;
         }
-        console.log(`[+5σ] animateNextStep called, current step: ${this.currentSimulationStep} / ${totalSteps}`);
-        if (this.currentSimulationStep >= totalSteps) {
-            console.log('[+5σ] Animation complete (Schrittzahl erreicht)');
-            this.uiService.stopAnimation();
-            return;
-        }
-        if (!this.uiService.isAnimationRunning()) {
-            console.log('[+5σ] Animation gestoppt durch User');
-            return;
-        }
-        console.log(`[+5σ] Processing animation step ${this.currentSimulationStep}:`, stepData);
-        if (!stepData || !stepData.transition_id) {
-            console.warn('[+5σ] Invalid step data, Animation wird gestoppt:', stepData);
-            this.uiService.stopAnimation();
-            return;
-        }
-        // Highlighting vorbereiten
-        this.clearAllTransitionHighlights();
-        this.highlightTransition(stepData.transition_id, 'enabled');
-        setTimeout(() => {
-            this.fireTransitionInAnimation(stepData.transition_id);
-            this.highlightTransition(stepData.transition_id, 'fired');
-            this.currentSimulationStep++;
-            this.animationTimer = setTimeout(() => {
+
+        console.log(`PetriNetComponent: Animating step ${currentStep + 1}/${totalSteps}`);
+        this.displayStateForStep(currentStep, false);
+        this.currentStepBeingDisplayed = currentStep;
+
+
+        this.animationTimer = setTimeout(() => {
+            if (!this.uiService.isAnimationRunning()) return;
+
+            const stepData = this.simulationFiringSeq![currentStep]; 
+            if (stepData && stepData.transition_id) {
+                const transitionToFire = this.dataService.getTransitions().find(t => t.id === stepData.transition_id);
+                if (transitionToFire) {
+                    this.applyTransitionFiringToMarkings(transitionToFire);
+                }
+            }
+            this.dataService.triggerDataChanged();
+
+            const nextStepIndex = currentStep + 1;
+            this.uiService.setCurrentSimulationStep(nextStepIndex); 
+
+            if (nextStepIndex < totalSteps) {
                 this.animateNextStep();
-            }, this.ANIMATION_DELAY);
-        }, 500);
+            } else {
+                console.log('PetriNetComponent: Animation reached end.');
+                this.uiService.stopAnimation();
+                 this.displayStateForStep(totalSteps - 1, true);
+            }
+        }, this.ANIMATION_DELAY);
     }
 
-    private highlightTransition(transitionId: string, state: 'enabled' | 'fired'): void {
-        console.log(`PetriNetComponent: Highlighting transition ${transitionId} as ${state}`);
-        
-        // Find the transition in the actual data service (for visual updates)
-        const transition = this.dataService.getTransitions().find(t => t.id === transitionId);
-        if (transition) {
-            // Add CSS classes for highlighting (we'll need to add these to the CSS)
-            const transitionElement = document.querySelector(`rect[data-transition-id="${transitionId}"]`);
-            if (transitionElement) {
-                transitionElement.classList.remove('animation-enabled', 'animation-fired');
-                transitionElement.classList.add(`animation-${state}`);
+    private displayStateForStep(stepIndex: number, isFinalStateAfterFiring: boolean = false): void {
+        // ...  
+        if (!this.isSimulating || !this.simulationFiringSeq || !this.simulationDetailedLog) {
+            console.warn('PetriNetComponent: displayStateForStep called without simulation data.');
+            return;
+        }
+        // Prevent re-rendering the same state if called multiple times for the same step
+        // However, allow if isFinalStateAfterFiring changes, as that implies a different highlight logic
+        if (stepIndex === this.currentStepBeingDisplayed && !isFinalStateAfterFiring && this._lastIsFinalState === isFinalStateAfterFiring) {
+            // console.log(`PetriNetComponent: displayStateForStep already displayed step ${stepIndex}. Final: ${isFinalStateAfterFiring}`);
+            // return;
+        }
+
+        console.log(`PetriNetComponent: Displaying state for step ${stepIndex}. Final state: ${isFinalStateAfterFiring}`);
+        this.currentStepBeingDisplayed = stepIndex;
+        this._lastIsFinalState = isFinalStateAfterFiring;
+
+
+        this.dataService.getPlaces().forEach(place => {
+            place.token = this.initialMarkings.get(place.id) ?? 0;
+        });
+
+        const simulateUpTo = isFinalStateAfterFiring ? stepIndex : stepIndex - 1;
+        for (let i = 0; i <= simulateUpTo; i++) {
+            if (i < this.simulationFiringSeq.length) {
+                const stepData = this.simulationFiringSeq[i];
+                const transitionToFire = this.dataService.getTransitions().find(t => t.id === stepData.transition_id);
+                if (transitionToFire) {
+                    this.applyTransitionFiringToMarkings(transitionToFire);
+                } else {
+                     console.warn(`Transition with ID ${stepData.transition_id} not found for step ${i}`);
+                }
             }
         }
+
+        this.clearAllTransitionHighlights();
+        const detailedLogKey = String(stepIndex);
+        const detailedLogEntry = this.simulationDetailedLog[detailedLogKey];
+
+        if (detailedLogEntry) {
+            const transitionToFireId = detailedLogEntry.transition_to_fire || (this.simulationFiringSeq[stepIndex] ? this.simulationFiringSeq[stepIndex].transition_id : null);
+
+            if (!isFinalStateAfterFiring && transitionToFireId) {
+                this.highlightTransition(transitionToFireId, 'next-to-fire');
+            } else if (isFinalStateAfterFiring && stepIndex >= 0 && stepIndex < this.simulationFiringSeq.length) {
+                 // Highlight the transition that *just* fired at stepIndex
+                const firedTransitionId = this.simulationFiringSeq[stepIndex].transition_id;
+                if(firedTransitionId) this.highlightTransition(firedTransitionId, 'fired');
+            }
+
+
+            if (!isFinalStateAfterFiring && detailedLogEntry.enabled_transitions && Array.isArray(detailedLogEntry.enabled_transitions)) {
+                detailedLogEntry.enabled_transitions.forEach((id: string) => {
+                    if (id !== transitionToFireId) {
+                        this.highlightTransition(id, 'enabled');
+                    }
+                });
+            }
+        } else if (stepIndex === 0 && !isFinalStateAfterFiring) {
+            const initialLogEntry = this.simulationDetailedLog["0"];
+            if(initialLogEntry && initialLogEntry.enabled_transitions && Array.isArray(initialLogEntry.enabled_transitions)) {
+                const transitionToFireId = initialLogEntry.transition_to_fire || (this.simulationFiringSeq[0] ? this.simulationFiringSeq[0].transition_id : null);
+                initialLogEntry.enabled_transitions.forEach((id: string) => {
+                   this.highlightTransition(id, id === transitionToFireId ? 'next-to-fire' : 'enabled');
+                });
+            }
+        } else if (isFinalStateAfterFiring && stepIndex >= 0 && stepIndex < this.simulationFiringSeq.length) {
+             // This case is for showing the state *after* transition at stepIndex fired.
+             const firedTransitionId = this.simulationFiringSeq[stepIndex].transition_id;
+             this.highlightTransition(firedTransitionId, 'fired');
+        }
+
+
+        this.dataService.triggerDataChanged();
     }
+    private _lastIsFinalState: boolean | undefined = undefined; // Helper for displayStateForStep re-entry check
 
-    private fireTransitionInAnimation(transitionId: string): void {
-        console.log(`PetriNetComponent: Firing transition ${transitionId} in animation`);
-        
-        // Update tokens based on the transition firing
-        // This should update the actual data service so the UI reflects the changes
-        const transition = this.dataService.getTransitions().find(t => t.id === transitionId);
-        if (!transition) {
-            console.warn(`PetriNetComponent: Transition ${transitionId} not found`);
-            return;
-        }
 
-        // Fire the transition using the token game service
-        // This ensures proper token management and state updates
-        try {
-            this.tokenGameService.fire(transition);
-            console.log(`PetriNetComponent: Transition ${transitionId} fired successfully`);
-        } catch (error) {
-            console.error(`PetriNetComponent: Error firing transition ${transitionId}:`, error);
-        }
-    }
-
-    stopAnimation(): void {
-        console.log('PetriNetComponent: stopAnimation called');
-        if (this.animationTimer) {
-            clearTimeout(this.animationTimer);
-            this.animationTimer = null;
-        }
-
-        // Remove all animation highlights
-        const animatedElements = document.querySelectorAll('.animation-enabled, .animation-fired');
-        animatedElements.forEach(element => {
-            element.classList.remove('animation-enabled', 'animation-fired');
+    private applyTransitionFiringToMarkings(transition: Transition): void {
+        // ...  
+        if (!transition) return;
+        transition.preArcs.forEach(arc => {
+            const place = arc.from as Place;
+            const placeFromDs = this.dataService.getPlaces().find(p => p.id === place.id);
+            if (placeFromDs) {
+                placeFromDs.token = Math.max(0, placeFromDs.token + arc.weight);
+            }
         });
-
-        console.log('PetriNetComponent: Animation stopped and cleaned up');
+        transition.postArcs.forEach(arc => {
+            const place = arc.to as Place;
+            const placeFromDs = this.dataService.getPlaces().find(p => p.id === place.id);
+            if (placeFromDs) {
+                placeFromDs.token += arc.weight;
+            }
+        });
     }
 
-    /**
-     * Entfernt alle Animation-Highlight-Klassen von Transitionen im SVG
-     */
+    public stopAnimation(): void {
+        console.log('PetriNetComponent: stopAnimation called directly');
+        this.uiService.stopAnimation(); 
+        const currentStep = this.uiService.getCurrentSimulationStep(); // Use getter
+        if (this.uiService.hasSimulationData() && currentStep !== this.currentStepBeingDisplayed) {
+             this.displayStateForStep(currentStep);
+        } else if (this.uiService.hasSimulationData()) {
+            this.displayStateForStep(currentStep, false); 
+        }
+    }
+
+    public onTimelineStepChanged(newStep: number): void {
+        console.log(`PetriNetComponent: Timeline step changed to ${newStep}`);
+        if (this.uiService.isAnimationRunning()) {
+            this.uiService.stopAnimation();
+        }
+        this.uiService.setCurrentSimulationStep(newStep);
+        // The subscription to uiService.currentSimulationStep$ will call displayStateForStep
+        // if the step is different and animation is not running.
+        // Explicitly call if the subscription might not catch it or to ensure immediate update:
+        if (!this.uiService.isAnimationRunning()) {
+             this.displayStateForStep(newStep);
+        }
+    }
+
+    private highlightTransition(transitionId: string, state: 'enabled' | 'fired' | 'next-to-fire'): void {
+        // ... (implementation from email, ensure all states are handled in CSS)
+        const transitionElement = document.querySelector(`rect[data-transition-id="${transitionId}"]`);
+        if (transitionElement) {
+            transitionElement.classList.remove('animation-enabled', 'animation-fired', 'animation-next-to-fire');
+            if (state === 'enabled') {
+                transitionElement.classList.add('animation-enabled');
+            } else if (state === 'fired') {
+                transitionElement.classList.add('animation-fired');
+            } else if (state === 'next-to-fire') {
+                transitionElement.classList.add('animation-next-to-fire');
+            }
+        } else {
+            // console.warn(`Transition element with ID ${transitionId} not found for highlighting.`);
+        }
+    }
+
     clearAllTransitionHighlights(): void {
-        // Selektiere alle Transition-Elemente mit Highlight-Klassen
-        const highlighted = document.querySelectorAll('.animation-enabled, .animation-fired');
+        // ...  
+        const highlighted = document.querySelectorAll('.animation-enabled, .animation-fired, .animation-next-to-fire');
         highlighted.forEach(el => {
-            el.classList.remove('animation-enabled', 'animation-fired');
+            el.classList.remove('animation-enabled', 'animation-fired', 'animation-next-to-fire');
         });
-        // Debug-Log
-        console.log('clearAllTransitionHighlights: Alle Animation-Highlights entfernt');
     }
-
-    /**
-     * Stoppt die aktuelle Animation und räumt auf (Stub)
-     */
-    stopCurrentAnimationLogic(): void {
-        // TODO: Implement logic in next step
-        console.log('Stub: stopCurrentAnimationLogic');
-    }
+    // ... other existing methods ...
 }

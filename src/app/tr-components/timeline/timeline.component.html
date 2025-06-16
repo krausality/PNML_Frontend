@@ -1,0 +1,21 @@
+<div class="timeline-container" *ngIf="totalSteps > 0"> <!-- totalSteps is numStates -->
+    <button mat-icon-button (click)="previousStep()" [disabled]="currentStep === 0" matTooltip="Previous Step">
+        <mat-icon>skip_previous</mat-icon>
+    </button>
+    <mat-slider class="timeline-slider"
+                [min]="0"
+                [max]="totalSteps - 1" 
+                [step]="1"
+                [discrete]="true"
+                [showTickMarks]="totalSteps <= 50">
+        <input matSliderThumb [(ngModel)]="_sliderValue" (ngModelChange)="onSliderInputChange($event)">
+    </mat-slider>
+    <button mat-icon-button (click)="nextStep()" [disabled]="currentStep >= totalSteps - 1" matTooltip="Next Step">
+        <mat-icon>skip_next</mat-icon>
+    </button>
+    <!-- Display is 1-based for user, showing state X of Y states -->
+    <span class="timeline-label">{{ (totalSteps === 0 ? 0 : currentStep + 1) }} / {{ totalSteps }}</span>
+</div>
+<div *ngIf="totalSteps === 0" class="timeline-container-empty">
+    <span>Load simulation data to enable timeline.</span>
+</div>

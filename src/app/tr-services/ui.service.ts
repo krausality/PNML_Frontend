@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ButtonState, CodeEditorFormat, TabState } from '../tr-enums/ui-state';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, Subject, Observable } from 'rxjs'; // Added Observable
 
 // -----------------------------------------------------------------------------
 // UiService: Central UI State Management for Petri Net Frontend
@@ -68,6 +68,17 @@ export class UiService {
     codeEditorFormat$: BehaviorSubject<CodeEditorFormat> =
         new BehaviorSubject<CodeEditorFormat>(CodeEditorFormat.JSON);
 
+    // Simulation steps for timeline
+    private _totalSimulationSteps$ = new BehaviorSubject<number>(0);
+    private _currentSimulationStep$ = new BehaviorSubject<number>(0);
+
+    public totalSimulationSteps$: Observable<number> = this._totalSimulationSteps$.asObservable();
+    public currentSimulationStep$: Observable<number> = this._currentSimulationStep$.asObservable();
+
+    // Simulation speed
+    private _simulationSpeed$ = new BehaviorSubject<number>(1); // Default speed 1x
+    public simulationSpeed$: Observable<number> = this._simulationSpeed$.asObservable();
+
     // Emits simulation results (e.g., from backend simulation or planning).
     // Used to trigger animation or display results in the UI.
     simulationResults$: BehaviorSubject<any | null> = new BehaviorSubject<any | null>(null);
@@ -78,7 +89,57 @@ export class UiService {
     // Emits when autoplay is requested (e.g., via Play button in UI).
     requestAutoplay$: Subject<void> = new Subject<void>();
 
+    // Emits when the "Start Simulation" button in the ButtonBar (Build tab) is clicked.
+    runSimulationRequest$: Subject<void> = new Subject<void>();
+
     constructor() {}
+
+    // --- New public getters for direct value access ---
+    getCurrentSimulationStep(): number {
+        return this._currentSimulationStep$.getValue();
+    }
+
+    getTotalSimulationSteps(): number {
+        return this._totalSimulationSteps$.getValue();
+    }
+    // --- End new public getters ---
+
+    /**
+     * Sets the total number of simulation steps.
+     * @param numFirings The total number of firings in the simulation.
+     */
+    setTotalSimulationSteps(numFirings: number): void {
+        if (numFirings < 0) {
+            this._totalSimulationSteps$.next(0); // Or 1 if an initial state always exists and is counted
+        } else {
+            this._totalSimulationSteps$.next(numFirings + 1); // Total states = numFirings + 1
+        }
+    }
+
+    /**
+     * Sets the current simulation step.
+     * @param step The 0-indexed state index.
+     */
+    setCurrentSimulationStep(step: number): void {
+        const numStates = this.getTotalSimulationSteps();
+        // Allow step to be from 0 (initial state) to numStates - 1 (final state)
+        if (step >= 0 && step < numStates) {
+            this._currentSimulationStep$.next(step);
+        } else if (numStates === 1 && step === 0) { // Special case: 0 firings, 1 state (initial)
+             this._currentSimulationStep$.next(0);
+        }
+        // Out of bounds steps are ignored, or could be clamped if desired.
+    }
+
+    /**
+     * Resets simulation step counters, typically when simulation data is cleared.
+     */
+    resetSimulationSteps(): void {
+        this._totalSimulationSteps$.next(0); // No states (or 1 for a default initial state if always present)
+        this._currentSimulationStep$.next(0);
+        this.simulationResults$.next(null); // Also clear results
+    }
+    // --- End new methods ---
 
     /**
      * Call to request starting the animation (autoplay).
@@ -86,6 +147,17 @@ export class UiService {
      * Components listening to requestAutoplay$ should begin animation playback.
      */
     startAnimation() {
+        const numStates = this.getTotalSimulationSteps(); // Total number of states
+        const currentStateIndex = this.getCurrentSimulationStep(); // Current state index (0 to numStates-1)
+
+        if (!this.animationRunning$.getValue()) {
+            if (numStates <= 1) { // If 0 or 1 state (e.g., 0 firings means 1 state)
+                this._currentSimulationStep$.next(0);
+            } else if (currentStateIndex >= numStates - 1) { // If at the final state
+                this._currentSimulationStep$.next(0); // Restart from initial state
+            }
+            // If paused mid-way (0 <= currentStateIndex < numStates - 1), currentSimulationStep$ is already correct.
+        }
         this.animationRunning$.next(true);
         this.requestAutoplay$.next();
     }
@@ -96,6 +168,8 @@ export class UiService {
      */
     stopAnimation() {
         this.animationRunning$.next(false);
+        // Note: We don't reset currentSimulationStep here,
+        // so the timeline stays at the step where animation was stopped.
     }
 
     /**
@@ -119,7 +193,15 @@ export class UiService {
      * @returns {boolean} True if simulationResults$ contains data, false otherwise.
      */
     hasSimulationData(): boolean {
-        return this.simulationResults$.getValue() !== null;
+        return this.simulationResults$.getValue() !== null && this.getTotalSimulationSteps() > 0; // Changed to use getter
+    }
+
+    /**
+     * Sets the simulation speed.
+     * @param speed The speed factor (e.g., 1 for normal speed, 2 for double speed).
+     */
+    setSimulationSpeed(speed: number): void {
+        this._simulationSpeed$.next(speed);
     }
 }
 // -----------------------------------------------------------------------------

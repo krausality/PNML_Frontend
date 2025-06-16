@@ -1,0 +1,65 @@
+/* src/app/tr-components/timeline/timeline.component.css */
+.timeline-container {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    background-color: #f5f5f5; /* Light grey background */
+    border-top: 1px solid #e0e0e0; /* Subtle top border */
+    margin-top: 5px; /* Space from content above */
+    height: 50px; /* Fixed height for consistency */
+    box-sizing: border-box;
+}
+
+.timeline-container-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    background-color: #f5f5f5;
+    border-top: 1px solid #e0e0e0;
+    margin-top: 5px;
+    color: #757575; /* Muted text color */
+    font-style: italic;
+    height: 50px; /* Match height of active timeline */
+    box-sizing: border-box;
+}
+
+.timeline-slider {
+    flex-grow: 1;
+    margin: 0 16px; /* Spacing around the slider */
+}
+
+/* Customizing Angular Material Slider appearance */
+/* Targeting the thumb label to make it more visible or styled */
+/* Using ::ng-deep for Material components, be mindful of view encapsulation */
+
+::ng-deep .timeline-slider .mat-mdc-slider .mdc-slider__thumb-knob {
+    background-color: red !important;
+    border-color: red !important;
+}
+
+::ng-deep .timeline-slider .mat-mdc-slider .mdc-slider__track--active .mdc-slider__track-fill {
+    background-color: red !important; 
+}
+
+/* Thumb label styling if you are using it (discrete slider with thumbLabel) */
+::ng-deep .timeline-slider .mat-mdc-slider .mdc-slider__thumb-label {
+    background-color: red !important;
+    color: white !important;
+}
+
+
+.timeline-label {
+    min-width: 60px; /* Ensure enough space for "XX / YY" */
+    text-align: right;
+    font-size: 0.9em;
+    color: #333;
+}
+
+button[mat-icon-button] {
+    color: #555;
+}
+
+button[mat-icon-button]:disabled {
+    color: #bbb;
+}

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core'; // Added OnDestroy
 import { FormControl, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { PlanningService } from '../../tr-services/planning.service';
 import { finalize } from 'rxjs/operators';
@@ -12,6 +12,8 @@ import { TextFieldModule } from '@angular/cdk/text-field';
 import { ParameterRowComponent } from '../parameter-row/parameter-row.component';
 import { ParameterDefinition } from '../../tr-interfaces/parameter-definition.interface';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { UiService } from '../../tr-services/ui.service'; // Import UiService
+import { Subscription } from 'rxjs'; // Import Subscription
 
 export interface ParameterRowData {
     definition: ParameterDefinition;
@@ -37,10 +39,11 @@ export interface ParameterRowData {
         FlexLayoutModule
     ]
 })
-export class ParameterInputComponent implements OnInit {
+export class ParameterInputComponent implements OnInit, OnDestroy { // Implement OnDestroy
     private static instanceCounter = 0;
     private instanceId: number;
     private initialLoadDone = false;
+    private runSimulationSubscription: Subscription | undefined; // For unsubscribing
 
     trackByPath(index: number, rowData: ParameterRowData): string {
         return rowData.definition.path;
@@ -56,7 +59,8 @@ export class ParameterInputComponent implements OnInit {
 
     constructor(
         private planningService: PlanningService,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        private uiService: UiService // Inject UiService
     ) {
         this.instanceId = ++ParameterInputComponent.instanceCounter;
         console.log(`[CONSTRUCTOR ${this.instanceId}] ParameterInputComponent constructed. Timestamp: ${Date.now()}`);
@@ -66,6 +70,17 @@ export class ParameterInputComponent implements OnInit {
         console.log(`[NGONINIT ${this.instanceId}] ngOnInit. initialLoadDone: ${this.initialLoadDone}. Timestamp: ${Date.now()}`);
         if (!this.initialLoadDone) {
             this.loadDefaults();
+        }
+        this.runSimulationSubscription = this.uiService.runSimulationRequest$.subscribe(() => {
+            console.log(`[PARAM_INPUT ${this.instanceId}] Received run simulation request from UiService. Calling this.runSimulation().`);
+            this.runSimulation();
+        });
+    }
+
+    ngOnDestroy(): void { // Implement ngOnDestroy
+        console.log(`[PARAM_INPUT ${this.instanceId}] ngOnDestroy called. Unsubscribing from runSimulationRequest$.`);
+        if (this.runSimulationSubscription) {
+            this.runSimulationSubscription.unsubscribe();
         }
     }
 
