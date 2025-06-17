@@ -34,7 +34,8 @@
         "*.m",
         "Dockerfile",
         "*.file",
-        "*.txt"
+        "*.txt",
+        "Seafile"
     ],
     "exclude_patterns": [
         "*.png",
@@ -42,6 +43,7 @@
         "*.svg",
         ".git",
         ".angular",
-        "node_modules"
+        "node_modules",
+        "backend"
     ]
 }

@@ -4,12 +4,12 @@ import {
     Input,
     OnDestroy,
     OnInit,
-    ViewChild, // Import ViewChild
-    ElementRef, // Import ElementRef
-    AfterViewInit, // Import AfterViewInit
+    ViewChild, 
+    ElementRef, 
+    AfterViewInit, 
 } from '@angular/core';
 import { ParserService } from 'src/app/tr-services/parser.service';
-import { take, Subscription } from 'rxjs';
+import { take, Subscription } from 'rxjs'; // Ensure 'Subscription' is imported
 import { FileReaderService } from '../../services/file-reader.service';
 import { DataService } from '../../tr-services/data.service';
 
@@ -46,7 +46,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { SetActionPopupComponent } from '../set-action-popup/set-action-popup.component';
 import { Node } from 'src/app/tr-interfaces/petri-net/node';
 import { MouseConstants } from '../../tr-enums/mouse-constants';
-import { ZoomService } from '../../tr-services/zoom.service'; // Import ZoomService
+import { ZoomService } from '../../tr-services/zoom.service';
 import { SvgCoordinatesService } from 'src/app/tr-services/svg-coordinates-service';
 import { PlaceInvariantsService } from 'src/app/tr-services/place-invariants.service';
 import { PlaceInvariantsTableComponent } from '../place-invariants-table/place-invariants-table.component';
@@ -63,60 +63,36 @@ import { LayoutSugiyamaService } from '../../tr-services/layout-sugiyama.service
 export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
     @Input() buttonState: ButtonState | undefined;
 
-    // Marks selected node in Blitz tool
     lastNode: Node | null = null;
-    // Marks node that will be selected
     nextNode: Node | null = null;
-    // Attribute is set when the user tries to connect two nodes of the same type
     addElement: boolean = true;
 
-    /**
-     * Radius für Ankerpunkte auf Kanten. Beeinflusst die Größe der klickbaren/sichtbaren Bereiche
-     * für die Manipulation von Kantenverläufen.
-     * Wird vermutlich durch eine importierte Konstante initialisiert.
-     */
     public anchorRadius = anchorRadius;
-
-    /**
-     * Trennzeichen, das in Beschriftungen verwendet wird, um Zeilenumbrüche zu signalisieren.
-     * Nützlich für die Darstellung von mehrzeiligen Namen oder Bezeichnern.
-     * Wird vermutlich durch eine importierte Konstante initialisiert.
-     */
     public lineSeparator = lineSeparator;
+    public showTooltipDelay = showTooltipDelay;
 
-    /**
-     * Verzögerungszeit in Millisekunden, bevor ein Tooltip angezeigt wird, wenn der Benutzer
-     * mit der Maus über ein Element fährt. Verhindert störendes Aufblitzen bei schnellen Mausbewegungen.
-     * Wird vermutlich durch eine importierte Konstante initialisiert.
-     */
-    public showTooltipDelay = showTooltipDelay; // Expose tooltip delay constant
-
-    @ViewChild('drawingArea') drawingArea!: ElementRef<SVGElement>; // Added for type safety    // Simulation related variables
+    @ViewChild('drawingArea') drawingArea!: ElementRef<SVGElement>;
     simulationFiringSeq: any | null = null;
     simulationDetailedLog: any | null = null;
-    currentSimulationStep: number = 0;
+    currentSimulationStep: number = 0; // Note: This local variable might be redundant if UiService is the source of truth
     isSimulating: boolean = false;
 
-    // Local data copies for animation (to prevent data service errors)
     private animationPlaces: Place[] = [];
     private animationTransitions: Transition[] = [];
     private animationArcs: Arc[] = [];
     private initialMarkings: Map<string, number> = new Map();
-    private currentStepBeingDisplayed: number = -1; // To avoid re-processing the same step
-    private animationTimer: any = null; // Added to manage setTimeout
-    private readonly ANIMATION_DELAY = 1000; // Example delay
+    private currentStepBeingDisplayed: number = -1;
+    
+    // MODIFIED: Removed hardcoded ANIMATION_DELAY, added BASE_ANIMATION_DELAY_MS
+    private animationTimer: any = null;
+    private readonly BASE_ANIMATION_DELAY_MS = 1000; // Base delay for 1x speed
 
     private _subs: Subscription[] = [];
-    private viewInitialized = false; // Flag to track if view is initialized
+    private viewInitialized = false;
 
-    // --- Animation State (Vorbereitung für PNML-Animation) ---
-    // private animationFiringSeq: any = null; // Duplicate, remove this line
-    // private animationDetailedLog: any = null; // Duplicate, remove this line
-    // private animationStepIndex: number = 0; // Duplicate, remove this line
-    // private animationTimerId: any = null; // Duplicate, remove this line
-    // private isAnimationRunning: boolean = false; // Duplicate, remove this line
-    // private animationSubscriptions: Subscription[] = []; // Duplicate, remove this line
-    // --------------------------------------------------------
+    // ADDED: Subscription for speed changes and previous speed tracking
+    private speedSubscription: Subscription | undefined;
+    private previousSpeedMultiplier: number = 1; // Initialize with a non-zero value, ideally from UiService on init
 
     constructor(
         private parserService: ParserService,
@@ -125,7 +101,7 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
         protected dataService: DataService,
         protected exportJsonDataService: ExportJsonDataService,
         protected pnmlService: PnmlService,
-        public uiService: UiService, // Ensure UiService is public if accessed in template, or use getter
+        public uiService: UiService,
         protected tokenGameService: TokenGameService,
         private matDialog: MatDialog,
         public zoomService: ZoomService,
@@ -134,7 +110,6 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
         protected svgCoordinatesService: SvgCoordinatesService,
         protected placeInvariantsService: PlaceInvariantsService,
     ) {
-        // Log constructor call
         console.log('PetriNetComponent Constructed');
     }
 
@@ -147,7 +122,7 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
         });
         this._subs.push(
             this.dataService.dataChanged$.subscribe(() => {
-                console.log('Data changed, view initialized:', this.viewInitialized); // Log data change
+                console.log('Data changed, view initialized:', this.viewInitialized);
                 if (this.viewInitialized) {
                     this.fitContentToView();
                 }
@@ -157,7 +132,7 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
             this.uiService.simulationResults$.subscribe(results => {
                 if (results && results.firing_seq) {
                     console.log('PetriNetComponent: Received simulation results from UiService', results);
-                    this.initializeAnimationAndTimeline(results); // Method name was startAnimation, changed to initializeAnimationAndTimeline
+                    this.initializeAnimationAndTimeline(results);
                 } else if (!results) {
                     console.log('PetriNetComponent: Simulation results cleared.');
                     this.uiService.resetSimulationSteps();
@@ -172,14 +147,24 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
             })
         );
 
-        // Subscribe to animation state to start/stop autoplay
         this._subs.push(
             this.uiService.getAnimationState$().subscribe(isRunning => {
                 if (isRunning && this.uiService.tab === TabState.Play && this.isSimulating) {
                     console.log('PetriNetComponent: Starting/Resuming autoplay animation');
-                    this.animateNextStep();
+                    // ADDED: Check current speed before starting animation loop
+                    const currentSpeed = this.uiService.getAnimationSpeedMultiplier();
+                    if (currentSpeed > 0) {
+                        this.animateNextStep();
+                    } else {
+                        console.log('PetriNetComponent: Autoplay requested but speed is 0x. Animation timer will not start.');
+                         // Ensure any old timer is cleared if speed became 0 right before play
+                        if (this.animationTimer) {
+                            clearTimeout(this.animationTimer);
+                            this.animationTimer = null;
+                        }
+                    }
                 } else if (!isRunning) {
-                    console.log('PetriNetComponent: Animation state is false.');
+                    console.log('PetriNetComponent: Animation state is false (paused/stopped). Clearing animation timer.');
                     if (this.animationTimer) {
                         clearTimeout(this.animationTimer);
                         this.animationTimer = null;
@@ -188,7 +173,6 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
             })
         );
 
-        // Subscribe to currentTimelineStep$ from UiService to update display on scrub/step
         this._subs.push(
             this.uiService.currentSimulationStep$.subscribe(step => {
                 if (this.uiService.hasSimulationData() && !this.uiService.isAnimationRunning() && step !== this.currentStepBeingDisplayed) {
@@ -197,6 +181,36 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
                 }
             })
         );
+
+        // ADDED: Subscription to simulation speed changes
+        this.previousSpeedMultiplier = this.uiService.getAnimationSpeedMultiplier(); // Get initial speed
+
+        this.speedSubscription = this.uiService.simulationSpeed$.subscribe(newSpeedMultiplier => {
+            console.log(`PetriNetComponent: Speed changed. Previous: ${this.previousSpeedMultiplier}, New: ${newSpeedMultiplier}`);
+            const wasPausedBySpeedZero = this.previousSpeedMultiplier === 0 && newSpeedMultiplier > 0;
+            const isCurrentlyPausedBySpeedZero = newSpeedMultiplier === 0;
+
+            this.previousSpeedMultiplier = newSpeedMultiplier;
+
+            if (wasPausedBySpeedZero && this.uiService.isAnimationRunning()) {
+                console.log('PetriNetComponent: Speed changed from 0x to >0x, and animation is in play state. Resuming animateNextStep.');
+                // Clear any existing timer that might have been set if speed was >0 then 0 then >0 very quickly
+                if (this.animationTimer) {
+                    clearTimeout(this.animationTimer);
+                    this.animationTimer = null;
+                }
+                this.animateNextStep(); // Restart the animation loop
+            } else if (isCurrentlyPausedBySpeedZero && this.uiService.isAnimationRunning()) {
+                // If speed is set to 0 while animation is supposed to be running, clear the timer.
+                // animateNextStep() will also handle this, but this ensures it's cleared immediately.
+                console.log('PetriNetComponent: Speed changed to 0x. Clearing animation timer proactively.');
+                if (this.animationTimer) {
+                    clearTimeout(this.animationTimer);
+                    this.animationTimer = null;
+                }
+            }
+        });
+        this._subs.push(this.speedSubscription); // Ensure cleanup
     }
 
     ngAfterViewInit(): void {
@@ -210,16 +224,16 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
     }    ngOnDestroy(): void {
         this._subs.forEach((sub) => sub.unsubscribe());
         
-        // Clean up animation if running
         if (this.animationTimer) {
             clearTimeout(this.animationTimer);
             this.animationTimer = null;
         }
         
-        // Stop any running animation
         if (this.uiService.isAnimationRunning()) {
             this.uiService.stopAnimation();
         }
+        // No need to explicitly unsubscribe speedSubscription if it's added to _subs
+        // as it will be handled by the loop above.
     }
 
     startTransition: Transition | undefined;
@@ -1235,59 +1249,128 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
             console.warn('PetriNetComponent: Autoplay can only run in Play tab');
             return;
         }
+        
+        // Get current speed. If 0, don't start the timer loop.
+        // The speed change subscription will handle starting it if speed becomes > 0.
+        const currentSpeed = this.uiService.getAnimationSpeedMultiplier();
+        if (currentSpeed === 0) {
+            console.log('PetriNetComponent: Autoplay requested, but speed is 0x. Animation will not start timers.');
+            // Ensure any old timer is cleared if speed became 0 right before play
+            if (this.animationTimer) {
+                clearTimeout(this.animationTimer);
+                this.animationTimer = null;
+            }
+            return; // Don't start animateNextStep if speed is 0
+        }
 
-        // Reset to beginning
-        this.currentSimulationStep = 0;
+        this.currentSimulationStep = 0; // Reset to beginning for autoplay start
         console.log('PetriNetComponent: Starting autoplay animation from step 0');
         this.animateNextStep();
     }
 
+    // MODIFIED: animateNextStep method with dynamic delay and 0x speed handling
     private animateNextStep(): void {
+        // Get current speed multiplier from UiService
+        const speedMultiplier = this.uiService.getAnimationSpeedMultiplier();
+
+        // Check if animation should proceed
         if (!this.isSimulating || !this.uiService.isAnimationRunning() || !this.simulationFiringSeq) {
-            this.uiService.stopAnimation(); 
-            return;
-        }
-
-        const currentStep = this.uiService.getCurrentSimulationStep(); // Use getter
-        const totalSteps = this.uiService.getTotalSimulationSteps(); // Use getter
-
-        if (currentStep >= totalSteps) {
-            console.log('PetriNetComponent: Animation complete.');
-            this.uiService.stopAnimation();
-            if (totalSteps > 0) {
-                this.displayStateForStep(totalSteps - 1, true);
+            // this.uiService.stopAnimation(); // stopAnimation is called by the subscription to animationRunning$
+            if (this.animationTimer) { // Clear timer if it was somehow set
+                clearTimeout(this.animationTimer);
+                this.animationTimer = null;
             }
             return;
         }
 
-        console.log(`PetriNetComponent: Animating step ${currentStep + 1}/${totalSteps}`);
-        this.displayStateForStep(currentStep, false);
-        this.currentStepBeingDisplayed = currentStep;
+        // If speed is 0, effectively pause by not scheduling the next step.
+        // Also clear any existing timer.
+        if (speedMultiplier === 0) {
+            console.log('PetriNetComponent: Animation internally paused due to 0x speed.');
+            if (this.animationTimer) {
+                clearTimeout(this.animationTimer);
+                this.animationTimer = null;
+            }
+            // Do NOT call uiService.stopAnimation() here, as that's for the main play/pause button.
+            // The animation remains in 'play' state, but no steps are executed.
+            return; // Stop further execution of this step
+        }
 
+        const currentStep = this.uiService.getCurrentSimulationStep();
+        const totalSteps = this.uiService.getTotalSimulationSteps();
+
+        // Check if animation is complete
+        // The totalSteps includes an initial state (0) and then one state per firing_seq entry.
+        // So, if firing_seq has N items, totalSteps is N+1. Steps are 0 to N.
+        // currentStep will go from 0 up to N. When currentStep becomes N, it means all N transitions have fired.
+        if (currentStep >= totalSteps -1) { // totalSteps-1 is the last valid step index after all firings
+            console.log('PetriNetComponent: Animation complete (all steps processed).');
+            this.uiService.stopAnimation(); // This will trigger clearing the timer via subscription
+            // Display the final state after the last transition has fired.
+            // The displayStateForStep logic should handle showing the state *after* the last firing.
+            if (totalSteps > 0) {
+                this.displayStateForStep(totalSteps - 1, true); // Show final state after last firing
+            }
+            return;
+        }
+
+        // Display current state (state *before* firing transition of currentStep)
+        // The 'currentStep' from UiService is the index of the *next transition to fire* from simulationFiringSeq.
+        // So, we display the state *before* this transition fires.
+        console.log(`PetriNetComponent: Animating. Next transition to fire is at index ${currentStep} of firing_seq. Total steps in UI: ${totalSteps}.`);
+        this.displayStateForStep(currentStep, false); // false: not the final state *after* this step's firing
+        this.currentStepBeingDisplayed = currentStep; // Keep track of what's on screen
+
+        // Calculate current delay based on speed multiplier
+        const currentDelay = this.BASE_ANIMATION_DELAY_MS / speedMultiplier;
+        console.log(`PetriNetComponent: Calculated delay: ${currentDelay}ms for speed ${speedMultiplier}x`);
 
         this.animationTimer = setTimeout(() => {
-            if (!this.uiService.isAnimationRunning()) return;
+            // Re-check conditions inside setTimeout, as state might have changed (e.g., user paused, changed speed to 0)
+            const latestSpeedMultiplier = this.uiService.getAnimationSpeedMultiplier();
+            if (!this.uiService.isAnimationRunning() || latestSpeedMultiplier === 0) {
+                console.log('PetriNetComponent: Timeout executed, but animation state is no longer running or speed is 0. Halting this timeout cycle.');
+                // If animationRunning$ became false, its subscription should have cleared the timer.
+                // If speed became 0, its subscription should have cleared the timer.
+                // No need to clear it here again unless being extra cautious, as it might lead to double clearing.
+                return;
+            }
 
-            const stepData = this.simulationFiringSeq![currentStep]; 
+            // For autoplay, we rely on the UiService's currentStep as the source of truth for the next step.
+            const stepToExecute = this.uiService.getCurrentSimulationStep(); 
+
+            if (stepToExecute >= totalSteps -1 ) { // Check again, in case it changed during timeout
+                 console.log('PetriNetComponent: Timeout - Animation already completed or step out of bounds. Halting.');
+                 this.uiService.stopAnimation();
+                 return;
+            }
+
+            const stepData = this.simulationFiringSeq![stepToExecute];
             if (stepData && stepData.transition_id) {
                 const transitionToFire = this.dataService.getTransitions().find(t => t.id === stepData.transition_id);
                 if (transitionToFire) {
+                    console.log(`PetriNetComponent: Timeout - Firing transition ${transitionToFire.id} for step index ${stepToExecute} in firing_seq.`);
                     this.applyTransitionFiringToMarkings(transitionToFire);
+                    // Display the state *after* firing for the *current* step index.
+                    this.displayStateForStep(stepToExecute, true); // true: it's the state after this firing
+                } else {
+                    console.warn(`PetriNetComponent: Timeout - Transition ID ${stepData.transition_id} not found for step index ${stepToExecute}.`);
                 }
             }
-            this.dataService.triggerDataChanged();
+            this.dataService.triggerDataChanged(); // Update view after firing
 
-            const nextStepIndex = currentStep + 1;
-            this.uiService.setCurrentSimulationStep(nextStepIndex); 
+            const nextStepIndexForUi = stepToExecute + 1; // This is the index for the UI's concept of steps (0 to N)
+            this.uiService.setCurrentSimulationStep(nextStepIndexForUi); // Advance the step in UiService
 
-            if (nextStepIndex < totalSteps) {
-                this.animateNextStep();
-            } else {
-                console.log('PetriNetComponent: Animation reached end.');
-                this.uiService.stopAnimation();
-                 this.displayStateForStep(totalSteps - 1, true);
+            // Check if this was the last transition to fire
+            if (nextStepIndexForUi < totalSteps -1) { // If there are more transitions to fire
+                this.animateNextStep(); // Schedule next step
+            } else { // This was the last transition
+                console.log('PetriNetComponent: Animation reached end of sequence after last firing.');
+                this.uiService.stopAnimation(); // Animation is complete
+                // Final state after last firing was already displayed by displayStateForStep(stepToExecute, true)
             }
-        }, this.ANIMATION_DELAY);
+        }, currentDelay); // Use calculated dynamic delay
     }
 
     private displayStateForStep(stepIndex: number, isFinalStateAfterFiring: boolean = false): void {

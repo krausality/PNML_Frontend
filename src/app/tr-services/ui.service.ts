@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ButtonState, CodeEditorFormat, TabState } from '../tr-enums/ui-state';
-import { BehaviorSubject, Subject, Observable } from 'rxjs'; // Added Observable
+import { BehaviorSubject, Subject, Observable } from 'rxjs';
 
 // -----------------------------------------------------------------------------
 // UiService: Central UI State Management for Petri Net Frontend
@@ -201,7 +201,18 @@ export class UiService {
      * @param speed The speed factor (e.g., 1 for normal speed, 2 for double speed).
      */
     setSimulationSpeed(speed: number): void {
+        // Set the new simulation speed.
+        // This will be observed by PetriNetComponent to adjust animation timing.
         this._simulationSpeed$.next(speed);
+    }
+
+    // Getter for the current speed multiplier - this fulfills requirement 1
+    /**
+     * Gets the current animation speed multiplier.
+     * @returns {number} The current speed multiplier (e.g., 0, 0.5, 1, 2, 4).
+     */
+    getAnimationSpeedMultiplier(): number {
+        return this._simulationSpeed$.getValue();
     }
 }
 // -----------------------------------------------------------------------------
