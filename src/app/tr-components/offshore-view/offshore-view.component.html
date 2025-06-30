@@ -4,20 +4,27 @@
     </div>
 
     <div class="viewer-container">
-        <!-- A new, separate button bar could be placed here if needed -->
-        <div class="petri-net-container" fxLayout="row">
-            <app-petri-net
-                [ngClass]="{
-                    'petri-net': true,
-                    active: uiService.tab === TabState.Code
-                }"
-            ></app-petri-net>
-            <app-code-editor
-                [ngClass]="{
-                    'code-editor': true,
-                    active: uiService.tab === TabState.Code
-                }"
-            ></app-code-editor>
+        <!-- Offshore-specific playback controls -->
+        <div class="offshore-toolbar">
+            <app-playback-controls
+                [isPlaying]="offshoreIsPlaying"
+                [currentStep]="offshoreCurrentStep"
+                [isHistoryEmpty]="offshoreIsHistoryEmpty"
+                (play)="onOffshorePlay()"
+                (pause)="onOffshorePause()"
+                (stop)="onOffshoreStop()"
+                (restart)="onOffshoreRestart()"
+                (rewind)="onOffshoreRewind()">
+            </app-playback-controls>
         </div>
+        <div class="petri-net-container" fxLayout="row">
+            <app-petri-net></app-petri-net>
+        </div>
+        <app-timeline
+            *ngIf="offshoreTotalSteps > 0"
+            [totalSteps]="offshoreTotalSteps"
+            [currentStep]="offshoreCurrentStep"
+            (stepChanged)="onOffshoreStepChanged($event)">
+        </app-timeline>
     </div>
 </div>

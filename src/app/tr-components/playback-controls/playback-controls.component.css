@@ -1,0 +1,14 @@
+.button-container {
+    display: inline-flex;
+    height: 50px;
+}
+
+.float-right {
+    float: right;
+}
+
+.divider {
+    border-right: 2px solid grey;
+    height: 30px;
+    margin: auto 10px;
+}

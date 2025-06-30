@@ -73,6 +73,7 @@ import { TimelineComponent } from './tr-components/timeline/timeline.component';
 import { FormsModule as AngularFormsModule } from '@angular/forms'; // Import FormsModule for ngModel
 import { SpeedControlComponent } from './tr-components/speed-control/speed-control.component'; // Import SpeedControlComponent
 import { OffshoreViewComponent } from './tr-components/offshore-view/offshore-view.component';
+import { PlaybackControlsComponent } from './tr-components/playback-controls/playback-controls.component'; // Import PlaybackControlsComponent
 
 @NgModule({
     declarations: [
@@ -94,6 +95,7 @@ import { OffshoreViewComponent } from './tr-components/offshore-view/offshore-vi
         TimelineComponent, // Add TimelineComponent
         SpeedControlComponent, // Add SpeedControlComponent
         OffshoreViewComponent,
+        PlaybackControlsComponent, // Add PlaybackControlsComponent
     ],
     imports: [
         BrowserModule,

@@ -238,107 +238,20 @@
 
     <mat-tab label="play">
         <ng-template mat-tab-label>
-            <mat-icon class="example-tab-icon">play_arrow</mat-icon>
+            <mat-icon>play_arrow</mat-icon>
             Play
         </ng-template>
-
-        <!-- Group 1: Text buttons (Autoplay/Pause/Stop) and Icon buttons (Restart/Rewind) -->
-        <div class="button-container">
-            <!-- Autoplay Button -->
-            <button
-                *ngIf="!isPlaying"
-                mat-stroked-button
-                class="text-button"
-                (click)="play()" 
-                matTooltip="Start automatic animation of simulation sequence."
-                [matTooltipShowDelay]="showTooltipDelay"
-            >
-                <mat-icon>play_circle_filled</mat-icon>
-                Autoplay
-            </button>
-
-            <!-- Pause Animation Button -->
-            <button
-                *ngIf="isPlaying"
-                mat-stroked-button
-                class="text-button"
-                (click)="pause()" 
-                matTooltip="Pause the current animation."
-                [matTooltipShowDelay]="showTooltipDelay"
-            >
-                <mat-icon>pause</mat-icon>
-                Pause
-            </button>
-
-            <!-- Stop button -->
-            <button 
-                mat-stroked-button 
-                class="text-button"
-                (click)="stop()" 
-                [disabled]="!isPlaying && currentStep === 0"
-                matTooltip="Stop animation and reset to start."
-                [matTooltipShowDelay]="showTooltipDelay"
-            >
-                <mat-icon>stop</mat-icon>
-                Stop
-            </button>
-
-            <!-- Divider -->
-            <div class="divider"></div>
-
-            <!-- Restart tool -->
-            <button
-                mat-icon-button
-                [disabled]="tokenGameService.isGameHistoryEmpty()"
-                (click)="tokenGameService.resetGame()"
-                matTooltip="Reset token game to its initial marking."
-                [matTooltipShowDelay]="showTooltipDelay"
-            >
-                <mat-icon>restart_alt</mat-icon>
-            </button>
-
-            <!-- Rewind tool -->
-            <button
-                mat-icon-button
-                [disabled]="tokenGameService.isGameHistoryEmpty()"
-                (click)="tokenGameService.revertToPreviousState()"
-                matTooltip="Undo the last step in the token game."
-                [matTooltipShowDelay]="showTooltipDelay"
-            >
-                <mat-icon>fast_rewind</mat-icon>
-            </button>
-        </div>
-
-        <div class="button-container float-right">
-            <button
-                mat-icon-button
-                (click)="openHelpDialog()"
-                matTooltip="Show help page for 'Play' mode"
-                [matTooltipShowDelay]="showTooltipDelay"
-            >
-                <mat-icon>help</mat-icon>
-            </button>
-        </div>
-
-        <!-- Group 2: Icon Play/Pause/Stop, Speed Control, Timeline -->
-        <!-- This is intended to be the primary, always-visible set of detailed playback controls -->
-        <div class="play-tab-content">
-          <div class="button-column">
-            <button mat-icon-button (click)="play()" class="play-button" [disabled]="isPlaying" matTooltip="Play animation">
-              <mat-icon>play_arrow</mat-icon>
-            </button>
-            <button mat-icon-button (click)="pause()" class="pause-button" [disabled]="!isPlaying" matTooltip="Pause animation">
-              <mat-icon>pause</mat-icon>
-            </button>
-            <button mat-icon-button (click)="stop()" class="stop-button" [disabled]="!isPlaying && currentStep === 0" matTooltip="Stop animation and reset">
-              <mat-icon>stop</mat-icon>
-            </button>
-          </div>
-          <app-speed-control></app-speed-control>
-          <app-timeline class="timeline-container"></app-timeline>
-        </div>
-        <hr> <!-- Horizontal rule as per screenshot, separating the two groups -->
-      </mat-tab>
+        <app-playback-controls 
+            [isPlaying]="isPlaying"
+            [currentStep]="currentStep"
+            [isHistoryEmpty]="tokenGameService.isGameHistoryEmpty()"
+            (play)="play()"
+            (pause)="pause()"
+            (stop)="stop()"
+            (restart)="tokenGameService.resetGame()"
+            (rewind)="tokenGameService.revertToPreviousState()">
+        </app-playback-controls>
+    </mat-tab>
 
     <mat-tab label="analyze">
         <ng-template mat-tab-label>
