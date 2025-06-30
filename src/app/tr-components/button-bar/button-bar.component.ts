@@ -325,6 +325,25 @@ export class ButtonBarComponent implements OnInit {
             next: (pnmlContent: string) => {
                 try {
                     this.pnmlService.parse(pnmlContent);
+                    // Simulations-API analog zu uploadPnmlFile aufrufen
+                    // String zu File konvertieren (Workaround, falls API File erwartet)
+                    const pnmlFile = new File([pnmlContent], name, { type: 'application/xml' });
+                    this.planningService.runSimpleSimulation(pnmlFile).subscribe({
+                        next: (results) => {
+                            if (results && results.results) {
+                                this.uiService.simulationResults$.next(results.results);
+                            } else {
+                                this.matDialog.open(ErrorPopupComponent, {
+                                    data: { error: 'Simulation API call successful, but "results" property is missing.' },
+                                });
+                            }
+                        },
+                        error: (err) => {
+                            this.matDialog.open(ErrorPopupComponent, {
+                                data: { error: 'Simulation API call failed. Check console for errors.' },
+                            });
+                        }
+                    });
                 } catch (e) {
                     this.openErrorDialog('Fehler beim Parsen des Beispielmodells.');
                 }
