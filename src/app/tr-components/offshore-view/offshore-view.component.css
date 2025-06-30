@@ -1,0 +1,19 @@
+.main-container {
+    display: flex;
+    flex-direction: row;
+    min-height: calc(100vh - 120px);
+}
+
+.parameter-container {
+    flex: 0 0 30%;
+    border-right: 1px solid #ccc;
+    padding: 8px;
+    overflow-y: auto;
+}
+
+.viewer-container {
+    flex: 1;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+}

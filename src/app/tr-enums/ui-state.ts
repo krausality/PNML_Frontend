@@ -4,6 +4,7 @@ export enum TabState {
     Save,
     Code,
     Analyze,
+    Offshore,
 }
 
 export enum ButtonState {

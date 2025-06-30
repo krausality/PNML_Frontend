@@ -18,6 +18,7 @@ import { PlaceInvariantsService } from 'src/app/tr-services/place-invariants.ser
 import { PlaceInvariantsTableComponent } from '../place-invariants-table/place-invariants-table.component';
 import { LayoutSpringEmbedderService } from 'src/app/tr-services/layout-spring-embedder.service';
 import { LayoutSugiyamaService } from 'src/app/tr-services/layout-sugiyama.service';
+import { MatTab } from '@angular/material/tabs';
 
 import { showTooltipDelay } from 'src/app/tr-services/position.constants';
 import { HelpPopupComponent } from '../help-popup/help-popup.component';
@@ -59,7 +60,10 @@ export class ButtonBarComponent {
     tabClicked(tab: string) {
         this.uiService.tabTransitioning = true;
 
-        switch (tab) {
+        switch (tab.toLowerCase()) {
+            case 'offshore':
+                this.uiService.tab = this.TabState.Offshore;
+                break;
             case 'build':
                 this.uiService.tab = this.TabState.Build;
                 this.tokenGameService.clearGameHistory();

@@ -1,0 +1,226 @@
+diff --git a/src/app/app.component.css b/src/app/app.component.css
+index 7a7edb3..21b048d 100644
+--- a/src/app/app.component.css
++++ b/src/app/app.component.css
+@@ -67,3 +67,36 @@ hr {
+     max-width: 50%;
+     min-width: 50%;
+ }
++
++/* New layout structure for Offshore view */
++.main-container {
++    display: flex;
++    flex-direction: row;
++    min-height: calc(100vh - 120px);
++}
++
++.parameter-container {
++    flex: 0 0 0;
++    border-right: 1px solid #ccc;
++    padding: 8px;
++    overflow-y: auto;
++    transition: flex 0.3s ease-in-out;
++    display: none; /* Hidden by default */
++}
++
++.viewer-container {
++    flex: 1;
++    padding: 8px;
++    display: flex;
++    flex-direction: column;
++}
++
++/* When in offshore view, show the parameter container and adjust flex */
++.is-offshore-view .parameter-container {
++    flex: 0 0 30%;
++    display: block; /* Show it */
++}
++
++.is-offshore-view .viewer-container {
++    flex: 1; /* Takes remaining space */
++}
+diff --git a/src/app/app.component.html b/src/app/app.component.html
+index ee8c90c..67f2b2a 100644
+--- a/src/app/app.component.html
++++ b/src/app/app.component.html
+@@ -1,18 +1,10 @@
+-<div fxLayout="row" fxLayoutAlign="start stretch" style="min-height:100vh;">
+-    <!-- Left column: Parameter input -->
+-    <div fxFlex="25" style="border-right:1px solid #ccc; padding:8px;">
+-        <app-parameter-input></app-parameter-input>
+-    </div>
++<app-button-bar></app-button-bar>
+ 
+-    <!-- Right column: Petri net + code editor + footer -->
+-    <div fxFlex="75" style="padding:8px;">
+-        <!-- button bar and layout switch -->
+-        <div fxLayout="row" fxLayoutAlign="space-between end">
+-            <app-button-bar fxFlex></app-button-bar>
+-        </div>
++<div [ngSwitch]="uiService.tab">
++    <app-offshore-view *ngSwitchCase="TabState.Offshore"></app-offshore-view>
+ 
++    <div *ngSwitchDefault class="viewer-container-default">
+         <div class="petri-net-container" fxLayout="row">
+-            <!-- petri net component -->
+             <app-petri-net
+                 [ngClass]="{
+                     'petri-net': true,
+@@ -26,9 +18,8 @@
+                 }"
+             ></app-code-editor>
+         </div>
+-
+-        <!--  Footer  -->
+-        <hr />
+-        <app-footer></app-footer>
+     </div>
+ </div>
++
++<hr />
++<app-footer></app-footer>
+diff --git a/src/app/app.module.ts b/src/app/app.module.ts
+index 34aa244..d27defd 100644
+--- a/src/app/app.module.ts
++++ b/src/app/app.module.ts
+@@ -72,6 +72,7 @@ import { MatSliderModule } from '@angular/material/slider'; // Import MatSliderM
+ import { TimelineComponent } from './tr-components/timeline/timeline.component'; // Import TimelineComponent
+ import { FormsModule as AngularFormsModule } from '@angular/forms'; // Import FormsModule for ngModel
+ import { SpeedControlComponent } from './tr-components/speed-control/speed-control.component'; // Import SpeedControlComponent
++import { OffshoreViewComponent } from './tr-components/offshore-view/offshore-view.component';
+ 
+ @NgModule({
+     declarations: [
+@@ -92,6 +93,7 @@ import { SpeedControlComponent } from './tr-components/speed-control/speed-contr
+         ErrorPopupComponent,
+         TimelineComponent, // Add TimelineComponent
+         SpeedControlComponent, // Add SpeedControlComponent
++        OffshoreViewComponent,
+     ],
+     imports: [
+         BrowserModule,
+diff --git a/src/app/tr-components/button-bar/button-bar.component.html b/src/app/tr-components/button-bar/button-bar.component.html
+index ae325d4..e1d446f 100644
+--- a/src/app/tr-components/button-bar/button-bar.component.html
++++ b/src/app/tr-components/button-bar/button-bar.component.html
+@@ -557,4 +557,13 @@
+             </button>
+         </div>
+     </mat-tab>
++
++    <mat-tab label="offshore">
++        <ng-template mat-tab-label>
++            <mat-icon matTooltip="Offshore Scheduling" [matTooltipShowDelay]="showTooltipDelay">wind_power</mat-icon>
++            Offshore
++        </ng-template>
++        <!-- Content for this tab will be added here -->
++    </mat-tab>
++
+ </mat-tab-group>
+diff --git a/src/app/tr-components/button-bar/button-bar.component.ts b/src/app/tr-components/button-bar/button-bar.component.ts
+index eeb6ae2..aa47ef0 100644
+--- a/src/app/tr-components/button-bar/button-bar.component.ts
++++ b/src/app/tr-components/button-bar/button-bar.component.ts
+@@ -59,7 +59,10 @@ export class ButtonBarComponent {
+     tabClicked(tab: string) {
+         this.uiService.tabTransitioning = true;
+ 
+-        switch (tab) {
++        switch (tab.toLowerCase()) {
++            case 'offshore':
++                this.uiService.tab = this.TabState.Offshore;
++                break;
+             case 'build':
+                 this.uiService.tab = this.TabState.Build;
+                 this.tokenGameService.clearGameHistory();
+diff --git a/src/app/tr-components/offshore-view/offshore-view.component.css b/src/app/tr-components/offshore-view/offshore-view.component.css
+new file mode 100644
+index 0000000..3d2bda3
+--- /dev/null
++++ b/src/app/tr-components/offshore-view/offshore-view.component.css
+@@ -0,0 +1,20 @@
++
++.main-container {
++    display: flex;
++    flex-direction: row;
++    min-height: calc(100vh - 120px);
++}
++
++.parameter-container {
++    flex: 0 0 30%;
++    border-right: 1px solid #ccc;
++    padding: 8px;
++    overflow-y: auto;
++}
++
++.viewer-container {
++    flex: 1;
++    padding: 8px;
++    display: flex;
++    flex-direction: column;
++}
+diff --git a/src/app/tr-components/offshore-view/offshore-view.component.html b/src/app/tr-components/offshore-view/offshore-view.component.html
+new file mode 100644
+index 0000000..2ee6b22
+--- /dev/null
++++ b/src/app/tr-components/offshore-view/offshore-view.component.html
+@@ -0,0 +1,24 @@
++
++<div class="main-container">
++    <div class="parameter-container">
++        <app-parameter-input></app-parameter-input>
++    </div>
++
++    <div class="viewer-container">
++        <!-- A new, separate button bar could be placed here if needed -->
++        <div class="petri-net-container" fxLayout="row">
++            <app-petri-net
++                [ngClass]="{
++                    'petri-net': true,
++                    active: uiService.tab === TabState.Code
++                }"
++            ></app-petri-net>
++            <app-code-editor
++                [ngClass]="{
++                    'code-editor': true,
++                    active: uiService.tab === TabState.Code
++                }"
++            ></app-code-editor>
++        </div>
++    </div>
++</div>
+diff --git a/src/app/tr-components/offshore-view/offshore-view.component.ts b/src/app/tr-components/offshore-view/offshore-view.component.ts
+new file mode 100644
+index 0000000..a893162
+--- /dev/null
++++ b/src/app/tr-components/offshore-view/offshore-view.component.ts
+@@ -0,0 +1,17 @@
++
++import { Component } from '@angular/core';
++import { DataService } from '../../tr-services/data.service';
++import { UiService } from '../../tr-services/ui.service';
++import { TabState } from '../../tr-enums/ui-state';
++
++@Component({
++  selector: 'app-offshore-view',
++  templateUrl: './offshore-view.component.html',
++  styleUrls: ['./offshore-view.component.css'],
++  providers: [DataService] // This is the key part: provides a local instance of DataService
++})
++export class OffshoreViewComponent {
++  constructor(protected uiService: UiService) {}
++
++  protected readonly TabState = TabState;
++}
+diff --git a/src/app/tr-enums/ui-state.ts b/src/app/tr-enums/ui-state.ts
+index dcc7d05..75c6367 100644
+--- a/src/app/tr-enums/ui-state.ts
++++ b/src/app/tr-enums/ui-state.ts
+@@ -4,6 +4,7 @@ export enum TabState {
+     Save,
+     Code,
+     Analyze,
++    Offshore,
+ }
+ 
+ export enum ButtonState {

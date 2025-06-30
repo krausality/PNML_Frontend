@@ -72,6 +72,7 @@ import { MatSliderModule } from '@angular/material/slider'; // Import MatSliderM
 import { TimelineComponent } from './tr-components/timeline/timeline.component'; // Import TimelineComponent
 import { FormsModule as AngularFormsModule } from '@angular/forms'; // Import FormsModule for ngModel
 import { SpeedControlComponent } from './tr-components/speed-control/speed-control.component'; // Import SpeedControlComponent
+import { OffshoreViewComponent } from './tr-components/offshore-view/offshore-view.component';
 
 @NgModule({
     declarations: [
@@ -92,6 +93,7 @@ import { SpeedControlComponent } from './tr-components/speed-control/speed-contr
         ErrorPopupComponent,
         TimelineComponent, // Add TimelineComponent
         SpeedControlComponent, // Add SpeedControlComponent
+        OffshoreViewComponent,
     ],
     imports: [
         BrowserModule,
@@ -126,3 +128,4 @@ import { SpeedControlComponent } from './tr-components/speed-control/speed-contr
     bootstrap: [AppComponent],
 })
 export class AppModule {}
+

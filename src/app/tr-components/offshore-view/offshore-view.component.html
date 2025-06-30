@@ -1,9 +1,10 @@
-<app-button-bar></app-button-bar>
+<div class="main-container">
+    <div class="parameter-container">
+        <app-parameter-input></app-parameter-input>
+    </div>
 
-<div [ngSwitch]="uiService.tab">
-    <app-offshore-view *ngSwitchCase="TabState.Offshore"></app-offshore-view>
-
-    <div *ngSwitchDefault class="viewer-container-default">
+    <div class="viewer-container">
+        <!-- A new, separate button bar could be placed here if needed -->
         <div class="petri-net-container" fxLayout="row">
             <app-petri-net
                 [ngClass]="{
@@ -20,6 +21,3 @@
         </div>
     </div>
 </div>
-
-<hr />
-<app-footer></app-footer>

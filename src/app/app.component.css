@@ -67,3 +67,36 @@ hr {
     max-width: 50%;
     min-width: 50%;
 }
+
+/* New layout structure for Offshore view */
+.main-container {
+    display: flex;
+    flex-direction: row;
+    min-height: calc(100vh - 120px);
+}
+
+.parameter-container {
+    flex: 0 0 0;
+    border-right: 1px solid #ccc;
+    padding: 8px;
+    overflow-y: auto;
+    transition: flex 0.3s ease-in-out;
+    display: none; /* Hidden by default */
+}
+
+.viewer-container {
+    flex: 1;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* When in offshore view, show the parameter container and adjust flex */
+.is-offshore-view .parameter-container {
+    flex: 0 0 30%;
+    display: block; /* Show it */
+}
+
+.is-offshore-view .viewer-container {
+    flex: 1; /* Takes remaining space */
+}
