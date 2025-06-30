@@ -20,6 +20,14 @@ export class OffshoreViewComponent {
 
   protected readonly TabState = TabState;
 
+  // Mock model list (replace with API call later)
+  offshoreModels: OffshoreModelInfo[] = [
+    { id: '1', name: 'Modell 1', description: '' },
+    { id: '2', name: 'Modell 2', description: '' },
+    { id: '3', name: 'Modell 3', description: '' }
+  ];
+  selectedOffshoreModelId: string | null = null;
+
   // Playback control handlers
   onOffshorePlay() {
     this.offshoreIsPlaying = true;
@@ -48,8 +56,38 @@ export class OffshoreViewComponent {
     this.offshoreCurrentStep = step;
     // TODO: Update Petri net view for offshore simulation
   }
+  onOffshoreModelChange(modelId: string) {
+    this.selectedOffshoreModelId = modelId;
+    // TODO: Load model data for simulation
+    console.log('Selected offshore model:', modelId);
+  }
   onOffshoreStartSimulation(): void {
     // TODO: Implementiere die Logik zum Starten der Simulation im Offshore-Tab
     console.log('Offshore: Start Simulation clicked');
   }
+}
+
+/**
+ * MOCK: Model selector for Offshore tab.
+ *
+ * Später Modelle vom Backend holen:
+ *   GET /api/offshore/models
+ *   Accept: application/json
+ *   Response: [
+ *     {
+ *       id: string,           // Unique identifier for the model
+ *       name: string,         // Human-readable name
+ *       description: string,  // Short description
+ *       createdAt: string,    // ISO date string (optional)
+ *       type: string          // Model type/category (optional)
+ *     }, ...
+ *   ]
+ *
+ * Einzelnes Modell laden:
+ *   GET /api/offshore/models/{id}
+ */
+export interface OffshoreModelInfo {
+  id: string;
+  name: string;
+  description: string;
 }

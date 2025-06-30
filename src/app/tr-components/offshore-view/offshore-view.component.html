@@ -5,7 +5,24 @@
 
     <div class="viewer-container">
         <!-- Offshore-specific playback controls -->
-        <div class="offshore-toolbar">
+        <div class="offshore-toolbar" style="display: flex; align-items: center; gap: 12px;">
+            <!-- Mock Model Selector -->
+            <mat-form-field appearance="fill" style="min-width: 180px; margin-right: 0;">
+                <mat-label>Select model</mat-label>
+                <mat-select [(value)]="selectedOffshoreModelId" (selectionChange)="onOffshoreModelChange($event.value)">
+                    <mat-option *ngFor="let model of offshoreModels" [value]="model.id">
+                        {{ model.name }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <button
+                mat-stroked-button
+                class="text-button"
+                (click)="onOffshoreStartSimulation()"
+                matTooltip="Start simulation with current parameters."
+            >
+                Start Simulation
+            </button>
             <app-playback-controls
                 [isPlaying]="offshoreIsPlaying"
                 [currentStep]="offshoreCurrentStep"
@@ -16,14 +33,6 @@
                 (restart)="onOffshoreRestart()"
                 (rewind)="onOffshoreRewind()">
             </app-playback-controls>
-            <button
-                mat-stroked-button
-                class="text-button"
-                (click)="onOffshoreStartSimulation()"
-                matTooltip="Start simulation with current parameters."
-            >
-                Start Simulation
-            </button>
         </div>
         <div class="petri-net-container" fxLayout="row">
             <app-petri-net></app-petri-net>

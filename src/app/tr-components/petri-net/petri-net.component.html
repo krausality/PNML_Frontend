@@ -389,7 +389,11 @@
         The drag-and-drop import option is available in both 'Build' and 'Code'
         mode.
     </p>
-    <p *ngIf="![TabState.Build, TabState.Code].includes(uiService.tab)">
+    <p *ngIf="uiService.tab === TabState.Offshore">
+        Select a model from the dropdown,<br />
+        select parameters and start simulation.
+    </p>
+    <p *ngIf="![TabState.Build, TabState.Code, TabState.Offshore].includes(uiService.tab)">
         Please use the "Build" or "Code" tabs to create or import a petri net.
     </p>
     <p *ngIf="uiService.tab === TabState.Code">
