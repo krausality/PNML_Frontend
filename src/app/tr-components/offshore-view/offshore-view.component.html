@@ -16,6 +16,14 @@
                 (restart)="onOffshoreRestart()"
                 (rewind)="onOffshoreRewind()">
             </app-playback-controls>
+            <button
+                mat-stroked-button
+                class="text-button"
+                (click)="onOffshoreStartSimulation()"
+                matTooltip="Start simulation with current parameters."
+            >
+                Start Simulation
+            </button>
         </div>
         <div class="petri-net-container" fxLayout="row">
             <app-petri-net></app-petri-net>

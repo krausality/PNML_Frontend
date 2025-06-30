@@ -48,4 +48,8 @@ export class OffshoreViewComponent {
     this.offshoreCurrentStep = step;
     // TODO: Update Petri net view for offshore simulation
   }
+  onOffshoreStartSimulation(): void {
+    // TODO: Implementiere die Logik zum Starten der Simulation im Offshore-Tab
+    console.log('Offshore: Start Simulation clicked');
+  }
 }

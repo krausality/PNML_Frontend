@@ -5,6 +5,7 @@
         <div [formGroup]="fg" class="parameters-form-container">
 
             <!-- Diagnostic: Display counts -->
+            <!--
             <div style="padding: 5px; margin-bottom: 10px; border: 1px solid blue; font-size: 0.8em;">
                 <strong>Template sees FormGroup (fg) control count: {{ (fg.controls | keyvalue).length }}</strong>
             </div>
@@ -12,6 +13,7 @@
                 <strong>Template sees CombinedDataForRows count: {{ combinedDataForRows.length }}</strong>
                 <span *ngIf="combinedDataForRows.length > 0">First combined path: <code>{{ combinedDataForRows[0].definition.path }}</code></span>
             </div>
+            -->
 
             <!-- Iterate over the combined data structure -->
             <ng-container *ngIf="combinedDataForRows.length > 0">
