@@ -189,6 +189,27 @@
             >
                 Upload PNML
             </button>
+            <button
+                mat-stroked-button
+                class="text-button"
+                [matMenuTriggerFor]="exampleMenu"
+                [disabled]="isLoadingModels"
+                matTooltip="Load an example PNML model from the backend."
+                [matTooltipShowDelay]="showTooltipDelay"
+            >
+                Select PNML
+                <mat-progress-spinner *ngIf="isLoadingModels" diameter="18" mode="indeterminate" style="display:inline-block;vertical-align:middle;margin-left:8px;"></mat-progress-spinner>
+            </button>
+            <mat-menu #exampleMenu="matMenu">
+                <ng-container *ngIf="(availableModels$ | async) as models; else loadingOrError">
+                    <button mat-menu-item *ngFor="let model of models" (click)="onLoadExampleModel(model)">
+                        {{ model }}
+                    </button>
+                </ng-container>
+                <ng-template #loadingOrError>
+                    <button mat-menu-item disabled>Keine Modelle gefunden</button>
+                </ng-template>
+            </mat-menu>
         </div>
 
         <div class="button-container float-right">

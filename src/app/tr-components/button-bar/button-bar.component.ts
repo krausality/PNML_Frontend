@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ExportJsonDataService } from 'src/app/tr-services/export-json-data.service';
 import { PnmlService } from 'src/app/tr-services/pnml.service';
 import { UiService } from 'src/app/tr-services/ui.service';
@@ -24,13 +24,14 @@ import { showTooltipDelay } from 'src/app/tr-services/position.constants';
 import { HelpPopupComponent } from '../help-popup/help-popup.component';
 import { ErrorPopupComponent } from '../error-popup/error-popup.component'; // Import ErrorPopupComponent
 import { PlanningService } from '../../tr-services/planning.service'; // Import PlanningService
+import { Observable } from 'rxjs';
 
 @Component({
     selector: 'app-button-bar',
     templateUrl: './button-bar.component.html',
     styleUrls: ['./button-bar.component.css'],
 })
-export class ButtonBarComponent {
+export class ButtonBarComponent implements OnInit {
     readonly TabState = TabState;
     readonly ButtonState = ButtonState;
     readonly CodeEditorFormat = CodeEditorFormat;
@@ -38,6 +39,9 @@ export class ButtonBarComponent {
     readonly showTooltipDelay = showTooltipDelay;
 
     public petrinetCss: string = '';
+
+    public availableModels$: Observable<string[]> | undefined;
+    public isLoadingModels = false;
 
     constructor(
         protected uiService: UiService,
@@ -53,6 +57,15 @@ export class ButtonBarComponent {
         private layoutSugiyamaService: LayoutSugiyamaService,
         private planningService: PlanningService // Inject PlanningService
     ) {}
+
+    ngOnInit(): void {
+        this.isLoadingModels = true;
+        this.availableModels$ = this.planningService.getAvailableExampleModels();
+        this.availableModels$.subscribe({
+            next: () => { this.isLoadingModels = false; },
+            error: () => { this.isLoadingModels = false; }
+        });
+    }
 
     // Gets called when a tab is clicked
     // Sets the "tab" property in the uiService
@@ -304,5 +317,23 @@ export class ButtonBarComponent {
 
         console.log('ButtonBarComponent.uploadPnmlFile: Calling reader.readAsText...'); // Log before readAsText
         reader.readAsText(file);
+    }
+
+    onLoadExampleModel(name: string): void {
+        this.isLoadingModels = true;
+        this.planningService.loadExampleModelByName(name).subscribe({
+            next: (pnmlContent: string) => {
+                try {
+                    this.pnmlService.parse(pnmlContent);
+                } catch (e) {
+                    this.openErrorDialog('Fehler beim Parsen des Beispielmodells.');
+                }
+                this.isLoadingModels = false;
+            },
+            error: (err) => {
+                this.openErrorDialog('Fehler beim Laden des Beispielmodells.');
+                this.isLoadingModels = false;
+            }
+        });
     }
 }

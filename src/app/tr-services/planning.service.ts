@@ -127,6 +127,25 @@ export class PlanningService {
     }
 
     /**
+     * Fetches the list of available example PNML models from the backend.
+     * @returns An Observable emitting an array of model filenames (e.g. ["pdc2023_000000.pnml", ...])
+     */
+    getAvailableExampleModels(): Observable<string[]> {
+        const url = `${environment.backendApiUrl}/simulation-petri-nets/example-models`;
+        return this.http.get<string[]>(url).pipe(catchError(this.handleError));
+    }
+
+    /**
+     * Loads the content of a specific example PNML model by name from the backend.
+     * @param name The filename of the model to load (e.g. "pdc2023_000000.pnml")
+     * @returns An Observable emitting the PNML XML content as a string
+     */
+    loadExampleModelByName(name: string): Observable<string> {
+        const url = `${environment.backendApiUrl}/simulation-petri-nets/example-models/${encodeURIComponent(name)}`;
+        return this.http.get(url, { responseType: 'text' }).pipe(catchError(this.handleError));
+    }
+
+    /**
      * Centralized error handling for HTTP requests.
      * 
      * This private method handles errors from HTTP requests. It distinguishes
