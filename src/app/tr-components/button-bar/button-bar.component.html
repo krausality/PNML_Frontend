@@ -261,9 +261,7 @@
             (restart)="tokenGameService.resetGame()"
             (rewind)="tokenGameService.revertToPreviousState()">
         </app-playback-controls>
-    </mat-tab>
-
-    <mat-tab label="analyze">
+    </mat-tab>    <mat-tab label="analyze">
         <ng-template mat-tab-label>
             <mat-icon class="example-tab-icon">functions</mat-icon>
             Analyze
@@ -316,6 +314,25 @@
                 [matTooltipShowDelay]="showTooltipDelay"
             >
                 Linear Combination
+            </button>
+
+            <!-- Divider -->
+            <div class="divider"></div>            <!-- Multi-Run Simulation Section -->
+            <span style="margin-right: 10px;">Run multiple simulations:</span>
+            <mat-form-field appearance="outline" style="width: 120px; margin-right: 10px;">
+                <mat-label>Number of Runs</mat-label>
+                <input matInput type="number" min="1" [(ngModel)]="numberOfSimulations">
+            </mat-form-field>
+
+            <button
+                mat-stroked-button
+                class="text-button"
+                (click)="runMultiSimulation()"
+                matTooltip="Run multiple simulations on the currently loaded PNML and download results."
+                [matTooltipShowDelay]="showTooltipDelay"
+            >
+                <mat-icon>play_arrow</mat-icon>
+                Run & Download
             </button>
         </div>
 

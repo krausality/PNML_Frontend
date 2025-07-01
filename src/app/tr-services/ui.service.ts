@@ -210,9 +210,18 @@ export class UiService {
     /**
      * Gets the current animation speed multiplier.
      * @returns {number} The current speed multiplier (e.g., 0, 0.5, 1, 2, 4).
-     */
-    getAnimationSpeedMultiplier(): number {
+     */    getAnimationSpeedMultiplier(): number {
         return this._simulationSpeed$.getValue();
+    }
+
+    /**
+     * Placeholder method for backward compatibility.
+     * @returns null as this functionality is not implemented yet.
+     */
+    getUploadedPnmlFile(): File | null {
+        // This method is called by button-bar but not actually implemented
+        // Return null for now to prevent errors
+        return null;
     }
 }
 // -----------------------------------------------------------------------------

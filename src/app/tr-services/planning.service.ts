@@ -102,9 +102,7 @@ export class PlanningService {
     updatePlanning(planningData: any): Observable<any> {
         return this.http.put<any>(this.apiUrl, planningData)
            .pipe(catchError(this.handleError));
-    }
-
-    /**
+    }    /**
      * Uploads a PNML file for simulation and returns the result.
      * 
      * This method is used to upload a PNML (Petri Net Markup Language) file to
@@ -112,14 +110,39 @@ export class PlanningService {
      * PNML file and returns the simulation results from the server.
      * 
      * @param pnmlFile The PNML file to be uploaded for simulation.
+     * @param runs The number of simulation runs to execute (default: 1).
      * @returns An Observable containing the result of the simulation.
      */
-    runSimpleSimulation(pnmlFile: File): Observable<any> {
+    runSimpleSimulation(pnmlFile: File, runs: number = 1): Observable<any> {
         const formData = new FormData();
         formData.append('pnml_model', pnmlFile, pnmlFile.name);
+        formData.append('num_runs', runs.toString());
 
         // Wichtig: Setzen Sie den Content-Type Header NICHT manuell.
         // Der Browser erledigt das korrekt für multipart/form-data, wenn ein FormData-Objekt übergeben wird.
+        return this.http.post<any>(this.simpleSimApiUrl, formData)
+            .pipe(
+                catchError(this.handleError)
+            );
+    }
+
+    /**
+     * Runs simulation using PNML content string instead of uploading a file.
+     * This is useful when working with the already loaded PNML in the application.
+     * 
+     * @param pnmlContent The PNML XML content as string.
+     * @param runs The number of simulation runs to execute (default: 1).
+     * @param fileName Optional filename for reference (default: 'current_model.pnml').
+     * @returns An Observable containing the result of the simulation.
+     */
+    runSimpleSimulationFromString(pnmlContent: string, runs: number = 1, fileName: string = 'current_model.pnml'): Observable<any> {
+        const formData = new FormData();
+        
+        // Convert string to File object
+        const pnmlFile = new File([pnmlContent], fileName, { type: 'application/xml' });
+        formData.append('pnml_model', pnmlFile, fileName);
+        formData.append('num_runs', runs.toString());
+
         return this.http.post<any>(this.simpleSimApiUrl, formData)
             .pipe(
                 catchError(this.handleError)

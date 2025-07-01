@@ -38,10 +38,9 @@ export class ButtonBarComponent implements OnInit {
 
     readonly showTooltipDelay = showTooltipDelay;
 
-    public petrinetCss: string = '';
-
-    public availableModels$: Observable<string[]> | undefined;
+    public petrinetCss: string = '';    public availableModels$: Observable<string[]> | undefined;
     public isLoadingModels = false;
+    public numberOfSimulations: number = 10; // Default value for multi-run simulations
 
     constructor(
         protected uiService: UiService,
@@ -263,10 +262,8 @@ export class ButtonBarComponent implements OnInit {
                     // Bestehende Logik zum Parsen und Anzeigen der PNML
                     // this.dataService.loadPetriNetFromPnml(pnmlContent); // ERROR: Method does not exist
                     this.pnmlService.parse(pnmlContent); // CORRECTED: Use PnmlService to parse and load
-                    console.log('ButtonBarComponent.uploadPnmlFile: PNML content passed to pnmlService for parsing.');
-
-                    // Start simple simulation
-                    this.planningService.runSimpleSimulation(file).subscribe({
+                    console.log('ButtonBarComponent.uploadPnmlFile: PNML content passed to pnmlService for parsing.');                    // Start simple simulation with 1 run for visualization
+                    this.planningService.runSimpleSimulation(file, 1).subscribe({
                         next: (results) => {
                             if (results && results.results) {
                                 console.log('ButtonBarComponent.uploadPnmlFile: Simulation results received, passing to UiService.', results.results);
@@ -325,10 +322,9 @@ export class ButtonBarComponent implements OnInit {
             next: (pnmlContent: string) => {
                 try {
                     this.pnmlService.parse(pnmlContent);
-                    // Simulations-API analog zu uploadPnmlFile aufrufen
-                    // String zu File konvertieren (Workaround, falls API File erwartet)
+                    // Simulations-API analog zu uploadPnmlFile aufrufen                    // String zu File konvertieren (Workaround, falls API File erwartet)
                     const pnmlFile = new File([pnmlContent], name, { type: 'application/xml' });
-                    this.planningService.runSimpleSimulation(pnmlFile).subscribe({
+                    this.planningService.runSimpleSimulation(pnmlFile, 1).subscribe({
                         next: (results) => {
                             if (results && results.results) {
                                 this.uiService.simulationResults$.next(results.results);
@@ -350,9 +346,142 @@ export class ButtonBarComponent implements OnInit {
                 this.isLoadingModels = false;
             },
             error: (err) => {
-                this.openErrorDialog('Fehler beim Laden des Beispielmodells.');
-                this.isLoadingModels = false;
+                this.openErrorDialog('Fehler beim Laden des Beispielmodells.');                this.isLoadingModels = false;
             }
         });
+    }    /**
+     * Handles multi-run simulation for data analysis using the currently loaded PNML.
+     * Runs multiple simulations and downloads the results as a JSON file.
+     * 
+     * TODO: WORKAROUND - Backend doesn't support multiple runs natively yet.
+     * This implementation uses a loop to call single simulation endpoint multiple times.
+     * Replace with native backend multiple runs support when available.
+     */
+    runMultiSimulation(): void {
+        console.log('ButtonBarComponent.runMultiSimulation: Running multi-simulation with', this.numberOfSimulations, 'runs');
+
+        // Check if there's a PNML loaded in the application
+        if (this.dataService.isEmpty()) {
+            console.warn('ButtonBarComponent.runMultiSimulation: No Petri net loaded.');
+            this.matDialog.open(ErrorPopupComponent, {
+                data: {
+                    error: 'No Petri net loaded. Please load a PNML first in the Build tab.',
+                },
+            });
+            return;
+        }
+
+        // Get current PNML as string from PnmlService
+        const currentPnmlContent = this.pnmlService.getPNML();
+        
+        if (!currentPnmlContent) {
+            console.error('ButtonBarComponent.runMultiSimulation: Failed to get current PNML content.');
+            this.matDialog.open(ErrorPopupComponent, {
+                data: {
+                    error: 'Failed to get current PNML content.',
+                },
+            });
+            return;
+        }
+
+        // TODO: WORKAROUND - Execute multiple single runs since backend doesn't support batch runs yet
+        this.executeMultipleSimulationRuns(currentPnmlContent);
+    }    /**
+     * TODO: WORKAROUND - Execute multiple single simulation runs sequentially
+     * This is a temporary solution until the backend supports native batch simulation.
+     * 
+     * @param pnmlContent The PNML content to simulate
+     */
+    private executeMultipleSimulationRuns(pnmlContent: string): void {
+        const allResults: any[] = [];
+        let completedRuns = 0;
+        let hasError = false;
+
+        console.log(`ButtonBarComponent.executeMultipleSimulationRuns: Starting ${this.numberOfSimulations} sequential simulation runs...`);
+
+        // TODO: WORKAROUND - Sequential execution instead of parallel to avoid overwhelming the backend
+        // Consider adding a small delay between runs if backend performance becomes an issue
+        const executeNextRun = (runIndex: number) => {
+            if (hasError || runIndex >= this.numberOfSimulations) {
+                if (!hasError) {
+                    // All runs completed successfully
+                    console.log(`ButtonBarComponent.executeMultipleSimulationRuns: All ${this.numberOfSimulations} runs completed successfully`);
+                    
+                    // TODO: WORKAROUND - Format results to match expected multiple runs structure
+                    const multiRunResults = {
+                        total_runs: this.numberOfSimulations,
+                        runs: allResults.map((result, index) => ({
+                            run_id: index + 1,
+                            firing_seq: result.results?.firing_seq || result.firing_seq,
+                            detailed_log: result.results?.detailed_log || result.detailed_log,
+                            // Include any other properties from the single run result
+                            ...result.results || result
+                        })),
+                        metadata: {
+                            timestamp: new Date().toISOString(),
+                            pnml_filename: 'current_model.pnml',
+                            backend_simulation_method: 'sequential_single_runs', // TODO: Change when backend supports batch
+                        }
+                    };
+                    
+                    this.downloadSimulationResults(multiRunResults, 'current_model.pnml');
+                }
+                return;
+            }
+
+            console.log(`ButtonBarComponent.executeMultipleSimulationRuns: Executing run ${runIndex + 1}/${this.numberOfSimulations}`);
+
+            // TODO: WORKAROUND - Use single run endpoint with runs=1 instead of batch endpoint
+            this.planningService.runSimpleSimulationFromString(pnmlContent, 1, `current_model_run${runIndex + 1}.pnml`).subscribe({
+                next: (result) => {
+                    console.log(`ButtonBarComponent.executeMultipleSimulationRuns: Run ${runIndex + 1} completed successfully`);
+                    allResults.push(result);
+                    completedRuns++;
+                    
+                    // Execute next run after a small delay to be gentle on the backend
+                    // TODO: WORKAROUND - Add delay to prevent backend overload, remove when batch support is available
+                    setTimeout(() => executeNextRun(runIndex + 1), 100);
+                },
+                error: (err) => {
+                    hasError = true;
+                    console.error(`ButtonBarComponent.executeMultipleSimulationRuns: Run ${runIndex + 1} failed:`, err);
+                    this.matDialog.open(ErrorPopupComponent, {
+                        data: { 
+                            error: `Multi-run simulation failed at run ${runIndex + 1}/${this.numberOfSimulations}. ${completedRuns} runs completed successfully. Error: ${err.message || err}` 
+                        },
+                    });
+                }
+            });
+        };
+
+        // Start the first run
+        executeNextRun(0);
+    }
+
+    /**
+     * Downloads simulation results as a JSON file.
+     * @param results The simulation results from the backend.
+     * @param originalFileName The original PNML filename for reference.
+     */    private downloadSimulationResults(results: any, originalFileName: string): void {
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+        const baseFileName = originalFileName.replace('.pnml', '');
+        const fileName = `simulation-results_${baseFileName}_${this.numberOfSimulations}runs_${timestamp}.json`;
+        
+        // TODO: WORKAROUND - Handle both single run and our custom multi-run format
+        // When backend supports native multiple runs, this can be simplified
+        console.log('ButtonBarComponent.downloadSimulationResults: Downloading results for', this.numberOfSimulations, 'runs');
+        console.log('ButtonBarComponent.downloadSimulationResults: Results structure:', results);
+        
+        const dataStr = JSON.stringify(results, null, 2);
+        const dataBlob = new Blob([dataStr], { type: 'application/json' });
+        
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(dataBlob);
+        link.download = fileName;
+        link.click();
+        
+        // Clean up
+        URL.revokeObjectURL(link.href);
+        console.log('ButtonBarComponent.downloadSimulationResults: File downloaded:', fileName);
     }
 }
