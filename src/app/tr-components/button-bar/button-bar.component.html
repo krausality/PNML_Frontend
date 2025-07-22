@@ -327,12 +327,27 @@
             <button
                 mat-stroked-button
                 class="text-button"
-                (click)="runMultiSimulation()"
-                matTooltip="Run multiple simulations on the currently loaded PNML and download results."
+                (click)="runAndStoreMultiSimulation()"
+                [disabled]="isMultiRunInProgress"
+                matTooltip="Run multiple simulations on the currently loaded PNML."
                 [matTooltipShowDelay]="showTooltipDelay"
             >
-                <mat-icon>play_arrow</mat-icon>
-                Run & Download
+                <mat-progress-spinner *ngIf="isMultiRunInProgress" mode="indeterminate" diameter="18" style="display:inline-block;vertical-align:middle;margin-right:8px;"></mat-progress-spinner>
+                <mat-icon *ngIf="!isMultiRunInProgress">play_arrow</mat-icon>
+                <span *ngIf="!isMultiRunInProgress">Run Simulation</span>
+                <span *ngIf="isMultiRunInProgress">Running...</span>
+            </button>
+
+            <button
+                mat-stroked-button
+                class="text-button"
+                (click)="downloadResults()"
+                [disabled]="!hasMultiRunResults"
+                matTooltip="Download the results of the last multi-run simulation."
+                [matTooltipShowDelay]="showTooltipDelay"
+            >
+                <mat-icon>download</mat-icon>
+                Download Results
             </button>
         </div>
 

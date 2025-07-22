@@ -92,6 +92,17 @@ export class UiService {
     // Emits when the "Start Simulation" button in the ButtonBar (Build tab) is clicked.
     runSimulationRequest$: Subject<void> = new Subject<void>();
 
+    private _simulationResultsMultiRun$ = new BehaviorSubject<any | null>(null);
+    public simulationResultsMultiRun$ = this._simulationResultsMultiRun$.asObservable();
+
+    public setMultiRunResults(results: any): void {
+        this._simulationResultsMultiRun$.next(results);
+    }
+
+    public getMultiRunResults(): any {
+        return this._simulationResultsMultiRun$.getValue();
+    }
+
     constructor() {}
 
     // --- New public getters for direct value access ---

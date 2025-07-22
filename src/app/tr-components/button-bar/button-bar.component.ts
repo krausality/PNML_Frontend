@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ExportJsonDataService } from 'src/app/tr-services/export-json-data.service';
 import { PnmlService } from 'src/app/tr-services/pnml.service';
 import { UiService } from 'src/app/tr-services/ui.service';
@@ -24,14 +24,14 @@ import { showTooltipDelay } from 'src/app/tr-services/position.constants';
 import { HelpPopupComponent } from '../help-popup/help-popup.component';
 import { ErrorPopupComponent } from '../error-popup/error-popup.component'; // Import ErrorPopupComponent
 import { PlanningService } from '../../tr-services/planning.service'; // Import PlanningService
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-button-bar',
     templateUrl: './button-bar.component.html',
     styleUrls: ['./button-bar.component.css'],
 })
-export class ButtonBarComponent implements OnInit {
+export class ButtonBarComponent implements OnInit, OnDestroy {
     readonly TabState = TabState;
     readonly ButtonState = ButtonState;
     readonly CodeEditorFormat = CodeEditorFormat;
@@ -41,6 +41,9 @@ export class ButtonBarComponent implements OnInit {
     public petrinetCss: string = '';    public availableModels$: Observable<string[]> | undefined;
     public isLoadingModels = false;
     public numberOfSimulations: number = 10; // Default value for multi-run simulations
+    public isMultiRunInProgress = false;
+    public hasMultiRunResults = false;
+    private resultsSubscription: Subscription | undefined;
 
     constructor(
         protected uiService: UiService,
@@ -64,6 +67,16 @@ export class ButtonBarComponent implements OnInit {
             next: () => { this.isLoadingModels = false; },
             error: () => { this.isLoadingModels = false; }
         });
+
+        this.resultsSubscription = this.uiService.simulationResultsMultiRun$.subscribe(results => {
+            this.hasMultiRunResults = !!results; // true wenn results nicht null/undefined, sonst false
+        });
+    }
+
+    ngOnDestroy(): void {
+        if (this.resultsSubscription) {
+            this.resultsSubscription.unsubscribe();
+        }
     }
 
     // Gets called when a tab is clicked
@@ -357,12 +370,12 @@ export class ButtonBarComponent implements OnInit {
      * This implementation uses a loop to call single simulation endpoint multiple times.
      * Replace with native backend multiple runs support when available.
      */
-    runMultiSimulation(): void {
-        console.log('ButtonBarComponent.runMultiSimulation: Running multi-simulation with', this.numberOfSimulations, 'runs');
+    runAndStoreMultiSimulation(): void {
+        console.log('ButtonBarComponent.runAndStoreMultiSimulation: Running multi-simulation with', this.numberOfSimulations, 'runs');
 
         // Check if there's a PNML loaded in the application
         if (this.dataService.isEmpty()) {
-            console.warn('ButtonBarComponent.runMultiSimulation: No Petri net loaded.');
+            console.warn('ButtonBarComponent.runAndStoreMultiSimulation: No Petri net loaded.');
             this.matDialog.open(ErrorPopupComponent, {
                 data: {
                     error: 'No Petri net loaded. Please load a PNML first in the Build tab.',
@@ -375,7 +388,7 @@ export class ButtonBarComponent implements OnInit {
         const currentPnmlContent = this.pnmlService.getPNML();
         
         if (!currentPnmlContent) {
-            console.error('ButtonBarComponent.runMultiSimulation: Failed to get current PNML content.');
+            console.error('ButtonBarComponent.runAndStoreMultiSimulation: Failed to get current PNML content.');
             this.matDialog.open(ErrorPopupComponent, {
                 data: {
                     error: 'Failed to get current PNML content.',
@@ -383,6 +396,9 @@ export class ButtonBarComponent implements OnInit {
             });
             return;
         }
+
+        this.isMultiRunInProgress = true;
+        this.uiService.setMultiRunResults(null); // Clear previous results
 
         // TODO: WORKAROUND - Execute multiple single runs since backend doesn't support batch runs yet
         this.executeMultipleSimulationRuns(currentPnmlContent);
@@ -424,8 +440,11 @@ export class ButtonBarComponent implements OnInit {
                         }
                     };
                     
-                    this.downloadSimulationResults(multiRunResults, 'current_model.pnml');
+                    // ... (rest of the result formatting)
+                    
+                    this.uiService.setMultiRunResults(multiRunResults);
                 }
+                this.isMultiRunInProgress = false; // Stop progress indicator
                 return;
             }
 
@@ -450,12 +469,25 @@ export class ButtonBarComponent implements OnInit {
                             error: `Multi-run simulation failed at run ${runIndex + 1}/${this.numberOfSimulations}. ${completedRuns} runs completed successfully. Error: ${err.message || err}` 
                         },
                     });
+                    this.isMultiRunInProgress = false; // Stop progress indicator on error
                 }
             });
         };
 
         // Start the first run
         executeNextRun(0);
+    }
+
+    /**
+     * Downloads the results of the last multi-run simulation.
+     */
+    public downloadResults(): void {
+        const results = this.uiService.getMultiRunResults();
+        if (results) {
+            this.downloadSimulationResults(results, 'current_model.pnml');
+        } else {
+            this.openErrorDialog('No simulation results available to download. Please run a simulation first.');
+        }
     }
 
     /**
