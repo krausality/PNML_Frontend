@@ -21,7 +21,8 @@
         'move-mode': uiService.button === ButtonState.Move,
         'play-mode': uiService.tab === TabState.Play,
         'tab-transitioning': uiService.tabTransitioning,
-        'analyze-mode': uiService.tab === TabState.Analyze
+        'analyze-mode': uiService.tab === TabState.Analyze,
+        'frequency-analysis-active': isFrequencyAnalysisActive
     }"
     (drop)="processDropEvent($event)"
     (dragover)="prevent($event)"
@@ -127,6 +128,7 @@
         <!-- Transitions -->
         <g
             *ngFor="let transition of dataService.getTransitions()"
+            class="transition-group"
             (click)="dispatchTransitionClick($event, transition)"
             (mousedown)="dispatchTransitionMouseDown($event, transition)"
             (mouseup)="dispatchTransitionMouseUp($event, transition)"

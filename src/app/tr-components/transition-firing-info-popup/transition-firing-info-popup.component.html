@@ -1,0 +1,15 @@
+<h1 mat-dialog-title>Firing Frequency</h1>
+<mat-dialog-content>
+    <p>
+        Transition <strong>{{ data.transitionId }}</strong> fired
+        <strong>{{ data.firingCount }}</strong> time(s) in
+        <strong>{{ data.totalRuns }}</strong> simulation run(s).
+    </p>
+    <p>
+        This corresponds to a relative frequency of
+        <strong>{{ (data.firingCount / data.totalRuns) | percent:'1.0-2' }}</strong>.
+    </p>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Close</button>
+</mat-dialog-actions>

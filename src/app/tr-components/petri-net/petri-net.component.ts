@@ -54,6 +54,7 @@ import { DummyArc } from 'src/app/tr-classes/petri-net/dummyArc';
 import { ErrorPopupComponent } from '../error-popup/error-popup.component';
 import { validateJsonAgainstSchema } from 'src/app/tr-utils/json.utils';
 import { LayoutSugiyamaService } from '../../tr-services/layout-sugiyama.service';
+import { TransitionFiringInfoPopupComponent } from '../transition-firing-info-popup/transition-firing-info-popup.component';
 
 @Component({
     selector: 'app-petri-net',
@@ -89,6 +90,8 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
 
     private _subs: Subscription[] = [];
     private viewInitialized = false;
+    public isFrequencyAnalysisActive = false;
+    private frequencySubscription: Subscription | undefined;
 
     // ADDED: Subscription for speed changes and previous speed tracking
     private speedSubscription: Subscription | undefined;
@@ -211,6 +214,11 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
             }
         });
         this._subs.push(this.speedSubscription); // Ensure cleanup
+
+        this.frequencySubscription = this.uiService.transitionFiringFrequencies$.subscribe(frequencies => {
+            this.isFrequencyAnalysisActive = (frequencies !== null && frequencies.size > 0);
+        });
+        this._subs.push(this.frequencySubscription);
     }
 
     ngAfterViewInit(): void {
@@ -828,6 +836,11 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
 
     // Transitions
     dispatchTransitionClick(event: MouseEvent, transition: Transition) {
+        if (this.isFrequencyAnalysisActive) {
+            this.onTransitionClick(transition.id);
+            return; // Prevent other actions when in frequency analysis mode
+        }
+
         // Token game: fire transition
         if (this.uiService.tab === TabState.Play) {
             this.tokenGameService.fire(transition);
@@ -843,6 +856,31 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
         if (this.uiService.button === ButtonState.Delete) {
             this.dataService.removeTransition(transition);
         }
+    }
+
+    public onTransitionClick(transitionId: string): void {
+        if (!this.isFrequencyAnalysisActive) {
+            return; // Do nothing if no frequency data is available
+        }
+
+        const frequencies = this.uiService.getTransitionFiringFrequencies();
+        const multiRunResults = this.uiService.getMultiRunResults();
+
+        if (!frequencies || !multiRunResults) {
+            return;
+        }
+
+        const firingCount = frequencies.get(transitionId) || 0;
+        const totalRuns = multiRunResults.total_runs || 0;
+
+        this.matDialog.open(TransitionFiringInfoPopupComponent, {
+            width: '400px',
+            data: {
+                transitionId: transitionId,
+                firingCount: firingCount,
+                totalRuns: totalRuns
+            }
+        });
     }
 
     dispatchTransitionMouseDown(event: MouseEvent, transition: Transition) {

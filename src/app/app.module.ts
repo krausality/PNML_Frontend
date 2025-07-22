@@ -74,6 +74,7 @@ import { FormsModule as AngularFormsModule } from '@angular/forms'; // Import Fo
 import { SpeedControlComponent } from './tr-components/speed-control/speed-control.component'; // Import SpeedControlComponent
 import { OffshoreViewComponent } from './tr-components/offshore-view/offshore-view.component';
 import { PlaybackControlsComponent } from './tr-components/playback-controls/playback-controls.component'; // Import PlaybackControlsComponent
+import { TransitionFiringInfoPopupComponent } from './tr-components/transition-firing-info-popup/transition-firing-info-popup.component';
 
 @NgModule({
     declarations: [
@@ -96,6 +97,7 @@ import { PlaybackControlsComponent } from './tr-components/playback-controls/pla
         SpeedControlComponent, // Add SpeedControlComponent
         OffshoreViewComponent,
         PlaybackControlsComponent, // Add PlaybackControlsComponent
+        TransitionFiringInfoPopupComponent,
     ],
     imports: [
         BrowserModule,

@@ -95,12 +95,38 @@ export class UiService {
     private _simulationResultsMultiRun$ = new BehaviorSubject<any | null>(null);
     public simulationResultsMultiRun$ = this._simulationResultsMultiRun$.asObservable();
 
+    private _transitionFiringFrequencies$ = new BehaviorSubject<Map<string, number> | null>(null);
+    public transitionFiringFrequencies$ = this._transitionFiringFrequencies$.asObservable();
+
     public setMultiRunResults(results: any): void {
         this._simulationResultsMultiRun$.next(results);
+
+        // If results are cleared, also clear the frequencies
+        if (!results) {
+            this._transitionFiringFrequencies$.next(null);
+            return;
+        }
+
+        // Pre-process the results to calculate firing frequencies
+        const frequencyMap = new Map<string, number>();
+        if (results.runs && Array.isArray(results.runs)) {
+            for (const run of results.runs) {
+                if (run.firing_seq && Array.isArray(run.firing_seq)) {
+                    for (const transitionId of run.firing_seq) {
+                        frequencyMap.set(transitionId, (frequencyMap.get(transitionId) || 0) + 1);
+                    }
+                }
+            }
+        }
+        this._transitionFiringFrequencies$.next(frequencyMap);
     }
 
     public getMultiRunResults(): any {
         return this._simulationResultsMultiRun$.getValue();
+    }
+
+    public getTransitionFiringFrequencies(): Map<string, number> | null {
+        return this._transitionFiringFrequencies$.getValue();
     }
 
     constructor() {}
