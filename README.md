@@ -43,7 +43,7 @@ For users looking for the fastest way to get the PNML Frontend running, follow t
     ```
 This will open the PNML tool in your browser, usually at `http://localhost:4200/`.
 
-For a comprehensive step-by-step guide, especially if you're setting up a new environment, please proceed to the [📖 Detailed Setup Guide](#%F0%9F%93%96-detailed-setup-guide).
+For a comprehensive step-by-step guide, especially if you're setting up a new environment, please proceed to the [📖 Detailed Setup Guide](#📖-detailed-setup-guide).
 
 ---
 
@@ -85,6 +85,10 @@ node -v # Should print "v18.20.8".
 # Verify npm version:
 npm -v # Should print "10.8.2".
 ```
+
+If this does not work see: [🛠 Quick Debug FAQ (PowerShell + fnm + npm)](#🛠-quick-debug-faq-powershell--fnm--npm)
+
+
 
 ---
 
