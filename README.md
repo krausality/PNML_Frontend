@@ -236,16 +236,22 @@ More info: [Material theming guide](https://material.angular.io/guide/theming)
 
 ---
 
+Absolutely! Here's your improved and extended **Quick Debug FAQ** in English, with a clearer **"Still not working?"** section and an explanation of the `--use-on-cd` feature as an alternative:
+
+---
+
 ### 🛠 Quick Debug FAQ (PowerShell + fnm + npm)
 
 ### `npm` or `node` not recognized?
 
-You probably installed Node with `fnm`, but your shell isn't initialized properly yet.
+You probably installed Node.js with `fnm`, but your shell isn't initialized properly yet.
+
+---
 
 ### Quick fix (per session):
 
 ```powershell
-# Auto-initialize fnm and Node.js
+# Auto-initialize fnm and Node.js for this shell session only
 fnm env --shell=powershell | Out-String | Invoke-Expression
 fnm use 18
 ```
@@ -261,8 +267,8 @@ node -v
 
 ### Why did it work before and now it doesn’t?
 
-* You probably had the `fnm` initialization in your PowerShell profile.
-* A recent system or shell reset (or using a different terminal) may have removed that setup.
+* You likely had `fnm` initialization in your PowerShell profile.
+* A Windows update, shell reset, or using a different terminal (e.g., new PowerShell version, VS Code terminal) may have cleared or skipped that setup.
 
 ---
 
@@ -273,12 +279,14 @@ node -v
    ```powershell
    notepad $PROFILE
    ```
-1.1. When getting 'file not found' using Command from 1.:
-    ```powershell
-    New-Item -ItemType File -Path $PROFILE -Force
-    ```
 
-2. Add this at the bottom:
+   > If you get "file not found", create it:
+
+   ```powershell
+   New-Item -ItemType File -Path $PROFILE -Force
+   ```
+
+2. Add this to the **bottom** of your profile:
 
    ```powershell
    # Auto-initialize fnm and Node.js
@@ -290,19 +298,67 @@ node -v
 
 ---
 
-### Still not working?
+### 🧩 Still not working?
 
-Make sure `fnm` is installed:
+Check the following:
+
+* Is `fnm` installed?
+
+  ```powershell
+  fnm --version
+  ```
+
+* Is Node installed via `fnm`?
+
+  ```powershell
+  fnm list
+  ```
+
+* Did you install a specific Node version (e.g. `18`)?
+
+  ```powershell
+  fnm install 18
+  ```
+
+* Are you running PowerShell **as the same user** that installed `fnm`?
+
+* Is your execution policy allowing profile scripts?
+  Run this **once** (non-admin is fine):
+
+  ```powershell
+  Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+  ```
+
+---
+
+### 🧭 Alternative: Use version switching on directory change
+
+Instead of hardcoding a version like `fnm use 18`, let `fnm` dynamically switch versions based on your project:
+
+1. Enable automatic version switching by adding this to your profile:
+
+   ```powershell
+   fnm env --use-on-cd --shell=powershell | Out-String | Invoke-Expression
+   ```
+
+2. In each project directory, add a `.node-version` or `.nvmrc` file:
+
+   ```bash
+   echo 18 > .node-version
+   ```
+
+3. Now when you `cd` into that folder, `fnm` will auto-switch Node to the right version.
+
+---
+
+### 🧪 Test it all:
 
 ```powershell
-fnm --version
+cd path\to\project
+node -v
 ```
 
-Reinstall if needed:
-
-```powershell
-winget install Schniz.fnm
-```
+It should reflect the version from `.node-version`.
 
 ---
 
