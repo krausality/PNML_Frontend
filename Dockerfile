@@ -25,4 +25,8 @@ COPY . .
 EXPOSE 4200
 
 # 5) Plain dev server – genau wie "ng serve" aus der README
-CMD ["ng", "serve", "--host=0.0.0.0", "--port=4200"]
+# CMD ["ng", "serve", "--host=0.0.0.0", "--port=4200"]
+
+# 5) Plain dev server – jetzt mit Produktionskonfiguration
+# HINWEIS: --configuration production sorgt dafür, dass environment.prod.ts verwendet wird.
+CMD ["ng", "serve", "--host=0.0.0.0", "--port=4200", "--configuration", "production"]
