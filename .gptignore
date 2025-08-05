@@ -44,6 +44,8 @@
         ".git",
         ".angular",
         "node_modules",
-        "backend"
+        "backend",
+        "archive",
+        "PLAN*.md"
     ]
 }
