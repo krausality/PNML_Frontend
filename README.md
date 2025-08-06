@@ -394,3 +394,70 @@ The project also includes three reference models that contain the same Petri net
 * ILPN file - the [I ❤ Petri Nets](https://www.fernuni-hagen.de/ilovepetrinets/petrinets/index.html) website
 * WoPeD file - the [Workflow Petri Net Designer](https://woped.dhbw-karlsruhe.de/?page_id=22)
 * Petriflow file - the [Netgrif Application Builder](https://builder.netgrif.com/modeler)
+
+
+
+----
+
+
+# Deployment
+
+**Beware** The following guide presupposed, that the backend `https://github.com/Peng-LUH/l3s-offshore-2` is already up-and-running AND reachable under the exact URL specified in the angular enviroment file called [environment.prod.ts](src\environments\environment.prod.ts#L6) - for a local running backend please change the aforementioned file according to your specific needs or simply use the [development server](#-quick-install--quick-start)
+
+
+## Deployment using Dockerfile on Debian
+
+
+
+1. Install docker
+
+2. clone this repo
+
+3. `cd PNML_Frontend`
+
+4. Build container
+```bash
+docker build -t pnml_frontend .
+```
+
+Choose 5.1. (debugging) or 5.2. (production)
+
+5.1. Serve container on port 4200 inside current shell
+-rm = gets deleted after stopping/ctrl+c
+```bash
+docker run --rm --name pnml_frontend -p 4200:4200  pnml_frontend
+```
+
+
+5.2. Serve container on port 4200 detached from shell
+-rm = gets deleted after stopping/ctrl+c
+-d = container runs detached from shell, is accessible using 6./7./8.
+```bash
+docker run -d --rm --name pnml_frontend -p 4200:4200 pnml_frontend
+```
+
+6. Show running container
+```bash
+docker ps
+```
+Outputs something like:
+
+```bash
+$ docker ps
+CONTAINER ID   IMAGE                                  COMMAND                  CREATED         STATUS         PORTS                                                 NAMES
+7903b21cb31c   pnml_frontend                                 "/docker-entrypoint._"   5 seconds ago   Up 4 seconds   80/tcp, 0.0.0.0:4200->4200/tcp, [::]:4200->4200/tcp   pnml_frontend
+```
+
+7. Stop container (Using container ID as parameter from 6.)
+```
+```bash
+docker stop 7903b21cb31c
+```
+
+8. If -rm flag was NOT used, then this step is required to avoid name collision IF a new run with same named `pnml_frontend` container is started
+
+```bash
+docker rm 7903b21cb31c
+```
+
+## Deployment using Dockercompose on Debian
