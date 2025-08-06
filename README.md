@@ -421,6 +421,34 @@ This is the recommended way to run the application in a production-like environm
 
 Docker Compose simplifies the management of building and running the container.
 
+### **0. Add the following file to your project's root directory `./PNML_Frontend`:**
+
+**File 1: `docker-compose.yml`**
+
+```yaml
+# docker-compose.yml
+
+
+services:
+  app:
+    # Name of service
+    container_name: pnml_frontend
+    
+    # Instruction to build the image from the Dockerfile in the current directory
+    build: .
+    
+    # Name given to the built image
+    image: pnml_frontend-app
+    
+    # Port mapping: Forwards port 4200 on the host (left) to port 4200 in the container (right)
+    ports:
+      - "4200:4200"
+      
+    # Restart policy: Automatically restarts the container if it crashes or the server restarts
+    restart: unless-stopped
+```
+
+
 **1. Build and Run in Detached Mode:**
 
 This command builds the Docker image (if not already built) and starts the container in the background.
@@ -530,7 +558,7 @@ This file is used to build the image and push it to the registry.
 
 ```yaml
 # docker-compose.yml
-version: '3.8'
+
 
 services:
   app:
@@ -550,13 +578,13 @@ This file is used only to pull and run the pre-built image on your server. It do
 
 ```yaml
 # docker-compose.prod.yml
-version: '3.8'
+
 
 services:
   app:
     # The full image name to pull from the container registry.
     # IMPORTANT: This must match the image name in the other docker-compose.yml file.
-    image: ghcr.io/krausality/PNML_Frontend:latest
+    image: ghcr.io/YOUR_GITHUB_USERNAME/YOUR_REPO_NAME:latest
     
     container_name: pnml_frontend
     
