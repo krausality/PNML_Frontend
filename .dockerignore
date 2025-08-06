@@ -1,0 +1,86 @@
+
+# .dockerignore
+
+# -----------------------------------------------------------------------------
+# -- Dependencies & Build Artifacts --
+# -----------------------------------------------------------------------------
+# Ignore local node_modules. These must be installed inside the container 
+# to ensure they are compatible with the container's Linux environment.
+# This is the most important rule to speed up the build and avoid errors.
+node_modules/
+
+# Ignore build output directories. The Docker build process will create these
+# inside the container.
+dist/
+out-tsc/
+
+# -----------------------------------------------------------------------------
+# -- Version Control & Config Files --
+# -----------------------------------------------------------------------------
+# Ignore the Git directory and related files.
+.git/
+.gitignore
+
+# Ignore local development and formatting configurations.
+.editorconfig
+.prettierignore
+.prettierrc
+.node-version
+
+# -----------------------------------------------------------------------------
+# -- IDE & Editor Specific --
+# -----------------------------------------------------------------------------
+# Ignore configuration files for local development environments.
+.vscode/
+.idea/
+
+# -----------------------------------------------------------------------------
+# -- Project-Specific & Local Files/Folders --
+# -----------------------------------------------------------------------------
+# Ignore any local, non-standard, or temporary directories.
+# The "-p" directory appears to be a local artifact.
+-p/
+
+# Ignore Windows-specific symbolic links or junction points.
+# This "Seafile" link points to a local user directory and will cause errors.
+Seafile
+
+# Ignore local scripts that are not part of the application source code.
+mklink
+
+# Ignore generated documentation or data files not used by the build.
+parameters_full.csv
+parameters_full.md
+simple_sim_api_doc/
+
+# Ignore local staging/diff files.
+staged_copy/
+staged_diff.patch
+
+# -----------------------------------------------------------------------------
+# -- Logs & OS-generated files --
+# -----------------------------------------------------------------------------
+# Ignore log files.
+npm-debug.log*
+*.log
+
+# Ignore OS-specific files that should not be in the build context.
+.DS_Store
+Thumbs.db
+allfiles.txt
+mklink
+seafile
+backend
+parameters_full.csv
+parameters_full.md
+swagger-parser.py
+
+/simple_sim_api_doc
+/staged_copy
+
+PLAN.md
+PLAN_*.md
+/archive
+*.patch
+docker-compose.yml
+docker-compose.prod.yml

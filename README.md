@@ -563,7 +563,7 @@ This file is used to build the image and push it to the registry.
 services:
   app:
     # The full image name for the container registry.
-    # IMPORTANT: Replace YOUR_GITHUB_USERNAME and YOUR_REPO_NAME with your actual details.
+    # IMPORTANT: Replace YOUR_GITHUB_USERNAME and YOUR_REPO_NAME (must be lowercase) with your actual details.
     image: ghcr.io/YOUR_GITHUB_USERNAME/YOUR_REPO_NAME:latest
     
     # Specifies that the image should be built from the Dockerfile in the current directory.
