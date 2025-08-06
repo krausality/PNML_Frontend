@@ -1,32 +1,31 @@
-# Angular 16 → Node 18
-FROM node:18.20.4-bookworm-slim
+# Stufe 1: "Builder" - Baut die Angular App
+FROM node:18.20.4-bookworm-slim AS builder
 
-# Optional: Telemetrie aus, weniger Lärm
 ENV NG_CLI_ANALYTICS=false \
     CI=true
 
 WORKDIR /app
 
-# 1) CLI global wie in der README
-RUN npm install -g @angular/cli@16
-
-# 2) Dependencies
+# Dependencies installieren
 COPY package.json package-lock.json* ./
-RUN if [ -f package-lock.json ]; then \
-      npm ci --no-audit --ignore-optional; \
-    else \
-      npm install --ignore-optional; \
-    fi
+RUN npm ci --no-audit --ignore-optional
 
-# 3) Quellcode
+# Quellcode kopieren
 COPY . .
 
-# 4)
+# Angular App für die Produktion bauen (nutzt automatisch environment.prod.ts wegen der angular.json)
+RUN npm run build -- --configuration production
+
+
+# Stufe 2: "Server" - Liefert die gebaute App aus
+FROM nginx:1.25-alpine
+
+# Nginx so konfigurieren, dass es mit Angular-Routing umgehen kann
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Die gebauten Dateien aus der "builder"-Stufe in das Web-Verzeichnis von Nginx kopieren
+# Der Pfad /app/dist/fapra-template ist in angular.json -> outputPath definiert
+COPY --from=builder /app/dist/fapra-template /usr/share/nginx/html
+
+# Port 4200 (durch Nginx) freigeben
 EXPOSE 4200
-
-# 5) Plain dev server – genau wie "ng serve" aus der README
-# CMD ["ng", "serve", "--host=0.0.0.0", "--port=4200"]
-
-# 5) Plain dev server – jetzt mit Produktionskonfiguration
-# HINWEIS: --configuration production sorgt dafür, dass environment.prod.ts verwendet wird.
-CMD ["ng", "serve", "--host=0.0.0.0", "--port=4200", "--configuration", "production"]
