@@ -400,43 +400,96 @@ The project also includes three reference models that contain the same Petri net
 ----
 
 
-# Deployment
+## Deployment with Docker
+
+This is the recommended way to run the application in a production-like environment.
 
 **Beware** The following guide presupposes, that the backend `https://github.com/Peng-LUH/l3s-offshore-2` is already up-and-running AND reachable under the exact URL specified in the angular environment file called [environment.prod.ts](src\environments\environment.prod.ts#L6) - for a local running backend please change the aforementioned file according to your specific needs or simply use the [development server](#-quick-install--quick-start)
 
+### Prerequisites
 
-## Deployment using Dockerfile on Debian
+1.  **Install Docker:** Follow the official instructions for [installing Docker on Debian](https://docs.docker.com/engine/install/debian/).
+2.  **Install Docker Compose:** Follow the instructions for the [Compose Standalone](https://docs.docker.com/compose/install/standalone/).
+3.  **Clone this repository:** `git clone https://github.com/krausality/PNML_Frontend.git`
+4.  Navigate into the project directory: `cd PNML_Frontend`
 
 
+## Deployment using Dockercompose on Debian
 
-1. Install docker
 
-2. clone this repo
+### Method 1: Docker Compose (Recommended)
 
-3. `cd PNML_Frontend`
+Docker Compose simplifies the management of building and running the container.
 
-4. Build container
+**1. Build and Run in Detached Mode:**
+
+This command builds the Docker image (if not already built) and starts the container in the background.
+
+```bash
+docker compose up --build -d
+```
+
+**2. Check the Status:**
+
+See if your container is running correctly.
+
+```bash
+docker compose ps
+```
+
+You should see an output like this, with the status `running`:
+```
+NAME                IMAGE               COMMAND                  SERVICE             CREATED             STATUS              PORTS
+pnml_frontend-app-1 pnml_frontend-app   "/docker-entrypoint.…"   app                 5 seconds ago       running             0.0.0.0:4200->80/tcp
+```
+
+**3. Access the Application:**
+
+Open your web browser and navigate to `http://localhost:4200` (or `http://<your-server-ip>:4200` if running on a remote server).
+
+**4. Stop the Application:**
+
+To stop the container, run the following command in the project directory:
+
+```bash
+docker compose down
+```
+This will stop and remove the container.
+
+
+### Method 2: Manual Docker Build
+
+If you prefer not to use Docker Compose, you can build and run the container manually.
+
+**1. Build the Docker Image:**
+
+This command creates a production-ready image named `pnml_frontend`.
+
 ```bash
 docker build -t pnml_frontend .
 ```
 
-Choose 5.1. (debugging) or 5.2. (production)
+**2. Run the Container:**
 
-5.1. Serve container on port 4200 inside current shell
--rm = gets deleted after stopping/ctrl+c
+This command starts the container in the background (`-d`) and maps port 4200 on your machine to port 80 inside the container. The container is automatically removed when stopped (`--rm`).
+
+
+
+
+**Choose 3.1. (debugging) or 3.2. (production)**
+
+**3.1. Serve container on port 4200 inside current shell, exit via ctrl+c**
 ```bash
 docker run --rm --name pnml_frontend -p 4200:4200  pnml_frontend
 ```
 
 
-5.2. Serve container on port 4200 detached from shell
--rm = gets deleted after stopping/ctrl+c
--d = container runs detached from shell, is accessible using 6./7./8.
+**3.2. Serve container on port 4200 detached from shell. Control container using 4./5./6.**
 ```bash
 docker run -d --rm --name pnml_frontend -p 4200:4200 pnml_frontend
 ```
 
-6. Show running container
+**4. Show running container**
 ```bash
 docker ps
 ```
@@ -448,16 +501,169 @@ CONTAINER ID   IMAGE                                  COMMAND                  C
 7903b21cb31c   pnml_frontend                                 "/docker-entrypoint._"   5 seconds ago   Up 4 seconds   80/tcp, 0.0.0.0:4200->4200/tcp, [::]:4200->4200/tcp   pnml_frontend
 ```
 
-7. Stop container (Using container ID as parameter from 6.)
+**5. Stop container (Using container ID as parameter from 4.)**
 ```
 ```bash
 docker stop 7903b21cb31c
 ```
 
-8. If -rm flag was NOT used, then this step is required to avoid name collision IF a new run with same named `pnml_frontend` container is started
+**6. Remove container**
+ONLY if -rm flag was NOT used, then this step is required to avoid name collision IF a new run with same named `pnml_frontend` container is started
 
 ```bash
 docker rm 7903b21cb31c
 ```
 
-## Deployment using Dockercompose on Debian
+
+Of course. This is a very common and robust workflow for deploying applications. It separates the building process (which can be resource-intensive) from the deployment process (which should be lightweight).
+
+Here is the new guide written in English, designed to be added to your `README.md`. It builds upon your existing Docker Compose section and explains the entire build -> push -> pull -> run lifecycle. I will also provide the necessary `docker-compose.yml` and `docker-compose.prod.yml` files.
+
+---
+
+### **1. Add the following files to your project's root directory:**
+
+You will need two `docker-compose` files: one for building locally and one for running on the server. This separation is a best practice.
+
+**File 1: `docker-compose.yml` (For your local machine)**
+This file is used to build the image and push it to the registry.
+
+```yaml
+# docker-compose.yml
+version: '3.8'
+
+services:
+  app:
+    # The full image name for the container registry.
+    # IMPORTANT: Replace YOUR_GITHUB_USERNAME and YOUR_REPO_NAME with your actual details.
+    image: ghcr.io/YOUR_GITHUB_USERNAME/YOUR_REPO_NAME:latest
+    
+    # Specifies that the image should be built from the Dockerfile in the current directory.
+    build: .
+    
+    # You can optionally add a container name for local testing.
+    container_name: pnml_frontend_builder
+```
+
+**File 2: `docker-compose.prod.yml` (For your server)**
+This file is used only to pull and run the pre-built image on your server. It does **not** contain a `build` section.
+
+```yaml
+# docker-compose.prod.yml
+version: '3.8'
+
+services:
+  app:
+    # The full image name to pull from the container registry.
+    # IMPORTANT: This must match the image name in the other docker-compose.yml file.
+    image: ghcr.io/krausality/PNML_Frontend:latest
+    
+    container_name: pnml_frontend
+    
+    # Maps port 4200 on the server (left) to port 4200 inside the container (right).
+    ports:
+      - "4200:4200"
+      
+    # Ensures the container restarts automatically if it crashes or the server reboots.
+    restart: unless-stopped
+```
+
+---
+
+
+### Method 3: Deployment via a Container Registry (CI/CD Workflow)
+
+This method is ideal for a professional workflow where the application is built on one machine (e.g., your local computer or a CI/CD server) and run on another (your production server). This ensures that you are deploying a consistent, pre-tested artifact.
+
+We will use the GitHub Container Registry (`ghcr.io`) for this guide.
+
+#### Prerequisites
+
+*   You have created a **GitHub Personal Access Token (PAT)** with the following scopes:
+    *   `write:packages` - to push the image.
+    *   `read:packages` - to pull the image.
+*   You have copied the `docker-compose.prod.yml` file to your production server.
+
+---
+
+#### **Part 1: On Your Local Machine (Build & Push)**
+
+**1. Log in to GitHub Container Registry**
+
+You only need to do this once per machine. Use your GitHub username and the Personal Access Token you created as the password.
+
+```bash
+docker login ghcr.io -u YOUR_GITHUB_USERNAME
+```
+When prompted for a password, paste your Personal Access Token.
+
+**2. Build the Docker Image**
+
+This command uses the `docker-compose.yml` file to build your production-ready image. It will read the `image` name from the file and tag the built image accordingly.
+
+```bash
+docker compose build
+```
+
+**3. Push the Image to the Registry**
+
+Now, push the tagged image to `ghcr.io`.
+
+```bash
+docker compose push
+```
+You can now go to your GitHub repository's "Packages" section to see your published container image.
+
+---
+
+#### **Part 2: On Your Production Server (Pull & Run)**
+
+**1. Log in to GitHub Container Registry**
+
+Just like on your local machine, your server needs to authenticate to be able to pull the private image.
+
+```bash
+docker login ghcr.io -u YOUR_GITHUB_USERNAME
+```
+Again, use your PAT as the password. A token with only `read:packages` permissions is recommended for servers for better security.
+
+**2. Pull the Latest Image**
+
+Before starting, pull the latest version of your image that you just pushed. We use the `-f` flag to specify our production compose file.
+
+```bash
+docker compose -f docker-compose.prod.yml pull
+```
+
+**3. Run the Application**
+
+Start the container using the pulled image. The `-d` flag runs it in detached mode (in the background).
+
+```bash
+docker compose -f docker-compose.prod.yml up -d
+```
+
+**4. Check the Status**
+
+```bash
+docker compose -f docker-compose.prod.yml ps
+```
+The status should be `running`. You can now access the application at `http://<your-server-ip>:4200`.
+
+---
+
+#### **Part 3: Managing the Application on the Server**
+
+**Updating the Application**
+
+To deploy a new version, simply repeat the steps:
+1.  **On your local machine:** `docker compose build` and then `docker compose push`.
+2.  **On your server:** `docker compose -f docker-compose.prod.yml pull` and then `docker compose -f docker-compose.prod.yml up -d`. Docker Compose will automatically stop the old container and start a new one with the updated image.
+
+**Stopping the Application**
+
+To stop and remove the container on the server:
+
+```bash
+docker compose -f docker-compose.prod.yml down
+```

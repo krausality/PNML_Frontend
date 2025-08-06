@@ -55,3 +55,5 @@ PLAN.md
 PLAN_*.md
 /archive
 *.patch
+docker-compose.yml
+docker-compose.prod.yml
