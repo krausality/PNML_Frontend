@@ -402,7 +402,7 @@ The project also includes three reference models that contain the same Petri net
 
 # Deployment
 
-**Beware** The following guide presupposed, that the backend `https://github.com/Peng-LUH/l3s-offshore-2` is already up-and-running AND reachable under the exact URL specified in the angular enviroment file called [environment.prod.ts](src\environments\environment.prod.ts#L6) - for a local running backend please change the aforementioned file according to your specific needs or simply use the [development server](#-quick-install--quick-start)
+**Beware** The following guide presupposes, that the backend `https://github.com/Peng-LUH/l3s-offshore-2` is already up-and-running AND reachable under the exact URL specified in the angular environment file called [environment.prod.ts](src\environments\environment.prod.ts#L6) - for a local running backend please change the aforementioned file according to your specific needs or simply use the [development server](#-quick-install--quick-start)
 
 
 ## Deployment using Dockerfile on Debian
