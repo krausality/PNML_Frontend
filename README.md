@@ -406,6 +406,8 @@ This is the recommended way to run the application in a production-like environm
 
 **Beware** The following guide presupposes, that the backend `https://github.com/Peng-LUH/l3s-offshore-2` is already up-and-running AND reachable under the exact URL specified in the angular environment file called [environment.prod.ts](src\environments\environment.prod.ts#L6) - for a local running backend please change the aforementioned file according to your specific needs or simply use the [development server](#-quick-install--quick-start)
 
+> **⚠️ Important for All Docker Deployments:** The current Dockerfile assumes the application will be deployed at the domain root (e.g., `https://your-domain/`). If you deploy under a subdirectory (e.g., `https://your-domain/l3s-offshore-2-frontend/`), you must modify the Dockerfile's build command to include `--base-href /your-subdirectory-path/` or the application's CSS/JS assets will fail to load correctly. See the [detailed example](#method-3-deployment-via-a-container-registry-cicd-workflow) below for the exact Dockerfile modification.
+
 ### Prerequisites
 
 1.  **Install Docker:** Follow the official instructions for [installing Docker on Debian](https://docs.docker.com/engine/install/debian/).
@@ -420,6 +422,9 @@ This is the recommended way to run the application in a production-like environm
 ### Method 1: Docker Compose (Recommended)
 
 Docker Compose simplifies the management of building and running the container.
+
+> **⚠️ Subdirectory Deployment:** If deploying under a subdirectory, modify the Dockerfile's `RUN npm run build` line to include `--base-href /your-path/` before building.
+See the [detailed example](#method-3-deployment-via-a-container-registry-cicd-workflow) below for the exact Dockerfile modification.
 
 ### **0. Add the following file to your project's root directory `./PNML_Frontend`:**
 
@@ -488,6 +493,9 @@ This will stop and remove the container.
 ### Method 2: Manual Docker Build
 
 If you prefer not to use Docker Compose, you can build and run the container manually.
+
+> **⚠️ Subdirectory Deployment:** Same as above - if deploying under a subdirectory, modify the Dockerfile's `RUN npm run build` line to include `--base-href /your-path/`.
+See the [detailed example](#method-3-deployment-via-a-container-registry-cicd-workflow) below for the exact Dockerfile modification.
 
 **1. Build the Docker Image:**
 
@@ -604,6 +612,18 @@ services:
 This method is ideal for a professional workflow where the application is built on one machine (e.g., your local computer or a CI/CD server) and run on another (your production server). This ensures that you are deploying a consistent, pre-tested artifact.
 
 We will use the GitHub Container Registry (`ghcr.io`) for this guide.
+
+> **⚠️ Important for Subdirectory Deployments:** If you deploy the frontend under a subdirectory (e.g., `https://<your-domain>/l3s-offshore-2-frontend/`), you must manually modify the `Dockerfile` to include the `--base-href` flag in the build command. Change `RUN npm run build` to `RUN npm run build -- --configuration production --base-href /your-subdirectory-path/`. This ensures Angular generates correct asset paths for subdirectory deployments.
+>
+> ```dockerfile
+> # Example Dockerfile modification:
+> COPY . .
+> # Change this line:
+> RUN npm run build -- --configuration production --base-href /your-subdirectory-path/
+> 
+> # Stufe 2: "Server"
+> FROM nginx:1.25-alpine
+> ```
 
 #### Prerequisites
 
