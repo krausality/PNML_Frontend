@@ -71,6 +71,7 @@
                                     "with": "src/environments/environment.prod.ts"
                                 }
                             ],
+                            "baseHref": "/l3s-offshore-2-frontend/",
                             "outputHashing": "all",
                              // Ensure standard prod settings are correct
                             "aot": true,

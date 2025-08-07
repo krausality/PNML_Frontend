@@ -406,7 +406,7 @@ This is the recommended way to run the application in a production-like environm
 
 **Beware** The following guide presupposes, that the backend `https://github.com/Peng-LUH/l3s-offshore-2` is already up-and-running AND reachable under the exact URL specified in the angular environment file called [environment.prod.ts](src\environments\environment.prod.ts#L6) - for a local running backend please change the aforementioned file according to your specific needs or simply use the [development server](#-quick-install--quick-start)
 
-> **⚠️ Important for All Docker Deployments:** The current Dockerfile assumes the application will be deployed at the domain root (e.g., `https://your-domain/`). If you deploy under a subdirectory (e.g., `https://your-domain/l3s-offshore-2-frontend/`), you must modify the Dockerfile's build command to include `--base-href /your-subdirectory-path/` or the application's CSS/JS assets will fail to load correctly. See the [detailed example](#method-3-deployment-via-a-container-registry-cicd-workflow) below for the exact Dockerfile modification.
+> **⚠️ Important for All Docker Deployments:** The current project is configured for subdirectory deployment at `/l3s-offshore-2-frontend/` (see [angular.json line 74](angular.json#L74)). If you want to deploy at the domain root (`https://your-domain/`) instead, you must modify the `baseHref` setting in `angular.json` from `"/l3s-offshore-2-frontend/"` to `"/"`. Conversely, if you need a different subdirectory path, update the `baseHref` value accordingly. This setting controls where Angular expects to find its CSS/JS assets.
 
 ### Prerequisites
 
@@ -423,8 +423,7 @@ This is the recommended way to run the application in a production-like environm
 
 Docker Compose simplifies the management of building and running the container.
 
-> **⚠️ Subdirectory Deployment:** If deploying under a subdirectory, modify the Dockerfile's `RUN npm run build` line to include `--base-href /your-path/` before building.
-See the [detailed example](#method-3-deployment-via-a-container-registry-cicd-workflow) below for the exact Dockerfile modification.
+> **⚠️ Path Configuration:** The project is pre-configured for `/l3s-offshore-2-frontend/` deployment via [angular.json line 74](angular.json#L74). No Dockerfile changes needed unless you want a different path - in that case, update the `baseHref` value in `angular.json` before building.
 
 ### **0. Add the following file to your project's root directory `./PNML_Frontend`:**
 
@@ -494,8 +493,7 @@ This will stop and remove the container.
 
 If you prefer not to use Docker Compose, you can build and run the container manually.
 
-> **⚠️ Subdirectory Deployment:** Same as above - if deploying under a subdirectory, modify the Dockerfile's `RUN npm run build` line to include `--base-href /your-path/`.
-See the [detailed example](#method-3-deployment-via-a-container-registry-cicd-workflow) below for the exact Dockerfile modification.
+> **⚠️ Path Configuration:** Same as above - the project is pre-configured for `/l3s-offshore-2-frontend/` via [angular.json line 74](angular.json#L74). Update the `baseHref` value there if you need a different deployment path.
 
 **1. Build the Docker Image:**
 
@@ -613,16 +611,16 @@ This method is ideal for a professional workflow where the application is built 
 
 We will use the GitHub Container Registry (`ghcr.io`) for this guide.
 
-> **⚠️ Important for Subdirectory Deployments:** If you deploy the frontend under a subdirectory (e.g., `https://<your-domain>/l3s-offshore-2-frontend/`), you must manually modify the `Dockerfile` to include the `--base-href` flag in the build command. Change `RUN npm run build` to `RUN npm run build -- --configuration production --base-href /your-subdirectory-path/`. This ensures Angular generates correct asset paths for subdirectory deployments.
+> **⚠️ Important for Path Configuration:** The project is currently configured for subdirectory deployment at `/l3s-offshore-2-frontend/` via the `baseHref` setting in [angular.json line 74](angular.json#L74). 
 >
-> ```dockerfile
-> # Example Dockerfile modification:
-> COPY . .
-> # Change this line:
-> RUN npm run build -- --configuration production --base-href /your-subdirectory-path/
-> 
-> # Stufe 2: "Server"
-> FROM nginx:1.25-alpine
+> **When to modify:**
+> - **Domain root deployment** (`https://your-domain/`): Change `baseHref` from `"/l3s-offshore-2-frontend/"` to `"/"`
+> - **Different subdirectory**: Change `baseHref` to your desired path (e.g., `"/my-app/"`)
+> - **Current setup** (`https://your-domain/l3s-offshore-2-frontend/`): No changes needed
+>
+> ```json
+> // In angular.json, production configuration (line 74):
+> "baseHref": "/l3s-offshore-2-frontend/",  // ← Modify this value as needed
 > ```
 
 #### Prerequisites
