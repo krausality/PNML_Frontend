@@ -75,6 +75,7 @@ import { SpeedControlComponent } from './tr-components/speed-control/speed-contr
 import { OffshoreViewComponent } from './tr-components/offshore-view/offshore-view.component';
 import { PlaybackControlsComponent } from './tr-components/playback-controls/playback-controls.component'; // Import PlaybackControlsComponent
 import { TransitionFiringInfoPopupComponent } from './tr-components/transition-firing-info-popup/transition-firing-info-popup.component';
+import { HeaderComponent } from './components/header/header.component';
 
 @NgModule({
     declarations: [
@@ -97,7 +98,7 @@ import { TransitionFiringInfoPopupComponent } from './tr-components/transition-f
         SpeedControlComponent, // Add SpeedControlComponent
         OffshoreViewComponent,
         PlaybackControlsComponent, // Add PlaybackControlsComponent
-        TransitionFiringInfoPopupComponent,
+        TransitionFiringInfoPopupComponent, HeaderComponent,
     ],
     imports: [
         BrowserModule,

@@ -1,0 +1,48 @@
+/* 
+  Hauptcontainer für den Banner. 
+  Flexbox wird für eine robuste und flexible Ausrichtung von Titel und Logos verwendet.
+  - display: flex: Aktiviert das Flexbox-Layout.
+  - justify-content: space-between: Platziert den Titel links und die Logos rechts mit maximalem Abstand.
+  - align-items: center: Zentriert die Elemente vertikal.
+  - padding: Sorgt für Innenabstand.
+  - border-bottom: Erzeugt eine subtile Trennlinie zum Rest der App.
+*/
+.banner-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 24px;
+  background-color: #f8f9fa; /* Ein heller, neutraler Hintergrund */
+  border-bottom: 1px solid #dee2e6;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 
+  Styling für den Projekttitel.
+  Die Farbe wird aus der L3S-Farbpalette entnommen, um das Branding zu respektieren.
+*/
+.project-title {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: #112F4A; /* Offizielles L3S Dunkelblau */
+}
+
+/* 
+  Flexbox-Container für die Logos, um deren Abstand und Ausrichtung zu steuern.
+*/
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* Abstand zwischen den Logos */
+}
+
+/* 
+  Einheitliche Größe und Stil für alle Logos im Banner.
+  - max-height: Stellt sicher, dass die Logos nicht zu hoch werden und das Header-Layout sprengen.
+  - object-fit: contain: Sorgt dafür, dass das Logo-Seitenverhältnis beibehalten wird.
+*/
+.logo-img {
+  max-height: 40px;
+  object-fit: contain;
+}

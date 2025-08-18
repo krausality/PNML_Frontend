@@ -7,7 +7,8 @@ body {
 
 body {
     margin: 0;
-    padding: 50px;
+    /* Das obere Padding wird reduziert oder entfernt, da der Header nun eigenen Abstand mitbringt. */
+    padding: 0 50px 50px 50px; 
     font-family: "Courier New", sans-serif;
 }
 
