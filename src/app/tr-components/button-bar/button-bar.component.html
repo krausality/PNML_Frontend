@@ -253,8 +253,20 @@
             Simulation
         </ng-template>
         
-        <!-- Kommentar: Simulation-Steuerung aus "Analyze" hierher verschoben. -->
         <div class="button-container">
+            <app-playback-controls 
+                [isPlaying]="isPlaying"
+                [currentStep]="currentStep"
+                [isHistoryEmpty]="tokenGameService.isGameHistoryEmpty()"
+                (play)="play()"
+                (pause)="pause()"
+                (stop)="stop()"
+                (restart)="tokenGameService.resetGame()"
+                (rewind)="tokenGameService.revertToPreviousState()">
+            </app-playback-controls>
+
+            <div class="divider"></div>
+
             <!-- Multi-Run Simulation Section -->
             <span style="margin-right: 10px;">Run multiple simulations:</span>
             <mat-form-field appearance="outline" style="width: 120px; margin-right: 10px;">
@@ -273,19 +285,6 @@
                 <mat-icon>download</mat-icon>
                 Download Results
             </button>
-
-            <div class="divider"></div>
-
-            <app-playback-controls 
-                [isPlaying]="isPlaying"
-                [currentStep]="currentStep"
-                [isHistoryEmpty]="tokenGameService.isGameHistoryEmpty()"
-                (play)="play()"
-                (pause)="pause()"
-                (stop)="stop()"
-                (restart)="tokenGameService.resetGame()"
-                (rewind)="tokenGameService.revertToPreviousState()">
-            </app-playback-controls>
         </div>
     </mat-tab>
     
