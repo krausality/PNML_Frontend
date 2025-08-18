@@ -57,3 +57,5 @@ PLAN_*.md
 *.patch
 docker-compose.yml
 docker-compose.prod.yml
+src/assets/logos/L3S-Logo-2024-GS.pdf
+src/assets/logos/L3S-Logo-2024.pdf
