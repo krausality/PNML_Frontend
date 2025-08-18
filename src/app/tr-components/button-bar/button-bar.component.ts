@@ -93,8 +93,8 @@ export class ButtonBarComponent implements OnInit, OnDestroy {
                 this.uiService.tab = this.TabState.Build;
                 this.tokenGameService.clearGameHistory();
                 break;
-            case 'play':
-                this.uiService.tab = this.TabState.Play;
+            case 'simulation':
+                this.uiService.tab = this.TabState.Simulation;
                 break;
             case 'save':
                 this.uiService.tab = this.TabState.Save;

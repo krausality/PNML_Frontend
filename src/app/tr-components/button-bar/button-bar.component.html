@@ -246,22 +246,50 @@
         </div>
     </mat-tab>
 
-    <mat-tab label="play">
+    <!-- Kommentar: Der "Play"-Tab wurde gemäß Vorgabe in "Simulation" umbenannt. -->
+    <mat-tab label="Simulation">
         <ng-template mat-tab-label>
             <mat-icon>play_arrow</mat-icon>
-            Play
+            Simulation
         </ng-template>
-        <app-playback-controls 
-            [isPlaying]="isPlaying"
-            [currentStep]="currentStep"
-            [isHistoryEmpty]="tokenGameService.isGameHistoryEmpty()"
-            (play)="play()"
-            (pause)="pause()"
-            (stop)="stop()"
-            (restart)="tokenGameService.resetGame()"
-            (rewind)="tokenGameService.revertToPreviousState()">
-        </app-playback-controls>
-    </mat-tab>    <mat-tab label="analyze">
+        
+        <!-- Kommentar: Simulation-Steuerung aus "Analyze" hierher verschoben. -->
+        <div class="button-container">
+            <!-- Multi-Run Simulation Section -->
+            <span style="margin-right: 10px;">Run multiple simulations:</span>
+            <mat-form-field appearance="outline" style="width: 120px; margin-right: 10px;">
+                <mat-label>Number of Runs</mat-label>
+                <input matInput type="number" min="1" [(ngModel)]="numberOfSimulations">
+            </mat-form-field>
+
+            <button mat-stroked-button class="text-button" (click)="runAndStoreMultiSimulation()" [disabled]="isMultiRunInProgress" matTooltip="Run multiple simulations on the currently loaded PNML." [matTooltipShowDelay]="showTooltipDelay">
+                <mat-progress-spinner *ngIf="isMultiRunInProgress" mode="indeterminate" diameter="18" style="display:inline-block;vertical-align:middle;margin-right:8px;"></mat-progress-spinner>
+                <mat-icon *ngIf="!isMultiRunInProgress">play_arrow</mat-icon>
+                <span *ngIf="!isMultiRunInProgress">Run Simulation</span>
+                <span *ngIf="isMultiRunInProgress">Running...</span>
+            </button>
+
+            <button mat-stroked-button class="text-button" (click)="downloadResults()" [disabled]="!hasMultiRunResults" matTooltip="Download the results of the last multi-run simulation." [matTooltipShowDelay]="showTooltipDelay">
+                <mat-icon>download</mat-icon>
+                Download Results
+            </button>
+
+            <div class="divider"></div>
+
+            <app-playback-controls 
+                [isPlaying]="isPlaying"
+                [currentStep]="currentStep"
+                [isHistoryEmpty]="tokenGameService.isGameHistoryEmpty()"
+                (play)="play()"
+                (pause)="pause()"
+                (stop)="stop()"
+                (restart)="tokenGameService.resetGame()"
+                (rewind)="tokenGameService.revertToPreviousState()">
+            </app-playback-controls>
+        </div>
+    </mat-tab>
+    
+    <mat-tab label="analyze">
         <ng-template mat-tab-label>
             <mat-icon class="example-tab-icon">functions</mat-icon>
             Analyze
@@ -315,40 +343,6 @@
             >
                 Linear Combination
             </button>
-
-            <!-- Divider -->
-            <div class="divider"></div>            <!-- Multi-Run Simulation Section -->
-            <span style="margin-right: 10px;">Run multiple simulations:</span>
-            <mat-form-field appearance="outline" style="width: 120px; margin-right: 10px;">
-                <mat-label>Number of Runs</mat-label>
-                <input matInput type="number" min="1" [(ngModel)]="numberOfSimulations">
-            </mat-form-field>
-
-            <button
-                mat-stroked-button
-                class="text-button"
-                (click)="runAndStoreMultiSimulation()"
-                [disabled]="isMultiRunInProgress"
-                matTooltip="Run multiple simulations on the currently loaded PNML."
-                [matTooltipShowDelay]="showTooltipDelay"
-            >
-                <mat-progress-spinner *ngIf="isMultiRunInProgress" mode="indeterminate" diameter="18" style="display:inline-block;vertical-align:middle;margin-right:8px;"></mat-progress-spinner>
-                <mat-icon *ngIf="!isMultiRunInProgress">play_arrow</mat-icon>
-                <span *ngIf="!isMultiRunInProgress">Run Simulation</span>
-                <span *ngIf="isMultiRunInProgress">Running...</span>
-            </button>
-
-            <button
-                mat-stroked-button
-                class="text-button"
-                (click)="downloadResults()"
-                [disabled]="!hasMultiRunResults"
-                matTooltip="Download the results of the last multi-run simulation."
-                [matTooltipShowDelay]="showTooltipDelay"
-            >
-                <mat-icon>download</mat-icon>
-                Download Results
-            </button>
         </div>
 
         <div class="button-container float-right">
@@ -361,6 +355,14 @@
                 <mat-icon>help</mat-icon>
             </button>
         </div>
+    </mat-tab>
+
+    <!-- Kommentar: "Offshore"-Tab zur Verbesserung der Nutzerführung in die Mitte verschoben. -->
+    <mat-tab label="offshore">
+        <ng-template mat-tab-label>
+            <mat-icon matTooltip="Offshore Scheduling" [matTooltipShowDelay]="showTooltipDelay">wind_power</mat-icon>
+            Offshore
+        </ng-template>
     </mat-tab>
 
     <mat-tab label="save">
@@ -511,13 +513,6 @@
                 <mat-icon>help</mat-icon>
             </button>
         </div>
-    </mat-tab>
-
-    <mat-tab label="offshore">
-        <ng-template mat-tab-label>
-            <mat-icon matTooltip="Offshore Scheduling" [matTooltipShowDelay]="showTooltipDelay">wind_power</mat-icon>
-            Offshore
-        </ng-template>
     </mat-tab>
 
 </mat-tab-group>

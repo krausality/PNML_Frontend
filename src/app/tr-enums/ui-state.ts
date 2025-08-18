@@ -1,6 +1,6 @@
 export enum TabState {
     Build,
-    Play,
+    Simulation, // Umbenannt von Play
     Save,
     Code,
     Analyze,

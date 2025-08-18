@@ -152,7 +152,7 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this._subs.push(
             this.uiService.getAnimationState$().subscribe(isRunning => {
-                if (isRunning && this.uiService.tab === TabState.Play && this.isSimulating) {
+                if (isRunning && this.uiService.tab === TabState.Simulation && this.isSimulating) {
                     console.log('PetriNetComponent: Starting/Resuming autoplay animation');
                     // ADDED: Check current speed before starting animation loop
                     const currentSpeed = this.uiService.getAnimationSpeedMultiplier();
@@ -842,7 +842,7 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
         }
 
         // Token game: fire transition
-        if (this.uiService.tab === TabState.Play) {
+        if (this.uiService.tab === TabState.Simulation) {
             this.tokenGameService.fire(transition);
         } else if (
             this.uiService.tab === TabState.Build &&
@@ -1283,7 +1283,7 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
             return;
         }
 
-        if (this.uiService.tab !== TabState.Play) {
+        if (this.uiService.tab !== TabState.Simulation) {
             console.warn('PetriNetComponent: Autoplay can only run in Play tab');
             return;
         }
