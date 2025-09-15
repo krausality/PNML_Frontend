@@ -124,9 +124,9 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
             }
         });
         this._subs.push(
-            this.dataService.dataChanged$.subscribe(() => {
-                console.log('Data changed, view initialized:', this.viewInitialized);
-                if (this.viewInitialized) {
+            this.dataService.dataChanged$.subscribe((data) => {
+                console.log('Data changed, view initialized:', this.viewInitialized, 'fitContent:', data?.fitContent);
+                if (this.viewInitialized && data?.fitContent) {
                     this.fitContentToView();
                 }
             })
@@ -339,7 +339,7 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
             // Trigger data changed event AFTER potential layout changes
             // This will trigger fitContentToView via the subscription
             console.log('parsePetrinetData: About to call triggerDataChanged()'); // Log before trigger
-            this.dataService.triggerDataChanged();
+            this.dataService.triggerDataChanged(true); // Fit content when loading new nets
             console.log('parsePetrinetData: triggerDataChanged() called successfully'); // Log after trigger
 
         } else {

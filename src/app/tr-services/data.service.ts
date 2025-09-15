@@ -81,7 +81,7 @@ export class DataService {
     private _actions: string[] = [];
 
     /** @private Subject used to emit events when any Petri net data changes. */
-    private dataChangedSubject = new Subject<void>();
+    private dataChangedSubject = new Subject<{fitContent: boolean}>();
     /**
      * Observable that emits a void value whenever the Petri net data
      * (places, transitions, arcs, or their layout/properties) is updated.
@@ -424,11 +424,12 @@ export class DataService {
      * Triggers the `dataChanged$` observable by calling `next()` on the `dataChangedSubject`.
      * This method should be called after any operation that modifies the Petri net's data
      * or layout to notify subscribers about the change.
+     * @param fitContent Whether to automatically fit the content to view after the change (default: false)
      * Logs a message to the console when called.
      */
-    public triggerDataChanged(): void {
-        console.log('DataService: triggerDataChanged() called'); // <-- ADD THIS LOG
-        this.dataChangedSubject.next();
+    public triggerDataChanged(fitContent: boolean = false): void {
+        console.log('DataService: triggerDataChanged() called, fitContent:', fitContent); // <-- ADD THIS LOG
+        this.dataChangedSubject.next({ fitContent });
     }
 
     /**
