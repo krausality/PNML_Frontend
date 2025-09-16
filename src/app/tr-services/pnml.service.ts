@@ -169,6 +169,10 @@ export class PnmlService {
             // Unconditionally apply Sugiyama layout
             this.layoutSugiyamaService.applySugiyamaLayout();
 
+            // Trigger data changed event AFTER potential layout changes
+            // This will trigger fitContentToView via the subscription
+            this.dataService.triggerDataChanged(true); // Fit content when loading new nets
+
             return [places, transitions, arcs, actions];
         } catch (error) {
             throw new Error(`Error parsing XML to JSON: ${error}`);
