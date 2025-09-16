@@ -41,38 +41,61 @@ export class ZoomService {
 
     constructor(private dataService: DataService) {} // Inject DataService
 
+    private viewport: { width: number; height: number } = { width: 0, height: 0 };
+
     /** Gets the current scale factor. */
     get currentScale(): number {
         return this.scaleSubject.value;
     }
-
-     /** Gets the current offset. */
+// ...existing code...
     get currentOffset(): Point { // Add getter for current offset
         return this.offsetSubject.value;
     }
 
-    /** Increases the zoom level. */
-    zoomIn(): void {
-        const newScale = Math.min(
-            this.maxScale,
-            this.currentScale + this.scaleStep
-        );
-        // Use toFixed to avoid floating point inaccuracies causing unnecessary updates
-        if (newScale.toFixed(2) !== this.currentScale.toFixed(2)) {
-            this.scaleSubject.next(newScale);
-        }
+    public setViewportDimensions(width: number, height: number): void {
+        this.viewport = { width, height };
     }
 
-    /** Decreases the zoom level. */
-    zoomOut(): void {
-        const newScale = Math.max(
-            this.minScale,
-            this.currentScale - this.scaleStep
-        );
-         // Use toFixed to avoid floating point inaccuracies causing unnecessary updates
-        if (newScale.toFixed(2) !== this.currentScale.toFixed(2)) {
-            this.scaleSubject.next(newScale);
+    /**
+     * Zooms towards a specific point, adjusting the pan offset to keep that point stationary on the screen.
+     * @param screenPoint The point in screen coordinates to zoom towards.
+     * @param targetScale The desired new scale.
+     */
+    private zoomToPoint(screenPoint: Point, targetScale: number): void {
+        const newScale = Math.max(this.minScale, Math.min(this.maxScale, targetScale));
+
+        if (newScale.toFixed(3) === this.currentScale.toFixed(3)) {
+            return; // No significant scale change
         }
+
+        const currentOffset = this.currentOffset;
+        const currentScale = this.currentScale;
+
+        // Calculate the new offset to keep the screenPoint stationary
+        // Formula: newOffset = screenPoint - (screenPoint - currentOffset) * (newScale / currentScale)
+        const newOffsetX = screenPoint.x - (screenPoint.x - currentOffset.x) * (newScale / currentScale);
+        const newOffsetY = screenPoint.y - (screenPoint.y - currentOffset.y) * (newScale / currentScale);
+
+        this.offsetSubject.next({ x: newOffsetX, y: newOffsetY });
+        this.scaleSubject.next(newScale);
+    }
+
+    /** Increases the zoom level, zooming towards the center of the viewport. */
+    zoomIn(): void {
+        const viewportCenter = {
+            x: this.viewport.width / 2,
+            y: this.viewport.height / 2,
+        };
+        this.zoomToPoint(viewportCenter, this.currentScale + this.scaleStep);
+    }
+
+    /** Decreases the zoom level, zooming towards the center of the viewport. */
+    zoomOut(): void {
+        const viewportCenter = {
+            x: this.viewport.width / 2,
+            y: this.viewport.height / 2,
+        };
+        this.zoomToPoint(viewportCenter, this.currentScale - this.scaleStep);
     }
 
     /** Resets the zoom level and pan offset to the initial state. */

@@ -224,6 +224,12 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
     ngAfterViewInit(): void {
         this.viewInitialized = true;
         console.log('View initialized.'); // Log view init
+
+        if (this.drawingArea?.nativeElement) {
+            const rect = this.drawingArea.nativeElement.getBoundingClientRect();
+            this.zoomService.setViewportDimensions(rect.width, rect.height);
+        }
+
         // Fit content initially if data is already present and view is ready
         if (!this.dataService.isEmpty()) {
             console.log('View initialized with existing data, fitting content.'); // Log initial fit
@@ -358,6 +364,7 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
         // Ensure the drawing area element is available and view is initialized
         if (this.drawingArea?.nativeElement && this.viewInitialized) {
             const rect = this.drawingArea.nativeElement.getBoundingClientRect();
+            this.zoomService.setViewportDimensions(rect.width, rect.height); // Update viewport dimensions
             console.log('Drawing area rect:', rect.width, 'x', rect.height); // Log dimensions
             if (rect.width > 0 && rect.height > 0) {
                 this.zoomService.fitContent(rect.width, rect.height);
@@ -369,6 +376,7 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
                 requestAnimationFrame(() => {
                     if (this.drawingArea?.nativeElement) {
                         const currentRect = this.drawingArea.nativeElement.getBoundingClientRect();
+                        this.zoomService.setViewportDimensions(currentRect.width, currentRect.height); // Update viewport dimensions
                         console.log('Drawing area rect (fallback):', currentRect.width, 'x', currentRect.height); // Log fallback dimensions
                         if (currentRect.width > 0 && currentRect.height > 0) {
                             this.zoomService.fitContent(currentRect.width, currentRect.height);
