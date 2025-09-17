@@ -82,10 +82,36 @@ export class DataService {
 
     /** @private Subject used to emit events when any Petri net data changes. */
     private dataChangedSubject = new Subject<{fitContent: boolean}>();
+
     /**
-     * Observable that emits a void value whenever the Petri net data
-     * (places, transitions, arcs, or their layout/properties) is updated.
-     * Components and services can subscribe to this observable to react to changes.
+     * Observable that emits change notifications whenever the Petri net data is modified.
+     *
+     * This observable serves as the central communication channel for data changes throughout the application.
+     * Subscribers receive detailed change metadata that allows them to respond appropriately to different
+     * types of modifications. The observable maintains the last emitted value for late subscribers.
+     *
+     * Emitted value structure:
+     * {
+     *   fitContent: boolean - Indicates whether the view should automatically adjust zoom/pan to fit content.
+     *                         True for significant changes (net loading), false for incremental updates (editing).
+     * }
+     *
+     * Usage patterns:
+     * - Net loading operations: Emit with fitContent=true to trigger automatic view adjustment
+     * - Interactive editing: Emit with fitContent=false to prevent unwanted zoom changes
+     * - Structural changes: Emit with fitContent=true when layout or content bounds change significantly
+     *
+     * @example
+     * // Subscribe to data changes with conditional view adjustment
+     * this.dataService.dataChanged$.subscribe(change => {
+     *   this.updateDisplay(); // Always update UI
+     *   if (change.fitContent) {
+     *     this.fitContentToView(); // Only adjust view for significant changes
+     *   }
+     * });
+     *
+     * @see triggerDataChanged - Method that emits values to this observable
+     * @see fitContentToView - View adjustment method called when fitContent is true
      */
     public dataChanged$ = this.dataChangedSubject.asObservable();
 
@@ -421,14 +447,33 @@ export class DataService {
     }
 
     /**
-     * Triggers the `dataChanged$` observable by calling `next()` on the `dataChangedSubject`.
-     * This method should be called after any operation that modifies the Petri net's data
-     * or layout to notify subscribers about the change.
-     * @param fitContent Whether to automatically fit the content to view after the change (default: false)
-     * Logs a message to the console when called.
+     * Triggers the dataChanged observable to notify all subscribers about changes to the Petri net data.
+     *
+     * This method serves as the central notification mechanism for any modifications to the Petri net's
+     * structural elements (places, transitions, arcs) or visual properties (positions, labels).
+     * It ensures UI consistency by triggering re-rendering and layout updates across all dependent components.
+     *
+     * The optional fitContent parameter allows callers to specify whether the view should automatically
+     * adjust zoom and pan to fit the entire content within the viewport. This is particularly useful
+     * when loading new nets or making significant structural changes that might require visual refitting.
+     *
+     * @param fitContent - Optional boolean flag indicating whether to trigger automatic content fitting.
+     *                     When true, subscribers will automatically adjust zoom and pan to show the entire net.
+     *                     When false (default), only data updates are triggered without view adjustments.
+     *                     This prevents unwanted zoom changes during interactive editing operations.
+     *
+     * @example
+     * // Trigger data update without view adjustment (typical for element additions)
+     * this.dataService.triggerDataChanged();
+     *
+     * // Trigger data update with automatic content fitting (typical for net loading)
+     * this.dataService.triggerDataChanged(true);
+     *
+     * @see fitContentToView - The method called by subscribers when fitContent is true
+     * @see dataChanged$ - The observable that subscribers listen to for change notifications
      */
     public triggerDataChanged(fitContent: boolean = false): void {
-        console.log('DataService: triggerDataChanged() called, fitContent:', fitContent); // <-- ADD THIS LOG
+        console.log('DataService: triggerDataChanged() called, fitContent:', fitContent); // Debug logging for change notifications
         this.dataChangedSubject.next({ fitContent });
     }
 

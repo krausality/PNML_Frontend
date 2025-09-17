@@ -124,6 +124,31 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
             }
         });
         this._subs.push(
+            /**
+             * Subscription to DataService change notifications with conditional view adjustment.
+             *
+             * This subscription implements intelligent view management by differentiating between
+             * incremental data changes (fitContent=false) and significant structural changes (fitContent=true).
+             *
+             * Change handling strategy:
+             * - fitContent=false: Only update data bindings, preserve current zoom/pan state
+             * - fitContent=true: Update data bindings AND automatically adjust view to fit content
+             *
+             * This approach prevents unwanted zoom interruptions during interactive editing while
+             * ensuring proper view adjustment for major operations like net loading.
+             *
+             * Timing considerations:
+             * - Subscription is established in ngOnInit before view initialization
+             * - fitContentToView is only called when viewInitialized=true to prevent premature calls
+             * - Uses defensive checks to handle edge cases during component lifecycle
+             *
+             * @param data - Change notification object with fitContent flag
+             * @param data.fitContent - Boolean indicating whether view adjustment is required
+             *
+             * @see triggerDataChanged - Method that emits these notifications
+             * @see fitContentToView - View adjustment method called conditionally
+             * @see viewInitialized - Component lifecycle flag preventing premature view operations
+             */
             this.dataService.dataChanged$.subscribe((data) => {
                 console.log('Data changed, view initialized:', this.viewInitialized, 'fitContent:', data?.fitContent);
                 if (this.viewInitialized && data?.fitContent) {
@@ -225,6 +250,22 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
         this.viewInitialized = true;
         console.log('View initialized.'); // Log view init
 
+        /**
+         * Initialize viewport dimensions for zoom service.
+         *
+         * Critical initialization step that enables accurate viewport-center zoom calculations.
+         * Without proper viewport dimensions, zoom operations will use incorrect center coordinates,
+         * leading to unpredictable zoom behavior and potential drift.
+         *
+         * Timing requirements:
+         * - Must occur after DOM elements are fully rendered (ngAfterViewInit)
+         * - Must happen before any zoom operations that depend on viewport center
+         * - Should be updated if viewport resizes (though not implemented in this basic version)
+         *
+         * @see setViewportDimensions - Method that stores these dimensions
+         * @see zoomIn/zoomOut - Methods that use viewport center for zoom calculations
+         * @see fitContentToView - Also updates viewport dimensions for consistency
+         */
         if (this.drawingArea?.nativeElement) {
             const rect = this.drawingArea.nativeElement.getBoundingClientRect();
             this.zoomService.setViewportDimensions(rect.width, rect.height);
@@ -342,8 +383,25 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
             }
             console.log('parsePetrinetData: Layout check complete. Layout applied:', layoutApplied); // Log layout result
 
-            // Trigger data changed event AFTER potential layout changes
-            // This will trigger fitContentToView via the subscription
+            /**
+             * Critical notification point: Trigger data change with automatic content fitting.
+             *
+             * This notification must occur AFTER all data mutations and layout operations are complete
+             * to ensure subscribers receive a consistent, fully-processed state. The fitContent=true
+             * parameter is essential for PNML loading because:
+             *
+             * 1. **Major State Change**: PNML loading represents a complete net replacement
+             * 2. **Layout Uncertainty**: Automatic layout algorithms may reposition elements anywhere
+             * 3. **User Expectation**: Users expect to see the entire loaded net immediately
+             * 4. **Viewport Safety**: Prevents nets from loading outside visible area
+             *
+             * Timing is critical - this must be the final operation before returning to ensure
+             * all subscribers receive the complete, processed state simultaneously.
+             *
+             * @see triggerDataChanged - Notification method with fitContent parameter
+             * @see dataChanged$ - Observable that subscribers monitor for this notification
+             * @see fitContentToView - View adjustment triggered by this notification
+             */
             console.log('parsePetrinetData: About to call triggerDataChanged()'); // Log before trigger
             this.dataService.triggerDataChanged(true); // Fit content when loading new nets
             console.log('parsePetrinetData: triggerDataChanged() called successfully'); // Log after trigger
@@ -364,7 +422,22 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
         // Ensure the drawing area element is available and view is initialized
         if (this.drawingArea?.nativeElement && this.viewInitialized) {
             const rect = this.drawingArea.nativeElement.getBoundingClientRect();
-            this.zoomService.setViewportDimensions(rect.width, rect.height); // Update viewport dimensions
+
+            /**
+             * Update viewport dimensions before zoom operations.
+             *
+             * Ensures zoom service has current viewport size for accurate calculations.
+             * Critical for maintaining consistent zoom behavior, especially when viewport
+             * has changed since initialization or previous operations.
+             *
+             * This synchronization prevents zoom drift and ensures that zoom operations
+             * use the correct center coordinates relative to the current viewport size.
+             *
+             * @see setViewportDimensions - Updates stored viewport dimensions
+             * @see zoomIn/zoomOut - Methods that depend on accurate viewport dimensions
+             */
+            this.zoomService.setViewportDimensions(rect.width, rect.height);
+
             console.log('Drawing area rect:', rect.width, 'x', rect.height); // Log dimensions
             if (rect.width > 0 && rect.height > 0) {
                 this.zoomService.fitContent(rect.width, rect.height);
@@ -376,7 +449,16 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
                 requestAnimationFrame(() => {
                     if (this.drawingArea?.nativeElement) {
                         const currentRect = this.drawingArea.nativeElement.getBoundingClientRect();
-                        this.zoomService.setViewportDimensions(currentRect.width, currentRect.height); // Update viewport dimensions
+
+                        /**
+                         * Update viewport dimensions in fallback as well.
+                         *
+                         * Ensures consistency even in edge cases where initial dimensions
+                         * are zero. Critical for maintaining zoom calculation accuracy
+                         * across all code paths.
+                         */
+                        this.zoomService.setViewportDimensions(currentRect.width, currentRect.height);
+
                         console.log('Drawing area rect (fallback):', currentRect.width, 'x', currentRect.height); // Log fallback dimensions
                         if (currentRect.width > 0 && currentRect.height > 0) {
                             this.zoomService.fitContent(currentRect.width, currentRect.height);
