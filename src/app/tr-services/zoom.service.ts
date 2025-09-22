@@ -26,6 +26,23 @@ export class ZoomService {
     private scaleSubject = new BehaviorSubject<number>(this.initialScale);
     private offsetSubject = new BehaviorSubject<Point>(this.initialOffset); // Add offset state
 
+    /**
+     * Stores the current viewport dimensions for zoom calculations.
+     *
+     * This property tracks the SVG container's width and height to enable
+     * viewport-center zoom behavior. It must be updated whenever the container
+     * resizes to maintain accurate zoom calculations.
+     *
+     * Critical for zoom operations because:
+     * - Zoom center calculations depend on viewport center coordinates
+     * - Ensures zoom operations remain consistent with visible area
+     * - Prevents zoom drift when viewport dimensions change
+     *
+     * @private Updated via setViewportDimensions() method
+     * @see setViewportDimensions - Method to update these dimensions
+     * @see zoomIn/zoomOut - Methods that use viewport center for zoom calculations
+     */
+
     /** Observable for the current scale factor. */
     public scale$: Observable<number> = this.scaleSubject.asObservable();
      /** Observable for the current offset (pan). */
@@ -52,14 +69,61 @@ export class ZoomService {
         return this.offsetSubject.value;
     }
 
+    /**
+     * Updates the stored viewport dimensions for accurate zoom calculations.
+     *
+     * This method must be called whenever the SVG container's size changes to ensure
+     * that zoom operations (especially viewport-center zoom) use correct center coordinates.
+     * Without accurate viewport dimensions, zoom operations will drift or behave unpredictably.
+     *
+     * Critical timing considerations:
+     * - Call after SVG container initialization (ngAfterViewInit)
+     * - Call whenever container resizes (ResizeObserver or window resize events)
+     * - Call before any zoom operations that depend on viewport center
+     *
+     * @param width - The current width of the SVG viewport in pixels
+     * @param height - The current height of the SVG viewport in pixels
+     *
+     * @example
+     * // In component after view initialization
+     * ngAfterViewInit() {
+     *   const rect = this.svgElement.nativeElement.getBoundingClientRect();
+     *   this.zoomService.setViewportDimensions(rect.width, rect.height);
+     * }
+     *
+     * @see zoomIn - Uses viewport center for zoom calculations
+     * @see zoomOut - Uses viewport center for zoom calculations
+     * @see zoomToPoint - Method that depends on accurate viewport dimensions
+     */
     public setViewportDimensions(width: number, height: number): void {
         this.viewport = { width, height };
     }
 
     /**
      * Zooms towards a specific point, adjusting the pan offset to keep that point stationary on the screen.
-     * @param screenPoint The point in screen coordinates to zoom towards.
-     * @param targetScale The desired new scale.
+     *
+     * This method implements the mathematical foundation for smooth, predictable zoom behavior.
+     * When zooming, the specified point remains fixed in screen space while the rest of the content
+     * scales around it. This creates intuitive zoom interactions where users can zoom towards
+     * areas of interest without losing their visual context.
+     *
+     * Mathematical approach:
+     * - Calculate new scale within allowed bounds (minScale to maxScale)
+     * - Adjust pan offset to maintain the target point's screen position
+     * - Formula: newOffset = screenPoint - (screenPoint - currentOffset) * (newScale / currentScale)
+     *
+     * This ensures that zoom operations are:
+     * - Predictable: Same zoom level always produces same visual result
+     * - Stable: No drift or accumulation of positioning errors
+     * - Intuitive: Content scales around the intended focal point
+     *
+     * @param screenPoint - The point in screen coordinates to zoom towards and keep stationary
+     * @param targetScale - The desired new scale factor (will be clamped to valid range)
+     *
+     * @private Used internally by zoomIn/zoomOut methods
+     * @see zoomIn - Public method that calls this with viewport center
+     * @see zoomOut - Public method that calls this with viewport center
+     * @see minScale/maxScale - Scale constraints applied to targetScale
      */
     private zoomToPoint(screenPoint: Point, targetScale: number): void {
         const newScale = Math.max(this.minScale, Math.min(this.maxScale, targetScale));
@@ -80,7 +144,27 @@ export class ZoomService {
         this.scaleSubject.next(newScale);
     }
 
-    /** Increases the zoom level, zooming towards the center of the viewport. */
+    /** Increases the zoom level, zooming towards the center of the viewport.
+     *
+     * This method provides intuitive zoom-in behavior by scaling towards the viewport center,
+     * which is the most common user expectation. The zoom operation maintains the current
+     * visual center of the screen, creating a smooth and predictable interaction.
+     *
+     * Implementation details:
+     * - Calculates viewport center using stored dimensions
+     * - Delegates to zoomToPoint for precise zoom calculation
+     * - Applies scaleStep increment with bounds checking
+     *
+     * User experience considerations:
+     * - Zoom center remains consistent across multiple operations
+     * - No unexpected panning during zoom
+     * - Smooth scaling around focal point
+     *
+     * @public Called by UI zoom controls and keyboard shortcuts
+     * @see zoomToPoint - Core zoom calculation method
+     * @see setViewportDimensions - Ensures accurate viewport center calculation
+     * @see scaleStep - Configurable zoom increment amount
+     */
     zoomIn(): void {
         const viewportCenter = {
             x: this.viewport.width / 2,
@@ -89,7 +173,26 @@ export class ZoomService {
         this.zoomToPoint(viewportCenter, this.currentScale + this.scaleStep);
     }
 
-    /** Decreases the zoom level, zooming towards the center of the viewport. */
+    /** Decreases the zoom level, zooming towards the center of the viewport.
+     *
+     * This method provides intuitive zoom-out behavior by scaling away from the viewport center.
+     * Like zoomIn, it maintains the current visual center, ensuring users don't lose their
+     * spatial context during zoom operations.
+     *
+     * Implementation details:
+     * - Uses same viewport center calculation as zoomIn
+     * - Applies negative scaleStep for zoom-out effect
+     * - Maintains consistent behavior with zoomIn
+     *
+     * Edge case handling:
+     * - Respects minScale boundary to prevent over-zooming
+     * - Maintains center focus even at minimum zoom level
+     *
+     * @public Called by UI zoom controls and keyboard shortcuts
+     * @see zoomToPoint - Core zoom calculation method
+     * @see zoomIn - Symmetric zoom-in implementation
+     * @see minScale - Minimum zoom boundary
+     */
     zoomOut(): void {
         const viewportCenter = {
             x: this.viewport.width / 2,

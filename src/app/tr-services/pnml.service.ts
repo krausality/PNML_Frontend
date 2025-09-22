@@ -169,8 +169,23 @@ export class PnmlService {
             // Unconditionally apply Sugiyama layout
             this.layoutSugiyamaService.applySugiyamaLayout();
 
-            // Trigger data changed event AFTER potential layout changes
-            // This will trigger fitContentToView via the subscription
+            /**
+             * Trigger data change notification with automatic content fitting.
+             *
+             * This notification serves multiple critical purposes when loading PNML files:
+             * 1. Updates all UI components with the new Petri net data
+             * 2. Triggers automatic zoom and pan adjustment to fit the entire net in view
+             * 3. Ensures consistent visual state after significant structural changes
+             *
+             * The fitContent=true parameter is crucial here because:
+             * - PNML loading represents a major state change (potentially different net entirely)
+             * - Layout algorithms may have repositioned elements significantly
+             * - Users expect to see the complete loaded net without manual zoom adjustment
+             * - Prevents confusion when nets load outside the current viewport
+             *
+             * @see triggerDataChanged - The notification method with fitContent parameter
+             * @see fitContentToView - The view adjustment method triggered by this notification
+             */
             this.dataService.triggerDataChanged(true); // Fit content when loading new nets
 
             return [places, transitions, arcs, actions];
