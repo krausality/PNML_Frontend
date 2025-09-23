@@ -53,7 +53,7 @@ import { environment } from '../../environments/environment';
     providedIn: 'root'
 })
 export class PlanningService {
-    private apiUrl = `${environment.backendApiUrl}/model-x/planning`;
+    private apiUrl = `${environment.backendApiUrl}/dto/planning`;
     private simpleSimApiUrl = `${environment.backendApiUrl}/simulation-petri-nets/simple-sim`; // Added for the new endpoint
 
     constructor(private http: HttpClient) { }
@@ -89,20 +89,7 @@ export class PlanningService {
     }
 
     /**
-     * Updates planning data via PUT (if needed).
      * 
-     * This method can be used to update existing planning data on the backend.
-     * It sends a PUT request with the updated planning data. The backend is
-     * expected to process the update and return the updated data or a success
-     * message.
-     * 
-     * @param planningData The updated planning data to be sent to the backend.
-     * @returns An Observable containing the response from the backend.
-     */
-    updatePlanning(planningData: any): Observable<any> {
-        return this.http.put<any>(this.apiUrl, planningData)
-           .pipe(catchError(this.handleError));
-    }    /**
      * Uploads a PNML file for simulation and returns the result.
      * 
      * This method is used to upload a PNML (Petri Net Markup Language) file to
