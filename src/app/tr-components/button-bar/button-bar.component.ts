@@ -44,6 +44,10 @@ export class ButtonBarComponent implements OnInit, OnDestroy {
     public isMultiRunInProgress = false;
     public hasMultiRunResults = false;
     private resultsSubscription: Subscription | undefined;
+    private dataChangedSubscription: Subscription | undefined;
+    private autoSimulationSubscription: Subscription | undefined;
+    private isAutoSimulationInProgress = false;
+    private netDirty = true;
 
     constructor(
         protected uiService: UiService,
@@ -71,11 +75,23 @@ export class ButtonBarComponent implements OnInit, OnDestroy {
         this.resultsSubscription = this.uiService.simulationResultsMultiRun$.subscribe(results => {
             this.hasMultiRunResults = !!results; // true wenn results nicht null/undefined, sonst false
         });
+
+        this.dataChangedSubscription = this.dataService.dataChanged$.subscribe(() => {
+            if ([this.TabState.Build, this.TabState.Code].includes(this.uiService.tab)) {
+                this.netDirty = true;
+            }
+        });
     }
 
     ngOnDestroy(): void {
         if (this.resultsSubscription) {
             this.resultsSubscription.unsubscribe();
+        }
+        if (this.dataChangedSubscription) {
+            this.dataChangedSubscription.unsubscribe();
+        }
+        if (this.autoSimulationSubscription) {
+            this.autoSimulationSubscription.unsubscribe();
         }
     }
 
@@ -95,6 +111,7 @@ export class ButtonBarComponent implements OnInit, OnDestroy {
                 break;
             case 'simulation':
                 this.uiService.tab = this.TabState.Simulation;
+                this.ensureSimulationUpToDate();
                 break;
             case 'save':
                 this.uiService.tab = this.TabState.Save;
@@ -127,6 +144,57 @@ export class ButtonBarComponent implements OnInit, OnDestroy {
 
     openActionDialog() {
         this.matDialog.open(ManageActionsPopupComponent);
+    }
+
+    private ensureSimulationUpToDate(): void {
+        if (!this.netDirty || this.isAutoSimulationInProgress) {
+            return;
+        }
+
+        if (this.dataService.isEmpty()) {
+            this.uiService.simulationResults$.next(null);
+            this.uiService.resetSimulationSteps();
+            this.netDirty = false;
+            return;
+        }
+
+        const pnmlContent = this.pnmlService.getPNML();
+        if (!pnmlContent || !pnmlContent.trim()) {
+            this.uiService.simulationResults$.next(null);
+            this.uiService.resetSimulationSteps();
+            this.netDirty = false;
+            return;
+        }
+
+        this.isAutoSimulationInProgress = true;
+        if (this.autoSimulationSubscription) {
+            this.autoSimulationSubscription.unsubscribe();
+        }
+
+        this.autoSimulationSubscription = this.planningService
+            .runSimpleSimulationFromString(pnmlContent, 1, 'current_model.pnml')
+            .subscribe({
+                next: (results) => {
+                    if (results && results.results) {
+                        this.uiService.simulationResults$.next(results.results);
+                        this.netDirty = false;
+                    } else {
+                        this.matDialog.open(ErrorPopupComponent, {
+                            data: { error: 'Simulation API call successful, but "results" property is missing.' },
+                        });
+                        this.netDirty = false;
+                    }
+                    this.isAutoSimulationInProgress = false;
+                },
+                error: (err) => {
+                    console.error('Automatic simulation failed:', err);
+                    this.matDialog.open(ErrorPopupComponent, {
+                        data: { error: 'Simulation API call failed. Check console for errors.' },
+                    });
+                    this.netDirty = false;
+                    this.isAutoSimulationInProgress = false;
+                },
+            });
     }
 
     openClearDialog() {
@@ -281,11 +349,13 @@ export class ButtonBarComponent implements OnInit, OnDestroy {
                             if (results && results.results) {
                                 console.log('ButtonBarComponent.uploadPnmlFile: Simulation results received, passing to UiService.', results.results);
                                 this.uiService.simulationResults$.next(results.results);
+                                this.netDirty = false;
                             } else {
                                 console.warn('ButtonBarComponent.uploadPnmlFile: Simulation results received, but "results" property is missing or empty:', results);
                                 this.matDialog.open(ErrorPopupComponent, {
                                     data: { error: 'Simulation API call successful, but "results" property is missing.' },
                                 });
+                                this.netDirty = false;
                             }
                         },
                         error: (err) => {
@@ -293,6 +363,7 @@ export class ButtonBarComponent implements OnInit, OnDestroy {
                             this.matDialog.open(ErrorPopupComponent, {
                                 data: { error: 'Simulation API call failed. Check console for errors.' },
                             });
+                            this.netDirty = false;
                         }
                     });
 
@@ -341,16 +412,19 @@ export class ButtonBarComponent implements OnInit, OnDestroy {
                         next: (results) => {
                             if (results && results.results) {
                                 this.uiService.simulationResults$.next(results.results);
+                                this.netDirty = false;
                             } else {
                                 this.matDialog.open(ErrorPopupComponent, {
                                     data: { error: 'Simulation API call successful, but "results" property is missing.' },
                                 });
+                                this.netDirty = false;
                             }
                         },
                         error: (err) => {
                             this.matDialog.open(ErrorPopupComponent, {
                                 data: { error: 'Simulation API call failed. Check console for errors.' },
                             });
+                            this.netDirty = false;
                         }
                     });
                 } catch (e) {
