@@ -926,7 +926,7 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
 
     // Transitions
     dispatchTransitionClick(event: MouseEvent, transition: Transition) {
-        if (this.isFrequencyAnalysisActive) {
+        if (this.isFrequencyAnalysisActive && this.uiService.tab === TabState.Simulation) {
             this.onTransitionClick(transition.id);
             return; // Prevent other actions when in frequency analysis mode
         }
