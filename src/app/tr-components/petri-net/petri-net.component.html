@@ -378,7 +378,7 @@
 
 <!-- Timeline Component -->
 <app-timeline
-    *ngIf="uiService.hasSimulationData()"
+    *ngIf="uiService.tab === TabState.Simulation && uiService.hasSimulationData()"
     [totalSteps]="(uiService.totalSimulationSteps$ | async) ?? 0"
     [currentStep]="(uiService.currentSimulationStep$ | async) ?? 0"
     (stepChanged)="onTimelineStepChanged($event)">
