@@ -31,24 +31,55 @@ import { Observable, Subscription } from 'rxjs';
     templateUrl: './button-bar.component.html',
     styleUrls: ['./button-bar.component.css'],
 })
+/**
+ * Primary top-level control surface for the Petri net application.
+ *
+ * The button bar orchestrates high-level interactions across tabs (Build, Simulation,
+ * Analyze, etc.) and acts as the composition root for cross-cutting services. It exposes
+ * commands for editing, simulation, export, layout, and analysis features, while keeping
+ * stateful coordination (such as tab selection, simulation triggers, and background tasks)
+ * centralized in one component for easier maintenance.
+ */
 export class ButtonBarComponent implements OnInit, OnDestroy {
+    /** Enum shortcuts for template readability (avoid fully qualified access). */
     readonly TabState = TabState;
+    /** Enum shortcut for button tool states (used in template bindings). */
     readonly ButtonState = ButtonState;
+    /** Enum shortcut that feeds code editor format toggle buttons. */
     readonly CodeEditorFormat = CodeEditorFormat;
 
+    /** Standardized Material tooltip delay shared across icon buttons. */
     readonly showTooltipDelay = showTooltipDelay;
 
-    public petrinetCss: string = '';    public availableModels$: Observable<string[]> | undefined;
+    /** Optional inline CSS overrides that can be injected from host contexts. */
+    public petrinetCss: string = '';
+    /** Lazy-loaded collection of example PNML models provided by the backend. */
+    public availableModels$: Observable<string[]> | undefined;
+    /** Loading guard for example models dropdown; prevents redundant requests/UI flicker. */
     public isLoadingModels = false;
-    public numberOfSimulations: number = 10; // Default value for multi-run simulations
+    /** Default number of runs for multi-run simulation workflows. */
+    public numberOfSimulations: number = 10;
+    /** Signals when multi-run simulations are in progress to disable UI appropriately. */
     public isMultiRunInProgress = false;
+    /** Tracks whether we have results to offer for download in the Simulation tab. */
     public hasMultiRunResults = false;
+    /** Aggregates subscription for multi-run results stream. */
     private resultsSubscription: Subscription | undefined;
+    /** Watches model mutations so we can lazily refresh simulation data. */
     private dataChangedSubscription: Subscription | undefined;
+    /** Manages the lifecycle of the pending automatic simulation observable. */
     private autoSimulationSubscription: Subscription | undefined;
+    /** Ensures only one auto-simulation runs at a time, preventing duplicate backend calls. */
     private isAutoSimulationInProgress = false;
+    /** Dirty bit indicating the Build/Code tabs modified the net since last simulation. */
     private netDirty = true;
 
+    /**
+     * Constructor wires together all collaborating services. While a long argument list may
+     * appear intimidating, each dependency corresponds to a feature group surfaced directly
+     * in the button bar (export, layouting, simulation, dialogs, etc.). Keeping the wiring in
+     * one place reduces indirection and eases reasoning about cross-service interactions.
+     */
     constructor(
         protected uiService: UiService,
         protected exportJsonDataService: ExportJsonDataService,
@@ -61,9 +92,17 @@ export class ButtonBarComponent implements OnInit, OnDestroy {
         protected placeInvariantsService: PlaceInvariantsService,
         private layoutSpringEmebdderService: LayoutSpringEmbedderService,
         private layoutSugiyamaService: LayoutSugiyamaService,
-        private planningService: PlanningService // Inject PlanningService
+        private planningService: PlanningService
     ) {}
 
+    /**
+     * Initializes asynchronous data sources and subscriptions that power the button bar.
+     *
+     * Responsibilities:
+     *  - Kick off loading of example models so the Simulation tab menu is ready when opened.
+     *  - Track availability of multi-run results for enabling/disabling download buttons.
+     *  - Observe Petri net edits in Build/Code tabs to mark simulation results as stale.
+     */
     ngOnInit(): void {
         this.isLoadingModels = true;
         this.availableModels$ = this.planningService.getAvailableExampleModels();
@@ -83,6 +122,11 @@ export class ButtonBarComponent implements OnInit, OnDestroy {
         });
     }
 
+    /**
+     * Lifecycle clean-up to prevent memory leaks when the component is destroyed, such as during
+     * module teardown or embedded reuse. Always guard unsubscribes because Angular may call this
+     * before `ngOnInit` completes in some edge cases.
+     */
     ngOnDestroy(): void {
         if (this.resultsSubscription) {
             this.resultsSubscription.unsubscribe();
@@ -95,9 +139,14 @@ export class ButtonBarComponent implements OnInit, OnDestroy {
         }
     }
 
-    // Gets called when a tab is clicked
-    // Sets the "tab" property in the uiService
-    // Empties the "button" property in the uiService
+    /**
+     * Central tab routing entry point invoked by Angular Material's tab change events.
+     *
+     * The method updates global UI state, triggers feature-specific side-effects (e.g. clearing
+     * token history when returning to Build, resetting inequalities for Analyze, or lazily running
+     * simulations), and ensures transient selections are cleared. The deliberate switch statement
+     * keeps the control flow explicit and easy to extend when new tabs appear.
+     */
     tabClicked(tab: string) {
         this.uiService.tabTransitioning = true;
 
@@ -135,17 +184,31 @@ export class ButtonBarComponent implements OnInit, OnDestroy {
         }, 1100);
     }
 
-    // Gets called when a button is clicked that needs its state saved globally
-    // Sets the "button" property in the uiService
+    /**
+     * Propagates tool-button selections to the shared UiService so other components stay in sync.
+     * This keeps the active tool canonical even when the same control surface appears in multiple
+     * views (e.g. overlays, dialogs). The separation also simplifies unit-testing downstream consumers.
+     */
     buttonClicked(button: ButtonState) {
         this.uiService.button = button;
         this.uiService.buttonState$.next(button);
     }
 
+    /** Opens the action management dialog for editing transition labels and shortcuts. */
     openActionDialog() {
         this.matDialog.open(ManageActionsPopupComponent);
     }
 
+    /**
+     * Ensures the Simulation tab reflects the latest Petri net model.
+     *
+     * Strategy:
+     *  - Skip work if another refresh is running or the net is known to be up to date.
+     *  - Clear simulation state when the net is empty/invalid to avoid stale displays.
+     *  - Otherwise, serialize PNML and invoke the backend simple simulation endpoint.
+     *  - Handle both success and failure paths, resetting the dirty bit in all cases so we do not
+     *    hammer the backend unnecessarily.
+     */
     private ensureSimulationUpToDate(): void {
         if (!this.netDirty || this.isAutoSimulationInProgress) {
             return;
@@ -197,21 +260,24 @@ export class ButtonBarComponent implements OnInit, OnDestroy {
             });
     }
 
+    /** Displays a confirmation dialog that clears the entire Petri net. */
     openClearDialog() {
         this.matDialog.open(ClearPopupComponent);
     }
 
+    /** Presents contextual help based on the currently active tab. */
     openHelpDialog() {
         this.matDialog.open(HelpPopupComponent);
     }
 
+    /** Convenience wrapper for surfacing recoverable errors to the user. */
     openErrorDialog(errorMessage: string) {
-        // Method to open the error dialog
         this.matDialog.open(ErrorPopupComponent, {
             data: { message: errorMessage },
         });
     }
 
+    /** Opens the place invariants table in a large dialog for analysis workflows. */
     openPlaceInvariantsTable() {
         this.matDialog.open(PlaceInvariantsTableComponent, {
             width: '80vw',
@@ -277,6 +343,10 @@ export class ButtonBarComponent implements OnInit, OnDestroy {
     }
 
     // --- Layout Controls ---
+    /**
+     * Applies graph layout algorithms to improve readability of the current Petri net.
+     * Additional algorithms can slot into the switch while reusing termination semantics.
+     */
     applyLayout(layoutAlgorithm: string) {
         switch (layoutAlgorithm) {
             case 'spring-embedder':
