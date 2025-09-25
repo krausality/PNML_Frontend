@@ -326,6 +326,16 @@ export class ButtonBarComponent implements OnInit, OnDestroy {
         this.uiService.setSimulationMode('automatic');
     }
 
+    public onManualRestart(): void {
+        this.tokenGameService.resetGame();
+        this.uiService.triggerManualHighlightUpdate();
+    }
+
+    public onManualRewind(): void {
+        this.tokenGameService.revertToPreviousState();
+        this.uiService.triggerManualHighlightUpdate();
+    }
+
     /**
      * Checks if the animation is currently playing.
      * @returns True if animation is running, false otherwise.

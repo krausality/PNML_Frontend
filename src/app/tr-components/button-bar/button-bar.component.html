@@ -262,8 +262,8 @@
                 (play)="play()"
                 (pause)="pause()"
                 (stop)="stop()"
-                (restart)="tokenGameService.resetGame()"
-                (rewind)="tokenGameService.revertToPreviousState()"
+                (restart)="onManualRestart()"
+                (rewind)="onManualRewind()"
                 (returnToAutomatic)="returnToAutomaticMode()">
             </app-playback-controls>
 

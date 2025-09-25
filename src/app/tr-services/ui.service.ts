@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ButtonState, CodeEditorFormat, TabState } from '../tr-enums/ui-state';
 import { BehaviorSubject, Subject, Observable } from 'rxjs';
+import { Transition } from '../tr-classes/petri-net/transition';
 
 export type SimulationMode = 'automatic' | 'manual';
 
@@ -85,6 +86,9 @@ export class UiService {
     private _simulationMode$ = new BehaviorSubject<SimulationMode>('automatic');
     public simulationMode$ = this._simulationMode$.asObservable();
 
+    private manualHighlightUpdateSubject = new Subject<Transition | null>();
+    public manualHighlightUpdate$ = this.manualHighlightUpdateSubject.asObservable();
+
     // Emits simulation results (e.g., from backend simulation or planning).
     // Used to trigger animation or display results in the UI.
     simulationResults$: BehaviorSubject<any | null> = new BehaviorSubject<any | null>(null);
@@ -153,6 +157,10 @@ export class UiService {
 
     isManualMode(): boolean {
         return this.getSimulationMode() === 'manual';
+    }
+
+    triggerManualHighlightUpdate(transition?: Transition | null): void {
+        this.manualHighlightUpdateSubject.next(transition ?? null);
     }
 
     // --- New public getters for direct value access ---

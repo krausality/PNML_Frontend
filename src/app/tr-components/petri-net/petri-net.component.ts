@@ -244,6 +244,14 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
             this.isFrequencyAnalysisActive = (frequencies !== null && frequencies.size > 0);
         });
         this._subs.push(this.frequencySubscription);
+
+        this._subs.push(
+            this.uiService.manualHighlightUpdate$.subscribe(transition => {
+                if (this.uiService.isManualMode()) {
+                    this.highlightManualModeTransitions(transition ?? undefined);
+                }
+            })
+        );
     }
 
     ngAfterViewInit(): void {
@@ -936,6 +944,7 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
             this.uiService.stopAnimation();
             this.uiService.setSimulationMode('manual');
             this.tokenGameService.fire(transition);
+            this.highlightManualModeTransitions(transition);
         } else if (
             this.uiService.tab === TabState.Build &&
             this.uiService.button === ButtonState.Select
@@ -1647,6 +1656,24 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
         const highlighted = document.querySelectorAll('.animation-enabled, .animation-fired, .animation-next-to-fire');
         highlighted.forEach(el => {
             el.classList.remove('animation-enabled', 'animation-fired', 'animation-next-to-fire');
+        });
+    }
+    
+    private highlightManualModeTransitions(firedTransition?: Transition): void {
+        this.clearAllTransitionHighlights();
+
+        if (firedTransition) {
+            this.highlightTransition(firedTransition.id, 'fired');
+        }
+
+        this.dataService.getTransitions().forEach(transition => {
+            if (firedTransition && transition.id === firedTransition.id) {
+                return;
+            }
+
+            if (transition.isActive) {
+                this.highlightTransition(transition.id, 'enabled');
+            }
         });
     }
     // ... other existing methods ...
