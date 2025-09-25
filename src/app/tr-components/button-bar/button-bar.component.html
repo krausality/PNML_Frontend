@@ -258,11 +258,13 @@
                 [isPlaying]="isPlaying"
                 [currentStep]="currentStep"
                 [isHistoryEmpty]="tokenGameService.isGameHistoryEmpty()"
+                [simulationMode]="(uiService.simulationMode$ | async) ?? 'automatic'"
                 (play)="play()"
                 (pause)="pause()"
                 (stop)="stop()"
                 (restart)="tokenGameService.resetGame()"
-                (rewind)="tokenGameService.revertToPreviousState()">
+                (rewind)="tokenGameService.revertToPreviousState()"
+                (returnToAutomatic)="returnToAutomaticMode()">
             </app-playback-controls>
 
             <div class="divider"></div>

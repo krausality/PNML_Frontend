@@ -933,6 +933,8 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
 
         // Token game: fire transition
         if (this.uiService.tab === TabState.Simulation) {
+            this.uiService.stopAnimation();
+            this.uiService.setSimulationMode('manual');
             this.tokenGameService.fire(transition);
         } else if (
             this.uiService.tab === TabState.Build &&

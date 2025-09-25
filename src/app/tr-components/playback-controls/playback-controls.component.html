@@ -1,19 +1,28 @@
-<div class="button-container">
+<div *ngIf="simulationMode === 'automatic'; else manualControls" class="button-container">
     <!-- Autoplay/Pause Buttons -->
     <button mat-stroked-button (click)="play.emit()" *ngIf="!isPlaying">Autoplay</button>
     <button mat-stroked-button (click)="pause.emit()" *ngIf="isPlaying">Pause</button>
     <button mat-stroked-button (click)="stop.emit()" [disabled]="!isPlaying && currentStep === 0">Stop</button>
-    
-    <div class="divider"></div>
-
-    <!-- Restart/Rewind Buttons -->
-    <button mat-icon-button (click)="restart.emit()" [disabled]="isHistoryEmpty" matTooltip="Restart">
-        <mat-icon>replay</mat-icon>
-    </button>
-    <button mat-icon-button (click)="rewind.emit()" [disabled]="isHistoryEmpty" matTooltip="Rewind">
-        <mat-icon>fast_rewind</mat-icon>
-    </button>
 </div>
-<div class="button-container float-right">
+
+<ng-template #manualControls>
+    <div class="button-container">
+        <button mat-stroked-button (click)="returnToAutomatic.emit()">
+            Back to automatic playback
+        </button>
+
+        <div class="divider"></div>
+
+        <!-- Restart/Rewind Buttons -->
+        <button mat-icon-button (click)="restart.emit()" [disabled]="isHistoryEmpty" matTooltip="Restart">
+            <mat-icon>replay</mat-icon>
+        </button>
+        <button mat-icon-button (click)="rewind.emit()" [disabled]="isHistoryEmpty" matTooltip="Rewind">
+            <mat-icon>fast_rewind</mat-icon>
+        </button>
+    </div>
+</ng-template>
+
+<div class="button-container float-right" *ngIf="simulationMode === 'automatic'">
     <app-speed-control></app-speed-control>
 </div>

@@ -160,6 +160,8 @@ export class ButtonBarComponent implements OnInit, OnDestroy {
                 break;
             case 'simulation':
                 this.uiService.tab = this.TabState.Simulation;
+                this.uiService.setSimulationMode('automatic');
+                this.tokenGameService.clearGameHistory();
                 this.ensureSimulationUpToDate();
                 break;
             case 'save':
@@ -300,6 +302,7 @@ export class ButtonBarComponent implements OnInit, OnDestroy {
      * Starts or resumes the animation playback.
      */
     public play(): void {
+        this.uiService.setSimulationMode('automatic');
         this.uiService.startAnimation();
     }
 
@@ -316,6 +319,11 @@ export class ButtonBarComponent implements OnInit, OnDestroy {
     public stop(): void {
         this.uiService.stopAnimation();
         this.uiService.setCurrentSimulationStep(0);
+    }
+
+    public returnToAutomaticMode(): void {
+        this.tokenGameService.clearGameHistory();
+        this.uiService.setSimulationMode('automatic');
     }
 
     /**

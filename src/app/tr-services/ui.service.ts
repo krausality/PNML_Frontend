@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { ButtonState, CodeEditorFormat, TabState } from '../tr-enums/ui-state';
 import { BehaviorSubject, Subject, Observable } from 'rxjs';
 
+export type SimulationMode = 'automatic' | 'manual';
+
 // -----------------------------------------------------------------------------
 // UiService: Central UI State Management for Petri Net Frontend
 // -----------------------------------------------------------------------------
@@ -79,6 +81,10 @@ export class UiService {
     private _simulationSpeed$ = new BehaviorSubject<number>(1); // Default speed 1x
     public simulationSpeed$: Observable<number> = this._simulationSpeed$.asObservable();
 
+    // Simulation mode (automatic playback vs manual token game)
+    private _simulationMode$ = new BehaviorSubject<SimulationMode>('automatic');
+    public simulationMode$ = this._simulationMode$.asObservable();
+
     // Emits simulation results (e.g., from backend simulation or planning).
     // Used to trigger animation or display results in the UI.
     simulationResults$: BehaviorSubject<any | null> = new BehaviorSubject<any | null>(null);
@@ -130,6 +136,24 @@ export class UiService {
     }
 
     constructor() {}
+
+    setSimulationMode(mode: SimulationMode): void {
+        if (this._simulationMode$.getValue() !== mode) {
+            this._simulationMode$.next(mode);
+        }
+    }
+
+    getSimulationMode(): SimulationMode {
+        return this._simulationMode$.getValue();
+    }
+
+    isAutomaticMode(): boolean {
+        return this.getSimulationMode() === 'automatic';
+    }
+
+    isManualMode(): boolean {
+        return this.getSimulationMode() === 'manual';
+    }
 
     // --- New public getters for direct value access ---
     getCurrentSimulationStep(): number {
