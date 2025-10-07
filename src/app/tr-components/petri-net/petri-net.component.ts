@@ -301,9 +301,6 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
         if (this.uiService.isAnimationRunning()) {
             this.uiService.stopAnimation();
         }
-
-        this.transitionHoverTimers.forEach(timer => clearTimeout(timer));
-        this.transitionHoverTimers.clear();
         // No need to explicitly unsubscribe speedSubscription if it's added to _subs
         // as it will be handled by the loop above.
     }
@@ -943,7 +940,7 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
 
     // Transitions
     dispatchTransitionClick(event: MouseEvent, transition: Transition) {
-        console.log('🖱️ CLICK on transition:', {
+        console.log('🖱️ LEFT-CLICK on transition:', {
             transitionId: transition.id,
             currentTab: this.uiService.tab,
             isSimulationTab: this.uiService.tab === TabState.Simulation,
@@ -953,7 +950,6 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
         // Token game: fire transition
         if (this.uiService.tab === TabState.Simulation) {
             console.log('🎮 Entering manual token game mode');
-            this.cancelTransitionHoverTimer(transition.id);
             this.uiService.stopAnimation();
             this.uiService.setSimulationMode('manual');
             this.tokenGameService.fire(transition);
@@ -972,41 +968,33 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
         }
     }
 
-    onTransitionMouseEnter(event: MouseEvent, transition: Transition) {
-        console.log('🔵 HOVER ENTER:', {
+    onTransitionRightClick(event: MouseEvent, transition: Transition) {
+        console.log('�️➡️ RIGHT-CLICK on transition:', {
             transitionId: transition.id,
             isFrequencyAnalysisActive: this.isFrequencyAnalysisActive,
             currentTab: this.uiService.tab,
             isSimulationTab: this.uiService.tab === TabState.Simulation,
             simulationMode: this.uiService.getSimulationMode(),
             isAutomaticMode: this.uiService.isAutomaticMode(),
-            willStartTimer: this.isFrequencyAnalysisActive && 
+            willShowStats: this.isFrequencyAnalysisActive && 
                            this.uiService.tab === TabState.Simulation && 
                            this.uiService.isAutomaticMode()
         });
 
+        // Only show stats in Simulation tab + Automatic mode + when frequency data exists
         if (
             !this.isFrequencyAnalysisActive ||
             this.uiService.tab !== TabState.Simulation ||
             !this.uiService.isAutomaticMode()
         ) {
-            console.log('❌ HOVER BLOCKED - conditions not met');
-            return;
+            console.log('❌ RIGHT-CLICK blocked - conditions not met, allowing default context menu');
+            return; // Allow default browser behavior
         }
 
-        console.log('✅ HOVER TIMER STARTED - will fire in', this.transitionHoverDelayMs, 'ms');
-        const timer = window.setTimeout(() => {
-            console.log('⏰ HOVER TIMER FIRED for', transition.id);
-            this.onTransitionClick(transition.id);
-            this.transitionHoverTimers.delete(transition.id);
-        }, this.transitionHoverDelayMs);
-
-        this.transitionHoverTimers.set(transition.id, timer);
-    }
-
-    onTransitionMouseLeave(event: MouseEvent, transition: Transition) {
-        console.log('🔴 HOVER LEAVE:', transition.id);
-        this.cancelTransitionHoverTimer(transition.id);
+        // Suppress browser context menu and show stats dialog
+        event.preventDefault();
+        console.log('✅ RIGHT-CLICK accepted - showing stats dialog immediately');
+        this.onTransitionClick(transition.id);
     }
 
     public onTransitionClick(transitionId: string): void {
@@ -1736,15 +1724,4 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
         });
     }
     // ... other existing methods ...
-
-    private readonly transitionHoverDelayMs = 2000;
-    private transitionHoverTimers = new Map<string, number>();
-
-    private cancelTransitionHoverTimer(transitionId: string): void {
-        const timer = this.transitionHoverTimers.get(transitionId);
-        if (timer) {
-            clearTimeout(timer);
-            this.transitionHoverTimers.delete(transitionId);
-        }
-    }
 }

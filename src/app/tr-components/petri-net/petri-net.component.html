@@ -132,8 +132,7 @@
             (mousedown)="dispatchTransitionMouseDown($event, transition)"
             (mouseup)="dispatchTransitionMouseUp($event, transition)"
             (wheel)="onWheelEventTransition($event, transition)"
-            (mouseenter)="onTransitionMouseEnter($event, transition)"
-            (mouseleave)="onTransitionMouseLeave($event, transition)"
+            (contextmenu)="onTransitionRightClick($event, transition)"
         >
             <rect
                 [ngClass]="{
