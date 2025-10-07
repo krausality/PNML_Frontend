@@ -241,13 +241,7 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
         this._subs.push(this.speedSubscription); // Ensure cleanup
 
         this.frequencySubscription = this.uiService.transitionFiringFrequencies$.subscribe(frequencies => {
-            const wasActive = this.isFrequencyAnalysisActive;
             this.isFrequencyAnalysisActive = (frequencies !== null && frequencies.size > 0);
-            console.log('📈 FREQUENCY ANALYSIS STATE CHANGED:', {
-                wasActive,
-                nowActive: this.isFrequencyAnalysisActive,
-                frequencyCount: frequencies?.size || 0
-            });
         });
         this._subs.push(this.frequencySubscription);
 
@@ -940,16 +934,9 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
 
     // Transitions
     dispatchTransitionClick(event: MouseEvent, transition: Transition) {
-        console.log('🖱️ LEFT-CLICK on transition:', {
-            transitionId: transition.id,
-            currentTab: this.uiService.tab,
-            isSimulationTab: this.uiService.tab === TabState.Simulation,
-            simulationMode: this.uiService.getSimulationMode()
-        });
-
         // Token game: fire transition
         if (this.uiService.tab === TabState.Simulation) {
-            console.log('🎮 Entering manual token game mode');
+            console.log('🎮 Manual mode: firing transition', transition.id);
             this.uiService.stopAnimation();
             this.uiService.setSimulationMode('manual');
             this.tokenGameService.fire(transition);
@@ -969,43 +956,22 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     onTransitionRightClick(event: MouseEvent, transition: Transition) {
-        console.log('�️➡️ RIGHT-CLICK on transition:', {
-            transitionId: transition.id,
-            isFrequencyAnalysisActive: this.isFrequencyAnalysisActive,
-            currentTab: this.uiService.tab,
-            isSimulationTab: this.uiService.tab === TabState.Simulation,
-            simulationMode: this.uiService.getSimulationMode(),
-            isAutomaticMode: this.uiService.isAutomaticMode(),
-            willShowStats: this.isFrequencyAnalysisActive && 
-                           this.uiService.tab === TabState.Simulation && 
-                           this.uiService.isAutomaticMode()
-        });
-
         // Only show stats in Simulation tab + Automatic mode + when frequency data exists
         if (
             !this.isFrequencyAnalysisActive ||
             this.uiService.tab !== TabState.Simulation ||
             !this.uiService.isAutomaticMode()
         ) {
-            console.log('❌ RIGHT-CLICK blocked - conditions not met, allowing default context menu');
             return; // Allow default browser behavior
         }
 
         // Suppress browser context menu and show stats dialog
         event.preventDefault();
-        console.log('✅ RIGHT-CLICK accepted - showing stats dialog immediately');
         this.onTransitionClick(transition.id);
     }
 
     public onTransitionClick(transitionId: string): void {
-        console.log('📊 STATS DIALOG REQUEST for', transitionId, {
-            isFrequencyAnalysisActive: this.isFrequencyAnalysisActive,
-            hasFrequencies: !!this.uiService.getTransitionFiringFrequencies(),
-            hasMultiRunResults: !!this.uiService.getMultiRunResults()
-        });
-
         if (!this.isFrequencyAnalysisActive) {
-            console.log('❌ No frequency data available');
             return; // Do nothing if no frequency data is available
         }
 
@@ -1013,14 +979,12 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
         const multiRunResults = this.uiService.getMultiRunResults();
 
         if (!frequencies || !multiRunResults) {
-            console.log('❌ Missing frequencies or results');
             return;
         }
 
         const firingCount = frequencies.get(transitionId) || 0;
         const totalRuns = multiRunResults.total_runs || 0;
 
-        console.log('✅ Opening dialog with data:', { firingCount, totalRuns });
         this.matDialog.open(TransitionFiringInfoPopupComponent, {
             width: '400px',
             data: {
