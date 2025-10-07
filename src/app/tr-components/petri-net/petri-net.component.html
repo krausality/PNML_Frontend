@@ -17,7 +17,6 @@
     id="drawingArea"
     class="canvas"
     [ngClass]="{
-        dragging: editMoveElementsService.isCanvasDragInProcess,
         'move-mode': uiService.button === ButtonState.Move,
         'play-mode': uiService.tab === TabState.Simulation,
         'tab-transitioning': uiService.tabTransitioning,
@@ -133,7 +132,10 @@
             (mousedown)="dispatchTransitionMouseDown($event, transition)"
             (mouseup)="dispatchTransitionMouseUp($event, transition)"
             (wheel)="onWheelEventTransition($event, transition)"
-        >            <rect
+            (mouseenter)="onTransitionMouseEnter($event, transition)"
+            (mouseleave)="onTransitionMouseLeave($event, transition)"
+        >
+            <rect
                 [ngClass]="{
                     transition: true,
                     active: transition.isActive,

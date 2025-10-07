@@ -241,7 +241,13 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
         this._subs.push(this.speedSubscription); // Ensure cleanup
 
         this.frequencySubscription = this.uiService.transitionFiringFrequencies$.subscribe(frequencies => {
+            const wasActive = this.isFrequencyAnalysisActive;
             this.isFrequencyAnalysisActive = (frequencies !== null && frequencies.size > 0);
+            console.log('📈 FREQUENCY ANALYSIS STATE CHANGED:', {
+                wasActive,
+                nowActive: this.isFrequencyAnalysisActive,
+                frequencyCount: frequencies?.size || 0
+            });
         });
         this._subs.push(this.frequencySubscription);
 
@@ -295,6 +301,9 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
         if (this.uiService.isAnimationRunning()) {
             this.uiService.stopAnimation();
         }
+
+        this.transitionHoverTimers.forEach(timer => clearTimeout(timer));
+        this.transitionHoverTimers.clear();
         // No need to explicitly unsubscribe speedSubscription if it's added to _subs
         // as it will be handled by the loop above.
     }
@@ -934,13 +943,17 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
 
     // Transitions
     dispatchTransitionClick(event: MouseEvent, transition: Transition) {
-        if (this.isFrequencyAnalysisActive && this.uiService.tab === TabState.Simulation) {
-            this.onTransitionClick(transition.id);
-            return; // Prevent other actions when in frequency analysis mode
-        }
+        console.log('🖱️ CLICK on transition:', {
+            transitionId: transition.id,
+            currentTab: this.uiService.tab,
+            isSimulationTab: this.uiService.tab === TabState.Simulation,
+            simulationMode: this.uiService.getSimulationMode()
+        });
 
         // Token game: fire transition
         if (this.uiService.tab === TabState.Simulation) {
+            console.log('🎮 Entering manual token game mode');
+            this.cancelTransitionHoverTimer(transition.id);
             this.uiService.stopAnimation();
             this.uiService.setSimulationMode('manual');
             this.tokenGameService.fire(transition);
@@ -959,8 +972,52 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
         }
     }
 
+    onTransitionMouseEnter(event: MouseEvent, transition: Transition) {
+        console.log('🔵 HOVER ENTER:', {
+            transitionId: transition.id,
+            isFrequencyAnalysisActive: this.isFrequencyAnalysisActive,
+            currentTab: this.uiService.tab,
+            isSimulationTab: this.uiService.tab === TabState.Simulation,
+            simulationMode: this.uiService.getSimulationMode(),
+            isAutomaticMode: this.uiService.isAutomaticMode(),
+            willStartTimer: this.isFrequencyAnalysisActive && 
+                           this.uiService.tab === TabState.Simulation && 
+                           this.uiService.isAutomaticMode()
+        });
+
+        if (
+            !this.isFrequencyAnalysisActive ||
+            this.uiService.tab !== TabState.Simulation ||
+            !this.uiService.isAutomaticMode()
+        ) {
+            console.log('❌ HOVER BLOCKED - conditions not met');
+            return;
+        }
+
+        console.log('✅ HOVER TIMER STARTED - will fire in', this.transitionHoverDelayMs, 'ms');
+        const timer = window.setTimeout(() => {
+            console.log('⏰ HOVER TIMER FIRED for', transition.id);
+            this.onTransitionClick(transition.id);
+            this.transitionHoverTimers.delete(transition.id);
+        }, this.transitionHoverDelayMs);
+
+        this.transitionHoverTimers.set(transition.id, timer);
+    }
+
+    onTransitionMouseLeave(event: MouseEvent, transition: Transition) {
+        console.log('🔴 HOVER LEAVE:', transition.id);
+        this.cancelTransitionHoverTimer(transition.id);
+    }
+
     public onTransitionClick(transitionId: string): void {
+        console.log('📊 STATS DIALOG REQUEST for', transitionId, {
+            isFrequencyAnalysisActive: this.isFrequencyAnalysisActive,
+            hasFrequencies: !!this.uiService.getTransitionFiringFrequencies(),
+            hasMultiRunResults: !!this.uiService.getMultiRunResults()
+        });
+
         if (!this.isFrequencyAnalysisActive) {
+            console.log('❌ No frequency data available');
             return; // Do nothing if no frequency data is available
         }
 
@@ -968,12 +1025,14 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
         const multiRunResults = this.uiService.getMultiRunResults();
 
         if (!frequencies || !multiRunResults) {
+            console.log('❌ Missing frequencies or results');
             return;
         }
 
         const firingCount = frequencies.get(transitionId) || 0;
         const totalRuns = multiRunResults.total_runs || 0;
 
+        console.log('✅ Opening dialog with data:', { firingCount, totalRuns });
         this.matDialog.open(TransitionFiringInfoPopupComponent, {
             width: '400px',
             data: {
@@ -1677,4 +1736,15 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
         });
     }
     // ... other existing methods ...
+
+    private readonly transitionHoverDelayMs = 2000;
+    private transitionHoverTimers = new Map<string, number>();
+
+    private cancelTransitionHoverTimer(transitionId: string): void {
+        const timer = this.transitionHoverTimers.get(transitionId);
+        if (timer) {
+            clearTimeout(timer);
+            this.transitionHoverTimers.delete(transitionId);
+        }
+    }
 }
