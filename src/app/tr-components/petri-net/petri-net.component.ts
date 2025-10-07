@@ -933,6 +933,26 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     // Transitions
+    /**
+     * Handles left-click events on transitions in the Petri net canvas.
+     * 
+     * Behavior varies by tab and button state:
+     * - **Simulation tab**: Switches to manual mode and fires the clicked transition in the token game,
+     *   then updates highlighting to reflect enabled transitions.
+     * - **Build tab + Select button**: Opens the action configuration dialog for the transition.
+     * - **Delete button (any tab)**: Removes the transition from the Petri net.
+     * 
+     * When entering manual mode from automatic mode, any running animation is stopped and
+     * the simulation mode is explicitly set to 'manual', allowing the user to fire transitions
+     * by clicking them directly.
+     * 
+     * @param event - The mouse event triggered by the click
+     * @param transition - The transition that was clicked
+     * 
+     * @see tokenGameService.fire - Executes transition firing logic
+     * @see highlightManualModeTransitions - Updates visual feedback for manual token game
+     * @see UiService.setSimulationMode - Switches between automatic and manual simulation modes
+     */
     dispatchTransitionClick(event: MouseEvent, transition: Transition) {
         // Token game: fire transition
         if (this.uiService.tab === TabState.Simulation) {
@@ -955,6 +975,35 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
         }
     }
 
+    /**
+     * Handles right-click (context menu) events on transitions.
+     * 
+     * This method implements conditional statistics display based on simulation mode and data availability.
+     * It only shows the transition firing statistics dialog when ALL of the following conditions are met:
+     * 
+     * 1. **Frequency analysis is active**: Multi-run simulation results have been loaded and processed
+     * 2. **User is in Simulation tab**: Not in Build, Analyze, or other tabs
+     * 3. **Automatic mode is active**: Not in manual token game mode
+     * 
+     * **When conditions are met:**
+     * - Prevents the default browser context menu from appearing (`event.preventDefault()`)
+     * - Opens a dialog showing how many times this transition fired across all simulation runs
+     * 
+     * **When conditions are NOT met:**
+     * - Does nothing, allowing the default browser context menu to appear
+     * - This ensures no interference with other workflows (e.g., Build tab operations)
+     * 
+     * This approach provides a clean separation between:
+     * - **Automatic mode**: Right-click shows statistics (analysis/inspection workflow)
+     * - **Manual mode**: Right-click has default behavior, left-click fires transitions (interactive workflow)
+     * 
+     * @param event - The context menu event triggered by right-click
+     * @param transition - The transition that was right-clicked
+     * 
+     * @see onTransitionClick - Opens the statistics dialog with transition firing data
+     * @see UiService.isAutomaticMode - Checks if simulation is in automatic playback mode
+     * @see isFrequencyAnalysisActive - Flag set when multi-run results are loaded
+     */
     onTransitionRightClick(event: MouseEvent, transition: Transition) {
         // Only show stats in Simulation tab + Automatic mode + when frequency data exists
         if (
@@ -970,6 +1019,31 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
         this.onTransitionClick(transition.id);
     }
 
+    /**
+     * Opens a dialog displaying transition firing statistics from multi-run simulations.
+     * 
+     * This method is invoked when a transition is right-clicked in automatic mode with frequency
+     * analysis active. It shows aggregate data about how often the transition fired across
+     * multiple simulation runs.
+     * 
+     * The dialog displays:
+     * - **Transition ID**: Which transition was clicked
+     * - **Firing count**: Total number of times this transition fired across all runs
+     * - **Total runs**: How many simulation runs were executed
+     * 
+     * **Guard conditions:**
+     * - Returns early if frequency analysis is not active (no multi-run data loaded)
+     * - Returns early if frequency map or multi-run results are missing
+     * 
+     * This method is public to allow programmatic access, though it's primarily called
+     * internally via `onTransitionRightClick`.
+     * 
+     * @param transitionId - The ID of the transition to show statistics for
+     * 
+     * @see TransitionFiringInfoPopupComponent - The dialog component that displays the data
+     * @see UiService.getTransitionFiringFrequencies - Retrieves aggregated firing counts per transition
+     * @see UiService.getMultiRunResults - Retrieves the full multi-run simulation results
+     */
     public onTransitionClick(transitionId: string): void {
         if (!this.isFrequencyAnalysisActive) {
             return; // Do nothing if no frequency data is available
@@ -1669,7 +1743,40 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
             el.classList.remove('animation-enabled', 'animation-fired', 'animation-next-to-fire');
         });
     }
-    
+
+    /**
+     * Updates visual highlights for transitions in manual token game mode.
+     * 
+     * This method manages the highlighting of transitions to provide visual feedback during
+     * manual token game interactions. It is called after every manual transition firing,
+     * rewind, or restart operation.
+     * 
+     * **Highlighting logic:**
+     * 1. **Clears all existing highlights** to ensure a clean state
+     * 2. **Highlights the fired transition** (if provided) with the 'fired' style (light green glow)
+     * 3. **Highlights all currently enabled transitions** with the 'enabled' style (softer glow)
+     *    - A transition is enabled if it has enough tokens in all pre-places to fire
+     *    - The fired transition is excluded from the enabled set to avoid double-highlighting
+     * 
+     * **Usage scenarios:**
+     * - After manual click: `firedTransition` is the transition the user just clicked
+     * - After rewind: `firedTransition` is undefined, only enabled transitions are highlighted
+     * - After restart: `firedTransition` is undefined, showing initial enabled state
+     * 
+     * This approach ensures the user always sees which transitions can fire next in the
+     * current marking, while providing immediate feedback on their last action.
+     * 
+     * **Note:** This method only applies highlighting classes; the actual CSS styling is defined
+     * in `petri-net.component.css` (`.animation-enabled`, `.animation-fired`).
+     * 
+     * @param firedTransition - Optional. The transition that was just fired, to be highlighted
+     *                          with the 'fired' style. If undefined, only enabled transitions
+     *                          are highlighted.
+     * 
+     * @see highlightTransition - Applies CSS classes to individual transition elements
+     * @see clearAllTransitionHighlights - Removes all highlight classes from the canvas
+     * @see Transition.isActive - Computed property that checks if a transition can fire
+     */
     private highlightManualModeTransitions(firedTransition?: Transition): void {
         this.clearAllTransitionHighlights();
 
