@@ -131,6 +131,31 @@ export class UiService {
     private _simulationMode$ = new BehaviorSubject<SimulationMode>('automatic');
     public simulationMode$ = this._simulationMode$.asObservable();
 
+    /**
+     * Stores the simulation step that was active when switching FROM automatic TO manual mode.
+     * 
+     * This enables "Return to Automatic Playback" to restore the user to their last position
+     * in the automatic simulation, rather than always jumping back to step 0.
+     * 
+     * **Use cases:**
+     * 1. User pauses automatic animation at step 5, switches to manual, fires more transitions
+     *    → "Return to Automatic" goes back to step 5 (not step 0)
+     * 
+     * 2. User starts in manual mode from beginning (never ran automatic)
+     *    → lastAutomaticStep remains 0 → "Return to Automatic" goes to step 0
+     * 
+     * **Updated when:**
+     * - setSimulationMode('manual') is called → saves current step
+     * - Simulation starts fresh → reset to 0
+     * 
+     * **Read by:**
+     * - returnToAutomaticMode() in ButtonBarComponent → restores this step
+     * 
+     * @see setSimulationMode - Updates this value when switching to manual mode
+     * @see getLastAutomaticStep - Getter for this value
+     */
+    private lastAutomaticStep: number = 0;
+
     private manualHighlightUpdateSubject = new Subject<Transition | null>();
     public manualHighlightUpdate$ = this.manualHighlightUpdateSubject.asObservable();
 
@@ -186,8 +211,45 @@ export class UiService {
 
     constructor() {}
 
+    /**
+     * Sets the simulation mode and saves the current step when switching to manual mode.
+     * 
+     * This method switches between automatic playback and manual token game modes.
+     * When switching FROM automatic TO manual, it saves the current simulation step
+     * so that "Return to Automatic Playback" can restore the user to that position.
+     * 
+     * **Behavior:**
+     * - Switch to 'manual': Saves current step as lastAutomaticStep
+     * - Switch to 'automatic': No special action (lastAutomaticStep already saved)
+     * - No change in mode: No action taken
+     * 
+     * **Why save the step:**
+     * User might pause automatic animation at step 5, switch to manual to explore,
+     * then want to return to automatic playback from step 5 (not restart from 0).
+     * 
+     * @param mode - The simulation mode to switch to ('automatic' or 'manual')
+     * 
+     * @see lastAutomaticStep - The stored step value
+     * @see getLastAutomaticStep - Getter for the stored step
+     * @see returnToAutomaticMode - Uses this stored step to restore position
+     * 
+     * @example
+     * // User pauses at step 5, switches to manual
+     * this.uiService.setSimulationMode('manual'); // Saves step 5
+     * // ... user fires transitions manually ...
+     * // User clicks "Return to Automatic Playback"
+     * // → Restores to step 5 (not step 0)
+     */
     setSimulationMode(mode: SimulationMode): void {
-        if (this._simulationMode$.getValue() !== mode) {
+        const currentMode = this._simulationMode$.getValue();
+        
+        if (currentMode !== mode) {
+            // When switching TO manual mode, save the current automatic step
+            if (mode === 'manual') {
+                this.lastAutomaticStep = this.getCurrentSimulationStep();
+                console.log(`UiService: Switching to manual mode, saved automatic step: ${this.lastAutomaticStep}`);
+            }
+            
             this._simulationMode$.next(mode);
         }
     }
@@ -202,6 +264,30 @@ export class UiService {
 
     isManualMode(): boolean {
         return this.getSimulationMode() === 'manual';
+    }
+
+    /**
+     * Gets the simulation step that was active when last switching to manual mode.
+     * 
+     * This value is used by "Return to Automatic Playback" to restore the user
+     * to their position in the automatic simulation before they switched to manual.
+     * 
+     * **Returns:**
+     * - The step number (0-based index) where automatic mode was left
+     * - 0 if manual mode was entered from the beginning (never ran automatic)
+     * 
+     * **Example usage:**
+     * User pauses animation at step 5, switches to manual, fires more transitions.
+     * When returning to automatic, this returns 5 (not 0).
+     * 
+     * @returns The last automatic simulation step
+     * 
+     * @see lastAutomaticStep - The stored value
+     * @see setSimulationMode - Updates this value when switching to manual
+     * @see returnToAutomaticMode - Uses this to restore position
+     */
+    getLastAutomaticStep(): number {
+        return this.lastAutomaticStep;
     }
 
     triggerManualHighlightUpdate(transition?: Transition | null): void {
@@ -247,11 +333,14 @@ export class UiService {
 
     /**
      * Resets simulation step counters, typically when simulation data is cleared.
+     * Also resets the lastAutomaticStep to 0 for a fresh start.
      */
     resetSimulationSteps(): void {
         this._totalSimulationSteps$.next(0); // No states (or 1 for a default initial state if always present)
         this._currentSimulationStep$.next(0);
         this.simulationResults$.next(null); // Also clear results
+        this.lastAutomaticStep = 0; // Reset to beginning for new simulation
+        console.log('UiService: Reset simulation steps and lastAutomaticStep to 0');
     }
     // --- End new methods ---
 

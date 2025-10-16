@@ -321,9 +321,56 @@ export class ButtonBarComponent implements OnInit, OnDestroy {
         this.uiService.setCurrentSimulationStep(0);
     }
 
+    /**
+     * Returns the user from manual token game mode back to automatic simulation playback.
+     * 
+     * This method performs a complete reset to prepare for automatic mode:
+     * 1. Clears manual mode game history (undo stack)
+     * 2. Resets simulation display to initial state (step 0)
+     * 3. Switches simulation mode to 'automatic'
+     * 
+     * **Rationale:**
+     * By setting the simulation step to 0, we trigger displayStateForStep(0) which:
+     * - Restores tokens to Build-tab initial marking
+     * - Shows highlights for initially enabled transitions
+     * - Resets the timeline to the beginning
+     * 
+     * This is consistent with the STOP button behavior and ensures the user
+     * sees the same initial state as when the simulation first loaded.
+     * 
+     * **Effect:**
+     * After calling this, automatic mode starts from a clean slate with:
+     * - Tokens at Build-tab values
+     * - Timeline at position 0
+     * - Highlights showing initially enabled transitions
+     * - Ready for automatic playback
+     * 
+     * **Called by:**
+     * "Return to Automatic Playback" button in the Simulation tab UI
+     * 
+     * @see tokenGameService.clearGameHistory - Clears the undo/redo history
+     * @see uiService.setCurrentSimulationStep - Triggers displayStateForStep(0)
+     * @see uiService.setSimulationMode - Switches mode to 'automatic'
+     * @see stop - Similar method called by STOP button
+     */
     public returnToAutomaticMode(): void {
+        console.log('ButtonBarComponent: Returning to automatic mode');
+        
+        // Clear manual mode history
         this.tokenGameService.clearGameHistory();
+        
+        // Get the step where automatic mode was last active
+        const savedStep = this.uiService.getLastAutomaticStep();
+        console.log(`ButtonBarComponent: Restoring to saved automatic step: ${savedStep}`);
+        
+        // Reset display to that step - this triggers displayStateForStep()
+        // which restores tokens and shows highlights for that step
+        this.uiService.setCurrentSimulationStep(savedStep);
+        
+        // Switch mode to automatic
         this.uiService.setSimulationMode('automatic');
+        
+        console.log(`ButtonBarComponent: Returned to automatic mode at step ${savedStep}`);
     }
 
     public onManualRestart(): void {

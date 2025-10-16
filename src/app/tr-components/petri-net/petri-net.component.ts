@@ -303,6 +303,21 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
                         clearTimeout(this.animationTimer);
                         this.animationTimer = null;
                     }
+                    
+                    /**
+                     * Reset tokens to Build-tab values when leaving Simulation tab.
+                     * 
+                     * Rationale:
+                     * - Manual mode changes should not persist when user switches to Build/Code tabs
+                     * - Build tab is the source of truth for token distribution
+                     * - This ensures consistency: what user sees in Build = what simulation starts with
+                     * 
+                     * Only reset if we have initialMarkings (i.e., simulation was initialized)
+                     */
+                    if (this.initialMarkings.size > 0) {
+                        console.log('PetriNetComponent: Resetting tokens to Build-tab values on tab switch');
+                        this.resetTokensToInitialMarking();
+                    }
                 }
             })
         );
@@ -317,6 +332,42 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
             this.uiService.manualHighlightUpdate$.subscribe(transition => {
                 if (this.uiService.isManualMode()) {
                     this.highlightManualModeTransitions(transition ?? undefined);
+                }
+            })
+        );
+
+        /**
+         * Subscription to simulation mode changes.
+         * 
+         * When switching TO manual mode, we invalidate currentStepBeingDisplayed by setting it to -1.
+         * This ensures that when returning to automatic mode (via "Return to Automatic Playback"),
+         * the subscription to currentSimulationStep$ will definitely trigger displayStateForStep()
+         * even if the step number happens to be the same as before.
+         * 
+         * **Why this is needed:**
+         * In manual mode, tokens are changed by manual transition firings, but currentStepBeingDisplayed
+         * is not updated. When returning to automatic at the saved step (e.g., step 5), we need to
+         * restore the tokens/highlights for that step via displayStateForStep(5), but the subscription
+         * has a guard `step !== this.currentStepBeingDisplayed`. By setting currentStepBeingDisplayed = -1
+         * when entering manual mode, we ensure the guard passes when returning to automatic.
+         * 
+         * **Example flow:**
+         * 1. Automatic mode at step 5 → currentStepBeingDisplayed = 5
+         * 2. Switch to manual → currentStepBeingDisplayed = -1 (this subscription)
+         * 3. Fire transitions manually → tokens change, currentStepBeingDisplayed still -1
+         * 4. Return to automatic at step 5 → setCurrentSimulationStep(5) called
+         * 5. Subscription checks: 5 !== -1 → true → calls displayStateForStep(5)
+         * 6. Tokens/highlights restored correctly!
+         * 
+         * @see currentStepBeingDisplayed - The variable being invalidated
+         * @see displayStateForStep - The method that needs to be called
+         * @see currentSimulationStep$ subscription - The subscription that checks the guard
+         */
+        this._subs.push(
+            this.uiService.simulationMode$.subscribe(mode => {
+                if (mode === 'manual') {
+                    console.log('PetriNetComponent: Switched to manual mode, invalidating currentStepBeingDisplayed');
+                    this.currentStepBeingDisplayed = -1;
                 }
             })
         );
@@ -1830,6 +1881,83 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
         highlighted.forEach(el => {
             el.classList.remove('animation-enabled', 'animation-fired', 'animation-next-to-fire');
         });
+    }
+
+    /**
+     * Resets all place tokens to their initial Build-Tab values and clears highlights.
+     * 
+     * This method restores the token distribution to the state defined in the Build tab,
+     * effectively undoing all manual transition firings in the Simulation tab.
+     * It also clears all transition highlights to provide a clean visual state.
+     * 
+     * **When to call:**
+     * - Tab switch AWAY from Simulation tab → ensures clean state when returning to Build
+     * - "Return to Automatic Playback" button → resets tokens before automatic simulation
+     * - Any scenario where manual mode changes need to be reverted
+     * 
+     * **Rationale:**
+     * Manual mode token changes should be temporary and not persist across:
+     * 1. Tab switches (Build tab defines the canonical state)
+     * 2. Mode switches (Automatic mode should start from Build-defined marking)
+     * 
+     * This ensures consistency: Build tab = Source of Truth for initial marking.
+     * 
+     * **What gets reset:**
+     * 1. **Tokens** - Restored to initialMarkings values (Build-tab state)
+     * 2. **Highlights** - All transition highlights cleared (like STOP button)
+     * 3. **View** - dataService.triggerDataChanged() updates the display
+     * 
+     * **Implementation:**
+     * Uses the `initialMarkings` Map that was populated when simulation started.
+     * This Map contains Place ID → Token count mappings from the Build tab.
+     * 
+     * **Comparison with STOP button:**
+     * - STOP button: Calls setCurrentSimulationStep(0) → triggers displayStateForStep(0) → shows initial state highlights
+     * - This method: Clears highlights completely → appropriate for tab switches and mode changes
+     * 
+     * **Note:** 
+     * This is different from `tokenGameService.resetGame()` which uses the
+     * game history stack. This method directly sets tokens from Build-tab values,
+     * regardless of manual mode history.
+     * 
+     * @see initialMarkings - Map storing Build-tab token values (Place ID → count)
+     * @see initializeAnimationAndTimeline - Method that populates initialMarkings
+     * @see displayStateForStep - Uses same logic to restore tokens during timeline navigation
+     * @see clearAllTransitionHighlights - Removes all highlight CSS classes
+     * 
+     * @example
+     * // User fires transitions manually, then switches tabs
+     * this.resetTokensToInitialMarking(); // Tokens back to Build-tab values, highlights cleared
+     * 
+     * @example
+     * // User clicks "Return to Automatic Playback" button
+     * this.tokenGameService.clearGameHistory();
+     * this.resetTokensToInitialMarking(); // Start fresh from Build-tab marking, no highlights
+     */
+    public resetTokensToInitialMarking(): void {
+        console.log('PetriNetComponent: Resetting tokens to initial Build-tab marking');
+        
+        // Step 1: Reset all tokens to Build-tab values
+        this.dataService.getPlaces().forEach(place => {
+            const initialTokenCount = this.initialMarkings.get(place.id);
+            if (initialTokenCount !== undefined) {
+                place.token = initialTokenCount;
+                console.log(`PetriNetComponent: Reset ${place.id} tokens to ${initialTokenCount}`);
+            } else {
+                // Fallback: If place wasn't in initialMarkings (shouldn't happen), set to 0
+                place.token = 0;
+                console.warn(`PetriNetComponent: Place ${place.id} not found in initialMarkings, defaulting to 0 tokens`);
+            }
+        });
+        
+        // Step 2: Clear all transition highlights (like STOP button behavior)
+        console.log('PetriNetComponent: Clearing all transition highlights');
+        this.clearAllTransitionHighlights();
+        
+        // Step 3: Trigger view update to reflect token changes
+        this.dataService.triggerDataChanged();
+        
+        console.log('PetriNetComponent: Token reset and highlight clearing complete');
     }
 
     /**
