@@ -50,7 +50,52 @@ export type SimulationMode = 'automatic' | 'manual';
 export class UiService {
     // Stores the active tab (see TabState enum). Default is Build mode.
     // This property is used for imperative access to the current tab.
-    tab: TabState = TabState.Build;
+    // IMPORTANT: Always use the setter to update this value to ensure tab$ observable emits!
+    private _tab: TabState = TabState.Build;
+    
+    /**
+     * Observable that emits whenever the active tab changes.
+     * 
+     * This enables reactive tab-awareness across components:
+     * - PetriNetComponent subscribes to show/hide simulation highlighting
+     * - Other components can react to tab switches for context-sensitive behavior
+     * 
+     * Always use the `tab` setter to update the tab state so this observable emits properly.
+     * 
+     * @example
+     * // Subscribe to tab changes
+     * this.uiService.tab$.subscribe(newTab => {
+     *   if (newTab === TabState.Simulation) {
+     *     this.enableSimulationFeatures();
+     *   } else {
+     *     this.disableSimulationFeatures();
+     *   }
+     * });
+     */
+    private _tab$ = new BehaviorSubject<TabState>(this._tab);
+    public tab$: Observable<TabState> = this._tab$.asObservable();
+
+    /**
+     * Gets the current active tab.
+     * @returns The current TabState
+     */
+    public get tab(): TabState {
+        return this._tab;
+    }
+
+    /**
+     * Sets the active tab and emits the change to all subscribers.
+     * This ensures tab-aware components react to tab switches.
+     * 
+     * @param value - The new TabState to activate
+     */
+    public set tab(value: TabState) {
+        if (this._tab !== value) {
+            this._tab = value;
+            this._tab$.next(value);
+            console.log('UiService: Tab changed to', TabState[value]);
+        }
+    }
 
     // Stores the active button/tool (see ButtonState enum). Null if none selected.
     // Used for imperative access to the current tool.

@@ -238,6 +238,74 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
                 }
             }
         });
+
+        /**
+         * Tab-awareness subscription for context-sensitive UI behavior.
+         * 
+         * This subscription enables the PetriNetComponent to react to tab switches and ensures
+         * simulation-specific UI elements (highlighting, animations) are only active in the
+         * Simulation tab.
+         * 
+         * **Behavior on tab change:**
+         * - **Switch TO Simulation tab:**
+         *   - Re-enables transition highlighting if simulation is in manual mode
+         *   - Resumes animation if it was playing before tab switch
+         * 
+         * - **Switch AWAY FROM Simulation tab:**
+         *   - Clears all transition highlights immediately
+         *   - Stops animation timer to prevent background activity
+         *   - Preserves simulation state (can be resumed when returning to Simulation tab)
+         * 
+         * **Rationale:**
+         * - Prevents visual confusion: Highlighting in non-simulation tabs would be misleading
+         * - Improves performance: No unnecessary DOM updates when tab is not visible
+         * - Better UX: Clear separation between editing (Build) and execution (Simulation) modes
+         * 
+         * **Memory leak prevention:**
+         * This subscription is automatically cleaned up in ngOnDestroy() via the _subs array.
+         * 
+         * @see clearAllTransitionHighlights - Removes all highlight CSS classes
+         * @see highlightManualModeTransitions - Re-applies highlighting for manual mode
+         * @see TabState - Enum defining all available tabs
+         */
+        this._subs.push(
+            this.uiService.tab$.subscribe(newTab => {
+                console.log(`PetriNetComponent: Tab changed to ${TabState[newTab]}`);
+                
+                if (newTab === TabState.Simulation) {
+                    // Switched TO Simulation tab
+                    console.log('PetriNetComponent: Switched to Simulation tab - enabling simulation features');
+                    
+                    // Re-enable highlighting if we're in manual mode
+                    if (this.uiService.isManualMode()) {
+                        console.log('PetriNetComponent: Re-enabling manual mode highlighting');
+                        this.highlightManualModeTransitions();
+                    }
+                    
+                    // Resume animation if it was running
+                    if (this.uiService.isAnimationRunning() && this.isSimulating) {
+                        console.log('PetriNetComponent: Resuming animation after tab switch');
+                        const currentSpeed = this.uiService.getAnimationSpeedMultiplier();
+                        if (currentSpeed > 0) {
+                            this.animateNextStep();
+                        }
+                    }
+                } else {
+                    // Switched AWAY FROM Simulation tab
+                    console.log('PetriNetComponent: Switched away from Simulation tab - disabling simulation features');
+                    
+                    // Clear all highlights immediately
+                    this.clearAllTransitionHighlights();
+                    
+                    // Stop animation timer (but preserve animation state for resume)
+                    if (this.animationTimer) {
+                        console.log('PetriNetComponent: Clearing animation timer on tab switch');
+                        clearTimeout(this.animationTimer);
+                        this.animationTimer = null;
+                    }
+                }
+            })
+        );
         this._subs.push(this.speedSubscription); // Ensure cleanup
 
         this.frequencySubscription = this.uiService.transitionFiringFrequencies$.subscribe(frequencies => {
@@ -1603,6 +1671,24 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
             console.warn('PetriNetComponent: displayStateForStep called without simulation data.');
             return;
         }
+
+        /**
+         * Tab-awareness guard for automatic simulation highlighting.
+         * 
+         * This ensures that transition highlights during automatic simulation playback
+         * are ONLY shown when in the Simulation tab, matching the behavior of manual mode.
+         * 
+         * Rationale:
+         * - Highlighting outside Simulation tab would be confusing to users
+         * - Prevents unnecessary DOM manipulation when tab is not visible
+         * - Consistent with manual mode behavior (highlightManualModeTransitions also checks tab)
+         */
+        const isInSimulationTab = this.uiService.tab === TabState.Simulation;
+        if (!isInSimulationTab) {
+            console.log('PetriNetComponent: Skipping display highlighting - not in Simulation tab');
+            // Still update markings, but don't apply visual highlights
+        }
+
         // Prevent re-rendering the same state if called multiple times for the same step
         // However, allow if isFinalStateAfterFiring changes, as that implies a different highlight logic
         if (stepIndex === this.currentStepBeingDisplayed && !isFinalStateAfterFiring && this._lastIsFinalState === isFinalStateAfterFiring) {
@@ -1636,7 +1722,8 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
         const detailedLogKey = String(stepIndex);
         const detailedLogEntry = this.simulationDetailedLog[detailedLogKey];
 
-        if (detailedLogEntry) {
+        // Only apply highlighting if we're in the Simulation tab
+        if (isInSimulationTab && detailedLogEntry) {
             const transitionToFireId = detailedLogEntry.transition_to_fire || (this.simulationFiringSeq[stepIndex] ? this.simulationFiringSeq[stepIndex].transition_id : null);
 
             if (!isFinalStateAfterFiring && transitionToFireId) {
@@ -1655,7 +1742,8 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
                     }
                 });
             }
-        } else if (stepIndex === 0 && !isFinalStateAfterFiring) {
+        } else if (isInSimulationTab && stepIndex === 0 && !isFinalStateAfterFiring) {
+            // Initial state highlighting (only in Simulation tab)
             const initialLogEntry = this.simulationDetailedLog["0"];
             if(initialLogEntry && initialLogEntry.enabled_transitions && Array.isArray(initialLogEntry.enabled_transitions)) {
                 const transitionToFireId = initialLogEntry.transition_to_fire || (this.simulationFiringSeq[0] ? this.simulationFiringSeq[0].transition_id : null);
@@ -1663,7 +1751,7 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
                    this.highlightTransition(id, id === transitionToFireId ? 'next-to-fire' : 'enabled');
                 });
             }
-        } else if (isFinalStateAfterFiring && stepIndex >= 0 && stepIndex < this.simulationFiringSeq.length) {
+        } else if (isInSimulationTab && isFinalStateAfterFiring && stepIndex >= 0 && stepIndex < this.simulationFiringSeq.length) {
              // This case is for showing the state *after* transition at stepIndex fired.
              const firedTransitionId = this.simulationFiringSeq[stepIndex].transition_id;
              this.highlightTransition(firedTransitionId, 'fired');
@@ -1751,10 +1839,15 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
      * manual token game interactions. It is called after every manual transition firing,
      * rewind, or restart operation.
      * 
+     * **Tab-awareness:**
+     * Highlighting is ONLY applied when in the Simulation tab. This prevents visual confusion
+     * and ensures highlighting only appears in the appropriate context.
+     * 
      * **Highlighting logic:**
-     * 1. **Clears all existing highlights** to ensure a clean state
-     * 2. **Highlights the fired transition** (if provided) with the 'fired' style (light green glow)
-     * 3. **Highlights all currently enabled transitions** with the 'enabled' style (softer glow)
+     * 1. **Checks if currently in Simulation tab** - exits early if not
+     * 2. **Clears all existing highlights** to ensure a clean state
+     * 3. **Highlights the fired transition** (if provided) with the 'fired' style (light green glow)
+     * 4. **Highlights all currently enabled transitions** with the 'enabled' style (softer glow)
      *    - A transition is enabled if it has enough tokens in all pre-places to fire
      *    - The fired transition is excluded from the enabled set to avoid double-highlighting
      * 
@@ -1776,8 +1869,15 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
      * @see highlightTransition - Applies CSS classes to individual transition elements
      * @see clearAllTransitionHighlights - Removes all highlight classes from the canvas
      * @see Transition.isActive - Computed property that checks if a transition can fire
+     * @see TabState.Simulation - The only tab where highlighting should be active
      */
     private highlightManualModeTransitions(firedTransition?: Transition): void {
+        // Guard: Only highlight in Simulation tab
+        if (this.uiService.tab !== TabState.Simulation) {
+            console.log('PetriNetComponent: Skipping highlighting - not in Simulation tab');
+            return;
+        }
+
         this.clearAllTransitionHighlights();
 
         if (firedTransition) {
