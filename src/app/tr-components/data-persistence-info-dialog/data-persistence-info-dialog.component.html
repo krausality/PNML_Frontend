@@ -1,0 +1,78 @@
+<!-- 
+  Data Persistence Info Dialog
+  
+  Purpose: Inform first-time users about the application's data persistence strategy.
+  
+  Key Information:
+  - All Petri net data is stored in-memory only (no automatic saving)
+  - Data will be lost on browser reload, tab closure, or navigation away
+  - Users must export their work to preserve it
+  
+  UX Design:
+  - Clear, non-alarming message with info icon
+  - Actionable advice (use Export functions)
+  - "Don't show again" option for returning users
+  - Single "Got it!" button for acknowledgment
+  
+  Accessibility:
+  - mat-dialog-title for screen readers
+  - Proper label association for checkbox
+  - Semantic HTML structure
+-->
+
+<div class="dialog-container">
+  <!-- Dialog Header with Info Icon -->
+  <div class="dialog-header" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="12px">
+    <mat-icon class="info-icon" aria-label="Information">info</mat-icon>
+    <h2 mat-dialog-title class="dialog-title">Hinweis zur Datenspeicherung</h2>
+  </div>
+
+  <!-- Dialog Content -->
+  <mat-dialog-content class="dialog-content">
+    <p class="main-message">
+      <strong>Wichtig:</strong> Alle Daten in dieser Applikation werden ausschließlich im 
+      <strong>Browser-Speicher (RAM)</strong> gehalten.
+    </p>
+
+    <p class="warning-message">
+      ⚠️ <strong>Ihre Petri-Netze gehen verloren</strong>, wenn Sie:
+    </p>
+
+    <ul class="info-list">
+      <li>Die Seite neu laden (F5 / Browser-Refresh)</li>
+      <li>Den Browser-Tab oder das Fenster schließen</li>
+      <li>Zu einer anderen Seite navigieren</li>
+    </ul>
+
+    <p class="recommendation">
+      💡 <strong>Empfehlung:</strong> Nutzen Sie die <strong>Export-Funktionen</strong> im 
+      <em>Save-Tab</em>, um Ihre Arbeit dauerhaft zu sichern (JSON oder PNML).
+    </p>
+
+    <p class="additional-info">
+      Sie erhalten eine Warnung, wenn Sie versuchen, die Seite zu verlassen, während ein 
+      Petri-Netz geladen ist.
+    </p>
+  </mat-dialog-content>
+
+  <!-- Dialog Actions -->
+  <mat-dialog-actions class="dialog-actions" fxLayout="column" fxLayoutAlign="end end" fxLayoutGap="12px">
+    <!-- Don't Show Again Checkbox -->
+    <mat-checkbox 
+      [(ngModel)]="dontShowAgain" 
+      color="primary"
+      class="dont-show-checkbox">
+      Diesen Hinweis nicht mehr anzeigen
+    </mat-checkbox>
+
+    <!-- Close Button -->
+    <button 
+      mat-raised-button 
+      color="primary" 
+      (click)="onClose()"
+      class="close-button"
+      aria-label="Dialog schließen und bestätigen">
+      Verstanden!
+    </button>
+  </mat-dialog-actions>
+</div>
