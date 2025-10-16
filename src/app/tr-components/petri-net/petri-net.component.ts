@@ -716,9 +716,11 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
 
             if (e.deltaY < 0) {
                 place.token++;
+                this.dataService.triggerDataChanged();
             }
             if (e.deltaY > 0 && place.token > 0) {
                 place.token--;
+                this.dataService.triggerDataChanged();
             }
         }
         if (this.uiService.button === ButtonState.Add) {
@@ -727,6 +729,7 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
 
             if (e.deltaY < 0) {
                 place.token++;
+                this.dataService.triggerDataChanged();
             }
         } else if (this.uiService.button === ButtonState.Remove) {
             e.preventDefault();
@@ -734,6 +737,7 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
 
             if (e.deltaY > 0 && place.token > 0) {
                 place.token--;
+                this.dataService.triggerDataChanged();
             }
         }
     }
@@ -989,11 +993,15 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
     dispatchPlaceClick(event: MouseEvent, place: Place) {
         if (this.uiService.button === ButtonState.Add) {
             place.token++;
+            // Trigger data change notification so simulation gets re-run
+            this.dataService.triggerDataChanged();
         }
 
         if (this.uiService.button === ButtonState.Remove) {
             if (place.token > 0) {
                 place.token--;
+                // Trigger data change notification so simulation gets re-run
+                this.dataService.triggerDataChanged();
             }
         }
 
