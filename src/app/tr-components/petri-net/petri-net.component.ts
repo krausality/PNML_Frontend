@@ -272,9 +272,50 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
             this.uiService.tab$.subscribe(newTab => {
                 console.log(`PetriNetComponent: Tab changed to ${TabState[newTab]}`);
                 
+                /**
+                 * BASELINE SNAPSHOT: Ensure we always have a fallback marking to reset to.
+                 * 
+                 * This creates a baseline snapshot if:
+                 * 1. We have places in the DataService (network is loaded)
+                 * 2. No snapshot exists yet (initialMarkings is empty)
+                 * 
+                 * This prevents the "reset to 0" fallback from ever triggering when switching
+                 * between tabs (especially when returning from Offshore or switching to/from
+                 * Simulation without ever loading simulation results).
+                 * 
+                 * The snapshot captures the current token state, which is typically the
+                 * Build-tab baseline loaded from PNML/JSON files.
+                 */
+                if (this.dataService.getPlaces().length > 0 && this.initialMarkings.size === 0) {
+                    this.initialMarkings.clear();
+                    this.dataService.getPlaces().forEach(place => {
+                        this.initialMarkings.set(place.id, place.token);
+                    });
+                    console.log('PetriNetComponent: Created baseline snapshot (first-time):', this.initialMarkings);
+                }
+                
                 if (newTab === TabState.Simulation) {
                     // Switched TO Simulation tab
                     console.log('PetriNetComponent: Switched to Simulation tab - enabling simulation features');
+                    
+                    /**
+                     * Create/update snapshot of current token distribution when entering Simulation.
+                     * 
+                     * This ensures we have a reliable baseline to reset to when leaving Simulation tab,
+                     * even if no simulation results were ever loaded. This snapshot is taken EVERY time
+                     * we enter Simulation tab, ensuring it always reflects the most recent Build-tab state
+                     * (user might have edited tokens in Build before switching to Simulation).
+                     * 
+                     * This OVERWRITES the baseline snapshot created above, which is intentional:
+                     * we want to capture the Build-tab state immediately before entering Simulation.
+                     */
+                    if (this.dataService.getPlaces().length > 0) {
+                        this.initialMarkings.clear();
+                        this.dataService.getPlaces().forEach(place => {
+                            this.initialMarkings.set(place.id, place.token);
+                        });
+                        console.log('PetriNetComponent: Updated snapshot for Simulation tab:', this.initialMarkings);
+                    }
                     
                     // Re-enable highlighting if we're in manual mode
                     if (this.uiService.isManualMode()) {
@@ -294,6 +335,38 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
                     // Switched AWAY FROM Simulation tab
                     console.log('PetriNetComponent: Switched away from Simulation tab - disabling simulation features');
                     
+                    /**
+                     * Guard: Skip token reset when switching to Offshore tab.
+                     * 
+                     * Rationale:
+                     * - Offshore tab uses a separate, isolated DataService instance (via providers: [DataService])
+                     * - Offshore's PetriNetComponent operates on completely different data arrays
+                     * - Resetting the Standard DataService (this instance) when switching to Offshore
+                     *   would unnecessarily modify data that won't be displayed anyway
+                     * - When user returns from Offshore, the Standard DataService data should remain
+                     *   unchanged, preserving the state from Build/Code/Analyze tabs
+                     * 
+                     * We still clear highlights and stop animations for consistent UI behavior.
+                     */
+                    if (newTab === TabState.Offshore) {
+                        console.log('PetriNetComponent: Switched to Offshore tab (separate DataService), skipping token reset');
+                        
+                        // Clear visual artifacts
+                        this.clearAllTransitionHighlights();
+                        
+                        // Stop animation timer
+                        if (this.animationTimer) {
+                            console.log('PetriNetComponent: Clearing animation timer on Offshore switch');
+                            clearTimeout(this.animationTimer);
+                            this.animationTimer = null;
+                        }
+                        
+                        // Early return - NO token reset for Offshore
+                        return;
+                    }
+                    
+                    // For all other tabs (Build, Code, Save, Analyze): perform full cleanup
+                    
                     // Clear all highlights immediately
                     this.clearAllTransitionHighlights();
                     
@@ -312,12 +385,16 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
                      * - Build tab is the source of truth for token distribution
                      * - This ensures consistency: what user sees in Build = what simulation starts with
                      * 
-                     * Only reset if we have initialMarkings (i.e., simulation was initialized)
+                     * ALWAYS reset tokens, regardless of whether initialMarkings is populated.
+                     * This prevents marking bleeding from Simulation tab to other tabs even when
+                     * simulation was never initialized (e.g., user manually changed tokens in Simulation
+                     * without loading simulation results first).
+                     * 
+                     * The resetTokensToInitialMarking() method has fallback logic (sets to 0 if no
+                     * initial marking stored), ensuring robust behavior in all scenarios.
                      */
-                    if (this.initialMarkings.size > 0) {
-                        console.log('PetriNetComponent: Resetting tokens to Build-tab values on tab switch');
-                        this.resetTokensToInitialMarking();
-                    }
+                    console.log('PetriNetComponent: Resetting tokens to Build-tab values on tab switch');
+                    this.resetTokensToInitialMarking();
                 }
             })
         );
