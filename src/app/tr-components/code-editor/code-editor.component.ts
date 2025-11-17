@@ -122,5 +122,7 @@ export class CodeEditorComponent implements OnInit {
         this.dataService.transitions = transitions;
         this.dataService.arcs = arcs;
         this.dataService.actions = actions;
+        // Nach dem Setzen: UI-Update mit Auto-Zoom/Fit-Content
+        this.dataService.triggerDataChanged(true);
     }
 }

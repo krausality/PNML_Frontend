@@ -92,6 +92,7 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
     private viewInitialized = false;
     public isFrequencyAnalysisActive = false;
     private frequencySubscription: Subscription | undefined;
+    private _previousTab: TabState | null = null;
 
     // ADDED: Subscription for speed changes and previous speed tracking
     private speedSubscription: Subscription | undefined;
@@ -270,7 +271,7 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
          */
         this._subs.push(
             this.uiService.tab$.subscribe(newTab => {
-                console.log(`PetriNetComponent: Tab changed to ${TabState[newTab]}`);
+                console.log(`PetriNetComponent: Tab changed from ${this._previousTab !== null ? TabState[this._previousTab] : 'null'} to ${TabState[newTab]}`);
                 
                 /**
                  * BASELINE SNAPSHOT: Ensure we always have a fallback marking to reset to.
@@ -297,6 +298,31 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
                 if (newTab === TabState.Simulation) {
                     // Switched TO Simulation tab
                     console.log('PetriNetComponent: Switched to Simulation tab - enabling simulation features');
+                    
+                    /**
+                     * Re-fit content to viewport after tab switch from Code tab.
+                     * 
+                     * Rationale:
+                     * - Code tab displays petri-net component at 50% width (split with code-editor)
+                     * - Simulation tab displays petri-net at 100% width
+                     * - When switching from Code tab, viewport dimensions change significantly
+                     * - Zoom/pan calculations must be recalculated for new viewport size
+                     * 
+                     * Timing consideration:
+                     * - CSS transition takes 500ms (app.component.css: transition: width 500ms)
+                     * - We delay fitContentToView() by 600ms to ensure transition is complete
+                     * - This prevents reading stale viewport dimensions from getBoundingClientRect()
+                     * 
+                     * This ensures the net is properly fitted and centered after the CSS transition
+                     * completes, preventing the "zoomed too small" issue when entering Simulation from Code tab.
+                     */
+                    if (this._previousTab === TabState.Code) {
+                        console.log('PetriNetComponent: Coming from Code tab to Simulation, scheduling re-fit after CSS transition');
+                        setTimeout(() => {
+                            console.log('PetriNetComponent: CSS transition complete, re-fitting content now');
+                            this.fitContentToView();
+                        }, 600); // Wait for CSS transition (500ms) + small buffer
+                    }
                     
                     /**
                      * Create/update snapshot of current token distribution when entering Simulation.
@@ -331,6 +357,9 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
                             this.animateNextStep();
                         }
                     }
+                    
+                    // Update previous tab for next transition
+                    this._previousTab = newTab;
                 } else {
                     // Switched AWAY FROM Simulation tab
                     console.log('PetriNetComponent: Switched away from Simulation tab - disabling simulation features');
@@ -360,6 +389,9 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
                             clearTimeout(this.animationTimer);
                             this.animationTimer = null;
                         }
+                        
+                        // Update previous tab before early return
+                        this._previousTab = newTab;
                         
                         // Early return - NO token reset for Offshore
                         return;
@@ -395,6 +427,34 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
                      */
                     console.log('PetriNetComponent: Resetting tokens to Build-tab values on tab switch');
                     this.resetTokensToInitialMarking();
+                    
+                    /**
+                     * Re-fit content to viewport after tab switch from Code tab.
+                     * 
+                     * Rationale:
+                     * - Code tab displays petri-net component at 50% width (split with code-editor)
+                     * - Other tabs (Build, Save, Analyze) display petri-net at 100% width
+                     * - When switching from Code tab, viewport dimensions change significantly
+                     * - Zoom/pan calculations must be recalculated for new viewport size
+                     * 
+                     * Timing consideration:
+                     * - CSS transition takes 500ms (app.component.css: transition: width 500ms)
+                     * - We delay fitContentToView() by 600ms to ensure transition is complete
+                     * - This prevents reading stale viewport dimensions from getBoundingClientRect()
+                     * 
+                     * This ensures the net is properly fitted and centered after the CSS transition
+                     * completes, preventing the "zoomed too small" issue when returning to full-width tabs.
+                     */
+                    if (this._previousTab === TabState.Code) {
+                        console.log('PetriNetComponent: Coming from Code tab, scheduling re-fit after CSS transition');
+                        setTimeout(() => {
+                            console.log('PetriNetComponent: CSS transition complete, re-fitting content now');
+                            this.fitContentToView();
+                        }, 600); // Wait for CSS transition (500ms) + small buffer
+                    }
+                    
+                    // Update previous tab for next transition
+                    this._previousTab = newTab;
                 }
             })
         );
