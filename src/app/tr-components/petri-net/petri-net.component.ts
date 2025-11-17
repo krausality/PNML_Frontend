@@ -98,6 +98,10 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
     private speedSubscription: Subscription | undefined;
     private previousSpeedMultiplier: number = 1; // Initialize with a non-zero value, ideally from UiService on init
 
+    // ADDED: ResizeObserver for reactive viewport updates (Option 4)
+    private resizeObserver: ResizeObserver | null = null;
+    private shouldAutoFit: boolean = false; // Flag for Auto-Fit bei Resize
+
     constructor(
         private parserService: ParserService,
         private httpClient: HttpClient,
@@ -300,28 +304,28 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
                     console.log('PetriNetComponent: Switched to Simulation tab - enabling simulation features');
                     
                     /**
-                     * Re-fit content to viewport after tab switch from Code tab.
+                     * Enable auto-fit during viewport resize when coming from Code tab.
                      * 
-                     * Rationale:
-                     * - Code tab displays petri-net component at 50% width (split with code-editor)
+                     * Rationale (ResizeObserver-based approach):
+                     * - Code tab displays petri-net at 50% width (split with code-editor)
                      * - Simulation tab displays petri-net at 100% width
-                     * - When switching from Code tab, viewport dimensions change significantly
-                     * - Zoom/pan calculations must be recalculated for new viewport size
+                     * - CSS transition animates width change over 500ms (app.component.css)
+                     * - ResizeObserver fires callbacks during transition → multiple fitContentToView() calls
+                     * - This creates smooth, reactive re-fitting as viewport animates to new size
                      * 
-                     * Timing consideration:
-                     * - CSS transition takes 500ms (app.component.css: transition: width 500ms)
-                     * - We delay fitContentToView() by 600ms to ensure transition is complete
-                     * - This prevents reading stale viewport dimensions from getBoundingClientRect()
-                     * 
-                     * This ensures the net is properly fitted and centered after the CSS transition
-                     * completes, preventing the "zoomed too small" issue when entering Simulation from Code tab.
+                     * This ensures the net is smoothly fitted and centered when entering Simulation from Code tab.
                      */
                     if (this._previousTab === TabState.Code) {
-                        console.log('PetriNetComponent: Coming from Code tab to Simulation, scheduling re-fit after CSS transition');
+                        console.log('PetriNetComponent: Coming from Code tab to Simulation, enabling auto-fit during CSS transition');
+                        
+                        // Enable auto-fit for upcoming resize events triggered by CSS transition
+                        this.shouldAutoFit = true;
+                        
+                        // Disable auto-fit after CSS transition completes (500ms + buffer)
                         setTimeout(() => {
-                            console.log('PetriNetComponent: CSS transition complete, re-fitting content now');
-                            this.fitContentToView();
-                        }, 600); // Wait for CSS transition (500ms) + small buffer
+                            this.shouldAutoFit = false;
+                            console.log('PetriNetComponent: Auto-fit disabled after CSS transition');
+                        }, 700);
                     }
                     
                     /**
@@ -429,28 +433,41 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.resetTokensToInitialMarking();
                     
                     /**
-                     * Re-fit content to viewport after tab switch from Code tab.
+                     * Enable auto-fit during viewport resize when coming from Code tab.
                      * 
-                     * Rationale:
-                     * - Code tab displays petri-net component at 50% width (split with code-editor)
+                     * Rationale (ResizeObserver-based approach):
+                     * - Code tab displays petri-net at 50% width (split with code-editor)
                      * - Other tabs (Build, Save, Analyze) display petri-net at 100% width
-                     * - When switching from Code tab, viewport dimensions change significantly
-                     * - Zoom/pan calculations must be recalculated for new viewport size
+                     * - CSS transition animates width change over 500ms (app.component.css)
+                     * - ResizeObserver fires callbacks during transition → multiple fitContentToView() calls
+                     * - This creates smooth, reactive re-fitting as viewport animates to new size
                      * 
-                     * Timing consideration:
-                     * - CSS transition takes 500ms (app.component.css: transition: width 500ms)
-                     * - We delay fitContentToView() by 600ms to ensure transition is complete
-                     * - This prevents reading stale viewport dimensions from getBoundingClientRect()
+                     * Advantages over setTimeout approach:
+                     * - No hardcoded timing assumptions (works regardless of CSS transition duration)
+                     * - Handles all viewport changes (tab switches, window resizes, etc.)
+                     * - Browser-native API (efficient, no polling)
+                     * - Smooth visual update during transition (not just at end)
                      * 
-                     * This ensures the net is properly fitted and centered after the CSS transition
-                     * completes, preventing the "zoomed too small" issue when returning to full-width tabs.
+                     * Implementation:
+                     * - Set shouldAutoFit flag before CSS transition starts
+                     * - ResizeObserver detects viewport size changes during transition
+                     * - Auto-fit is applied at each resize event (smooth zoom adjustment)
+                     * - Flag is cleared 700ms later (after 500ms transition + buffer)
+                     * 
+                     * This ensures the net is smoothly fitted and centered during the CSS transition,
+                     * preventing the "zoomed too small" issue when returning to full-width tabs.
                      */
                     if (this._previousTab === TabState.Code) {
-                        console.log('PetriNetComponent: Coming from Code tab, scheduling re-fit after CSS transition');
+                        console.log('PetriNetComponent: Coming from Code tab, enabling auto-fit during CSS transition');
+                        
+                        // Enable auto-fit for upcoming resize events triggered by CSS transition
+                        this.shouldAutoFit = true;
+                        
+                        // Disable auto-fit after CSS transition completes (500ms + buffer)
                         setTimeout(() => {
-                            console.log('PetriNetComponent: CSS transition complete, re-fitting content now');
-                            this.fitContentToView();
-                        }, 600); // Wait for CSS transition (500ms) + small buffer
+                            this.shouldAutoFit = false;
+                            console.log('PetriNetComponent: Auto-fit disabled after CSS transition');
+                        }, 700);
                     }
                     
                     // Update previous tab for next transition
@@ -533,6 +550,47 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
         if (this.drawingArea?.nativeElement) {
             const rect = this.drawingArea.nativeElement.getBoundingClientRect();
             this.zoomService.setViewportDimensions(rect.width, rect.height);
+
+            /**
+             * Setup ResizeObserver for automatic viewport dimension updates.
+             * 
+             * This enables reactive viewport tracking - automatically updating zoom calculations
+             * whenever the viewport size changes due to:
+             * - Tab switches (Code-Tab: 50% width ↔ Build-Tab: 100% width)
+             * - CSS transitions (smooth width: 50% → 100% over 500ms)
+             * - Window resizes (user drags browser window)
+             * - Sidebar toggles or other layout changes
+             * 
+             * The ResizeObserver fires callbacks during CSS transitions, allowing smooth
+             * re-fitting of content as the viewport animates to its new size.
+             * 
+             * Benefits over manual setTimeout approach:
+             * - No hardcoded timing assumptions (works regardless of CSS transition duration)
+             * - Handles all viewport size changes (not just tab switches)
+             * - Browser-native API (efficient, no polling)
+             * - Fires during transition (multiple times), enabling smooth visual updates
+             * 
+             * @see shouldAutoFit - Flag to enable/disable auto-fitting during resize
+             * @see fitContentToView - Method called when auto-fit is enabled
+             */
+            this.resizeObserver = new ResizeObserver(entries => {
+                for (const entry of entries) {
+                    const { width, height } = entry.contentRect;
+                    console.log(`PetriNetComponent: Viewport resized to ${width} x ${height}`);
+                    
+                    // Always update viewport dimensions for accurate zoom calculations
+                    this.zoomService.setViewportDimensions(width, height);
+                    
+                    // Auto-fit content if flag is enabled (e.g., during tab switch from Code-Tab)
+                    if (this.shouldAutoFit && width > 0 && height > 0) {
+                        console.log('PetriNetComponent: Auto-fitting content after viewport resize');
+                        this.fitContentToView();
+                    }
+                }
+            });
+            
+            this.resizeObserver.observe(this.drawingArea.nativeElement);
+            console.log('PetriNetComponent: ResizeObserver setup complete');
         }
 
         // Fit content initially if data is already present and view is ready
@@ -546,6 +604,13 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
         if (this.animationTimer) {
             clearTimeout(this.animationTimer);
             this.animationTimer = null;
+        }
+        
+        // Cleanup ResizeObserver to prevent memory leaks
+        if (this.resizeObserver) {
+            this.resizeObserver.disconnect();
+            this.resizeObserver = null;
+            console.log('PetriNetComponent: ResizeObserver disconnected');
         }
         
         if (this.uiService.isAnimationRunning()) {
