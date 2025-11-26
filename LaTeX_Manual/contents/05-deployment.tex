@@ -1,0 +1,267 @@
+\chapter{Deployment}
+\label{chap:deployment}
+
+This chapter describes how to build and deploy the L3S-Offshore-2 Frontend, both locally for development and on production servers.
+
+\section{Prerequisites}
+\label{sec:prerequisites}
+
+\subsection{Development Environment}
+
+The following software is required for local development:
+
+\begin{itemize}
+    \item \textbf{Node.js:} Version 18.x or higher (LTS recommended)
+    \item \textbf{npm:} Version 9.x or higher (comes with Node.js)
+    \item \textbf{Angular CLI:} Version 17.x (\texttt{npm install -g @angular/cli})
+    \item \textbf{Git:} For version control
+\end{itemize}
+
+\subsection{Production Environment}
+
+For production deployment:
+
+\begin{itemize}
+    \item \textbf{Docker:} Version 20.x or higher
+    \item \textbf{Docker Compose:} (optional, for multi-container setups)
+    \item \textbf{nginx:} Included in the Docker image
+\end{itemize}
+
+\section{Local Development}
+\label{sec:local-development}
+
+\subsection{Clone and Install}
+
+\begin{lstlisting}[language=bash, caption={Cloning and installing dependencies}]
+# Clone the repository
+git clone https://github.com/krausality/PNML_Frontend.git
+cd PNML_Frontend
+
+# Install dependencies
+npm install
+\end{lstlisting}
+
+\subsection{Development Server}
+
+Start the Angular development server with hot reloading:
+
+\begin{lstlisting}[language=bash, caption={Starting the development server}]
+# Start development server
+ng serve
+
+# Or with explicit host binding (for network access)
+ng serve --host 0.0.0.0 --port 4200
+\end{lstlisting}
+
+The application will be available at \url{http://localhost:4200}.
+
+\subsection{Backend Connection}
+
+The development environment expects the Flask backend to run on port 9040. Configure the backend URL in \texttt{src/environments/environment.ts}:
+
+\begin{lstlisting}[language=TypeScript, caption={Development environment configuration}]
+export const environment = {
+  production: false,
+  apiUrl: 'http://localhost:9040'
+};
+\end{lstlisting}
+
+\section{Production Build}
+\label{sec:production-build}
+
+\subsection{Angular Production Build}
+
+Create an optimized production build:
+
+\begin{lstlisting}[language=bash, caption={Creating a production build}]
+# Production build with optimizations
+ng build --configuration production
+
+# Output is generated in dist/pnml-frontend/
+\end{lstlisting}
+
+The production build includes:
+\begin{itemize}
+    \item Ahead-of-Time (AOT) compilation
+    \item Tree shaking to remove unused code
+    \item Minification and uglification
+    \item Content hashing for cache busting
+\end{itemize}
+
+\subsection{Build Verification}
+
+Verify the build output:
+
+\begin{lstlisting}[language=bash, caption={Verifying the production build}]
+# Check bundle sizes
+ls -la dist/pnml-frontend/browser/
+
+# Expected output: main.js, polyfills.js, styles.css
+# Total size should be under 500KB gzipped
+\end{lstlisting}
+
+\section{Docker Deployment}
+\label{sec:docker-deployment}
+
+\subsection{Dockerfile}
+
+The application uses a multi-stage Dockerfile:
+
+\begin{lstlisting}[language=docker, caption={Multi-stage Dockerfile}]
+# Stage 1: Build
+FROM node:18-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build -- --configuration production
+
+# Stage 2: Serve with nginx
+FROM nginx:alpine
+COPY --from=builder /app/dist/pnml-frontend/browser /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/nginx.conf
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+\end{lstlisting}
+
+\subsection{Nginx Configuration}
+
+The nginx configuration handles SPA routing:
+
+\begin{lstlisting}[caption={nginx.conf for SPA routing}]
+server {
+    listen 80;
+    server_name localhost;
+    root /usr/share/nginx/html;
+    index index.html;
+    
+    # SPA fallback: serve index.html for all routes
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+    
+    # Cache static assets
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2)$ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+    
+    # Gzip compression
+    gzip on;
+    gzip_types text/plain text/css application/json application/javascript;
+}
+\end{lstlisting}
+
+\subsection{Building the Docker Image}
+
+\begin{lstlisting}[language=bash, caption={Building and running the Docker container}]
+# Build the image
+docker build -t l3s-offshore-frontend:latest .
+
+# Run the container
+docker run -d -p 8080:80 --name offshore-frontend l3s-offshore-frontend:latest
+
+# Verify it's running
+curl http://localhost:8080
+\end{lstlisting}
+
+\section{Server Deployment}
+\label{sec:server-deployment}
+
+\subsection{L3S Infrastructure}
+
+The L3S research infrastructure uses a nested VPS architecture. Access requires:
+
+\begin{enumerate}
+    \item SSH to the gateway server (\texttt{gate.l3s.uni-hannover.de})
+    \item SSH to the project VPS
+    \item Docker commands within the VPS
+\end{enumerate}
+
+\subsection{Deployment Script}
+
+A typical deployment workflow:
+
+\begin{lstlisting}[language=bash, caption={Production deployment script}]
+#!/bin/bash
+# deploy.sh
+
+# 1. Build and push to container registry
+docker build -t registry.l3s.de/offshore/frontend:latest .
+docker push registry.l3s.de/offshore/frontend:latest
+
+# 2. On the server: pull and restart
+ssh user@server << 'EOF'
+  docker pull registry.l3s.de/offshore/frontend:latest
+  docker stop offshore-frontend || true
+  docker rm offshore-frontend || true
+  docker run -d -p 80:80 --name offshore-frontend \
+    registry.l3s.de/offshore/frontend:latest
+EOF
+\end{lstlisting}
+
+\subsection{Docker Cleanup}
+
+After deployment, clean up old images to save disk space:
+
+\begin{lstlisting}[language=bash, caption={Docker cleanup commands}]
+# Remove unused images (not just containers)
+docker image prune -a --filter "until=24h"
+
+# Remove stopped containers
+docker container prune
+
+# Full cleanup (use with caution)
+docker system prune -a
+\end{lstlisting}
+
+\section{Environment Configuration}
+\label{sec:environment-configuration}
+
+\subsection{Production Environment}
+
+Update \texttt{src/environments/environment.prod.ts} with production URLs:
+
+\begin{lstlisting}[language=TypeScript, caption={Production environment configuration}]
+export const environment = {
+  production: true,
+  apiUrl: 'https://api.offshore.l3s.de'
+};
+\end{lstlisting}
+
+\subsection{Runtime Configuration}
+
+For dynamic configuration without rebuilding, environment variables can be injected at container runtime:
+
+\begin{lstlisting}[language=bash, caption={Runtime environment injection}]
+docker run -d -p 80:80 \
+  -e API_URL=https://new-api.example.com \
+  l3s-offshore-frontend:latest
+\end{lstlisting}
+
+\section{Troubleshooting}
+\label{sec:troubleshooting}
+
+\subsection{Common Issues}
+
+\begin{description}
+    \item[Blank page after deployment:] Check nginx configuration and ensure \texttt{try\_files} fallback is configured for SPA routing.
+    
+    \item[API connection refused:] Verify the backend URL in environment configuration and check CORS settings on the backend.
+    
+    \item[Assets not loading:] Ensure \texttt{base href} in \texttt{index.html} matches the deployment path.
+    
+    \item[Container exits immediately:] Check logs with \texttt{docker logs <container-id>} and verify nginx configuration syntax.
+\end{description}
+
+\subsection{Logging}
+
+Access container logs for debugging:
+
+\begin{lstlisting}[language=bash, caption={Viewing container logs}]
+# Follow logs in real-time
+docker logs -f offshore-frontend
+
+# Last 100 lines
+docker logs --tail 100 offshore-frontend
+\end{lstlisting}

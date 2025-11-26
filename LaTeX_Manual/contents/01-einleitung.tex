@@ -1,0 +1,106 @@
+\chapter{Introduction}
+\label{chap:introduction}
+
+% ==============================================================================
+% NOTE: This chapter provides an overview of the project context, problem 
+% statement, and contributions. Fill in the placeholders with project-specific
+% content during the documentation phase.
+% ==============================================================================
+
+\section{Project Context}
+
+The L3S-Offshore-2 project is a research initiative at the L3S Research Center focusing on the application of Petri nets for modeling and simulating offshore wind farm installation logistics. Efficient scheduling of vessel operations, component installations, and resource management is critical for minimizing costs and maximizing the utilization of weather windows.
+
+This documentation describes the development of a web-based frontend application that enables researchers and practitioners to:
+\begin{itemize}
+    \item Visualize complex Petri net models in an interactive browser environment
+    \item Modify and extend existing models through a graphical user interface
+    \item Execute and analyze simulations to evaluate scheduling strategies
+    \item Configure domain-specific parameters for offshore logistics scenarios
+\end{itemize}
+
+The frontend integrates with a Python-based backend (Flask) that provides simulation capabilities using the \texttt{gspn4py} library for Generalized Stochastic Petri Nets.
+
+\section{Problem Statement}
+\label{sec:problem-statement}
+
+Prior to this project, the research group relied on disconnected tools for Petri net modeling:
+\begin{enumerate}
+    \item \textbf{Visualization:} Desktop applications (e.g., WoPeD) that could not be easily shared
+    \item \textbf{Simulation:} Python scripts executed via command line
+    \item \textbf{Parameter Configuration:} Manual editing of configuration files
+\end{enumerate}
+
+This fragmentation created barriers for:
+\begin{itemize}
+    \item Collaboration between researchers
+    \item Rapid prototyping and iteration on models
+    \item Demonstration of results to external stakeholders
+\end{itemize}
+
+\section{Solution Approach}
+\label{sec:solution-approach}
+
+The solution is a single-page web application (SPA) that consolidates all workflows into an integrated environment. The key design decisions include:
+
+\begin{itemize}
+    \item \textbf{Angular Framework:} Chosen for its component-based architecture and TypeScript support, enabling maintainable and type-safe code
+    \item \textbf{Fork of Existing Project:} Instead of building from scratch, the project forked the open-source ``PNML-Frontend'' by i-love-petrinets, which provided a solid foundation for PNML parsing and basic visualization
+    \item \textbf{Tab-Based Navigation:} Clear separation of concerns (Build, Code, Simulation, Analyze, Save, Offshore) for different user workflows
+    \item \textbf{Containerized Deployment:} Docker-based deployment for easy installation on research servers
+\end{itemize}
+
+\section{Contributions}
+\label{sec:contributions}
+
+The main contributions of this project are:
+
+\begin{enumerate}
+    \item \textbf{Extended Visualization:}
+    \begin{itemize}
+        \item Viewport-centered zooming and panning with ResizeObserver integration
+        \item Automatic layout via Sugiyama algorithm for PNML files without coordinates
+        \item Tab-aware UI state management
+    \end{itemize}
+    
+    \item \textbf{Simulation Capabilities:}
+    \begin{itemize}
+        \item Animated playback of firing sequences from backend simulation
+        \item Manual ``Token Game'' mode for step-by-step execution
+        \item Multi-run simulation with transition firing frequency statistics
+    \end{itemize}
+    
+    \item \textbf{Offshore-Specific Integration:}
+    \begin{itemize}
+        \item Dedicated parameter input panel for offshore scheduling models
+        \item Integration with backend scheduling endpoints
+    \end{itemize}
+    
+    \item \textbf{Production-Ready Deployment:}
+    \begin{itemize}
+        \item Docker containerization with nginx reverse proxy
+        \item Deployment on L3S research infrastructure
+    \end{itemize}
+\end{enumerate}
+
+\section{Document Structure}
+\label{sec:document-structure}
+
+This documentation is organized as follows:
+
+\begin{description}
+    \item[Chapter~\ref{chap:fundamentals}:] Provides background on Petri nets, the PNML format, and relevant web technologies (Angular, TypeScript).
+    
+    \item[Chapter~\ref{chap:architecture}:] Describes the overall system architecture, component hierarchy, and service dependencies.
+    
+    \item[Chapter~\ref{chap:implementation}:] Details key implementation aspects including the zoom system, simulation logic, and tab-state management.
+    
+    \item[Chapter~\ref{chap:deployment}:] Covers the Docker-based deployment process and production configuration.
+    
+    \item[Chapter~\ref{chap:related-work}:] Discusses related tools and how this project compares.
+    
+    \item[Chapter~\ref{chap:conclusion}:] Summarizes achievements and outlines future work.
+    
+    \item[Appendix~\ref{chap:appendix-a}:] Contains supplementary material such as API documentation and configuration files.
+\end{description}
+

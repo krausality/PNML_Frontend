@@ -1,0 +1,141 @@
+\documentclass[a4paper,twoside,openright,11pt]{book}
+% ==============================================================================
+% L3S-Offshore-2 Frontend - Technical Documentation
+% ==============================================================================
+
+% --- Packages ---
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}  % Changed to English for L3S
+
+\usepackage{listings}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{xspace}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{booktabs}  % Better tables
+\usepackage{caption}
+\usepackage{subcaption}
+
+% --- Typography Fixes ---
+\setlength{\emergencystretch}{3em}
+\usepackage{etoolbox}
+\apptocmd{\sloppy}{\hbadness 2000\relax}{}{}
+\hyphenpenalty=5000
+\tolerance=1000
+
+% --- Graphics ---
+\newcommand{\stdScaleFactor}{0.45}
+\graphicspath{{contents/figures/}}
+
+% --- Code Listings Configuration ---
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{codestyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{blue},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    frame=single
+}
+\lstset{style=codestyle}
+
+% TypeScript language definition
+\lstdefinelanguage{TypeScript}{
+  keywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, let, const, if, in, while, do, else, case, break, class, export, boolean, throw, implements, import, this, interface, private, public, protected, async, await, readonly, type, enum, extends, static, void, never, any, unknown},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywords={Injectable, Component, Input, Output, ViewChild, HostListener, OnInit, OnDestroy, AfterViewInit, Observable, Subject, BehaviorSubject, Subscription},
+  ndkeywordstyle=\color{codepurple}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=true,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{codegreen}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+% --- L3S Project Style ---
+\usepackage{l3s-project-doc}
+
+% --- Project Metadata ---
+\projectname{L3S-Offshore-2 Frontend}
+\projectsubtitle{Web-based Petri Net Visualization and Simulation Tool}
+\institution{L3S Research Center}
+\researchgroup{Knowledge-Based Systems Group}
+\university{Leibniz Universität Hannover}
+\authorname{Martin Krauser}
+\authoremail{martin.krauser@stud.uni-hannover.de}
+\supervisor{Peng Qian}
+\supervisoremail{}
+\projectperiod{March 2025 -- January 2026}
+\docversion{1.0}
+\docdate{November 2025}
+\city{Hannover}
+
+% --- Hyperref Configuration ---
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={L3S-Offshore-2 Frontend Documentation},
+    pdfauthor={Martin Krauser},
+}
+
+% ==============================================================================
+\begin{document}
+
+\frontmatter
+
+\maketitle
+
+\clearpage
+\makedocinfo
+
+\clearpage
+\input{contents/00-abstract.tex}
+
+\tableofcontents
+\listoffigures
+\listoftables
+
+\mainmatter
+
+\input{contents/01-einleitung.tex}
+\input{contents/02-grundlagen.tex}
+\input{contents/03-architecture.tex}
+\input{contents/04-implementation.tex}
+\input{contents/05-deployment.tex}
+\input{contents/06-verwandte-arbeiten.tex}
+\input{contents/07-zusammenfassung-ausblick.tex}
+
+\appendix
+\input{contents/A-anhang-a.tex}
+
+\bibliographystyle{abbrv}
+\bibliography{meinearbeit}
+
+\backmatter
+
+\end{document}

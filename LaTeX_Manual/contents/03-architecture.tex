@@ -1,0 +1,168 @@
+\chapter{System Architecture}
+\label{chap:architecture}
+
+This chapter describes the overall architecture of the L3S-Offshore-2 Frontend, including its integration with the backend, the component hierarchy, and the service layer design.
+
+\section{System Overview}
+\label{sec:system-overview}
+
+The L3S-Offshore-2 system follows a client-server architecture with clear separation between the visualization frontend and the simulation backend.
+
+\begin{figure}[htb]
+    \centering
+    % TODO: Add architecture diagram
+    % \includegraphics[width=0.9\textwidth]{contents/figures/system-architecture.pdf}
+    \fbox{\parbox{0.8\textwidth}{\centering\vspace{3cm}[System Architecture Diagram Placeholder]\vspace{3cm}}}
+    \caption{High-level system architecture showing frontend-backend interaction}
+    \label{fig:system-architecture}
+\end{figure}
+
+\subsection{Frontend (Angular)}
+
+The frontend is a single-page application (SPA) responsible for:
+\begin{itemize}
+    \item Rendering Petri nets as interactive SVG graphics
+    \item Handling user interactions (editing, navigation, simulation control)
+    \item Managing application state across different tabs
+    \item Communicating with the backend via REST API
+\end{itemize}
+
+\subsection{Backend (Flask)}
+
+The Python backend provides:
+\begin{itemize}
+    \item PNML parsing and validation
+    \item Petri net simulation using the \texttt{gspn4py} library
+    \item Offshore scheduling algorithms
+    \item Example model storage and retrieval
+\end{itemize}
+
+\section{Frontend Component Hierarchy}
+\label{sec:component-hierarchy}
+
+The Angular application is organized into a hierarchical component structure that reflects the UI layout.
+
+\subsection{Root Components}
+
+\begin{description}
+    \item[AppComponent] The root component that bootstraps the application and contains the main layout
+    \item[HeaderComponent] Displays the project banner with L3S branding
+    \item[FooterComponent] Shows institutional logos with links to L3S and LUH homepages
+\end{description}
+
+\subsection{Tab Components}
+
+The main content area uses Angular Material's tab group:
+
+\begin{description}
+    \item[ButtonBarComponent] The central coordinator that manages tab switching and toolbar rendering for each tab (Build, Code, Simulation, Analyze, Save, Offshore)
+    \item[PetriNetComponent] Renders the interactive SVG visualization of the Petri net
+    \item[CodeEditorComponent] Provides a text editor for direct PNML manipulation
+    \item[ParameterTableComponent] Displays and edits simulation parameters
+    \item[OffshoreViewComponent] Specialized view for offshore scheduling parameters
+\end{description}
+
+\subsection{Dialog Components}
+
+Modal dialogs for user feedback and interaction:
+\begin{description}
+    \item[DataPersistenceInfoDialogComponent] Warns users about data loss on page reload
+    \item[ErrorPopupComponent] Displays error messages from backend or parsing failures
+    \item[HelpPopupComponent] Provides contextual help
+    \item[TransitionFiringInfoPopupComponent] Shows firing statistics for transitions
+\end{description}
+
+\section{Service Layer}
+\label{sec:service-layer}
+
+Services are singleton classes that provide shared functionality and state management.
+
+\subsection{Core Services}
+
+\begin{description}
+    \item[DataService] Central state container for the Petri net model. Manages places, transitions, arcs, and the current marking. Emits change events via RxJS observables.
+    
+    \item[UiService] Manages UI state including the current tab, simulation mode (automatic/manual), selected elements, and zoom level.
+    
+    \item[ZoomService] Handles viewport transformations (pan, zoom) with ResizeObserver integration for responsive behavior.
+    
+    \item[ParserService] Converts between PNML XML, internal data structures, and the JSON representation used by the backend.
+\end{description}
+
+\subsection{Simulation Services}
+
+\begin{description}
+    \item[SimulationService] Communicates with the backend's simulation endpoints. Manages firing sequences and multi-run results.
+    
+    \item[TokenGameService] Implements the manual simulation mode where users can step through the firing sequence or click on enabled transitions.
+    
+    \item[PlanningService] Handles the offshore scheduling API calls and parameter management.
+\end{description}
+
+\subsection{Utility Services}
+
+\begin{description}
+    \item[ExportImageService] Exports the current view as PNG
+    \item[ExportSvgService] Exports the Petri net as SVG
+    \item[ExportJsonDataService] Exports the internal representation as JSON
+    \item[LayoutSugiyamaService] Implements the Sugiyama algorithm for automatic layout
+\end{description}
+
+\section{Data Flow}
+\label{sec:data-flow}
+
+\begin{figure}[htb]
+    \centering
+    % TODO: Add data flow diagram
+    \fbox{\parbox{0.8\textwidth}{\centering\vspace{2.5cm}[Data Flow Diagram Placeholder]\vspace{2.5cm}}}
+    \caption{Data flow between components and services}
+    \label{fig:data-flow}
+\end{figure}
+
+The application follows a unidirectional data flow pattern:
+
+\begin{enumerate}
+    \item \textbf{User Input:} User interacts with UI (clicks, drags, edits)
+    \item \textbf{Component Handler:} Component method processes the event
+    \item \textbf{Service Update:} Component calls service method to update state
+    \item \textbf{Observable Emission:} Service emits new state via RxJS Subject
+    \item \textbf{Subscriber Notification:} All subscribed components receive update
+    \item \textbf{View Re-render:} Angular change detection updates the DOM
+\end{enumerate}
+
+\section{Tab State Management}
+\label{sec:tab-state-management}
+
+A key architectural feature is the tab-aware state management that ensures UI consistency when switching between tabs.
+
+\subsection{The Tab$ Observable}
+
+The \texttt{UiService} exposes a \texttt{tab\$} BehaviorSubject that emits the current tab name whenever the user navigates:
+
+\begin{lstlisting}[language=TypeScript, caption={Tab state observable in UiService}]
+private _tab$ = new BehaviorSubject<string>('build');
+
+get tab$(): Observable<string> {
+  return this._tab$.asObservable();
+}
+
+set tab(value: string) {
+  console.log(`[UiService] Tab changed: ${this._tab$.value} -> ${value}`);
+  this._tab$.next(value);
+}
+\end{lstlisting}
+
+\subsection{Tab Guards in Components}
+
+Components subscribe to \texttt{tab\$} and conditionally enable/disable features:
+
+\begin{lstlisting}[language=TypeScript, caption={Tab-aware highlighting in PetriNetComponent}]
+this.uiService.tab$.subscribe(tab => {
+  if (tab !== 'simulation') {
+    this.clearAllHighlights();
+    this.stopAnimationTimer();
+  } else {
+    this.restoreSimulationState();
+  }
+});
+\end{lstlisting}

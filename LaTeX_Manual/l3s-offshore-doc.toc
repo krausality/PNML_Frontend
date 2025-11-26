@@ -1,0 +1,113 @@
+\babel@toc {english}{}\relax 
+\contentsline {chapter}{Document Information}{iii}{chapter*.1}%
+\contentsline {chapter}{Abstract}{v}{chapter*.4}%
+\contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Project Context}{1}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Problem Statement}{1}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Solution Approach}{2}{section.1.3}%
+\contentsline {section}{\numberline {1.4}Contributions}{2}{section.1.4}%
+\contentsline {section}{\numberline {1.5}Document Structure}{3}{section.1.5}%
+\contentsline {chapter}{\numberline {2}Fundamentals}{5}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Petri Nets}{5}{section.2.1}%
+\contentsline {subsection}{\numberline {2.1.1}Basic Definitions}{5}{subsection.2.1.1}%
+\contentsline {subsection}{\numberline {2.1.2}Firing Rules}{6}{subsection.2.1.2}%
+\contentsline {subsection}{\numberline {2.1.3}Extensions: Stochastic Petri Nets}{6}{subsection.2.1.3}%
+\contentsline {section}{\numberline {2.2}PNML: Petri Net Markup Language}{6}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Document Structure}{6}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Graphical Information}{7}{subsection.2.2.2}%
+\contentsline {section}{\numberline {2.3}Web Technologies}{7}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}Angular Framework}{7}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.2}SVG for Petri Net Rendering}{7}{subsection.2.3.2}%
+\contentsline {subsection}{\numberline {2.3.3}Angular Material}{8}{subsection.2.3.3}%
+\contentsline {section}{\numberline {2.4}Related Concepts}{8}{section.2.4}%
+\contentsline {chapter}{\numberline {3}System Architecture}{9}{chapter.3}%
+\contentsline {section}{\numberline {3.1}System Overview}{9}{section.3.1}%
+\contentsline {subsection}{\numberline {3.1.1}Frontend (Angular)}{9}{subsection.3.1.1}%
+\contentsline {subsection}{\numberline {3.1.2}Backend (Flask)}{10}{subsection.3.1.2}%
+\contentsline {section}{\numberline {3.2}Frontend Component Hierarchy}{10}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Root Components}{10}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Tab Components}{10}{subsection.3.2.2}%
+\contentsline {subsection}{\numberline {3.2.3}Dialog Components}{11}{subsection.3.2.3}%
+\contentsline {section}{\numberline {3.3}Service Layer}{11}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Core Services}{11}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}Simulation Services}{11}{subsection.3.3.2}%
+\contentsline {subsection}{\numberline {3.3.3}Utility Services}{12}{subsection.3.3.3}%
+\contentsline {section}{\numberline {3.4}Data Flow}{12}{section.3.4}%
+\contentsline {section}{\numberline {3.5}Tab State Management}{13}{section.3.5}%
+\contentsline {subsection}{\numberline {3.5.1}The Tab$ Observable}{13}{subsection.3.5.1}%
+\contentsline {subsection}{\numberline {3.5.2}Tab Guards in Components}{13}{subsection.3.5.2}%
+\contentsline {chapter}{\numberline {4}Implementation Details}{15}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Zoom and Pan System}{15}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}The Problem}{15}{subsection.4.1.1}%
+\contentsline {subsection}{\numberline {4.1.2}Viewport-Centered Zooming}{15}{subsection.4.1.2}%
+\contentsline {subsection}{\numberline {4.1.3}ResizeObserver Integration}{16}{subsection.4.1.3}%
+\contentsline {section}{\numberline {4.2}Simulation Animation}{16}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Firing Sequence Format}{16}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Animation Loop}{17}{subsection.4.2.2}%
+\contentsline {subsection}{\numberline {4.2.3}Transition Highlighting}{17}{subsection.4.2.3}%
+\contentsline {section}{\numberline {4.3}Token Reset Logic}{17}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Baseline Snapshot}{18}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}Tab-Aware Reset}{18}{subsection.4.3.2}%
+\contentsline {section}{\numberline {4.4}Parameter Table}{18}{section.4.4}%
+\contentsline {subsection}{\numberline {4.4.1}Dynamic Form Generation}{19}{subsection.4.4.1}%
+\contentsline {subsection}{\numberline {4.4.2}Reactive Forms Integration}{19}{subsection.4.4.2}%
+\contentsline {section}{\numberline {4.5}Right-Click Statistics}{19}{section.4.5}%
+\contentsline {section}{\numberline {4.6}Data Persistence Warning}{20}{section.4.6}%
+\contentsline {subsection}{\numberline {4.6.1}Initial Dialog}{20}{subsection.4.6.1}%
+\contentsline {subsection}{\numberline {4.6.2}Beforeunload Guard}{20}{subsection.4.6.2}%
+\contentsline {chapter}{\numberline {5}Deployment}{21}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Prerequisites}{21}{section.5.1}%
+\contentsline {subsection}{\numberline {5.1.1}Development Environment}{21}{subsection.5.1.1}%
+\contentsline {subsection}{\numberline {5.1.2}Production Environment}{21}{subsection.5.1.2}%
+\contentsline {section}{\numberline {5.2}Local Development}{21}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Clone and Install}{21}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}Development Server}{22}{subsection.5.2.2}%
+\contentsline {subsection}{\numberline {5.2.3}Backend Connection}{22}{subsection.5.2.3}%
+\contentsline {section}{\numberline {5.3}Production Build}{22}{section.5.3}%
+\contentsline {subsection}{\numberline {5.3.1}Angular Production Build}{22}{subsection.5.3.1}%
+\contentsline {subsection}{\numberline {5.3.2}Build Verification}{23}{subsection.5.3.2}%
+\contentsline {section}{\numberline {5.4}Docker Deployment}{23}{section.5.4}%
+\contentsline {subsection}{\numberline {5.4.1}Dockerfile}{23}{subsection.5.4.1}%
+\contentsline {subsection}{\numberline {5.4.2}Nginx Configuration}{23}{subsection.5.4.2}%
+\contentsline {subsection}{\numberline {5.4.3}Building the Docker Image}{24}{subsection.5.4.3}%
+\contentsline {section}{\numberline {5.5}Server Deployment}{24}{section.5.5}%
+\contentsline {subsection}{\numberline {5.5.1}L3S Infrastructure}{24}{subsection.5.5.1}%
+\contentsline {subsection}{\numberline {5.5.2}Deployment Script}{25}{subsection.5.5.2}%
+\contentsline {subsection}{\numberline {5.5.3}Docker Cleanup}{25}{subsection.5.5.3}%
+\contentsline {section}{\numberline {5.6}Environment Configuration}{25}{section.5.6}%
+\contentsline {subsection}{\numberline {5.6.1}Production Environment}{25}{subsection.5.6.1}%
+\contentsline {subsection}{\numberline {5.6.2}Runtime Configuration}{26}{subsection.5.6.2}%
+\contentsline {section}{\numberline {5.7}Troubleshooting}{26}{section.5.7}%
+\contentsline {subsection}{\numberline {5.7.1}Common Issues}{26}{subsection.5.7.1}%
+\contentsline {subsection}{\numberline {5.7.2}Logging}{26}{subsection.5.7.2}%
+\contentsline {chapter}{\numberline {6}Related Work}{27}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Desktop Petri Net Tools}{27}{section.6.1}%
+\contentsline {subsection}{\numberline {6.1.1}WoPeD (Workflow Petri Net Designer)}{27}{subsection.6.1.1}%
+\contentsline {subsection}{\numberline {6.1.2}CPN Tools}{27}{subsection.6.1.2}%
+\contentsline {section}{\numberline {6.2}Web-Based Petri Net Tools}{28}{section.6.2}%
+\contentsline {subsection}{\numberline {6.2.1}i-love-petrinets (Original Fork)}{28}{subsection.6.2.1}%
+\contentsline {subsection}{\numberline {6.2.2}Cytoscape.js}{28}{subsection.6.2.2}%
+\contentsline {section}{\numberline {6.3}Simulation Backends}{28}{section.6.3}%
+\contentsline {subsection}{\numberline {6.3.1}gspn4py}{28}{subsection.6.3.1}%
+\contentsline {subsection}{\numberline {6.3.2}pm4py}{28}{subsection.6.3.2}%
+\contentsline {section}{\numberline {6.4}Summary}{29}{section.6.4}%
+\contentsline {chapter}{\numberline {7}Conclusion and Future Work}{31}{chapter.7}%
+\contentsline {section}{\numberline {7.1}Summary}{31}{section.7.1}%
+\contentsline {subsection}{\numberline {7.1.1}Achievements}{31}{subsection.7.1.1}%
+\contentsline {subsection}{\numberline {7.1.2}Technical Highlights}{31}{subsection.7.1.2}%
+\contentsline {section}{\numberline {7.2}Limitations}{32}{section.7.2}%
+\contentsline {section}{\numberline {7.3}Future Work}{32}{section.7.3}%
+\contentsline {subsection}{\numberline {7.3.1}Short-Term (High Priority)}{32}{subsection.7.3.1}%
+\contentsline {subsection}{\numberline {7.3.2}Medium-Term (Nice-to-Have)}{32}{subsection.7.3.2}%
+\contentsline {subsection}{\numberline {7.3.3}Long-Term (Research Extensions)}{33}{subsection.7.3.3}%
+\contentsline {section}{\numberline {7.4}Acknowledgements}{33}{section.7.4}%
+\contentsline {chapter}{\numberline {A}Appendix: API Reference}{35}{appendix.A}%
+\contentsline {section}{\numberline {A.1}Simulation Endpoints}{35}{section.A.1}%
+\contentsline {subsection}{\numberline {A.1.1}Simple Simulation}{35}{subsection.A.1.1}%
+\contentsline {subsection}{\numberline {A.1.2}Example Models}{35}{subsection.A.1.2}%
+\contentsline {section}{\numberline {A.2}Planning Endpoints}{36}{section.A.2}%
+\contentsline {subsection}{\numberline {A.2.1}Default Parameters}{36}{subsection.A.2.1}%
+\contentsline {subsection}{\numberline {A.2.2}Schedule Calculation}{36}{subsection.A.2.2}%
+\contentsline {section}{\numberline {A.3}Configuration Files}{36}{section.A.3}%
+\contentsline {subsection}{\numberline {A.3.1}Angular Environment}{36}{subsection.A.3.1}%
+\contentsline {subsection}{\numberline {A.3.2}Docker Compose}{36}{subsection.A.3.2}%

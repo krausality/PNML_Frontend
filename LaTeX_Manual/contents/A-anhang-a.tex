@@ -1,0 +1,93 @@
+\chapter{Appendix: API Reference}
+\label{chap:appendix-a}
+
+This appendix provides a reference for the backend API endpoints used by the frontend.
+
+\section{Simulation Endpoints}
+\label{sec:simulation-endpoints}
+
+\subsection{Simple Simulation}
+
+\begin{description}
+    \item[Endpoint:] \texttt{POST /simulation-petri-nets/simple-sim}
+    \item[Description:] Executes a stochastic simulation of a Petri net
+    \item[Request Body:] PNML content as string or file upload
+    \item[Response:] JSON containing firing sequence and optional detailed log
+\end{description}
+
+\begin{lstlisting}[language=json, caption={Example response from simple-sim}]
+{
+  "firing_seq": ["t1", "t3", "t2", "t1", "t4"],
+  "detailed_log": [
+    {"step": 0, "marking": {"p1": 1, "p2": 0}},
+    {"step": 1, "marking": {"p1": 0, "p2": 1}}
+  ]
+}
+\end{lstlisting}
+
+\subsection{Example Models}
+
+\begin{description}
+    \item[Endpoint:] \texttt{GET /simulation-petri-nets/example-models}
+    \item[Description:] Retrieves a list of available example PNML files
+    \item[Response:] Array of model names
+\end{description}
+
+\begin{description}
+    \item[Endpoint:] \texttt{GET /simulation-petri-nets/example-models/<name>}
+    \item[Description:] Retrieves the PNML content of a specific example model
+    \item[Response:] PNML XML as string
+\end{description}
+
+\section{Planning Endpoints}
+\label{sec:planning-endpoints}
+
+\subsection{Default Parameters}
+
+\begin{description}
+    \item[Endpoint:] \texttt{GET /dto/planning}
+    \item[Description:] Retrieves default parameter values for offshore scheduling
+    \item[Response:] JSON object with parameter definitions and defaults
+\end{description}
+
+\subsection{Schedule Calculation}
+
+\begin{description}
+    \item[Endpoint:] \texttt{POST /offshore-plan/calculate-schedule}
+    \item[Description:] Calculates an optimal schedule based on provided parameters
+    \item[Request Body:] JSON with scenario and workforce configuration
+    \item[Response:] Schedule with operation timings
+\end{description}
+
+\section{Configuration Files}
+\label{sec:config-files}
+
+\subsection{Angular Environment}
+
+\texttt{src/environments/environment.ts}:
+
+\begin{lstlisting}[language=TypeScript, caption={Development environment configuration}]
+export const environment = {
+  production: false,
+  apiUrl: 'http://localhost:9040'
+};
+\end{lstlisting}
+
+\subsection{Docker Compose}
+
+\texttt{docker-compose.yml} for local development with backend:
+
+\begin{lstlisting}[language=yaml, caption={Docker Compose configuration}]
+version: '3.8'
+services:
+  frontend:
+    build: .
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+  backend:
+    image: l3s-offshore-backend:latest
+    ports:
+      - "9040:9040"
+\end{lstlisting}

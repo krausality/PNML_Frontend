@@ -1,0 +1,131 @@
+\chapter{Fundamentals}
+\label{chap:fundamentals}
+
+This chapter provides the theoretical and technical background necessary to understand the implementation details described in later chapters. It covers the fundamentals of Petri nets, the PNML exchange format, and the web technologies used in the frontend development.
+
+\section{Petri Nets}
+\label{sec:petri-nets}
+
+Petri nets are a mathematical modeling language for the description of distributed systems. Originally introduced by Carl Adam Petri in his 1962 dissertation, they provide a graphical and formal representation of concurrent processes.
+
+\subsection{Basic Definitions}
+
+A Petri net is a directed bipartite graph consisting of:
+
+\begin{itemize}
+    \item \textbf{Places} ($P$): Represented as circles, places hold tokens and model conditions or states
+    \item \textbf{Transitions} ($T$): Represented as rectangles or bars, transitions model events or actions
+    \item \textbf{Arcs} ($F$): Directed edges connecting places to transitions (input arcs) or transitions to places (output arcs)
+    \item \textbf{Marking} ($M$): The distribution of tokens across places, representing the system state
+\end{itemize}
+
+Formally, a Petri net is defined as a tuple $N = (P, T, F, W, M_0)$ where:
+\begin{itemize}
+    \item $P$ is a finite set of places
+    \item $T$ is a finite set of transitions, $P \cap T = \emptyset$
+    \item $F \subseteq (P \times T) \cup (T \times P)$ is the flow relation
+    \item $W: F \rightarrow \mathbb{N}^+$ is the arc weight function
+    \item $M_0: P \rightarrow \mathbb{N}$ is the initial marking
+\end{itemize}
+
+\subsection{Firing Rules}
+
+A transition $t \in T$ is \textbf{enabled} at marking $M$ if and only if:
+\[
+\forall p \in \bullet t: M(p) \geq W(p, t)
+\]
+
+where $\bullet t$ denotes the preset of $t$ (input places). When an enabled transition fires, the marking changes according to:
+\[
+M'(p) = M(p) - W(p, t) + W(t, p)
+\]
+
+\subsection{Extensions: Stochastic Petri Nets}
+
+For modeling real-world systems with timing, Generalized Stochastic Petri Nets (GSPNs) extend basic Petri nets with:
+\begin{itemize}
+    \item \textbf{Timed transitions}: Fire after a random delay drawn from an exponential distribution
+    \item \textbf{Immediate transitions}: Fire instantaneously when enabled (priority over timed transitions)
+\end{itemize}
+
+The L3S-Offshore-2 project uses GSPNs to model the stochastic nature of offshore installation operations, including weather-dependent delays.
+
+\section{PNML: Petri Net Markup Language}
+\label{sec:pnml}
+
+PNML (Petri Net Markup Language) is an XML-based interchange format for Petri nets, standardized as ISO/IEC 15909-2. It provides a common syntax for storing and exchanging Petri net models across different tools.
+
+\subsection{Document Structure}
+
+A PNML document has the following hierarchical structure:
+\begin{lstlisting}[language=XML, caption={Basic PNML structure}]
+<?xml version="1.0" encoding="UTF-8"?>
+<pnml>
+  <net id="net1" type="http://www.pnml.org/version-2009/grammar/ptnet">
+    <page id="page1">
+      <place id="p1">
+        <name><text>Place 1</text></name>
+        <initialMarking><text>1</text></initialMarking>
+        <graphics><position x="100" y="100"/></graphics>
+      </place>
+      <transition id="t1">
+        <name><text>Transition 1</text></name>
+        <graphics><position x="200" y="100"/></graphics>
+      </transition>
+      <arc id="a1" source="p1" target="t1">
+        <inscription><text>1</text></inscription>
+      </arc>
+    </page>
+  </net>
+</pnml>
+\end{lstlisting}
+
+\subsection{Graphical Information}
+
+PNML files may optionally contain graphical information (positions, dimensions) in \texttt{<graphics>} elements. When this information is missing or invalid, the frontend applies the Sugiyama algorithm to generate a readable layout automatically.
+
+\section{Web Technologies}
+\label{sec:web-technologies}
+
+The frontend is built using modern web technologies that enable rich, interactive single-page applications.
+
+\subsection{Angular Framework}
+
+Angular is a TypeScript-based web application framework developed by Google. Key concepts used in this project include:
+
+\begin{itemize}
+    \item \textbf{Components}: Reusable UI building blocks with encapsulated logic, templates, and styles
+    \item \textbf{Services}: Singleton classes for shared state and business logic, injected via dependency injection
+    \item \textbf{Observables (RxJS)}: Reactive programming patterns for handling asynchronous events and data streams
+    \item \textbf{Modules}: Organizational units that group related components, services, and other code
+\end{itemize}
+
+\subsection{SVG for Petri Net Rendering}
+
+Scalable Vector Graphics (SVG) is used for rendering Petri nets because:
+\begin{itemize}
+    \item Resolution-independent rendering at any zoom level
+    \item DOM integration allows event handling on individual elements
+    \item CSS styling and animations can be applied
+    \item Native browser support without plugins
+\end{itemize}
+
+\subsection{Angular Material}
+
+Angular Material provides pre-built UI components following Google's Material Design guidelines. The project uses Material components for:
+\begin{itemize}
+    \item Tab navigation (\texttt{mat-tab-group})
+    \item Buttons and form controls
+    \item Dialogs for warnings and information
+    \item Icons and tooltips
+\end{itemize}
+
+\section{Related Concepts}
+\label{sec:related-concepts}
+
+% TODO: Add sections as needed for:
+% - Docker containerization basics
+% - Flask/REST API fundamentals
+% - Any other concepts that need explanation
+
+
