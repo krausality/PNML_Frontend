@@ -1,3 +1,51 @@
-\begin{thebibliography}{}
+\begin{thebibliography}{1}
+
+\bibitem{AngularDocs}
+{Google}.
+\newblock Angular documentation.
+\newblock \url{https://angular.io/docs}, 2024.
+\newblock Accessed: 2025-11-01.
+
+\bibitem{MaterialDesign}
+{Google}.
+\newblock Angular material.
+\newblock \url{https://material.angular.io/}, 2024.
+\newblock Accessed: 2025-11-01.
+
+\bibitem{Marsan1984}
+M.~A. Marsan, G.~Conte, and G.~Balbo.
+\newblock A class of generalized stochastic petri nets for the performance
+  evaluation of multiprocessor systems.
+\newblock {\em ACM Transactions on Computer Systems}, 2(2):93--122, 1984.
+
+\bibitem{Murata1989}
+T.~Murata.
+\newblock Petri nets: Properties, analysis and applications.
+\newblock {\em Proceedings of the IEEE}, 77(4):541--580, 1989.
+
+\bibitem{Petri1962}
+C.~A. Petri.
+\newblock Kommunikation mit automaten.
+\newblock {\em Dissertation, Universit{\"a}t Bonn}, 1962.
+\newblock English translation: Communication with Automata, Technical Report
+  RADC-TR-65-377, Griffiss Air Force Base, New York, 1966.
+
+\bibitem{RxJS}
+{ReactiveX}.
+\newblock Rxjs - reactive extensions library for javascript.
+\newblock \url{https://rxjs.dev/}, 2024.
+\newblock Accessed: 2025-11-01.
+
+\bibitem{Sugiyama1981}
+K.~Sugiyama, S.~Tagawa, and M.~Toda.
+\newblock Methods for visual understanding of hierarchical system structures.
+\newblock {\em IEEE Transactions on Systems, Man, and Cybernetics},
+  11(2):109--125, 1981.
+
+\bibitem{PNML2004}
+M.~Weber and E.~Kindler.
+\newblock The petri net markup language.
+\newblock Technical report, Petri Net Newsletter, 2004.
+\newblock http://www.pnml.org/.
 
 \end{thebibliography}

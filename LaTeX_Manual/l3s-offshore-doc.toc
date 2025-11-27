@@ -17,7 +17,7 @@
 \contentsline {subsection}{\numberline {2.2.2}Graphical Information}{7}{subsection.2.2.2}%
 \contentsline {section}{\numberline {2.3}Web Technologies}{7}{section.2.3}%
 \contentsline {subsection}{\numberline {2.3.1}Angular Framework}{7}{subsection.2.3.1}%
-\contentsline {subsection}{\numberline {2.3.2}SVG for Petri Net Rendering}{7}{subsection.2.3.2}%
+\contentsline {subsection}{\numberline {2.3.2}SVG for Petri Net Rendering}{8}{subsection.2.3.2}%
 \contentsline {subsection}{\numberline {2.3.3}Angular Material}{8}{subsection.2.3.3}%
 \contentsline {section}{\numberline {2.4}Related Concepts}{8}{section.2.4}%
 \contentsline {chapter}{\numberline {3}UI Service: User Interface State Management}{9}{chapter.3}%

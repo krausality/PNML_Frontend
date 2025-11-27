@@ -22,11 +22,38 @@ sudo apt-get install texlive-full
 brew install --cask mactex
 ```
 
-### Compiling the Document
+### Build the PDF
 
-#### Option 1: Using latexmk (Recommended)
+#### Option 1: Python Build Script (Recommended) ⭐
 
-The easiest way to compile with all dependencies resolved:
+The easiest and most reliable way to build the documentation:
+
+```bash
+cd LaTeX_Manual
+
+# Standard build
+python build_pdf.py
+
+# Clean build (removes old auxiliary files first)
+python build_pdf.py --clean
+
+# Build and open PDF automatically
+python build_pdf.py --open
+
+# Show detailed output
+python build_pdf.py --verbose
+
+# Just clean auxiliary files
+python build_pdf.py --clean-only
+```
+
+The script automatically:
+- Runs pdflatex 3 times (for cross-references)
+- Runs bibtex (for bibliography)
+- Detects and reports errors
+- Shows build progress
+
+#### Option 2: Using latexmk
 
 ```bash
 cd LaTeX_Manual
@@ -35,9 +62,9 @@ latexmk -pdf l3s-offshore-doc.tex
 
 This automatically runs pdflatex, bibtex, and pdflatex again as needed.
 
-#### Option 2: Manual Compilation
+#### Option 3: Manual Compilation
 
-If you don't have latexmk, run these commands in order:
+If you don't have latexmk or Python, run these commands in order:
 
 ```bash
 cd LaTeX_Manual
@@ -55,7 +82,7 @@ pdflatex l3s-offshore-doc.tex
 pdflatex l3s-offshore-doc.tex
 ```
 
-#### Option 3: Using VS Code with LaTeX Workshop
+#### Option 4: Using VS Code with LaTeX Workshop
 
 1. Install the [LaTeX Workshop](https://marketplace.visualstudio.com/items?itemName=James-Yu.latex-workshop) extension
 2. Open `l3s-offshore-doc.tex`
@@ -76,18 +103,25 @@ LaTeX_Manual/
 ├── l3s-offshore-doc.tex    # Main document (compile this)
 ├── l3s-project-doc.sty     # L3S project documentation style
 ├── references.bib          # Bibliography database
+├── build_pdf.py            # Python build script ⭐
 ├── README.md               # This file
 │
 └── contents/
     ├── 00-abstract.tex           # Abstract
-    ├── 01-einleitung.tex         # Introduction
-    ├── 02-grundlagen.tex         # Fundamentals (Petri nets, PNML, Angular)
-    ├── 03-architecture.tex       # System Architecture
-    ├── 04-implementation.tex     # Implementation Details
-    ├── 05-deployment.tex         # Deployment Guide
-    ├── 06-verwandte-arbeiten.tex # Related Work
-    ├── 07-zusammenfassung-ausblick.tex  # Conclusion & Future Work
-    ├── A-anhang-a.tex            # Appendix: API Reference
+    ├── 01-introduction.tex       # Introduction
+    ├── 02-fundamentals.tex       # Fundamentals (Petri nets, PNML, Angular)
+    ├── 03a-ui-service.tex        # UI Service (State Management)
+    ├── 03b-petri-net-elements.tex # Petri Net Core Data Model
+    ├── 03c-data-service.tex      # Data Service (Central Store)
+    ├── 03-architecture.tex       # System Architecture Overview
+    ├── 04-implementation.tex     # Implementation Details (Zoom, Animation)
+    ├── 04b-pnml-json-io.tex      # PNML & JSON Import/Export
+    ├── 04c-layout-algorithms.tex # Layout Algorithms (Sugiyama, Spring)
+    ├── 04d-planning-service.tex  # Backend API Integration
+    ├── 05-deployment.tex         # Deployment Guide (Docker)
+    ├── 06-related-work.tex       # Related Work
+    ├── 07-conclusion.tex         # Conclusion & Future Work
+    ├── A-appendix.tex            # Appendix: API Reference
     └── figures/                  # Diagrams and screenshots
         └── (add your figures here)
 ```
