@@ -2,9 +2,22 @@
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {3.1}{\ignorespaces High-level system architecture showing frontend-backend interaction}}{9}{figure.caption.8}%
-\contentsline {figure}{\numberline {3.2}{\ignorespaces Data flow between components and services}}{12}{figure.caption.9}%
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Tab switching data flow through UiService}}{15}{figure.caption.8}%
 \addvspace {10\p@ }
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Petri net element class relationships}}{27}{figure.caption.10}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {5.1}{\ignorespaces DataService as central hub for Petri net data}}{38}{figure.caption.11}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {6.1}{\ignorespaces High-level system architecture showing frontend-backend interaction}}{41}{figure.caption.13}%
+\contentsline {figure}{\numberline {6.2}{\ignorespaces Data flow between components and services}}{44}{figure.caption.14}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {8.1}{\ignorespaces File import processing flow}}{65}{figure.caption.16}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {9.1}{\ignorespaces Layout algorithm results comparison}}{77}{figure.caption.18}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {10.1}{\ignorespaces Frontend-backend communication via PlanningService}}{80}{figure.caption.19}%
+\contentsline {figure}{\numberline {10.2}{\ignorespaces Simulation request flow through PlanningService}}{87}{figure.caption.20}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }

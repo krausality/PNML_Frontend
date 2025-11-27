@@ -1,0 +1,456 @@
+\chapter{Planning Service: Backend API Integration}
+\label{chap:planning-service}
+
+The previous chapters covered client-side functionality: UI state, data management, file I/O, and layout algorithms. This chapter introduces the \textbf{Planning Service}, which extends the application's capabilities by communicating with a powerful backend server for simulation and analysis tasks.
+
+\section{Problem Statement}
+\label{sec:planning-problem}
+
+Some operations are too complex or resource-intensive for browser-based execution:
+
+\begin{itemize}
+    \item \textbf{Long simulations}: Running thousands of firing steps
+    \item \textbf{Stochastic analysis}: Monte Carlo simulations with multiple runs
+    \item \textbf{AI planning}: Computing optimal transition sequences
+    \item \textbf{Domain-specific algorithms}: Offshore scheduling optimization
+\end{itemize}
+
+These tasks require:
+\begin{itemize}
+    \item More computing power than browsers provide
+    \item Specialized libraries (e.g., Python's \texttt{gspn4py} for stochastic Petri nets)
+    \item Server-side state management for long-running operations
+\end{itemize}
+
+The \texttt{PlanningService} acts as a \textbf{bridge} between the frontend and backend, sending requests and receiving results via HTTP.
+
+\section{System Architecture}
+\label{sec:planning-architecture}
+
+\begin{figure}[htb]
+    \centering
+    \begin{tikzpicture}[
+        node distance=2cm,
+        box/.style={rectangle, draw, minimum width=3cm, minimum height=1.2cm, align=center},
+        arrow/.style={->, thick},
+    ]
+        % Frontend
+        \node[box, fill=green!10] (fe) {Angular Frontend\\(Browser)};
+        
+        % Backend
+        \node[box, fill=blue!10, right=4cm of fe] (be) {Flask Backend\\(Python Server)};
+        
+        % Arrows
+        \draw[arrow] ([yshift=5pt]fe.east) -- node[above] {\small HTTP POST (PNML)} ([yshift=5pt]be.west);
+        \draw[arrow] ([yshift=-5pt]be.west) -- node[below] {\small JSON (Results)} ([yshift=-5pt]fe.east);
+        
+        % Labels
+        \node[below=0.5cm of fe] {\small PlanningService};
+        \node[below=0.5cm of be] {\small /simulation-petri-nets/};
+        
+    \end{tikzpicture}
+    \caption{Frontend-backend communication via PlanningService}
+    \label{fig:planning-architecture}
+\end{figure}
+
+\section{Environment Configuration}
+\label{sec:planning-environment}
+
+The backend URL is configured via Angular's environment files:
+
+\begin{lstlisting}[language=TypeScript, caption={Development environment (src/environments/environment.ts)}]
+export const environment = {
+    production: false,
+    backendApiUrl: 'http://localhost:9040/l3s-offshore-2'
+};
+\end{lstlisting}
+
+\begin{lstlisting}[language=TypeScript, caption={Production environment (src/environments/environment.prod.ts)}]
+export const environment = {
+    production: true,
+    backendApiUrl: 'https://l3s-offshore-plan-2.l3s.uni-hannover.de/l3s-offshore-2'
+};
+\end{lstlisting}
+
+Angular automatically swaps these files during the build process, ensuring development builds connect to \texttt{localhost} while production builds use the live server.
+
+\section{PlanningService Implementation}
+\label{sec:planning-implementation}
+
+\begin{lstlisting}[language=TypeScript, caption={Planning service (src/app/tr-services/planning.service.ts)}]
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
+
+@Injectable({
+    providedIn: 'root'
+})
+export class PlanningService {
+    /** Base URL for planning-related endpoints */
+    private apiUrl = `${environment.backendApiUrl}/dto/planning`;
+    
+    /** URL for Petri net simulation endpoints */
+    private simpleSimApiUrl = `${environment.backendApiUrl}/simulation-petri-nets/simple-sim`;
+
+    constructor(private http: HttpClient) {}
+
+    // =========================================================================
+    // SIMULATION METHODS
+    // =========================================================================
+
+    /**
+     * Run a Petri net simulation on the backend.
+     * Sends the PNML file and receives firing sequence results.
+     * 
+     * @param pnmlFile - The PNML file to simulate
+     * @param runs - Number of simulation runs (for stochastic analysis)
+     * @returns Observable with simulation results
+     */
+    runSimpleSimulation(pnmlFile: File, runs: number = 1): Observable<SimulationResult> {
+        // FormData is required for file uploads
+        const formData = new FormData();
+        formData.append('pnml_model', pnmlFile, pnmlFile.name);
+        formData.append('num_runs', runs.toString());
+
+        return this.http.post<SimulationResult>(this.simpleSimApiUrl, formData)
+            .pipe(catchError(this.handleError));
+    }
+
+    /**
+     * Convenience method: run simulation from PNML string.
+     * Converts the string to a File object before sending.
+     */
+    runSimpleSimulationFromString(
+        pnmlContent: string, 
+        runs: number = 1, 
+        fileName: string = 'model.pnml'
+    ): Observable<SimulationResult> {
+        // Create a File from the string content
+        const pnmlFile = new File([pnmlContent], fileName, { type: 'application/xml' });
+        return this.runSimpleSimulation(pnmlFile, runs);
+    }
+
+    // =========================================================================
+    // PARAMETER & CONFIGURATION METHODS
+    // =========================================================================
+
+    /**
+     * Fetch default parameter values from backend.
+     * Used to populate the parameter table with sensible defaults.
+     */
+    getDefaults(): Observable<ParameterDefaults> {
+        return this.http.get<ParameterDefaults>(`${this.apiUrl}/defaults`)
+            .pipe(catchError(this.handleError));
+    }
+
+    /**
+     * Submit planning parameters to backend.
+     * Triggers the offshore scheduling optimization.
+     */
+    runPlanning(planningData: PlanningRequest): Observable<PlanningResult> {
+        return this.http.post<PlanningResult>(this.apiUrl, planningData)
+            .pipe(catchError(this.handleError));
+    }
+
+    // =========================================================================
+    // EXAMPLE MODEL METHODS
+    // =========================================================================
+
+    /**
+     * Get list of available example models from backend.
+     * Returns filenames like ["example1.pnml", "example2.pnml"]
+     */
+    getAvailableExampleModels(): Observable<string[]> {
+        const url = `${environment.backendApiUrl}/simulation-petri-nets/example-models`;
+        return this.http.get<string[]>(url)
+            .pipe(catchError(this.handleError));
+    }
+
+    /**
+     * Load a specific example model by name.
+     * Returns the raw PNML content as a string.
+     */
+    loadExampleModelByName(name: string): Observable<string> {
+        const url = `${environment.backendApiUrl}/simulation-petri-nets/example-models/${encodeURIComponent(name)}`;
+        return this.http.get(url, { responseType: 'text' })
+            .pipe(catchError(this.handleError));
+    }
+
+    // =========================================================================
+    // ERROR HANDLING
+    // =========================================================================
+
+    /**
+     * Centralized error handler for all HTTP requests.
+     * Logs the error and returns a user-friendly Observable error.
+     */
+    private handleError(error: HttpErrorResponse): Observable<never> {
+        let message: string;
+
+        if (error.error instanceof ErrorEvent) {
+            // Client-side error (network issues, etc.)
+            message = `Network error: ${error.error.message}`;
+        } else {
+            // Server-side error
+            message = `Server error: ${error.status} - ${error.message}`;
+        }
+
+        console.error('[PlanningService]', message);
+        return throwError(() => new Error(message));
+    }
+}
+
+// =========================================================================
+// TYPE DEFINITIONS
+// =========================================================================
+
+interface SimulationResult {
+    /** Sequence of transition IDs that fired */
+    firing_seq: string[];
+    /** Token counts at each step (optional) */
+    detailed_log?: StepLog[];
+    /** Statistics for multi-run simulations */
+    statistics?: TransitionStats;
+}
+
+interface StepLog {
+    step: number;
+    transition: string;
+    marking: { [placeId: string]: number };
+}
+
+interface TransitionStats {
+    [transitionId: string]: {
+        fire_count: number;
+        fire_percentage: number;
+    };
+}
+
+interface ParameterDefaults {
+    [paramName: string]: number | string | boolean;
+}
+
+interface PlanningRequest {
+    model_pnml: string;
+    parameters: { [key: string]: any };
+}
+
+interface PlanningResult {
+    schedule: any[];
+    metrics: { [key: string]: number };
+}
+\end{lstlisting}
+
+\section{Usage in Components}
+\label{sec:planning-usage}
+
+\subsection{Running a Simulation}
+
+\begin{lstlisting}[language=TypeScript, caption={Using PlanningService in ButtonBarComponent}]
+import { Component } from '@angular/core';
+import { PlanningService } from '../../tr-services/planning.service';
+import { PnmlService } from '../../tr-services/pnml.service';
+import { UiService } from '../../tr-services/ui.service';
+
+@Component({ /* ... */ })
+export class ButtonBarComponent {
+    constructor(
+        private planningService: PlanningService,
+        private pnmlService: PnmlService,
+        private uiService: UiService
+    ) {}
+
+    /**
+     * Called when user clicks "Run Simulation" button.
+     */
+    runSimulation(): void {
+        // 1. Get current Petri net as PNML string
+        const pnmlContent = this.pnmlService.getPNML();
+
+        // 2. Send to backend for simulation
+        this.planningService
+            .runSimpleSimulationFromString(pnmlContent, 1)
+            .subscribe({
+                next: (result) => {
+                    console.log('Simulation complete:', result.firing_seq.length, 'steps');
+                    
+                    // 3. Update UI with results
+                    this.uiService.setSimulationResults(result);
+                    this.uiService.tab = TabState.Simulation;
+                },
+                error: (err) => {
+                    console.error('Simulation failed:', err.message);
+                    this.showErrorDialog('Simulation failed: ' + err.message);
+                }
+            });
+    }
+}
+\end{lstlisting}
+
+\subsection{Loading Example Models}
+
+\begin{lstlisting}[language=TypeScript, caption={Loading example models with dropdown}]
+import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { PlanningService } from '../../tr-services/planning.service';
+import { PnmlService } from '../../tr-services/pnml.service';
+
+@Component({
+    selector: 'app-example-selector',
+    template: `
+        <select (change)="onModelSelected($event)">
+            <option value="">-- Select Example --</option>
+            <option *ngFor="let model of availableModels$ | async" [value]="model">
+                {{ model }}
+            </option>
+        </select>
+    `
+})
+export class ExampleSelectorComponent implements OnInit {
+    availableModels$: Observable<string[]>;
+
+    constructor(
+        private planningService: PlanningService,
+        private pnmlService: PnmlService
+    ) {}
+
+    ngOnInit(): void {
+        // Fetch available examples on component init
+        this.availableModels$ = this.planningService.getAvailableExampleModels();
+    }
+
+    onModelSelected(event: Event): void {
+        const select = event.target as HTMLSelectElement;
+        const modelName = select.value;
+
+        if (!modelName) return;
+
+        // Load the selected model
+        this.planningService.loadExampleModelByName(modelName).subscribe({
+            next: (pnmlContent) => {
+                // Parse and load into DataService
+                this.pnmlService.parse(pnmlContent);
+                console.log('Loaded example:', modelName);
+            },
+            error: (err) => {
+                console.error('Failed to load example:', err.message);
+            }
+        });
+    }
+}
+\end{lstlisting}
+
+\section{Request/Response Flow}
+\label{sec:planning-flow}
+
+\begin{figure}[htb]
+    \centering
+    \begin{tikzpicture}[
+        node distance=1.2cm,
+        box/.style={rectangle, draw, minimum width=2.2cm, minimum height=0.6cm, font=\small},
+    ]
+        % Actors
+        \node[box] (user) at (0,0) {User};
+        \node[box] (btn) at (3,0) {ButtonBar};
+        \node[box] (pnml) at (6,0) {PnmlService};
+        \node[box] (plan) at (9,0) {PlanningService};
+        \node[box] (back) at (12,0) {Backend};
+        
+        % Flow
+        \draw[->] (user) -- ++(0,-1) -| node[pos=0.25, below] {\tiny clicks Run} (btn);
+        \draw[->] (btn) -- ++(0,-2) -| node[pos=0.25, below] {\tiny getPNML()} (pnml);
+        \draw[->] (pnml) -- ++(0,-3) -| node[pos=0.25, below] {\tiny PNML string} (btn);
+        \draw[->] (btn) -- ++(0,-4) -| node[pos=0.25, below] {\tiny runSimulation()} (plan);
+        \draw[->] (plan) -- ++(0,-5) -| node[pos=0.25, below] {\tiny POST /simple-sim} (back);
+        \draw[->] (back) -- ++(0,-6) -| node[pos=0.25, below] {\tiny JSON result} (plan);
+        \draw[->] (plan) -- ++(0,-7) -| node[pos=0.25, below] {\tiny Observable<Result>} (btn);
+        
+    \end{tikzpicture}
+    \caption{Simulation request flow through PlanningService}
+    \label{fig:simulation-flow}
+\end{figure}
+
+\section{Backend API Endpoints}
+\label{sec:planning-endpoints}
+
+The backend exposes the following REST endpoints:
+
+\begin{table}[htb]
+    \centering
+    \begin{tabular}{llp{6cm}}
+        \toprule
+        \textbf{Method} & \textbf{Endpoint} & \textbf{Description} \\
+        \midrule
+        GET & \texttt{/dto/planning/defaults} & Get default parameter values \\
+        POST & \texttt{/dto/planning} & Run planning optimization \\
+        POST & \texttt{/simulation-petri-nets/simple-sim} & Run Petri net simulation \\
+        GET & \texttt{/simulation-petri-nets/example-models} & List available examples \\
+        GET & \texttt{/simulation-petri-nets/example-models/:name} & Get example PNML content \\
+        \bottomrule
+    \end{tabular}
+    \caption{Backend API endpoints}
+    \label{tab:api-endpoints}
+\end{table}
+
+\section{Error Handling Patterns}
+\label{sec:planning-errors}
+
+Robust error handling ensures graceful degradation when the backend is unavailable:
+
+\begin{lstlisting}[language=TypeScript, caption={Error handling with retry and fallback}]
+import { catchError, retry, timeout } from 'rxjs/operators';
+import { of } from 'rxjs';
+
+// With retry and timeout
+this.planningService.runSimpleSimulation(file)
+    .pipe(
+        timeout(30000),  // 30 second timeout
+        retry(2),        // Retry twice on failure
+        catchError(err => {
+            // Fallback to empty result
+            console.warn('Simulation failed, using empty result');
+            return of({ firing_seq: [], detailed_log: [] });
+        })
+    )
+    .subscribe(result => {
+        // Handle result (real or fallback)
+    });
+\end{lstlisting}
+
+\section{CORS Configuration}
+\label{sec:planning-cors}
+
+For development, the backend must allow cross-origin requests from the Angular dev server:
+
+\begin{lstlisting}[language=Python, caption={Flask CORS configuration (backend)}]
+from flask import Flask
+from flask_cors import CORS
+
+app = Flask(__name__)
+CORS(app, resources={
+    r"/l3s-offshore-2/*": {
+        "origins": ["http://localhost:4200"],
+        "methods": ["GET", "POST", "OPTIONS"],
+        "allow_headers": ["Content-Type"]
+    }
+})
+\end{lstlisting}
+
+In production, the nginx reverse proxy handles CORS headers.
+
+\section{Summary}
+\label{sec:planning-summary}
+
+The \texttt{PlanningService} extends frontend capabilities through backend communication:
+
+\begin{itemize}
+    \item \textbf{HTTP Communication}: Uses Angular's \texttt{HttpClient} for REST API calls
+    \item \textbf{Environment Configuration}: Separate URLs for development and production
+    \item \textbf{File Uploads}: Uses \texttt{FormData} to send PNML files
+    \item \textbf{Error Handling}: Centralized handler with user-friendly messages
+    \item \textbf{Observable Pattern}: Async results via RxJS Observables
+\end{itemize}
+
+This service enables the application to leverage powerful server-side algorithms while maintaining a responsive, client-side user interface.

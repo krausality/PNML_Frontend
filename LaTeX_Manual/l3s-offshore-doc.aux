@@ -41,178 +41,386 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.3.3}Angular Material}{8}{subsection.2.3.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {2.4}Related Concepts}{8}{section.2.4}\protected@file@percent }
 \newlabel{sec:related-concepts}{{2.4}{8}{Related Concepts}{section.2.4}{}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {3}System Architecture}{9}{chapter.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {3}UI Service: User Interface State Management}{9}{chapter.3}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\newlabel{chap:architecture}{{3}{9}{System Architecture}{chapter.3}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {3.1}System Overview}{9}{section.3.1}\protected@file@percent }
-\newlabel{sec:system-overview}{{3.1}{9}{System Overview}{section.3.1}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.1}{\ignorespaces High-level system architecture showing frontend-backend interaction}}{9}{figure.caption.8}\protected@file@percent }
+\newlabel{chap:ui-service}{{3}{9}{UI Service: User Interface State Management}{chapter.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.1}Problem Statement}{9}{section.3.1}\protected@file@percent }
+\newlabel{sec:ui-problem}{{3.1}{9}{Problem Statement}{section.3.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.2}Conceptual Overview}{10}{section.3.2}\protected@file@percent }
+\newlabel{sec:ui-concept}{{3.2}{10}{Conceptual Overview}{section.3.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.3}State Definitions}{10}{section.3.3}\protected@file@percent }
+\newlabel{sec:ui-states}{{3.3}{10}{State Definitions}{section.3.3}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.1}{\ignorespaces UI state enums (src/app/tr-enums/ui-state.ts)}}{10}{lstlisting.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3.4}The UiService Implementation}{11}{section.3.4}\protected@file@percent }
+\newlabel{sec:ui-implementation}{{3.4}{11}{The UiService Implementation}{section.3.4}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.2}{\ignorespaces UiService core implementation (src/app/tr-services/ui.service.ts)}}{11}{lstlisting.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4.1}Key Concepts Explained}{13}{subsection.3.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3.5}Usage Patterns}{13}{section.3.5}\protected@file@percent }
+\newlabel{sec:ui-usage}{{3.5}{13}{Usage Patterns}{section.3.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5.1}Changing the UI State}{13}{subsection.3.5.1}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.3}{\ignorespaces Setting the tab state (ButtonBarComponent)}}{13}{lstlisting.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5.2}Listening to UI State Changes}{14}{subsection.3.5.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.4}{\ignorespaces Subscribing to tab changes (AppComponent)}}{14}{lstlisting.3.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3.6}Data Flow Visualization}{14}{section.3.6}\protected@file@percent }
+\newlabel{sec:ui-flow}{{3.6}{14}{Data Flow Visualization}{section.3.6}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3.1}{\ignorespaces Tab switching data flow through UiService}}{15}{figure.caption.8}\protected@file@percent }
 \providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
-\newlabel{fig:system-architecture}{{3.1}{9}{High-level system architecture showing frontend-backend interaction}{figure.caption.8}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.1}Frontend (Angular)}{9}{subsection.3.1.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.2}Backend (Flask)}{10}{subsection.3.1.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {3.2}Frontend Component Hierarchy}{10}{section.3.2}\protected@file@percent }
-\newlabel{sec:component-hierarchy}{{3.2}{10}{Frontend Component Hierarchy}{section.3.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.1}Root Components}{10}{subsection.3.2.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.2}Tab Components}{10}{subsection.3.2.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2.3}Dialog Components}{11}{subsection.3.2.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {3.3}Service Layer}{11}{section.3.3}\protected@file@percent }
-\newlabel{sec:service-layer}{{3.3}{11}{Service Layer}{section.3.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3.1}Core Services}{11}{subsection.3.3.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3.2}Simulation Services}{11}{subsection.3.3.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3.3}Utility Services}{12}{subsection.3.3.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {3.4}Data Flow}{12}{section.3.4}\protected@file@percent }
-\newlabel{sec:data-flow}{{3.4}{12}{Data Flow}{section.3.4}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.2}{\ignorespaces Data flow between components and services}}{12}{figure.caption.9}\protected@file@percent }
-\newlabel{fig:data-flow}{{3.2}{12}{Data flow between components and services}{figure.caption.9}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {3.5}Tab State Management}{13}{section.3.5}\protected@file@percent }
-\newlabel{sec:tab-state-management}{{3.5}{13}{Tab State Management}{section.3.5}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.5.1}The Tab$ Observable}{13}{subsection.3.5.1}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.1}{\ignorespaces Tab state observable in UiService}}{13}{lstlisting.3.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.5.2}Tab Guards in Components}{13}{subsection.3.5.2}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.2}{\ignorespaces Tab-aware highlighting in PetriNetComponent}}{13}{lstlisting.3.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {chapter}{\numberline {4}Implementation Details}{15}{chapter.4}\protected@file@percent }
+\newlabel{fig:ui-service-flow}{{3.1}{15}{Tab switching data flow through UiService}{figure.caption.8}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.7}Practical Example: Tab-Aware Behavior}{15}{section.3.7}\protected@file@percent }
+\newlabel{sec:ui-example}{{3.7}{15}{Practical Example: Tab-Aware Behavior}{section.3.7}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3.5}{\ignorespaces Tab-aware component behavior}}{15}{lstlisting.3.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3.8}Summary}{16}{section.3.8}\protected@file@percent }
+\newlabel{sec:ui-summary}{{3.8}{16}{Summary}{section.3.8}{}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {4}Petri Net Elements: Core Data Model}{19}{chapter.4}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\newlabel{chap:implementation}{{4}{15}{Implementation Details}{chapter.4}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.1}Zoom and Pan System}{15}{section.4.1}\protected@file@percent }
-\newlabel{sec:zoom-pan-system}{{4.1}{15}{Zoom and Pan System}{section.4.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.1}The Problem}{15}{subsection.4.1.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.2}Viewport-Centered Zooming}{15}{subsection.4.1.2}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {4.1}{\ignorespaces Viewport-centered zoom calculation}}{15}{lstlisting.4.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.3}ResizeObserver Integration}{16}{subsection.4.1.3}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {4.2}{\ignorespaces ResizeObserver setup for responsive viewport}}{16}{lstlisting.4.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {4.2}Simulation Animation}{16}{section.4.2}\protected@file@percent }
-\newlabel{sec:simulation-animation}{{4.2}{16}{Simulation Animation}{section.4.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.1}Firing Sequence Format}{16}{subsection.4.2.1}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {4.3}{\ignorespaces Firing sequence data structure}}{16}{lstlisting.4.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.2}Animation Loop}{17}{subsection.4.2.2}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {4.4}{\ignorespaces Animation timer implementation}}{17}{lstlisting.4.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2.3}Transition Highlighting}{17}{subsection.4.2.3}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {4.5}{\ignorespaces Transition highlighting with CSS}}{17}{lstlisting.4.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {4.3}Token Reset Logic}{17}{section.4.3}\protected@file@percent }
-\newlabel{sec:token-reset}{{4.3}{17}{Token Reset Logic}{section.4.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.1}Baseline Snapshot}{18}{subsection.4.3.1}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {4.6}{\ignorespaces Baseline marking snapshot}}{18}{lstlisting.4.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.2}Tab-Aware Reset}{18}{subsection.4.3.2}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {4.7}{\ignorespaces Tab-aware token reset}}{18}{lstlisting.4.7}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {4.4}Parameter Table}{18}{section.4.4}\protected@file@percent }
-\newlabel{sec:parameter-table}{{4.4}{18}{Parameter Table}{section.4.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.1}Dynamic Form Generation}{19}{subsection.4.4.1}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {4.8}{\ignorespaces Dynamic parameter form generation}}{19}{lstlisting.4.8}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.2}Reactive Forms Integration}{19}{subsection.4.4.2}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {4.9}{\ignorespaces ControlContainer fix for nested forms}}{19}{lstlisting.4.9}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {4.5}Right-Click Statistics}{19}{section.4.5}\protected@file@percent }
-\newlabel{sec:right-click-statistics}{{4.5}{19}{Right-Click Statistics}{section.4.5}{}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {4.10}{\ignorespaces Right-click handler for statistics popup}}{19}{lstlisting.4.10}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {4.6}Data Persistence Warning}{20}{section.4.6}\protected@file@percent }
-\newlabel{sec:data-persistence-warning}{{4.6}{20}{Data Persistence Warning}{section.4.6}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.6.1}Initial Dialog}{20}{subsection.4.6.1}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {4.11}{\ignorespaces Data persistence dialog on app start}}{20}{lstlisting.4.11}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.6.2}Beforeunload Guard}{20}{subsection.4.6.2}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {4.12}{\ignorespaces Beforeunload event handler}}{20}{lstlisting.4.12}\protected@file@percent }
-\@writefile{toc}{\contentsline {chapter}{\numberline {5}Deployment}{21}{chapter.5}\protected@file@percent }
+\newlabel{chap:petri-net-elements}{{4}{19}{Petri Net Elements: Core Data Model}{chapter.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.1}Problem Statement}{19}{section.4.1}\protected@file@percent }
+\newlabel{sec:elements-problem}{{4.1}{19}{Problem Statement}{section.4.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.2}Core Building Blocks}{19}{section.4.2}\protected@file@percent }
+\newlabel{sec:elements-overview}{{4.2}{19}{Core Building Blocks}{section.4.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.3}Places: State Containers}{19}{section.4.3}\protected@file@percent }
+\newlabel{sec:places}{{4.3}{19}{Places: State Containers}{section.4.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {4.1}{\ignorespaces The three core Petri net element types}}{20}{table.caption.9}\protected@file@percent }
+\newlabel{tab:petri-elements}{{4.1}{20}{The three core Petri net element types}{table.caption.9}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {4.1}{\ignorespaces Place class definition (src/app/tr-classes/petri-net/place.ts)}}{20}{lstlisting.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.4}Transitions: Action Nodes}{21}{section.4.4}\protected@file@percent }
+\newlabel{sec:transitions}{{4.4}{21}{Transitions: Action Nodes}{section.4.4}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {4.2}{\ignorespaces Transition class definition (src/app/tr-classes/petri-net/transition.ts)}}{21}{lstlisting.4.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.1}Firing Rules}{23}{subsection.4.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.5}Arcs: Flow Connections}{23}{section.4.5}\protected@file@percent }
+\newlabel{sec:arcs}{{4.5}{23}{Arcs: Flow Connections}{section.4.5}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {4.3}{\ignorespaces Arc class definition (src/app/tr-classes/petri-net/arc.ts)}}{23}{lstlisting.4.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.6}The Node Interface}{24}{section.4.6}\protected@file@percent }
+\newlabel{sec:node-interface}{{4.6}{24}{The Node Interface}{section.4.6}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {4.4}{\ignorespaces Node interface (src/app/tr-interfaces/petri-net/node.ts)}}{24}{lstlisting.4.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.7}The Point Class}{25}{section.4.7}\protected@file@percent }
+\newlabel{sec:point-class}{{4.7}{25}{The Point Class}{section.4.7}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {4.5}{\ignorespaces Point class (src/app/tr-classes/petri-net/point.ts)}}{25}{lstlisting.4.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.8}Practical Example: Building a Simple Net}{25}{section.4.8}\protected@file@percent }
+\newlabel{sec:elements-example}{{4.8}{25}{Practical Example: Building a Simple Net}{section.4.8}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {4.6}{\ignorespaces Creating a Petri net in code}}{25}{lstlisting.4.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.9}Class Diagram}{27}{section.4.9}\protected@file@percent }
+\newlabel{sec:elements-diagram}{{4.9}{27}{Class Diagram}{section.4.9}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.1}{\ignorespaces Petri net element class relationships}}{27}{figure.caption.10}\protected@file@percent }
+\newlabel{fig:elements-class-diagram}{{4.1}{27}{Petri net element class relationships}{figure.caption.10}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.10}Summary}{27}{section.4.10}\protected@file@percent }
+\newlabel{sec:elements-summary}{{4.10}{27}{Summary}{section.4.10}{}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {5}Data Service: Central Data Store}{29}{chapter.5}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\newlabel{chap:deployment}{{5}{21}{Deployment}{chapter.5}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5.1}Prerequisites}{21}{section.5.1}\protected@file@percent }
-\newlabel{sec:prerequisites}{{5.1}{21}{Prerequisites}{section.5.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1.1}Development Environment}{21}{subsection.5.1.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1.2}Production Environment}{21}{subsection.5.1.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {5.2}Local Development}{21}{section.5.2}\protected@file@percent }
-\newlabel{sec:local-development}{{5.2}{21}{Local Development}{section.5.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.1}Clone and Install}{21}{subsection.5.2.1}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.1}{\ignorespaces Cloning and installing dependencies}}{22}{lstlisting.5.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.2}Development Server}{22}{subsection.5.2.2}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.2}{\ignorespaces Starting the development server}}{22}{lstlisting.5.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.3}Backend Connection}{22}{subsection.5.2.3}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.3}{\ignorespaces Development environment configuration}}{22}{lstlisting.5.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {5.3}Production Build}{22}{section.5.3}\protected@file@percent }
-\newlabel{sec:production-build}{{5.3}{22}{Production Build}{section.5.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.1}Angular Production Build}{22}{subsection.5.3.1}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.4}{\ignorespaces Creating a production build}}{22}{lstlisting.5.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.2}Build Verification}{23}{subsection.5.3.2}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.5}{\ignorespaces Verifying the production build}}{23}{lstlisting.5.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {5.4}Docker Deployment}{23}{section.5.4}\protected@file@percent }
-\newlabel{sec:docker-deployment}{{5.4}{23}{Docker Deployment}{section.5.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.1}Dockerfile}{23}{subsection.5.4.1}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.6}{\ignorespaces Multi-stage Dockerfile}}{23}{lstlisting.5.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.2}Nginx Configuration}{23}{subsection.5.4.2}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.7}{\ignorespaces nginx.conf for SPA routing}}{23}{lstlisting.5.7}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.3}Building the Docker Image}{24}{subsection.5.4.3}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.8}{\ignorespaces Building and running the Docker container}}{24}{lstlisting.5.8}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {5.5}Server Deployment}{24}{section.5.5}\protected@file@percent }
-\newlabel{sec:server-deployment}{{5.5}{24}{Server Deployment}{section.5.5}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.5.1}L3S Infrastructure}{24}{subsection.5.5.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.5.2}Deployment Script}{25}{subsection.5.5.2}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.9}{\ignorespaces Production deployment script}}{25}{lstlisting.5.9}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.5.3}Docker Cleanup}{25}{subsection.5.5.3}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.10}{\ignorespaces Docker cleanup commands}}{25}{lstlisting.5.10}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {5.6}Environment Configuration}{25}{section.5.6}\protected@file@percent }
-\newlabel{sec:environment-configuration}{{5.6}{25}{Environment Configuration}{section.5.6}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.6.1}Production Environment}{25}{subsection.5.6.1}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.11}{\ignorespaces Production environment configuration}}{25}{lstlisting.5.11}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.6.2}Runtime Configuration}{26}{subsection.5.6.2}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.12}{\ignorespaces Runtime environment injection}}{26}{lstlisting.5.12}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {5.7}Troubleshooting}{26}{section.5.7}\protected@file@percent }
-\newlabel{sec:troubleshooting}{{5.7}{26}{Troubleshooting}{section.5.7}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.7.1}Common Issues}{26}{subsection.5.7.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.7.2}Logging}{26}{subsection.5.7.2}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.13}{\ignorespaces Viewing container logs}}{26}{lstlisting.5.13}\protected@file@percent }
-\@writefile{toc}{\contentsline {chapter}{\numberline {6}Related Work}{27}{chapter.6}\protected@file@percent }
+\newlabel{chap:data-service}{{5}{29}{Data Service: Central Data Store}{chapter.5}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.1}Problem Statement}{29}{section.5.1}\protected@file@percent }
+\newlabel{sec:data-problem}{{5.1}{29}{Problem Statement}{section.5.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.2}Conceptual Overview}{30}{section.5.2}\protected@file@percent }
+\newlabel{sec:data-concept}{{5.2}{30}{Conceptual Overview}{section.5.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.3}Implementation}{30}{section.5.3}\protected@file@percent }
+\newlabel{sec:data-implementation}{{5.3}{30}{Implementation}{section.5.3}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.1}{\ignorespaces DataService core implementation (src/app/tr-services/data.service.ts)}}{30}{lstlisting.5.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5.4}Key Concepts}{35}{section.5.4}\protected@file@percent }
+\newlabel{sec:data-concepts}{{5.4}{35}{Key Concepts}{section.5.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.1}Singleton Pattern}{35}{subsection.5.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.2}Subject vs. BehaviorSubject}{35}{subsection.5.4.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.3}Cascading Deletes}{36}{subsection.5.4.3}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.2}{\ignorespaces Cascading delete pattern}}{36}{lstlisting.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5.5}Usage Patterns}{36}{section.5.5}\protected@file@percent }
+\newlabel{sec:data-usage}{{5.5}{36}{Usage Patterns}{section.5.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5.1}Adding Elements}{36}{subsection.5.5.1}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.3}{\ignorespaces Adding a place via DataService}}{36}{lstlisting.5.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5.2}Subscribing to Changes}{37}{subsection.5.5.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {5.4}{\ignorespaces Subscribing to data changes}}{37}{lstlisting.5.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5.6}Data Flow Visualization}{38}{section.5.6}\protected@file@percent }
+\newlabel{sec:data-flow}{{5.6}{38}{Data Flow Visualization}{section.5.6}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.1}{\ignorespaces DataService as central hub for Petri net data}}{38}{figure.caption.11}\protected@file@percent }
+\newlabel{fig:data-service-hub}{{5.1}{38}{DataService as central hub for Petri net data}{figure.caption.11}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.7}Interaction with Other Services}{38}{section.5.7}\protected@file@percent }
+\newlabel{sec:data-interactions}{{5.7}{38}{Interaction with Other Services}{section.5.7}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.8}Summary}{38}{section.5.8}\protected@file@percent }
+\newlabel{sec:data-summary}{{5.8}{38}{Summary}{section.5.8}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.1}{\ignorespaces Services that interact with DataService}}{39}{table.caption.12}\protected@file@percent }
+\newlabel{tab:data-service-interactions}{{5.1}{39}{Services that interact with DataService}{table.caption.12}{}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {6}System Architecture}{41}{chapter.6}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\newlabel{chap:related-work}{{6}{27}{Related Work}{chapter.6}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {6.1}Desktop Petri Net Tools}{27}{section.6.1}\protected@file@percent }
-\newlabel{sec:desktop-tools}{{6.1}{27}{Desktop Petri Net Tools}{section.6.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.1.1}WoPeD (Workflow Petri Net Designer)}{27}{subsection.6.1.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.1.2}CPN Tools}{27}{subsection.6.1.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {6.2}Web-Based Petri Net Tools}{28}{section.6.2}\protected@file@percent }
-\newlabel{sec:web-tools}{{6.2}{28}{Web-Based Petri Net Tools}{section.6.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.2.1}i-love-petrinets (Original Fork)}{28}{subsection.6.2.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.2.2}Cytoscape.js}{28}{subsection.6.2.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {6.3}Simulation Backends}{28}{section.6.3}\protected@file@percent }
-\newlabel{sec:simulation-backends}{{6.3}{28}{Simulation Backends}{section.6.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.3.1}gspn4py}{28}{subsection.6.3.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.3.2}pm4py}{28}{subsection.6.3.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {6.4}Summary}{29}{section.6.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {chapter}{\numberline {7}Conclusion and Future Work}{31}{chapter.7}\protected@file@percent }
+\newlabel{chap:architecture}{{6}{41}{System Architecture}{chapter.6}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6.1}System Overview}{41}{section.6.1}\protected@file@percent }
+\newlabel{sec:system-overview}{{6.1}{41}{System Overview}{section.6.1}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6.1}{\ignorespaces High-level system architecture showing frontend-backend interaction}}{41}{figure.caption.13}\protected@file@percent }
+\newlabel{fig:system-architecture}{{6.1}{41}{High-level system architecture showing frontend-backend interaction}{figure.caption.13}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1.1}Frontend (Angular)}{41}{subsection.6.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1.2}Backend (Flask)}{42}{subsection.6.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6.2}Frontend Component Hierarchy}{42}{section.6.2}\protected@file@percent }
+\newlabel{sec:component-hierarchy}{{6.2}{42}{Frontend Component Hierarchy}{section.6.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2.1}Root Components}{42}{subsection.6.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2.2}Tab Components}{42}{subsection.6.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2.3}Dialog Components}{43}{subsection.6.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6.3}Service Layer}{43}{section.6.3}\protected@file@percent }
+\newlabel{sec:service-layer}{{6.3}{43}{Service Layer}{section.6.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3.1}Core Services}{43}{subsection.6.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3.2}Simulation Services}{43}{subsection.6.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3.3}Utility Services}{44}{subsection.6.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6.4}Data Flow}{44}{section.6.4}\protected@file@percent }
+\newlabel{sec:data-flow}{{6.4}{44}{Data Flow}{section.6.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6.2}{\ignorespaces Data flow between components and services}}{44}{figure.caption.14}\protected@file@percent }
+\newlabel{fig:data-flow}{{6.2}{44}{Data flow between components and services}{figure.caption.14}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6.5}Tab State Management}{44}{section.6.5}\protected@file@percent }
+\newlabel{sec:tab-state-management}{{6.5}{44}{Tab State Management}{section.6.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.5.1}The Tab\$ Observable}{45}{subsection.6.5.1}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {6.1}{\ignorespaces Tab state observable in UiService}}{45}{lstlisting.6.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.5.2}Tab Guards in Components}{45}{subsection.6.5.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {6.2}{\ignorespaces Tab-aware highlighting in PetriNetComponent}}{45}{lstlisting.6.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {7}Implementation Details}{47}{chapter.7}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\newlabel{chap:conclusion}{{7}{31}{Conclusion and Future Work}{chapter.7}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {7.1}Summary}{31}{section.7.1}\protected@file@percent }
-\newlabel{sec:summary}{{7.1}{31}{Summary}{section.7.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.1.1}Achievements}{31}{subsection.7.1.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.1.2}Technical Highlights}{31}{subsection.7.1.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {7.2}Limitations}{32}{section.7.2}\protected@file@percent }
-\newlabel{sec:limitations}{{7.2}{32}{Limitations}{section.7.2}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {7.3}Future Work}{32}{section.7.3}\protected@file@percent }
-\newlabel{sec:future-work}{{7.3}{32}{Future Work}{section.7.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.3.1}Short-Term (High Priority)}{32}{subsection.7.3.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.3.2}Medium-Term (Nice-to-Have)}{32}{subsection.7.3.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.3.3}Long-Term (Research Extensions)}{33}{subsection.7.3.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {7.4}Acknowledgements}{33}{section.7.4}\protected@file@percent }
-\newlabel{sec:acknowledgements}{{7.4}{33}{Acknowledgements}{section.7.4}{}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {A}Appendix: API Reference}{35}{appendix.A}\protected@file@percent }
+\newlabel{chap:implementation}{{7}{47}{Implementation Details}{chapter.7}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {7.1}Zoom and Pan System}{47}{section.7.1}\protected@file@percent }
+\newlabel{sec:zoom-pan-system}{{7.1}{47}{Zoom and Pan System}{section.7.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1.1}The Problem}{47}{subsection.7.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1.2}Viewport-Centered Zooming}{47}{subsection.7.1.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {7.1}{\ignorespaces Viewport-centered zoom calculation}}{47}{lstlisting.7.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1.3}ResizeObserver Integration}{48}{subsection.7.1.3}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {7.2}{\ignorespaces ResizeObserver setup for responsive viewport}}{48}{lstlisting.7.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7.2}Simulation Animation}{48}{section.7.2}\protected@file@percent }
+\newlabel{sec:simulation-animation}{{7.2}{48}{Simulation Animation}{section.7.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2.1}Firing Sequence Format}{48}{subsection.7.2.1}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {7.3}{\ignorespaces Firing sequence data structure}}{48}{lstlisting.7.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2.2}Animation Loop}{49}{subsection.7.2.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {7.4}{\ignorespaces Animation timer implementation}}{49}{lstlisting.7.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2.3}Transition Highlighting}{49}{subsection.7.2.3}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {7.5}{\ignorespaces Transition highlighting with CSS}}{49}{lstlisting.7.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7.3}Token Reset Logic}{49}{section.7.3}\protected@file@percent }
+\newlabel{sec:token-reset}{{7.3}{49}{Token Reset Logic}{section.7.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.3.1}Baseline Snapshot}{50}{subsection.7.3.1}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {7.6}{\ignorespaces Baseline marking snapshot}}{50}{lstlisting.7.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.3.2}Tab-Aware Reset}{50}{subsection.7.3.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {7.7}{\ignorespaces Tab-aware token reset}}{50}{lstlisting.7.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7.4}Parameter Table}{50}{section.7.4}\protected@file@percent }
+\newlabel{sec:parameter-table}{{7.4}{50}{Parameter Table}{section.7.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.4.1}Dynamic Form Generation}{51}{subsection.7.4.1}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {7.8}{\ignorespaces Dynamic parameter form generation}}{51}{lstlisting.7.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.4.2}Reactive Forms Integration}{51}{subsection.7.4.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {7.9}{\ignorespaces ControlContainer fix for nested forms}}{51}{lstlisting.7.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7.5}Right-Click Statistics}{51}{section.7.5}\protected@file@percent }
+\newlabel{sec:right-click-statistics}{{7.5}{51}{Right-Click Statistics}{section.7.5}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {7.10}{\ignorespaces Right-click handler for statistics popup}}{51}{lstlisting.7.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7.6}Data Persistence Warning}{52}{section.7.6}\protected@file@percent }
+\newlabel{sec:data-persistence-warning}{{7.6}{52}{Data Persistence Warning}{section.7.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.6.1}Initial Dialog}{52}{subsection.7.6.1}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {7.11}{\ignorespaces Data persistence dialog on app start}}{52}{lstlisting.7.11}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.6.2}Beforeunload Guard}{52}{subsection.7.6.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {7.12}{\ignorespaces Beforeunload event handler}}{52}{lstlisting.7.12}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {8}PNML and JSON Data I/O}{53}{chapter.8}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\newlabel{chap:appendix-a}{{A}{35}{Appendix: API Reference}{appendix.A}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {A.1}Simulation Endpoints}{35}{section.A.1}\protected@file@percent }
-\newlabel{sec:simulation-endpoints}{{A.1}{35}{Simulation Endpoints}{section.A.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.1.1}Simple Simulation}{35}{subsection.A.1.1}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {A.1}{\ignorespaces Example response from simple-sim}}{35}{lstlisting.A.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.1.2}Example Models}{35}{subsection.A.1.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {A.2}Planning Endpoints}{36}{section.A.2}\protected@file@percent }
-\newlabel{sec:planning-endpoints}{{A.2}{36}{Planning Endpoints}{section.A.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.2.1}Default Parameters}{36}{subsection.A.2.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.2.2}Schedule Calculation}{36}{subsection.A.2.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {A.3}Configuration Files}{36}{section.A.3}\protected@file@percent }
-\newlabel{sec:config-files}{{A.3}{36}{Configuration Files}{section.A.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.3.1}Angular Environment}{36}{subsection.A.3.1}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {A.2}{\ignorespaces Development environment configuration}}{36}{lstlisting.A.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.3.2}Docker Compose}{36}{subsection.A.3.2}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {A.3}{\ignorespaces Docker Compose configuration}}{36}{lstlisting.A.3}\protected@file@percent }
+\newlabel{chap:data-io}{{8}{53}{PNML and JSON Data I/O}{chapter.8}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {8.1}Problem Statement}{53}{section.8.1}\protected@file@percent }
+\newlabel{sec:io-problem}{{8.1}{53}{Problem Statement}{section.8.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {8.2}Supported Formats}{53}{section.8.2}\protected@file@percent }
+\newlabel{sec:io-formats}{{8.2}{53}{Supported Formats}{section.8.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {8.1}{\ignorespaces Comparison of supported file formats}}{53}{table.caption.15}\protected@file@percent }
+\newlabel{tab:format-comparison}{{8.1}{53}{Comparison of supported file formats}{table.caption.15}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {8.3}Custom JSON Format}{54}{section.8.3}\protected@file@percent }
+\newlabel{sec:json-format}{{8.3}{54}{Custom JSON Format}{section.8.3}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {8.1}{\ignorespaces JSON format interface (src/app/classes/json-petri-net.ts)}}{54}{lstlisting.8.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.3.1}Example JSON File}{54}{subsection.8.3.1}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {8.2}{\ignorespaces Example Petri net in JSON format}}{54}{lstlisting.8.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8.4}Exporting to JSON}{55}{section.8.4}\protected@file@percent }
+\newlabel{sec:json-export}{{8.4}{55}{Exporting to JSON}{section.8.4}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {8.3}{\ignorespaces JSON export service (src/app/tr-services/export-json-data.service.ts)}}{55}{lstlisting.8.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8.5}Importing from JSON}{57}{section.8.5}\protected@file@percent }
+\newlabel{sec:json-import}{{8.5}{57}{Importing from JSON}{section.8.5}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {8.4}{\ignorespaces JSON parser service (src/app/tr-services/parser.service.ts)}}{57}{lstlisting.8.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8.6}PNML Format}{59}{section.8.6}\protected@file@percent }
+\newlabel{sec:pnml-format}{{8.6}{59}{PNML Format}{section.8.6}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {8.5}{\ignorespaces Example PNML document structure}}{59}{lstlisting.8.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8.7}PNML Import and Export}{60}{section.8.7}\protected@file@percent }
+\newlabel{sec:pnml-service}{{8.7}{60}{PNML Import and Export}{section.8.7}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {8.6}{\ignorespaces PNML service (src/app/tr-services/pnml.service.ts) - Import}}{60}{lstlisting.8.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.7.1}PNML Export}{62}{subsection.8.7.1}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {8.7}{\ignorespaces PNML export method}}{62}{lstlisting.8.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8.8}Import Flow Visualization}{63}{section.8.8}\protected@file@percent }
+\newlabel{sec:io-flow}{{8.8}{63}{Import Flow Visualization}{section.8.8}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {8.9}Handling Missing Layout Data}{63}{section.8.9}\protected@file@percent }
+\newlabel{sec:missing-layout}{{8.9}{63}{Handling Missing Layout Data}{section.8.9}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {8.10}Summary}{63}{section.8.10}\protected@file@percent }
+\newlabel{sec:io-summary}{{8.10}{63}{Summary}{section.8.10}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8.1}{\ignorespaces File import processing flow}}{65}{figure.caption.16}\protected@file@percent }
+\newlabel{fig:import-flow}{{8.1}{65}{File import processing flow}{figure.caption.16}{}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {9}Layout Algorithms}{67}{chapter.9}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\newlabel{chap:layout-algorithms}{{9}{67}{Layout Algorithms}{chapter.9}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {9.1}Problem Statement}{67}{section.9.1}\protected@file@percent }
+\newlabel{sec:layout-problem}{{9.1}{67}{Problem Statement}{section.9.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {9.2}Available Algorithms}{67}{section.9.2}\protected@file@percent }
+\newlabel{sec:layout-algorithms}{{9.2}{67}{Available Algorithms}{section.9.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {9.3}Spring Embedder Algorithm}{67}{section.9.3}\protected@file@percent }
+\newlabel{sec:spring-embedder}{{9.3}{67}{Spring Embedder Algorithm}{section.9.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {9.1}{\ignorespaces Layout algorithm comparison}}{68}{table.caption.17}\protected@file@percent }
+\newlabel{tab:layout-comparison}{{9.1}{68}{Layout algorithm comparison}{table.caption.17}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.3.1}Force Calculation}{68}{subsection.9.3.1}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {9.1}{\ignorespaces Spring Embedder implementation (src/app/tr-services/layout-spring-embedder.service.ts)}}{68}{lstlisting.9.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {9.4}Sugiyama Algorithm}{71}{section.9.4}\protected@file@percent }
+\newlabel{sec:sugiyama}{{9.4}{71}{Sugiyama Algorithm}{section.9.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.4.1}Phase 1: Cycle Removal}{71}{subsection.9.4.1}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {9.2}{\ignorespaces Cycle removal service}}{71}{lstlisting.9.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.4.2}Phase 2: Layer Assignment}{72}{subsection.9.4.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {9.3}{\ignorespaces Layer assignment service}}{72}{lstlisting.9.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.4.3}Phase 3: Vertex Ordering}{74}{subsection.9.4.3}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {9.4}{\ignorespaces Vertex ordering (barycenter method)}}{74}{lstlisting.9.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.4.4}Phase 4: Coordinate Assignment}{75}{subsection.9.4.4}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {9.5}{\ignorespaces Coordinate assignment}}{75}{lstlisting.9.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.4.5}Orchestrating the Phases}{76}{subsection.9.4.5}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {9.6}{\ignorespaces Sugiyama layout service (src/app/tr-services/layout-sugiyama.service.ts)}}{76}{lstlisting.9.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {9.5}Visual Comparison}{77}{section.9.5}\protected@file@percent }
+\newlabel{sec:layout-comparison-visual}{{9.5}{77}{Visual Comparison}{section.9.5}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {9.1}{\ignorespaces Layout algorithm results comparison}}{77}{figure.caption.18}\protected@file@percent }
+\newlabel{fig:layout-comparison}{{9.1}{77}{Layout algorithm results comparison}{figure.caption.18}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {9.6}When to Use Which Algorithm}{77}{section.9.6}\protected@file@percent }
+\newlabel{sec:layout-guidance}{{9.6}{77}{When to Use Which Algorithm}{section.9.6}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {9.7}Summary}{78}{section.9.7}\protected@file@percent }
+\newlabel{sec:layout-summary}{{9.7}{78}{Summary}{section.9.7}{}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {10}Planning Service: Backend API Integration}{79}{chapter.10}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\newlabel{chap:planning-service}{{10}{79}{Planning Service: Backend API Integration}{chapter.10}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {10.1}Problem Statement}{79}{section.10.1}\protected@file@percent }
+\newlabel{sec:planning-problem}{{10.1}{79}{Problem Statement}{section.10.1}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10.1}{\ignorespaces Frontend-backend communication via PlanningService}}{80}{figure.caption.19}\protected@file@percent }
+\newlabel{fig:planning-architecture}{{10.1}{80}{Frontend-backend communication via PlanningService}{figure.caption.19}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {10.2}System Architecture}{80}{section.10.2}\protected@file@percent }
+\newlabel{sec:planning-architecture}{{10.2}{80}{System Architecture}{section.10.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {10.3}Environment Configuration}{80}{section.10.3}\protected@file@percent }
+\newlabel{sec:planning-environment}{{10.3}{80}{Environment Configuration}{section.10.3}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {10.1}{\ignorespaces Development environment (src/environments/environment.ts)}}{80}{lstlisting.10.1}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {10.2}{\ignorespaces Production environment (src/environments/environment.prod.ts)}}{80}{lstlisting.10.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {10.4}PlanningService Implementation}{80}{section.10.4}\protected@file@percent }
+\newlabel{sec:planning-implementation}{{10.4}{80}{PlanningService Implementation}{section.10.4}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {10.3}{\ignorespaces Planning service (src/app/tr-services/planning.service.ts)}}{80}{lstlisting.10.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {10.5}Usage in Components}{84}{section.10.5}\protected@file@percent }
+\newlabel{sec:planning-usage}{{10.5}{84}{Usage in Components}{section.10.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {10.5.1}Running a Simulation}{84}{subsection.10.5.1}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {10.4}{\ignorespaces Using PlanningService in ButtonBarComponent}}{84}{lstlisting.10.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {10.5.2}Loading Example Models}{85}{subsection.10.5.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {10.5}{\ignorespaces Loading example models with dropdown}}{85}{lstlisting.10.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {10.6}Request/Response Flow}{86}{section.10.6}\protected@file@percent }
+\newlabel{sec:planning-flow}{{10.6}{86}{Request/Response Flow}{section.10.6}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {10.7}Backend API Endpoints}{86}{section.10.7}\protected@file@percent }
+\newlabel{sec:planning-endpoints}{{10.7}{86}{Backend API Endpoints}{section.10.7}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {10.1}{\ignorespaces Backend API endpoints}}{86}{table.caption.21}\protected@file@percent }
+\newlabel{tab:api-endpoints}{{10.1}{86}{Backend API endpoints}{table.caption.21}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10.2}{\ignorespaces Simulation request flow through PlanningService}}{87}{figure.caption.20}\protected@file@percent }
+\newlabel{fig:simulation-flow}{{10.2}{87}{Simulation request flow through PlanningService}{figure.caption.20}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {10.8}Error Handling Patterns}{87}{section.10.8}\protected@file@percent }
+\newlabel{sec:planning-errors}{{10.8}{87}{Error Handling Patterns}{section.10.8}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {10.6}{\ignorespaces Error handling with retry and fallback}}{87}{lstlisting.10.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {10.9}CORS Configuration}{88}{section.10.9}\protected@file@percent }
+\newlabel{sec:planning-cors}{{10.9}{88}{CORS Configuration}{section.10.9}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {10.7}{\ignorespaces Flask CORS configuration (backend)}}{88}{lstlisting.10.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {10.10}Summary}{88}{section.10.10}\protected@file@percent }
+\newlabel{sec:planning-summary}{{10.10}{88}{Summary}{section.10.10}{}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {11}Deployment}{89}{chapter.11}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\newlabel{chap:deployment}{{11}{89}{Deployment}{chapter.11}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {11.1}Prerequisites}{89}{section.11.1}\protected@file@percent }
+\newlabel{sec:prerequisites}{{11.1}{89}{Prerequisites}{section.11.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {11.1.1}Development Environment}{89}{subsection.11.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {11.1.2}Production Environment}{89}{subsection.11.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {11.2}Local Development}{89}{section.11.2}\protected@file@percent }
+\newlabel{sec:local-development}{{11.2}{89}{Local Development}{section.11.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {11.2.1}Clone and Install}{89}{subsection.11.2.1}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {11.1}{\ignorespaces Cloning and installing dependencies}}{90}{lstlisting.11.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {11.2.2}Development Server}{90}{subsection.11.2.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {11.2}{\ignorespaces Starting the development server}}{90}{lstlisting.11.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {11.2.3}Backend Connection}{90}{subsection.11.2.3}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {11.3}{\ignorespaces Development environment configuration}}{90}{lstlisting.11.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {11.3}Production Build}{90}{section.11.3}\protected@file@percent }
+\newlabel{sec:production-build}{{11.3}{90}{Production Build}{section.11.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {11.3.1}Angular Production Build}{90}{subsection.11.3.1}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {11.4}{\ignorespaces Creating a production build}}{90}{lstlisting.11.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {11.3.2}Build Verification}{91}{subsection.11.3.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {11.5}{\ignorespaces Verifying the production build}}{91}{lstlisting.11.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {11.4}Docker Deployment}{91}{section.11.4}\protected@file@percent }
+\newlabel{sec:docker-deployment}{{11.4}{91}{Docker Deployment}{section.11.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {11.4.1}Dockerfile}{91}{subsection.11.4.1}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {11.6}{\ignorespaces Multi-stage Dockerfile}}{91}{lstlisting.11.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {11.4.2}Nginx Configuration}{91}{subsection.11.4.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {11.7}{\ignorespaces nginx.conf for SPA routing}}{91}{lstlisting.11.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {11.4.3}Building the Docker Image}{92}{subsection.11.4.3}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {11.8}{\ignorespaces Building and running the Docker container}}{92}{lstlisting.11.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {11.5}Server Deployment}{92}{section.11.5}\protected@file@percent }
+\newlabel{sec:server-deployment}{{11.5}{92}{Server Deployment}{section.11.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {11.5.1}L3S Infrastructure}{92}{subsection.11.5.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {11.5.2}Deployment Script}{93}{subsection.11.5.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {11.9}{\ignorespaces Production deployment script}}{93}{lstlisting.11.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {11.5.3}Docker Cleanup}{93}{subsection.11.5.3}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {11.10}{\ignorespaces Docker cleanup commands}}{93}{lstlisting.11.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {11.6}Environment Configuration}{93}{section.11.6}\protected@file@percent }
+\newlabel{sec:environment-configuration}{{11.6}{93}{Environment Configuration}{section.11.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {11.6.1}Production Environment}{93}{subsection.11.6.1}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {11.11}{\ignorespaces Production environment configuration}}{93}{lstlisting.11.11}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {11.6.2}Runtime Configuration}{94}{subsection.11.6.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {11.12}{\ignorespaces Runtime environment injection}}{94}{lstlisting.11.12}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {11.7}Troubleshooting}{94}{section.11.7}\protected@file@percent }
+\newlabel{sec:troubleshooting}{{11.7}{94}{Troubleshooting}{section.11.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {11.7.1}Common Issues}{94}{subsection.11.7.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {11.7.2}Logging}{94}{subsection.11.7.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {11.13}{\ignorespaces Viewing container logs}}{94}{lstlisting.11.13}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {12}Related Work}{95}{chapter.12}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\newlabel{chap:related-work}{{12}{95}{Related Work}{chapter.12}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {12.1}Desktop Petri Net Tools}{95}{section.12.1}\protected@file@percent }
+\newlabel{sec:desktop-tools}{{12.1}{95}{Desktop Petri Net Tools}{section.12.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {12.1.1}WoPeD (Workflow Petri Net Designer)}{95}{subsection.12.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {12.1.2}CPN Tools}{95}{subsection.12.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {12.2}Web-Based Petri Net Tools}{96}{section.12.2}\protected@file@percent }
+\newlabel{sec:web-tools}{{12.2}{96}{Web-Based Petri Net Tools}{section.12.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {12.2.1}i-love-petrinets (Original Fork)}{96}{subsection.12.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {12.2.2}Cytoscape.js}{96}{subsection.12.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {12.3}Simulation Backends}{96}{section.12.3}\protected@file@percent }
+\newlabel{sec:simulation-backends}{{12.3}{96}{Simulation Backends}{section.12.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {12.3.1}gspn4py}{96}{subsection.12.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {12.3.2}pm4py}{96}{subsection.12.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {12.4}Summary}{97}{section.12.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {13}Conclusion and Future Work}{99}{chapter.13}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\newlabel{chap:conclusion}{{13}{99}{Conclusion and Future Work}{chapter.13}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {13.1}Summary}{99}{section.13.1}\protected@file@percent }
+\newlabel{sec:summary}{{13.1}{99}{Summary}{section.13.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {13.1.1}Achievements}{99}{subsection.13.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {13.1.2}Technical Highlights}{99}{subsection.13.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {13.2}Limitations}{100}{section.13.2}\protected@file@percent }
+\newlabel{sec:limitations}{{13.2}{100}{Limitations}{section.13.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {13.3}Future Work}{100}{section.13.3}\protected@file@percent }
+\newlabel{sec:future-work}{{13.3}{100}{Future Work}{section.13.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {13.3.1}Short-Term (High Priority)}{100}{subsection.13.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {13.3.2}Medium-Term (Nice-to-Have)}{100}{subsection.13.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {13.3.3}Long-Term (Research Extensions)}{101}{subsection.13.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {13.4}Acknowledgements}{101}{section.13.4}\protected@file@percent }
+\newlabel{sec:acknowledgements}{{13.4}{101}{Acknowledgements}{section.13.4}{}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {A}Appendix: API Reference}{103}{appendix.A}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\newlabel{chap:appendix-a}{{A}{103}{Appendix: API Reference}{appendix.A}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {A.1}Simulation Endpoints}{103}{section.A.1}\protected@file@percent }
+\newlabel{sec:simulation-endpoints}{{A.1}{103}{Simulation Endpoints}{section.A.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.1.1}Simple Simulation}{103}{subsection.A.1.1}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {A.1}{\ignorespaces Example response from simple-sim}}{103}{lstlisting.A.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.1.2}Example Models}{103}{subsection.A.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {A.2}Planning Endpoints}{104}{section.A.2}\protected@file@percent }
+\newlabel{sec:planning-endpoints}{{A.2}{104}{Planning Endpoints}{section.A.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.2.1}Default Parameters}{104}{subsection.A.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.2.2}Schedule Calculation}{104}{subsection.A.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {A.3}Configuration Files}{104}{section.A.3}\protected@file@percent }
+\newlabel{sec:config-files}{{A.3}{104}{Configuration Files}{section.A.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.3.1}Angular Environment}{104}{subsection.A.3.1}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {A.2}{\ignorespaces Development environment configuration}}{104}{lstlisting.A.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.3.2}Docker Compose}{104}{subsection.A.3.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {A.3}{\ignorespaces Docker Compose configuration}}{104}{lstlisting.A.3}\protected@file@percent }
 \bibstyle{abbrv}
-\bibdata{meinearbeit}
-\gdef \@abspage@last{54}
+\bibdata{references}
+\gdef \@abspage@last{124}

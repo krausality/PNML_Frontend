@@ -1,7 +1,7 @@
 \chapter{System Architecture}
 \label{chap:architecture}
 
-This chapter describes the overall architecture of the L3S-Offshore-2 Frontend, including its integration with the backend, the component hierarchy, and the service layer design.
+The previous chapters introduced the core building blocks: the \texttt{UiService} for managing UI state (Chapter~\ref{chap:ui-service}), the Petri net elements as data objects (Chapter~\ref{chap:petri-net-elements}), and the \texttt{DataService} as the central data store (Chapter~\ref{chap:data-service}). This chapter provides a high-level overview of how these components fit together within the overall system architecture.
 
 \section{System Overview}
 \label{sec:system-overview}
@@ -10,9 +10,26 @@ The L3S-Offshore-2 system follows a client-server architecture with clear separa
 
 \begin{figure}[htb]
     \centering
-    % TODO: Add architecture diagram
-    % \includegraphics[width=0.9\textwidth]{contents/figures/system-architecture.pdf}
-    \fbox{\parbox{0.8\textwidth}{\centering\vspace{3cm}[System Architecture Diagram Placeholder]\vspace{3cm}}}
+    \begin{tikzpicture}[
+        node distance=1.5cm,
+        box/.style={rectangle, draw, minimum width=3.5cm, minimum height=1cm, align=center, font=\small},
+        arrow/.style={->, thick},
+    ]
+        % Frontend
+        \node[box, fill=green!15] (fe) {Angular Frontend\\(Browser)};
+        
+        % Backend
+        \node[box, fill=blue!15, right=4cm of fe] (be) {Flask Backend\\(Python)};
+        
+        % Database/Storage
+        \node[box, fill=orange!15, below=of be] (db) {Example Models\\(File Storage)};
+        
+        % Arrows
+        \draw[arrow] ([yshift=3pt]fe.east) -- node[above, font=\scriptsize] {HTTP POST (PNML)} ([yshift=3pt]be.west);
+        \draw[arrow] ([yshift=-3pt]be.west) -- node[below, font=\scriptsize] {JSON (Results)} ([yshift=-3pt]fe.east);
+        \draw[arrow] (be) -- (db);
+        
+    \end{tikzpicture}
     \caption{High-level system architecture showing frontend-backend interaction}
     \label{fig:system-architecture}
 \end{figure}
@@ -75,18 +92,18 @@ Modal dialogs for user feedback and interaction:
 \section{Service Layer}
 \label{sec:service-layer}
 
-Services are singleton classes that provide shared functionality and state management.
+Services are singleton classes that provide shared functionality and state management. The most important services are covered in dedicated chapters.
 
 \subsection{Core Services}
 
 \begin{description}
-    \item[DataService] Central state container for the Petri net model. Manages places, transitions, arcs, and the current marking. Emits change events via RxJS observables.
+    \item[DataService] Central state container for the Petri net model. Manages places, transitions, arcs, and the current marking. Emits change events via RxJS observables. \textit{See Chapter~\ref{chap:data-service} for details.}
     
-    \item[UiService] Manages UI state including the current tab, simulation mode (automatic/manual), selected elements, and zoom level.
+    \item[UiService] Manages UI state including the current tab, simulation mode (automatic/manual), selected elements, and zoom level. \textit{See Chapter~\ref{chap:ui-service} for details.}
     
-    \item[ZoomService] Handles viewport transformations (pan, zoom) with ResizeObserver integration for responsive behavior.
+    \item[ZoomService] Handles viewport transformations (pan, zoom) with ResizeObserver integration for responsive behavior. \textit{See Section~\ref{sec:zoom-pan-system} for details.}
     
-    \item[ParserService] Converts between PNML XML, internal data structures, and the JSON representation used by the backend.
+    \item[ParserService] Converts between PNML XML, internal data structures, and the JSON representation used by the backend. \textit{See Chapter~\ref{chap:data-io} for details.}
 \end{description}
 
 \subsection{Simulation Services}
@@ -96,7 +113,7 @@ Services are singleton classes that provide shared functionality and state manag
     
     \item[TokenGameService] Implements the manual simulation mode where users can step through the firing sequence or click on enabled transitions.
     
-    \item[PlanningService] Handles the offshore scheduling API calls and parameter management.
+    \item[PlanningService] Handles the offshore scheduling API calls and parameter management. \textit{See Chapter~\ref{chap:planning-service} for details.}
 \end{description}
 
 \subsection{Utility Services}
@@ -104,8 +121,8 @@ Services are singleton classes that provide shared functionality and state manag
 \begin{description}
     \item[ExportImageService] Exports the current view as PNG
     \item[ExportSvgService] Exports the Petri net as SVG
-    \item[ExportJsonDataService] Exports the internal representation as JSON
-    \item[LayoutSugiyamaService] Implements the Sugiyama algorithm for automatic layout
+    \item[ExportJsonDataService] Exports the internal representation as JSON. \textit{See Chapter~\ref{chap:data-io} for details.}
+    \item[LayoutSugiyamaService] Implements the Sugiyama algorithm for automatic layout. \textit{See Chapter~\ref{chap:layout-algorithms} for details.}
 \end{description}
 
 \section{Data Flow}
@@ -113,8 +130,35 @@ Services are singleton classes that provide shared functionality and state manag
 
 \begin{figure}[htb]
     \centering
-    % TODO: Add data flow diagram
-    \fbox{\parbox{0.8\textwidth}{\centering\vspace{2.5cm}[Data Flow Diagram Placeholder]\vspace{2.5cm}}}
+    \begin{tikzpicture}[
+        node distance=0.8cm,
+        component/.style={rectangle, draw, fill=green!10, minimum width=2.2cm, minimum height=0.6cm, font=\scriptsize},
+        service/.style={rectangle, draw, fill=blue!15, minimum width=2.2cm, minimum height=0.6cm, font=\scriptsize},
+    ]
+        % User
+        \node (user) at (0, 2) {\small User};
+        
+        % Components
+        \node[component] (comp) at (0, 1) {Component};
+        
+        % Services
+        \node[service] (data) at (-2.5, 0) {DataService};
+        \node[service] (ui) at (0, 0) {UiService};
+        \node[service] (plan) at (2.5, 0) {PlanningService};
+        
+        % Backend
+        \node[component, fill=orange!15] (back) at (2.5, -1.2) {Backend};
+        
+        % Arrows
+        \draw[->] (user) -- node[right, font=\tiny] {interacts} (comp);
+        \draw[->] (comp) -- node[left, font=\tiny] {updates} (data);
+        \draw[->] (comp) -- node[right, font=\tiny] {updates} (ui);
+        \draw[->] (comp) -- node[right, font=\tiny] {calls} (plan);
+        \draw[<->, dashed] (plan) -- node[right, font=\tiny] {HTTP} (back);
+        \draw[->, dashed] (data.north) to[bend left=30] node[above, font=\tiny] {dataChanged\$} (comp.west);
+        \draw[->, dashed] (ui.north) to[bend right=10] node[above, font=\tiny] {tab\$} (comp.south);
+        
+    \end{tikzpicture}
     \caption{Data flow between components and services}
     \label{fig:data-flow}
 \end{figure}
@@ -135,7 +179,7 @@ The application follows a unidirectional data flow pattern:
 
 A key architectural feature is the tab-aware state management that ensures UI consistency when switching between tabs.
 
-\subsection{The Tab$ Observable}
+\subsection{The Tab\$ Observable}
 
 The \texttt{UiService} exposes a \texttt{tab\$} BehaviorSubject that emits the current tab name whenever the user navigates:
 

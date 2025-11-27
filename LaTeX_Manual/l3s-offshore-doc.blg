@@ -3,12 +3,12 @@ Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: l3s-offshore-doc.aux
 Reallocating 'name_of_file' (item size: 1) to 6 items.
 The style file: abbrv.bst
-Reallocating 'name_of_file' (item size: 1) to 12 items.
+Reallocating 'name_of_file' (item size: 1) to 11 items.
 I found no \citation commands---while reading file l3s-offshore-doc.aux
-Database file #1: meinearbeit.bib
+Database file #1: references.bib
 You've used 0 entries,
             2118 wiz_defined-function locations,
-            497 strings with 3732 characters,
+            497 strings with 3731 characters,
 and the built_in function-call counts, 18 in all, are:
 = -- 0
 > -- 0

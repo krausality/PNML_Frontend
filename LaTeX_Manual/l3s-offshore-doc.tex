@@ -20,6 +20,8 @@
 \usepackage{booktabs}  % Better tables
 \usepackage{caption}
 \usepackage{subcaption}
+\usepackage{tikz}
+\usetikzlibrary{positioning, shapes.geometric, arrows.meta}
 
 % --- Typography Fixes ---
 \setlength{\emergencystretch}{3em}
@@ -75,6 +77,45 @@
   morestring=[b]"
 }
 
+% JSON language definition
+\lstdefinelanguage{json}{
+  basicstyle=\ttfamily\footnotesize,
+  stringstyle=\color{red},
+  numbers=left,
+  numberstyle=\tiny\color{codegray},
+  stepnumber=1,
+  numbersep=5pt,
+  showstringspaces=false,
+  breaklines=true,
+  morestring=[b]"
+}
+
+% YAML language definition
+\lstdefinelanguage{yaml}{
+  keywords={true,false,null,y,n},
+  keywordstyle=\color{blue}\bfseries,
+  basicstyle=\ttfamily\footnotesize,
+  sensitive=false,
+  comment=[l]{\#},
+  commentstyle=\color{codegreen}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
+% Docker language definition (simplified shell)
+\lstdefinelanguage{docker}{
+  keywords={FROM, RUN, CMD, LABEL, EXPOSE, ENV, ADD, COPY, ENTRYPOINT, VOLUME, USER, WORKDIR, ARG, ONBUILD, STOPSIGNAL, HEALTHCHECK, SHELL, AS},
+  keywordstyle=\color{blue}\bfseries,
+  basicstyle=\ttfamily\footnotesize,
+  sensitive=false,
+  comment=[l]{\#},
+  commentstyle=\color{codegreen}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
+}
+
 % --- L3S Project Style ---
 \usepackage{l3s-project-doc}
 
@@ -122,10 +163,25 @@
 
 \mainmatter
 
+% Part I: Introduction and Background
 \input{contents/01-einleitung.tex}
 \input{contents/02-grundlagen.tex}
+
+% Part II: Core Concepts (based on Markdown Manual structure)
+\input{contents/03a-ui-service.tex}
+\input{contents/03b-petri-net-elements.tex}
+\input{contents/03c-data-service.tex}
+
+% Part III: System Design
 \input{contents/03-architecture.tex}
+
+% Part IV: Implementation Details
 \input{contents/04-implementation.tex}
+\input{contents/04b-pnml-json-io.tex}
+\input{contents/04c-layout-algorithms.tex}
+\input{contents/04d-planning-service.tex}
+
+% Part V: Deployment and Conclusion
 \input{contents/05-deployment.tex}
 \input{contents/06-verwandte-arbeiten.tex}
 \input{contents/07-zusammenfassung-ausblick.tex}
@@ -134,7 +190,7 @@
 \input{contents/A-anhang-a.tex}
 
 \bibliographystyle{abbrv}
-\bibliography{meinearbeit}
+\bibliography{references}
 
 \backmatter
 

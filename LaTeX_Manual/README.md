@@ -75,26 +75,21 @@ l3s-offshore-doc.pdf
 LaTeX_Manual/
 ├── l3s-offshore-doc.tex    # Main document (compile this)
 ├── l3s-project-doc.sty     # L3S project documentation style
-├── meinearbeit.bib         # Bibliography database
+├── references.bib          # Bibliography database
 ├── README.md               # This file
 │
-├── contents/
-│   ├── 00-abstract.tex           # Abstract
-│   ├── 01-einleitung.tex         # Introduction
-│   ├── 02-grundlagen.tex         # Fundamentals (Petri nets, PNML, Angular)
-│   ├── 03-architecture.tex       # System Architecture
-│   ├── 04-implementation.tex     # Implementation Details
-│   ├── 05-deployment.tex         # Deployment Guide
-│   ├── 06-verwandte-arbeiten.tex # Related Work
-│   ├── 07-zusammenfassung-ausblick.tex  # Conclusion & Future Work
-│   ├── A-anhang-a.tex            # Appendix: API Reference
-│   └── figures/                  # Diagrams and screenshots
-│       └── (add your figures here)
-│
-└── (legacy files)
-    ├── meinearbeit.tex     # Original thesis template (not used)
-    ├── sethesis.sty        # Original thesis style (not used)
-    └── affirmation.tex     # Thesis affirmation (not used)
+└── contents/
+    ├── 00-abstract.tex           # Abstract
+    ├── 01-einleitung.tex         # Introduction
+    ├── 02-grundlagen.tex         # Fundamentals (Petri nets, PNML, Angular)
+    ├── 03-architecture.tex       # System Architecture
+    ├── 04-implementation.tex     # Implementation Details
+    ├── 05-deployment.tex         # Deployment Guide
+    ├── 06-verwandte-arbeiten.tex # Related Work
+    ├── 07-zusammenfassung-ausblick.tex  # Conclusion & Future Work
+    ├── A-anhang-a.tex            # Appendix: API Reference
+    └── figures/                  # Diagrams and screenshots
+        └── (add your figures here)
 ```
 
 ## Adding Figures
@@ -114,7 +109,7 @@ LaTeX_Manual/
 
 ## Adding Citations
 
-1. Add entries to `meinearbeit.bib`
+1. Add entries to `references.bib`
 2. Cite in text: `\cite{Murata1989}` or `as shown by Murata~\cite{Murata1989}`
 3. Recompile with bibtex (or latexmk handles this automatically)
 
@@ -150,7 +145,7 @@ rm -f *.aux *.bbl *.blg *.log *.out *.toc *.lof *.lot
 
 ### Bibliography not appearing
 - Ensure you run bibtex after the first pdflatex pass
-- Check that `\bibliographystyle{abbrv}` and `\bibliography{meinearbeit}` are present
+- Check that `\bibliographystyle{abbrv}` and `\bibliography{references}` are present
 
 ### Unicode characters not rendering
 - The document uses `\usepackage[utf8]{inputenc}` - ensure your editor saves as UTF-8
