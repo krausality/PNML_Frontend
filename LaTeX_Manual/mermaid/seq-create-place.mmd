@@ -1,0 +1,16 @@
+sequenceDiagram
+    participant User
+    participant V as Visualizer (Component)
+    participant UI as UiService (Tool State)
+    participant DS as Data Service
+
+    User->>V: Click on Canvas
+    V->>UI: Check active button?
+    UI-->>V: "ButtonState.Place"
+    
+    V->>V: Calculate X,Y coordinates
+    V->>DS: places.push(new PlaceAt(X,Y))
+    
+    DS->>DS: triggerDataChanged()
+    DS-->>V: "Update your screen!"
+    V->>User: Draws new Circle

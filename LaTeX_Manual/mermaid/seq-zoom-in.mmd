@@ -1,0 +1,15 @@
+sequenceDiagram
+    participant User
+    participant Toolbar
+    participant ZS as ZoomService
+    participant OBS as Observables
+    participant V as Visualizer (SVG)
+
+    User->>Toolbar: Click (+) Button
+    Toolbar->>ZS: zoomIn()
+    
+    Note over ZS: Calculate new Scale (1.0 -> 1.1)
+    ZS->>OBS: scaleSubject.next(1.1)
+    
+    OBS-->>V: Update "transform" attribute
+    V->>User: Screen contents get bigger

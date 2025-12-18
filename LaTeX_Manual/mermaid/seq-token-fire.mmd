@@ -1,0 +1,19 @@
+sequenceDiagram
+    participant User
+    participant TG as TokenGameService
+    participant T as Transition
+    participant P as Place
+    participant H as History Stack
+
+    User->>TG: fire(Transition)
+    TG->>T: isActive?
+    T-->>TG: true (Enough tokens)
+
+    TG->>H: push(Current Token Counts)
+    Note right of H: Save "Before" state
+
+    TG->>P: Subtract Input Tokens
+    TG->>P: Add Output Tokens
+    
+    Note over P: Data Changed!
+    P->>User: Screen Updates via DataService

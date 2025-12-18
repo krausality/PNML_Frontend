@@ -1,0 +1,19 @@
+sequenceDiagram
+    participant User
+    participant MoveService
+    participant Node
+    participant ConnectedArcs
+
+    User->>MoveService: mousedown (Start at 100,100)
+    MoveService->>MoveService: Store initialMousePos = (100,100)
+    MoveService->>MoveService: Find all Arcs connected to Node
+
+    User->>MoveService: mousemove (Now at 105, 102)
+    
+    MoveService->>MoveService: Calculate Delta: x=+5, y=+2
+    
+    MoveService->>Node: Node.x += 5, Node.y += 2
+    MoveService->>ConnectedArcs: Shift anchors by half (+2.5, +1)
+    
+    MoveService->>MoveService: Update initialMousePos = (105, 102)
+    Note right of MoveService: Ready for next frame

@@ -1,0 +1,15 @@
+sequenceDiagram
+    participant User
+    participant Toolbar
+    participant UI as UiService
+    participant C as Canvas (Visualizer)
+
+    User->>Toolbar: Clicks "Add Place" Icon
+    Toolbar->>UI: button = ButtonState.Place
+    UI->>UI: Notify "Tool Changed!"
+    
+    User->>C: Clicks on whitespace
+    C->>UI: Check "uiService.button"?
+    UI-->>C: Returns "Place"
+    
+    C->>C: Create new Circle logic

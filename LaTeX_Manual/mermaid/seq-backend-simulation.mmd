@@ -1,0 +1,21 @@
+sequenceDiagram
+    participant UI as Component
+    participant PS as PlanningService
+    participant WWW as Internet
+    participant BE as Backend Server
+
+    UI->>PS: runSimpleSimulation(xmlString)
+    
+    Note over PS: Convert String -> File
+    Note over PS: Create FormData "Envelope"
+    
+    PS->>WWW: HTTP POST /simple-sim (with File)
+    WWW->>BE: Transfer Data...
+    
+    Note over BE: Calculations (Heavy CPU)
+    
+    BE-->>WWW: Returns JSON Result
+    WWW-->>PS: Response (200 OK)
+    
+    PS-->>UI: emit(result)
+    UI->>UI: statusMessage = "Success"

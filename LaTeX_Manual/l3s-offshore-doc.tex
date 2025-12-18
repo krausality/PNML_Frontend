@@ -317,40 +317,32 @@ Each primitive knows how to calculate its \textbf{Intersection Point}.
 
 Here is what happens when the visualizer asks an Arc, ``Where are your points?''
 
+% =============================================================================
+% MERMAID SOURCE (from Markdown_Manual/01_petri_net_primitives_.md):
+% -----------------------------------------------------------------------------
+% sequenceDiagram
+%     participant V as Visualizer
+%     participant A as Arc
+%     participant P as Place (From)
+%     participant T as Transition (To)
+%
+%     V->>A: get polyLinePointsArray
+%     Note over A: Needs to find start & end
+%     
+%     A->>P: intersectionOfBoundaryWithLineTo(T.position)
+%     P->>P: Calculate Circle Edge Math
+%     P-->>A: Return Point (Edge of Circle)
+%
+%     A->>T: intersectionOfBoundaryWithLineTo(P.position)
+%     T->>T: Calculate Rectangle Edge Math
+%     T-->>A: Return Point (Edge of Box)
+%
+%     A-->>V: Returns [StartPoint, EndPoint]
+% =============================================================================
+
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[node distance=0.8cm, scale=0.9, transform shape]
-    % Participants
-    \node[seqparticipant] (V) {Visualizer};
-    \node[seqparticipant, right=2cm of V] (A) {Arc};
-    \node[seqparticipant, right=2cm of A] (P) {Place (From)};
-    \node[seqparticipant, right=2cm of P] (T) {Transition (To)};
-    
-    % Lifelines
-    \draw[dashed] (V.south) -- ++(0,-8cm);
-    \draw[dashed] (A.south) -- ++(0,-8cm);
-    \draw[dashed] (P.south) -- ++(0,-8cm);
-    \draw[dashed] (T.south) -- ++(0,-8cm);
-    
-    % Messages
-    \draw[seqarrow] ([yshift=-1cm]V.south) -- node[above, font=\scriptsize] {get polyLinePointsArray} ([yshift=-1cm]A.south);
-    
-    \node[seqnote, right=0.2cm of A, yshift=-1.8cm] {Needs to find\\start \& end};
-    
-    \draw[seqarrow] ([yshift=-2.5cm]A.south) -- node[above, font=\scriptsize] {intersectionOfBoundary...} ([yshift=-2.5cm]P.south);
-    
-    \node[seqnote, right=0.2cm of P, yshift=-3.3cm] {Calculate Circle\\Edge Math};
-    
-    \draw[seqarrow, dashed] ([yshift=-4cm]P.south) -- node[above, font=\scriptsize] {Return Point (Edge)} ([yshift=-4cm]A.south);
-    
-    \draw[seqarrow] ([yshift=-5cm]A.south) -- node[above, font=\scriptsize] {intersectionOfBoundary...} ([yshift=-5cm]T.south);
-    
-    \node[seqnote, right=0.2cm of T, yshift=-5.8cm] {Calculate Rectangle\\Edge Math};
-    
-    \draw[seqarrow, dashed] ([yshift=-6.5cm]T.south) -- node[above, font=\scriptsize] {Return Point (Edge)} ([yshift=-6.5cm]A.south);
-    
-    \draw[seqarrow, dashed] ([yshift=-7.5cm]A.south) -- node[above, font=\scriptsize] {Returns [Start, End]} ([yshift=-7.5cm]V.south);
-\end{tikzpicture}
+\includegraphics[width=\textwidth]{figures/seq-arc-intersection.png}
 \caption{Sequence Diagram: Arc requests boundary intersection points}
 \label{fig:seq-polyline}
 \end{figure}
@@ -596,36 +588,31 @@ How does the service keep everything essentially organized? Let's trace what hap
 
 Imagine the user selects a Place and hits ``Delete''.
 
+% =============================================================================
+% MERMAID SOURCE (from Markdown_Manual/02_central_data_store__dataservice__.md):
+% -----------------------------------------------------------------------------
+% sequenceDiagram
+%     participant UI as User Interface
+%     participant DS as Data Service
+%     participant AR as Array Logic
+%     participant OBS as Observable (Town Crier)
+%
+%     UI->>DS: removePlace(targetPlace)
+%     Note right of UI: User clicked Delete
+%     
+%     DS->>AR: Find and remove Arcs attached to place
+%     AR->>AR: Remove Place from _places array
+%     
+%     DS->>OBS: triggerDataChanged()
+%     Note right of DS: Shout into Megaphone!
+%     
+%     OBS-->>UI: Notify "Data Changed!"
+%     UI->>UI: Redraw Screen (Place is gone)
+% =============================================================================
+
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[node distance=0.8cm, scale=0.85, transform shape]
-    % Participants
-    \node[seqparticipant] (UI) {User Interface};
-    \node[seqparticipant, right=1.8cm of UI] (DS) {Data Service};
-    \node[seqparticipant, right=1.8cm of DS] (AR) {Array Logic};
-    \node[seqparticipant, right=1.8cm of AR, align=center] (OBS) {Observable\\(Town Crier)};
-    
-    % Lifelines
-    \draw[dashed] (UI.south) -- ++(0,-9cm);
-    \draw[dashed] (DS.south) -- ++(0,-9cm);
-    \draw[dashed] (AR.south) -- ++(0,-9cm);
-    \draw[dashed] (OBS.south) -- ++(0,-9cm);
-    
-    % Messages
-    \draw[seqarrow] ([yshift=-1cm]UI.south) -- node[above, font=\scriptsize] {removePlace(target)} ([yshift=-1cm]DS.south);
-    \node[seqnote, right=0.1cm of UI, yshift=-1.5cm] {User clicked\\Delete};
-    
-    \draw[seqarrow] ([yshift=-2.5cm]DS.south) -- node[above, font=\scriptsize] {Find \& remove Arcs} ([yshift=-2.5cm]AR.south);
-    
-    \draw[seqarrow] ([yshift=-3.5cm]AR.south) -- node[above, font=\scriptsize] {Remove Place from array} ([yshift=-3.5cm]AR.south -| AR.south);
-    
-    \draw[seqarrow] ([yshift=-5cm]DS.south) -- node[above, font=\scriptsize] {triggerDataChanged()} ([yshift=-5cm]OBS.south);
-    \node[seqnote, right=0.1cm of DS, yshift=-5.5cm] {Shout into\\Megaphone!};
-    
-    \draw[seqarrow, dashed] ([yshift=-7cm]OBS.south) -- node[above, font=\scriptsize] {Notify ``Data Changed!''} ([yshift=-7cm]UI.south);
-    
-    \draw[seqarrow] ([yshift=-8.5cm]UI.south) -- node[above, font=\scriptsize] {Redraw Screen} ([yshift=-8.5cm]UI.south -| UI.south);
-\end{tikzpicture}
+\includegraphics[width=\textwidth]{figures/seq-delete-place.png}
 \caption{Sequence Diagram: Deleting a Place triggers cascading updates}
 \label{fig:seq-delete-place}
 \end{figure}
@@ -865,38 +852,30 @@ Ideally, drawing should be instant. But logically, it follows a strict cycle.
 
 \subsection{Sequence Diagram: Creating a Place}
 
+% =============================================================================
+% MERMAID SOURCE (from Markdown_Manual/03_the_main_visualizer__petrinetcomponent__.md):
+% -----------------------------------------------------------------------------
+% sequenceDiagram
+%     participant User
+%     participant V as Visualizer (Component)
+%     participant UI as UiService (Tool State)
+%     participant DS as Data Service
+%
+%     User->>V: Click on Canvas
+%     V->>UI: Check active button?
+%     UI-->>V: "ButtonState.Place"
+%     
+%     V->>V: Calculate X,Y coordinates
+%     V->>DS: places.push(new PlaceAt(X,Y))
+%     
+%     DS->>DS: triggerDataChanged()
+%     DS-->>V: "Update your screen!"
+%     V->>User: Draws new Circle
+% =============================================================================
+
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[node distance=0.8cm, scale=0.85, transform shape]
-    % Participants
-    \node[seqparticipant] (User) {User};
-    \node[seqparticipant, right=1.5cm of User] (V) {Visualizer};
-    \node[seqparticipant, right=1.5cm of V] (UI) {UiService};
-    \node[seqparticipant, right=1.5cm of UI] (DS) {DataService};
-    
-    % Lifelines
-    \draw[dashed] (User.south) -- ++(0,-9cm);
-    \draw[dashed] (V.south) -- ++(0,-9cm);
-    \draw[dashed] (UI.south) -- ++(0,-9cm);
-    \draw[dashed] (DS.south) -- ++(0,-9cm);
-    
-    % Messages
-    \draw[seqarrow] ([yshift=-1cm]User.south) -- node[above, font=\scriptsize] {Click on Canvas} ([yshift=-1cm]V.south);
-    
-    \draw[seqarrow] ([yshift=-2cm]V.south) -- node[above, font=\scriptsize] {Check active button?} ([yshift=-2cm]UI.south);
-    
-    \draw[seqarrow, dashed] ([yshift=-2.8cm]UI.south) -- node[above, font=\scriptsize] {ButtonState.Place} ([yshift=-2.8cm]V.south);
-    
-    \node[seqnote, right=0.1cm of V, yshift=-3.8cm] {Calculate\\X,Y coords};
-    
-    \draw[seqarrow] ([yshift=-5cm]V.south) -- node[above, font=\scriptsize] {places.push(new Place)} ([yshift=-5cm]DS.south);
-    
-    \node[seqnote, right=0.1cm of DS, yshift=-5.8cm] {trigger\\DataChanged()};
-    
-    \draw[seqarrow, dashed] ([yshift=-7cm]DS.south) -- node[above, font=\scriptsize] {Update your screen!} ([yshift=-7cm]V.south);
-    
-    \draw[seqarrow] ([yshift=-8.5cm]V.south) -- node[above, font=\scriptsize] {Draws new Circle} ([yshift=-8.5cm]User.south);
-\end{tikzpicture}
+\includegraphics[width=\textwidth]{figures/seq-create-place.png}
 \caption{Sequence Diagram: Creating a Place via Click}
 \label{fig:seq-create-place}
 \end{figure}
@@ -1131,42 +1110,34 @@ How does a text file become a running application?
 
 \subsection{Sequence Diagram: Import Process}
 
+% =============================================================================
+% MERMAID SOURCE (from Markdown_Manual/04_pnml_xml_translator__pnmlservice__.md):
+% -----------------------------------------------------------------------------
+% sequenceDiagram
+%     participant User
+%     participant PNML as PnmlService
+%     participant XML as xml2js Library
+%     participant DS as Data Service
+%     participant LAY as Layout Service
+%
+%     User->>PNML: parse(xmlString)
+%     PNML->>XML: Convert string to JSON Object
+%     XML-->>PNML: Returns raw objects
+%     
+%     PNML->>PNML: Loop raw objects -> Create Place/Trans/Arc
+%     
+%     PNML->>DS: Update places[], transitions[]
+%     
+%     Note over PNML, LAY: If positions are missing...
+%     PNML->>LAY: applySugiyamaLayout()
+%     
+%     PNML->>DS: triggerDataChanged(fitContent = true)
+%     DS->>User: Update Screen
+% =============================================================================
+
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[node distance=0.8cm, scale=0.8, transform shape]
-    % Participants
-    \node[seqparticipant] (User) {User};
-    \node[seqparticipant, right=1.2cm of User] (PNML) {PnmlService};
-    \node[seqparticipant, right=1.2cm of PNML] (XML) {xml2js};
-    \node[seqparticipant, right=1.2cm of XML] (DS) {DataService};
-    \node[seqparticipant, right=1.2cm of DS] (LAY) {Layout};
-    
-    % Lifelines
-    \draw[dashed] (User.south) -- ++(0,-10cm);
-    \draw[dashed] (PNML.south) -- ++(0,-10cm);
-    \draw[dashed] (XML.south) -- ++(0,-10cm);
-    \draw[dashed] (DS.south) -- ++(0,-10cm);
-    \draw[dashed] (LAY.south) -- ++(0,-10cm);
-    
-    % Messages
-    \draw[seqarrow] ([yshift=-1cm]User.south) -- node[above, font=\scriptsize] {parse(xmlString)} ([yshift=-1cm]PNML.south);
-    
-    \draw[seqarrow] ([yshift=-2cm]PNML.south) -- node[above, font=\scriptsize] {Convert to JSON} ([yshift=-2cm]XML.south);
-    
-    \draw[seqarrow, dashed] ([yshift=-3cm]XML.south) -- node[above, font=\scriptsize] {raw objects} ([yshift=-3cm]PNML.south);
-    
-    \node[seqnote, right=0.1cm of PNML, yshift=-4cm] {Loop: Create\\Place/Trans/Arc};
-    
-    \draw[seqarrow] ([yshift=-5.5cm]PNML.south) -- node[above, font=\scriptsize] {Update arrays} ([yshift=-5.5cm]DS.south);
-    
-    \node[seqnote, right=0.1cm of PNML, yshift=-6.5cm] {If positions\\missing...};
-    
-    \draw[seqarrow] ([yshift=-7.5cm]PNML.south) -- node[above, font=\scriptsize] {applySugiyama()} ([yshift=-7.5cm]LAY.south);
-    
-    \draw[seqarrow] ([yshift=-8.5cm]PNML.south) -- node[above, font=\scriptsize] {triggerDataChanged(true)} ([yshift=-8.5cm]DS.south);
-    
-    \draw[seqarrow, dashed] ([yshift=-9.5cm]DS.south) -- node[above, font=\scriptsize] {Update Screen} ([yshift=-9.5cm]User.south);
-\end{tikzpicture}
+\includegraphics[width=\textwidth]{figures/seq-pnml-import.png}
 \caption{Sequence Diagram: PNML Import Process}
 \label{fig:seq-pnml-import}
 \end{figure}
@@ -1413,40 +1384,31 @@ Let's look at how the ``Physics'' engine works. It uses a loop that runs hundred
 
 \subsection{Sequence Diagram: The Physics Loop}
 
+% =============================================================================
+% MERMAID SOURCE (from Markdown_Manual/05_graph_layout_architect__sugiyama_spring_embedder__.md):
+% -----------------------------------------------------------------------------
+% sequenceDiagram
+%     participant App
+%     participant SE as SpringEmbedder
+%     participant Node as Node (Logic)
+%     participant DS as Data Service
+%
+%     App->>SE: layoutSpringEmbedder()
+%     
+%     loop Every Iteration (e.g., 100 times)
+%         SE->>SE: Calculate Repulsion (Push apart)
+%         SE->>SE: Calculate Attraction (Pull connected)
+%         SE->>Node: Update Node.position (x, y)
+%         SE->>SE: sleep(1ms) (For animation effect)
+%     end
+%
+%     SE->>DS: triggerDataChanged()
+%     DS-->>App: Redraw finished graph!
+% =============================================================================
+
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[node distance=0.8cm, scale=0.85, transform shape]
-    % Participants
-    \node[seqparticipant] (App) {App};
-    \node[seqparticipant, right=1.5cm of App] (SE) {SpringEmbedder};
-    \node[seqparticipant, right=1.5cm of SE] (Node) {Node (Logic)};
-    \node[seqparticipant, right=1.5cm of Node] (DS) {DataService};
-    
-    % Lifelines
-    \draw[dashed] (App.south) -- ++(0,-9cm);
-    \draw[dashed] (SE.south) -- ++(0,-9cm);
-    \draw[dashed] (Node.south) -- ++(0,-9cm);
-    \draw[dashed] (DS.south) -- ++(0,-9cm);
-    
-    % Messages
-    \draw[seqarrow] ([yshift=-1cm]App.south) -- node[above, font=\scriptsize] {layoutSpringEmbedder()} ([yshift=-1cm]SE.south);
-    
-    % Loop box
-    \draw[thick, rounded corners] ([yshift=-1.8cm, xshift=-0.3cm]SE.south) rectangle ([yshift=-6.5cm, xshift=4.5cm]SE.south);
-    \node[font=\scriptsize, anchor=north west] at ([yshift=-1.8cm, xshift=-0.2cm]SE.south) {loop [100 iterations]};
-    
-    \node[seqnote, right=0.1cm of SE, yshift=-2.8cm] {Calculate\\Repulsion};
-    
-    \node[seqnote, right=0.1cm of SE, yshift=-3.8cm] {Calculate\\Attraction};
-    
-    \draw[seqarrow] ([yshift=-5cm]SE.south) -- node[above, font=\scriptsize] {Update position} ([yshift=-5cm]Node.south);
-    
-    \node[seqnote, right=0.1cm of SE, yshift=-6cm] {sleep(1ms)};
-    
-    \draw[seqarrow] ([yshift=-7.5cm]SE.south) -- node[above, font=\scriptsize] {triggerDataChanged()} ([yshift=-7.5cm]DS.south);
-    
-    \draw[seqarrow, dashed] ([yshift=-8.5cm]DS.south) -- node[above, font=\scriptsize] {Redraw finished!} ([yshift=-8.5cm]App.south);
-\end{tikzpicture}
+\includegraphics[width=\textwidth]{figures/seq-spring-embedder.png}
 \caption{Sequence Diagram: Spring Embedder Physics Loop}
 \label{fig:seq-spring-embedder}
 \end{figure}
@@ -1730,40 +1692,33 @@ What actually happens when you drag a node? It's not just the node that moves; t
 
 \subsection{Sequence Diagram: Dragging a Node}
 
+% =============================================================================
+% MERMAID SOURCE (from Markdown_Manual/06_interaction_handler__editmoveelementsservice__.md):
+% -----------------------------------------------------------------------------
+% sequenceDiagram
+%     participant User
+%     participant MoveService
+%     participant Node
+%     participant ConnectedArcs
+%
+%     User->>MoveService: mousedown (Start at 100,100)
+%     MoveService->>MoveService: Store initialMousePos = (100,100)
+%     MoveService->>MoveService: Find all Arcs connected to Node
+%
+%     User->>MoveService: mousemove (Now at 105, 102)
+%     
+%     MoveService->>MoveService: Calculate Delta: x=+5, y=+2
+%     
+%     MoveService->>Node: Node.x += 5, Node.y += 2
+%     MoveService->>ConnectedArcs: Shift anchors by half (+2.5, +1)
+%     
+%     MoveService->>MoveService: Update initialMousePos = (105, 102)
+%     Note right of MoveService: Ready for next frame
+% =============================================================================
+
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[node distance=0.8cm, scale=0.85, transform shape]
-    % Participants
-    \node[seqparticipant] (User) {User};
-    \node[seqparticipant, right=1.3cm of User] (MS) {MoveService};
-    \node[seqparticipant, right=1.3cm of MS] (Node) {Node};
-    \node[seqparticipant, right=1.3cm of Node, align=center] (Arcs) {Connected\\Arcs};
-    
-    % Lifelines
-    \draw[dashed] (User.south) -- ++(0,-10cm);
-    \draw[dashed] (MS.south) -- ++(0,-10cm);
-    \draw[dashed] (Node.south) -- ++(0,-10cm);
-    \draw[dashed] (Arcs.south) -- ++(0,-10cm);
-    
-    % Messages
-    \draw[seqarrow] ([yshift=-1cm]User.south) -- node[above, font=\scriptsize] {mousedown (100,100)} ([yshift=-1cm]MS.south);
-    
-    \node[seqnote, right=0.1cm of MS, yshift=-1.8cm] {Store initialPos\\Find connected Arcs};
-    
-    \draw[seqarrow] ([yshift=-3cm]User.south) -- node[above, font=\scriptsize] {mousemove (105,102)} ([yshift=-3cm]MS.south);
-    
-    \node[seqnote, right=0.1cm of MS, yshift=-4cm] {Delta: x=+5, y=+2};
-    
-    \draw[seqarrow] ([yshift=-5cm]MS.south) -- node[above, font=\scriptsize] {x += 5, y += 2} ([yshift=-5cm]Node.south);
-    
-    \draw[seqarrow] ([yshift=-6cm]MS.south) -- node[above, font=\scriptsize] {Shift anchors} ([yshift=-6cm]Arcs.south);
-    
-    \node[seqnote, right=0.1cm of MS, yshift=-7cm] {Update initialPos\\= (105,102)};
-    
-    \draw[seqarrow] ([yshift=-8.5cm]User.south) -- node[above, font=\scriptsize] {mouseup} ([yshift=-8.5cm]MS.south);
-    
-    \node[seqnote, right=0.1cm of MS, yshift=-9.3cm] {Clear state};
-\end{tikzpicture}
+\includegraphics[width=\textwidth]{figures/seq-drag-node.png}
 \caption{Sequence Diagram: Dragging a Node with Connected Arcs}
 \label{fig:seq-drag-node}
 \end{figure}
@@ -1973,36 +1928,29 @@ How does the application know to update the screen? Just like the \hyperref[chap
 
 \subsection{Sequence Diagram: Clicking ``Zoom In''}
 
+% =============================================================================
+% MERMAID SOURCE (from Markdown_Manual/07_camera_controller__zoomservice__.md):
+% -----------------------------------------------------------------------------
+% sequenceDiagram
+%     participant User
+%     participant Toolbar
+%     participant ZS as ZoomService
+%     participant OBS as Observables
+%     participant V as Visualizer (SVG)
+%
+%     User->>Toolbar: Click (+) Button
+%     Toolbar->>ZS: zoomIn()
+%     
+%     Note over ZS: Calculate new Scale (1.0 -> 1.1)
+%     ZS->>OBS: scaleSubject.next(1.1)
+%     
+%     OBS-->>V: Update "transform" attribute
+%     V->>User: Screen contents get bigger
+% =============================================================================
+
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[node distance=0.8cm, scale=0.85, transform shape]
-    % Participants
-    \node[seqparticipant] (User) {User};
-    \node[seqparticipant, right=1.2cm of User] (TB) {Toolbar};
-    \node[seqparticipant, right=1.2cm of TB] (ZS) {ZoomService};
-    \node[seqparticipant, right=1.2cm of ZS] (OBS) {Observables};
-    \node[seqparticipant, right=1.2cm of OBS] (V) {Visualizer};
-    
-    % Lifelines
-    \draw[dashed] (User.south) -- ++(0,-8cm);
-    \draw[dashed] (TB.south) -- ++(0,-8cm);
-    \draw[dashed] (ZS.south) -- ++(0,-8cm);
-    \draw[dashed] (OBS.south) -- ++(0,-8cm);
-    \draw[dashed] (V.south) -- ++(0,-8cm);
-    
-    % Messages
-    \draw[seqarrow] ([yshift=-1cm]User.south) -- node[above, font=\scriptsize] {Click (+)} ([yshift=-1cm]TB.south);
-    
-    \draw[seqarrow] ([yshift=-2cm]TB.south) -- node[above, font=\scriptsize] {zoomIn()} ([yshift=-2cm]ZS.south);
-    
-    \node[seqnote, right=0.1cm of ZS, yshift=-3cm] {Calculate new\\Scale: 1.0 $\rightarrow$ 1.1};
-    
-    \draw[seqarrow] ([yshift=-4.5cm]ZS.south) -- node[above, font=\scriptsize] {scaleSubject.next(1.1)} ([yshift=-4.5cm]OBS.south);
-    
-    \draw[seqarrow, dashed] ([yshift=-5.5cm]OBS.south) -- node[above, font=\scriptsize] {Update transform} ([yshift=-5.5cm]V.south);
-    
-    \draw[seqarrow] ([yshift=-7cm]V.south) -- node[above, font=\scriptsize] {Screen gets bigger} ([yshift=-7cm]User.south);
-\end{tikzpicture}
+\includegraphics[width=\textwidth]{figures/seq-zoom-in.png}
 \caption{Sequence Diagram: Zoom In via Toolbar Button}
 \label{fig:seq-zoom-in}
 \end{figure}
@@ -2285,38 +2233,29 @@ The \texttt{UiService} is a purely logical state container. It does not manipula
 
 Here is the flow of information when a user selects the ``Add Place'' tool and clicks the canvas.
 
+% =============================================================================
+% MERMAID SOURCE (from Markdown_Manual/08_ui_state_manager__uiservice__.md):
+% -----------------------------------------------------------------------------
+% sequenceDiagram
+%     participant User
+%     participant Toolbar
+%     participant UI as UiService
+%     participant C as Canvas (Visualizer)
+%
+%     User->>Toolbar: Clicks "Add Place" Icon
+%     Toolbar->>UI: button = ButtonState.Place
+%     UI->>UI: Notify "Tool Changed!"
+%     
+%     User->>C: Clicks on whitespace
+%     C->>UI: Check "uiService.button"?
+%     UI-->>C: Returns "Place"
+%     
+%     C->>C: Create new Circle logic
+% =============================================================================
+
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[node distance=0.8cm, scale=0.85, transform shape]
-    % Participants
-    \node[seqparticipant] (User) {User};
-    \node[seqparticipant, right=1.3cm of User] (TB) {Toolbar};
-    \node[seqparticipant, right=1.3cm of TB] (UI) {UiService};
-    \node[seqparticipant, right=1.3cm of UI] (C) {Canvas};
-    
-    % Lifelines
-    \draw[dashed] (User.south) -- ++(0,-9cm);
-    \draw[dashed] (TB.south) -- ++(0,-9cm);
-    \draw[dashed] (UI.south) -- ++(0,-9cm);
-    \draw[dashed] (C.south) -- ++(0,-9cm);
-    
-    % Messages
-    \draw[seqarrow] ([yshift=-1cm]User.south) -- node[above, font=\scriptsize] {Clicks ``Add Place''} ([yshift=-1cm]TB.south);
-    
-    \draw[seqarrow] ([yshift=-2cm]TB.south) -- node[above, font=\scriptsize] {button = Place} ([yshift=-2cm]UI.south);
-    
-    \node[seqnote, right=0.1cm of UI, yshift=-2.8cm] {Notify:\\``Tool Changed!''};
-    
-    \draw[seqarrow] ([yshift=-4cm]User.south) -- node[above, font=\scriptsize] {Clicks whitespace} ([yshift=-4cm]C.south);
-    
-    \draw[seqarrow] ([yshift=-5cm]C.south) -- node[above, font=\scriptsize] {Check button?} ([yshift=-5cm]UI.south);
-    
-    \draw[seqarrow, dashed] ([yshift=-6cm]UI.south) -- node[above, font=\scriptsize] {Returns ``Place''} ([yshift=-6cm]C.south);
-    
-    \node[seqnote, right=0.1cm of C, yshift=-7cm] {Create new\\Circle logic};
-    
-    \draw[seqarrow] ([yshift=-8.5cm]C.south) -- node[above, font=\scriptsize] {Circle appears} ([yshift=-8.5cm]User.south);
-\end{tikzpicture}
+\includegraphics[width=\textwidth]{figures/seq-tool-selection.png}
 \caption{Sequence Diagram: Tool Selection and Place Creation}
 \label{fig:seq-tool-place}
 \end{figure}
@@ -2561,41 +2500,33 @@ What happens when you click a transition? The service performs a ``Save, then Up
 
 Here is the lifecycle of a single move.
 
+% =============================================================================
+% MERMAID SOURCE (from Markdown_Manual/09_simulation_engine__tokengameservice__.md):
+% -----------------------------------------------------------------------------
+% sequenceDiagram
+%     participant User
+%     participant TG as TokenGameService
+%     participant T as Transition
+%     participant P as Place
+%     participant H as History Stack
+%
+%     User->>TG: fire(Transition)
+%     TG->>T: isActive?
+%     T-->>TG: true (Enough tokens)
+%
+%     TG->>H: push(Current Token Counts)
+%     Note right of H: Save "Before" state
+%
+%     TG->>P: Subtract Input Tokens
+%     TG->>P: Add Output Tokens
+%     
+%     Note over P: Data Changed!
+%     P->>User: Screen Updates via DataService
+% =============================================================================
+
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[node distance=0.8cm, scale=0.85, transform shape]
-    % Participants
-    \node[seqparticipant] (User) {User};
-    \node[seqparticipant, right=1.2cm of User] (TG) {TokenGame};
-    \node[seqparticipant, right=1.2cm of TG] (T) {Transition};
-    \node[seqparticipant, right=1.2cm of T] (P) {Place};
-    \node[seqparticipant, right=1.2cm of P] (H) {History};
-    
-    % Lifelines
-    \draw[dashed] (User.south) -- ++(0,-10cm);
-    \draw[dashed] (TG.south) -- ++(0,-10cm);
-    \draw[dashed] (T.south) -- ++(0,-10cm);
-    \draw[dashed] (P.south) -- ++(0,-10cm);
-    \draw[dashed] (H.south) -- ++(0,-10cm);
-    
-    % Messages
-    \draw[seqarrow] ([yshift=-1cm]User.south) -- node[above, font=\scriptsize] {fire(transition)} ([yshift=-1cm]TG.south);
-    
-    \draw[seqarrow] ([yshift=-2cm]TG.south) -- node[above, font=\scriptsize] {isActive?} ([yshift=-2cm]T.south);
-    
-    \draw[seqarrow, dashed] ([yshift=-2.8cm]T.south) -- node[above, font=\scriptsize] {true} ([yshift=-2.8cm]TG.south);
-    
-    \draw[seqarrow] ([yshift=-4cm]TG.south) -- node[above, font=\scriptsize] {push(state)} ([yshift=-4cm]H.south);
-    \node[seqnote, right=0.1cm of H, yshift=-4.5cm] {Save ``Before''};
-    
-    \draw[seqarrow] ([yshift=-6cm]TG.south) -- node[above, font=\scriptsize] {Subtract input tokens} ([yshift=-6cm]P.south);
-    
-    \draw[seqarrow] ([yshift=-7cm]TG.south) -- node[above, font=\scriptsize] {Add output tokens} ([yshift=-7cm]P.south);
-    
-    \node[seqnote, right=0.1cm of P, yshift=-8cm] {Data Changed!};
-    
-    \draw[seqarrow, dashed] ([yshift=-9cm]P.south) -- node[above, font=\scriptsize] {Screen updates} ([yshift=-9cm]User.south);
-\end{tikzpicture}
+\includegraphics[width=\textwidth]{figures/seq-token-fire.png}
 \caption{Sequence Diagram: Token Game Firing Logic}
 \label{fig:seq-fire}
 \end{figure}
@@ -2840,40 +2771,35 @@ What happens in those few seconds between clicking ``Run'' and seeing the result
 
 \subsection{Sequence Diagram: Running a Simulation}
 
+% =============================================================================
+% MERMAID SOURCE (from Markdown_Manual/10_backend_integrator__planningservice__.md):
+% -----------------------------------------------------------------------------
+% sequenceDiagram
+%     participant UI as Component
+%     participant PS as PlanningService
+%     participant WWW as Internet
+%     participant BE as Backend Server
+%
+%     UI->>PS: runSimpleSimulation(xmlString)
+%     
+%     Note over PS: Convert String -> File
+%     Note over PS: Create FormData "Envelope"
+%     
+%     PS->>WWW: HTTP POST /simple-sim (with File)
+%     WWW->>BE: Transfer Data...
+%     
+%     Note over BE: Calculations (Heavy CPU)
+%     
+%     BE-->>WWW: Returns JSON Result
+%     WWW-->>PS: Response (200 OK)
+%     
+%     PS-->>UI: emit(result)
+%     UI->>UI: statusMessage = "Success"
+% =============================================================================
+
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[node distance=0.8cm, scale=0.8, transform shape]
-    % Participants
-    \node[seqparticipant] (UI) {Component};
-    \node[seqparticipant, right=1.2cm of UI] (PS) {PlanningService};
-    \node[seqparticipant, right=1.2cm of PS] (WWW) {Internet};
-    \node[seqparticipant, right=1.2cm of WWW] (BE) {Backend};
-    
-    % Lifelines
-    \draw[dashed] (UI.south) -- ++(0,-11cm);
-    \draw[dashed] (PS.south) -- ++(0,-11cm);
-    \draw[dashed] (WWW.south) -- ++(0,-11cm);
-    \draw[dashed] (BE.south) -- ++(0,-11cm);
-    
-    % Messages
-    \draw[seqarrow] ([yshift=-1cm]UI.south) -- node[above, font=\scriptsize] {runSimulation(xml)} ([yshift=-1cm]PS.south);
-    
-    \node[seqnote, right=0.1cm of PS, yshift=-2cm] {String $\rightarrow$ File\\Create FormData};
-    
-    \draw[seqarrow] ([yshift=-3.5cm]PS.south) -- node[above, font=\scriptsize] {HTTP POST /sim} ([yshift=-3.5cm]WWW.south);
-    
-    \draw[seqarrow] ([yshift=-4.5cm]WWW.south) -- node[above, font=\scriptsize] {Transfer...} ([yshift=-4.5cm]BE.south);
-    
-    \node[seqnote, right=0.1cm of BE, yshift=-5.5cm] {Heavy CPU\\Calculations};
-    
-    \draw[seqarrow, dashed] ([yshift=-7cm]BE.south) -- node[above, font=\scriptsize] {JSON Result} ([yshift=-7cm]WWW.south);
-    
-    \draw[seqarrow, dashed] ([yshift=-8cm]WWW.south) -- node[above, font=\scriptsize] {Response 200 OK} ([yshift=-8cm]PS.south);
-    
-    \draw[seqarrow, dashed] ([yshift=-9cm]PS.south) -- node[above, font=\scriptsize] {emit(result)} ([yshift=-9cm]UI.south);
-    
-    \node[seqnote, right=0.1cm of UI, yshift=-10cm] {status = ``Success''};
-\end{tikzpicture}
+\includegraphics[width=\textwidth]{figures/seq-backend-simulation.png}
 \caption{Sequence Diagram: Running a Backend Simulation}
 \label{fig:seq-planning}
 \end{figure}

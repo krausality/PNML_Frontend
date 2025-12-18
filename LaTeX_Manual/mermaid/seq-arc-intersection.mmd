@@ -1,0 +1,18 @@
+sequenceDiagram
+    participant V as Visualizer
+    participant A as Arc
+    participant P as Place (From)
+    participant T as Transition (To)
+
+    V->>A: get polyLinePointsArray
+    Note over A: Needs to find start & end
+    
+    A->>P: intersectionOfBoundaryWithLineTo(T.position)
+    P->>P: Calculate Circle Edge Math
+    P-->>A: Return Point (Edge of Circle)
+
+    A->>T: intersectionOfBoundaryWithLineTo(P.position)
+    T->>T: Calculate Rectangle Edge Math
+    T-->>A: Return Point (Edge of Box)
+
+    A-->>V: Returns [StartPoint, EndPoint]

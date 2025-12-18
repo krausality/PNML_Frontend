@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.7.31)  18 DEC 2025 01:17
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.7.31)  18 DEC 2025 19:57
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -861,14 +861,16 @@ has been already used, duplicate ignored
                                                   \__shipout_drop_firstpage_...
 l.269 const 
             tankPos = new Point(100, 100);]
-Overfull \hbox (101.75981pt too wide) in paragraph at lines 353--354
- [][] 
- []
-
+<figures/seq-arc-intersection.png, id=1029, 2360.82pt x 1330.9725pt>
+File: figures/seq-arc-intersection.png Graphic file (type png)
+<use figures/seq-arc-intersection.png>
+Package pdftex.def Info: figures/seq-arc-intersection.png  used on input line 3
+45.
+(pdftex.def)             Requested size: 360.0pt x 202.94762pt.
 
 
 [13]
-Overfull \hbox (6.26967pt too wide) in paragraph at lines 364--365
+Overfull \hbox (6.26967pt too wide) in paragraph at lines 356--357
 \T1/cmr/m/n/10.95 This class im-ple-ments \T1/cmtt/m/n/10.95 Node\T1/cmr/m/n/10
 .95 . No-tice the \T1/cmtt/m/n/10.95 intersectionOfBoundaryWithLineTo
  []
@@ -880,8 +882,8 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.2.2})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.381  
-          }]
+l.375 \end{lstlisting}
+                       <./figures/seq-arc-intersection.png>]
 
 [15]
 
@@ -893,7 +895,7 @@ Chapter 3.
 
 ]
 LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <10.95> not available
-(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 510.
+(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 502.
 
 
 [18
@@ -901,18 +903,25 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.3.1})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.546 \begin{lstlisting}[language=TypeScript]
+l.538 \begin{lstlisting}[language=TypeScript]
                                              ]
 
 [19]
+<figures/seq-delete-place.png, id=1182, 2360.82pt x 1318.9275pt>
+File: figures/seq-delete-place.png Graphic file (type png)
+<use figures/seq-delete-place.png>
+Package pdftex.def Info: figures/seq-delete-place.png  used on input line 615.
+(pdftex.def)             Requested size: 360.0pt x 201.111pt.
+
 
 [20
 pdfTeX warning (ext4): destination with the same identifier (name{figure.3.2}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.649  
-          getPlaces(): Place[] {]
+l.639  
+          // ... similar getters for transitions and arcs <./figures/seq-delete
+-place.png>]
 
 [21]
 
@@ -929,14 +938,15 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.4.1})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.789 \subsection
+l.776 \subsection
                  {Step 1: The Template (HTML)}]
 
 [25]
-Overfull \hbox (3.82054pt too wide) in paragraph at lines 899--900
- [][] 
- []
-
+<figures/seq-create-place.png, id=1289, 2360.82pt x 1544.77126pt>
+File: figures/seq-create-place.png Graphic file (type png)
+<use figures/seq-create-place.png>
+Package pdftex.def Info: figures/seq-create-place.png  used on input line 878.
+(pdftex.def)             Requested size: 360.0pt x 235.5478pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
@@ -949,8 +959,8 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.4.2})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.928 
-      ]
+l.907 
+       <./figures/seq-create-place.png>]
 
 [28]
 
@@ -969,18 +979,24 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.5.1})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.1077     \item I
+l.1056     \item I
                   t combines them all into one long text string.]
 
 [33]
+<figures/seq-pnml-import.png, id=1422, 2360.82pt x 1273.75874pt>
+File: figures/seq-pnml-import.png Graphic file (type png)
+<use figures/seq-pnml-import.png>
+Package pdftex.def Info: figures/seq-pnml-import.png  used on input line 1140.
+(pdftex.def)             Requested size: 360.0pt x 194.22363pt.
+
 
 [34
 pdfTeX warning (ext4): destination with the same identifier (name{figure.5.2}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.1182 \begin{lstlisting}[language=TypeScript]
-                                              ]
+l.1157  
+           <name> <./figures/seq-pnml-import.png>]
 
 [35]
 
@@ -993,7 +1009,7 @@ l.1182 \begin{lstlisting}[language=TypeScript]
 ]
 Chapter 6.
 
-Overfull \hbox (40.04062pt too wide) in paragraph at lines 1354--1355
+Overfull \hbox (40.04062pt too wide) in paragraph at lines 1325--1326
  [][] 
  []
 
@@ -1012,8 +1028,15 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.6.1})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.1387 \begin{lstlisting}[language=TypeScript]
+l.1358 \begin{lstlisting}[language=TypeScript]
                                               ]
+<figures/seq-spring-embedder.png, id=1532, 2360.82pt x 1662.21pt>
+File: figures/seq-spring-embedder.png Graphic file (type png)
+<use figures/seq-spring-embedder.png>
+Package pdftex.def Info: figures/seq-spring-embedder.png  used on input line 14
+11.
+(pdftex.def)             Requested size: 360.0pt x 253.45496pt.
+
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
@@ -1031,9 +1054,9 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.6.2})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.1485 \begin{lstlisting}[language=TypeScript]
-                                              ]
-Overfull \hbox (82.8062pt too wide) in paragraph at lines 1522--1523
+l.1440 }
+         <./figures/seq-spring-embedder.png>]
+Overfull \hbox (82.8062pt too wide) in paragraph at lines 1484--1485
  [][] 
  []
 
@@ -1044,8 +1067,12 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.6.3})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.1533 \begin{lstlisting}[language=TypeScript]
-                                              ]
+l.1493 N
+        otice how the \texttt{applySugiyamaLayout} method acts as a manager ...
+]
+Underfull \vbox (badness 1221) has occurred while \output is active []
+
+
 
 
 Overfull \hbox (67.78061pt too wide) has occurred while \output is active
@@ -1073,24 +1100,24 @@ Chapter 7.
 
 Package pgf Warning: Returning node center instead of a point on node border. D
 id you specify a point identical to the center of node ``update''? on input lin
-e 1638.
+e 1600.
 
 
 Package pgf Warning: Returning node center instead of a point on node border. D
 id you specify a point identical to the center of node ``update''? on input lin
-e 1638.
+e 1600.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 1644.
+(hyperref)                removing `math shift' on input line 1606.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\Delta' on input line 1644.
+(hyperref)                removing `\Delta' on input line 1606.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 1644.
+(hyperref)                removing `math shift' on input line 1606.
 
 
 
@@ -1105,14 +1132,20 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.7.1})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.1688 \subsection
+l.1650 \subsection
                   {Step 1: Grabbing an Object}
 pdfTeX warning (ext4): destination with the same identifier (name{figure.7.2}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.1688 \subsection
+l.1650 \subsection
                   {Step 1: Grabbing an Object}]
+<figures/seq-drag-node.png, id=1661, 2360.82pt x 1704.3675pt>
+File: figures/seq-drag-node.png Graphic file (type png)
+<use figures/seq-drag-node.png>
+Package pdftex.def Info: figures/seq-drag-node.png  used on input line 1721.
+(pdftex.def)             Requested size: 360.0pt x 259.88315pt.
+
 
 [49]
 
@@ -1127,8 +1160,8 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.7.3})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.1794  
-           this.initialMousePos.x = event.clientX;]
+l.1748  
+           // Remember where we started <./figures/seq-drag-node.png>]
 
 [51]
 
@@ -1151,12 +1184,13 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.8.1})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.1973 
+l.1928 
        ]
-Overfull \hbox (6.77885pt too wide) in paragraph at lines 2005--2006
- [][] 
- []
-
+<figures/seq-zoom-in.png, id=1787, 2360.82pt x 933.4875pt>
+File: figures/seq-zoom-in.png Graphic file (type png)
+<use figures/seq-zoom-in.png>
+Package pdftex.def Info: figures/seq-zoom-in.png  used on input line 1953.
+(pdftex.def)             Requested size: 360.0pt x 142.33882pt.
 
 
 [55
@@ -1164,11 +1198,11 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.8.2})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.2026  
-           // Public streams that components can listen to]
+l.1983 
+        <./figures/seq-zoom-in.png>]
 
 [56]
-Overfull \hbox (160.3201pt too wide) in paragraph at lines 2107--2108
+Overfull \hbox (160.3201pt too wide) in paragraph at lines 2055--2056
 []\T1/cmr/m/n/10.95 We solve this with the \T1/cmr/bx/n/10.95 Svg-Co-or-di-nate
 sSer-vice \T1/cmr/m/n/10.95 (\T1/cmtt/m/n/10.95 src/app/tr-services/svg-coordin
 ates-service.ts\T1/cmr/m/n/10.95 ).
@@ -1181,7 +1215,7 @@ ates-service.ts\T1/cmr/m/n/10.95 ).
 [58]
 Chapter 9.
 
-Overfull \hbox (39.53848pt too wide) in paragraph at lines 2193--2194
+Overfull \hbox (39.53848pt too wide) in paragraph at lines 2141--2142
  [][] 
  []
 
@@ -1196,8 +1230,15 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.9.1})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.2236 \begin{lstlisting}[language=TypeScript]
+l.2184 \begin{lstlisting}[language=TypeScript]
                                               ]
+<figures/seq-tool-selection.png, id=1890, 2360.82pt x 1321.93875pt>
+File: figures/seq-tool-selection.png Graphic file (type png)
+<use figures/seq-tool-selection.png>
+Package pdftex.def Info: figures/seq-tool-selection.png  used on input line 225
+8.
+(pdftex.def)             Requested size: 360.0pt x 201.57014pt.
+
 
 [61]
 
@@ -1206,8 +1247,8 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.9.2})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.2345  
-           }]
+l.2286 \end{lstlisting}
+                        <./figures/seq-tool-selection.png>]
 
 [63]
 
@@ -1218,7 +1259,7 @@ Chapter 10.
 [65
 
 ]
-Overfull \hbox (121.90529pt too wide) in paragraph at lines 2462--2463
+Overfull \hbox (121.90529pt too wide) in paragraph at lines 2401--2402
  [][] 
  []
 
@@ -1229,7 +1270,7 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.10.1})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.2491     \item W
+l.2430     \item W
                   hen you click \textbf{Undo}, we take the top photo and arr...
 ]
 
@@ -1238,27 +1279,25 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.10.2})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.2541 //
+l.2480 //
           The Visualizer will automatically update because it watches the Da...
 ]
-Overfull \hbox (52.84537pt too wide) in paragraph at lines 2598--2599
- [][] 
- []
+<figures/seq-token-fire.png, id=2010, 2360.82pt x 1180.41pt>
+File: figures/seq-token-fire.png Graphic file (type png)
+<use figures/seq-token-fire.png>
+Package pdftex.def Info: figures/seq-token-fire.png  used on input line 2529.
+(pdftex.def)             Requested size: 360.0pt x 179.98975pt.
 
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-
-[68]
-
-[69
+[68
 pdfTeX warning (ext4): destination with the same identifier (name{figure.10.3})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.2628  
-           const tokenMapping = new Map<Place, number>();]
+l.2538 \subsection
+                  {The History Storage} <./figures/seq-token-fire.png>]
+
+[69]
 
 [70]
 
@@ -1277,13 +1316,19 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.11.1})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.2798 \subsection
+l.2729 \subsection
                   {Step 1: Preparing the Data}]
-Underfull \hbox (badness 6608) in paragraph at lines 2836--2837
+Underfull \hbox (badness 6608) in paragraph at lines 2767--2768
 []\T1/cmr/bx/n/10.95 Network: \T1/cmr/m/n/10.95 Trav-els across the in-ter-net 
 to the URL (e.g.,
  []
 
+<figures/seq-backend-simulation.png, id=2125, 2360.82pt x 1439.3775pt>
+File: figures/seq-backend-simulation.png Graphic file (type png)
+<use figures/seq-backend-simulation.png>
+Package pdftex.def Info: figures/seq-backend-simulation.png  used on input line
+ 2802.
+(pdftex.def)             Requested size: 360.0pt x 219.4773pt.
 
 
 [75]
@@ -1293,8 +1338,9 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.11.2})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.2904 \begin{lstlisting}[language=TypeScript]
-                                              ]
+l.2830 \begin{lstlisting}[language=TypeScript]
+                                               <./figures/seq-backend-simulatio
+n.png>]
 
 [77]
 
@@ -1309,10 +1355,10 @@ Package rerunfilecheck Info: File `l3s-offshore-doc.out' has not changed.
 (rerunfilecheck)             Checksum: CC4B79BE7CCD1C136694E739D74F01DB;36712.
  ) 
 Here is how much of TeX's memory you used:
- 27113 strings out of 468149
- 491930 string characters out of 5432050
- 1212150 words of memory out of 5000000
- 54134 multiletter control sequences out of 15000+600000
+ 26991 strings out of 468149
+ 491756 string characters out of 5432050
+ 1185449 words of memory out of 5000000
+ 54012 multiletter control sequences out of 15000+600000
  649070 words of font info for 93 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  84i,8n,87p,588b,2136s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -1337,11 +1383,10 @@ p\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1728.pk><C:/Users
 /mpp/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:
 /Users/mpp/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.p
 fb><C:/Users/mpp/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/c
-msy10.pfb><C:/Users/mpp/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfon
-ts/cm/cmsy8.pfb>
-Output written on l3s-offshore-doc.pdf (79 pages, 814503 bytes).
+msy10.pfb>
+Output written on l3s-offshore-doc.pdf (79 pages, 1585538 bytes).
 PDF statistics:
- 3339 PDF objects out of 3580 (max. 8388607)
+ 3320 PDF objects out of 3580 (max. 8388607)
  1177 named destinations out of 1200 (max. 500000)
- 1501 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1551 words of extra memory for PDF output out of 10000 (max. 10000000)
 

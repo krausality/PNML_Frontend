@@ -1,0 +1,17 @@
+sequenceDiagram
+    participant App
+    participant SE as SpringEmbedder
+    participant Node as Node (Logic)
+    participant DS as Data Service
+
+    App->>SE: layoutSpringEmbedder()
+    
+    loop Every Iteration (e.g., 100 times)
+        SE->>SE: Calculate Repulsion (Push apart)
+        SE->>SE: Calculate Attraction (Pull connected)
+        SE->>Node: Update Node.position (x, y)
+        SE->>SE: sleep(1ms) (For animation effect)
+    end
+
+    SE->>DS: triggerDataChanged()
+    DS-->>App: Redraw finished graph!
