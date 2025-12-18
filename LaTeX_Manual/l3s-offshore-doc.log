@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.7.31)  18 DEC 2025 19:57
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.7.31)  18 DEC 2025 20:16
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -861,12 +861,12 @@ has been already used, duplicate ignored
                                                   \__shipout_drop_firstpage_...
 l.269 const 
             tankPos = new Point(100, 100);]
-<figures/seq-arc-intersection.png, id=1029, 2360.82pt x 1330.9725pt>
+<figures/seq-arc-intersection.png, id=1029, 3147.76pt x 1774.63pt>
 File: figures/seq-arc-intersection.png Graphic file (type png)
 <use figures/seq-arc-intersection.png>
 Package pdftex.def Info: figures/seq-arc-intersection.png  used on input line 3
 45.
-(pdftex.def)             Requested size: 360.0pt x 202.94762pt.
+(pdftex.def)             Requested size: 360.0pt x 202.95439pt.
 
 
 [13]
@@ -907,11 +907,11 @@ l.538 \begin{lstlisting}[language=TypeScript]
                                              ]
 
 [19]
-<figures/seq-delete-place.png, id=1182, 2360.82pt x 1318.9275pt>
+<figures/seq-delete-place.png, id=1182, 3147.76pt x 1758.57pt>
 File: figures/seq-delete-place.png Graphic file (type png)
 <use figures/seq-delete-place.png>
 Package pdftex.def Info: figures/seq-delete-place.png  used on input line 615.
-(pdftex.def)             Requested size: 360.0pt x 201.111pt.
+(pdftex.def)             Requested size: 360.0pt x 201.1177pt.
 
 
 [20
@@ -942,11 +942,11 @@ l.776 \subsection
                  {Step 1: The Template (HTML)}]
 
 [25]
-<figures/seq-create-place.png, id=1289, 2360.82pt x 1544.77126pt>
+<figures/seq-create-place.png, id=1289, 3147.76pt x 2059.695pt>
 File: figures/seq-create-place.png Graphic file (type png)
 <use figures/seq-create-place.png>
 Package pdftex.def Info: figures/seq-create-place.png  used on input line 878.
-(pdftex.def)             Requested size: 360.0pt x 235.5478pt.
+(pdftex.def)             Requested size: 360.0pt x 235.55566pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
@@ -983,11 +983,11 @@ l.1056     \item I
                   t combines them all into one long text string.]
 
 [33]
-<figures/seq-pnml-import.png, id=1422, 2360.82pt x 1273.75874pt>
+<figures/seq-pnml-import.png, id=1422, 3147.76pt x 1698.345pt>
 File: figures/seq-pnml-import.png Graphic file (type png)
 <use figures/seq-pnml-import.png>
 Package pdftex.def Info: figures/seq-pnml-import.png  used on input line 1140.
-(pdftex.def)             Requested size: 360.0pt x 194.22363pt.
+(pdftex.def)             Requested size: 360.0pt x 194.2301pt.
 
 
 [34
@@ -1030,12 +1030,12 @@ has been already used, duplicate ignored
                                                   \__shipout_drop_firstpage_...
 l.1358 \begin{lstlisting}[language=TypeScript]
                                               ]
-<figures/seq-spring-embedder.png, id=1532, 2360.82pt x 1662.21pt>
+<figures/seq-spring-embedder.png, id=1532, 3147.76pt x 2216.28pt>
 File: figures/seq-spring-embedder.png Graphic file (type png)
 <use figures/seq-spring-embedder.png>
 Package pdftex.def Info: figures/seq-spring-embedder.png  used on input line 14
 11.
-(pdftex.def)             Requested size: 360.0pt x 253.45496pt.
+(pdftex.def)             Requested size: 360.0pt x 253.46341pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
@@ -1140,11 +1140,11 @@ has been already used, duplicate ignored
                                                   \__shipout_drop_firstpage_...
 l.1650 \subsection
                   {Step 1: Grabbing an Object}]
-<figures/seq-drag-node.png, id=1661, 2360.82pt x 1704.3675pt>
+<figures/seq-drag-node.png, id=1661, 3147.76pt x 2272.49pt>
 File: figures/seq-drag-node.png Graphic file (type png)
 <use figures/seq-drag-node.png>
 Package pdftex.def Info: figures/seq-drag-node.png  used on input line 1721.
-(pdftex.def)             Requested size: 360.0pt x 259.88315pt.
+(pdftex.def)             Requested size: 360.0pt x 259.89183pt.
 
 
 [49]
@@ -1186,11 +1186,11 @@ has been already used, duplicate ignored
                                                   \__shipout_drop_firstpage_...
 l.1928 
        ]
-<figures/seq-zoom-in.png, id=1787, 2360.82pt x 933.4875pt>
+<figures/seq-zoom-in.png, id=1787, 3147.76pt x 1244.65pt>
 File: figures/seq-zoom-in.png Graphic file (type png)
 <use figures/seq-zoom-in.png>
 Package pdftex.def Info: figures/seq-zoom-in.png  used on input line 1953.
-(pdftex.def)             Requested size: 360.0pt x 142.33882pt.
+(pdftex.def)             Requested size: 360.0pt x 142.34357pt.
 
 
 [55
@@ -1232,12 +1232,12 @@ has been already used, duplicate ignored
                                                   \__shipout_drop_firstpage_...
 l.2184 \begin{lstlisting}[language=TypeScript]
                                               ]
-<figures/seq-tool-selection.png, id=1890, 2360.82pt x 1321.93875pt>
+<figures/seq-tool-selection.png, id=1890, 3147.76pt x 1762.585pt>
 File: figures/seq-tool-selection.png Graphic file (type png)
 <use figures/seq-tool-selection.png>
 Package pdftex.def Info: figures/seq-tool-selection.png  used on input line 225
 8.
-(pdftex.def)             Requested size: 360.0pt x 201.57014pt.
+(pdftex.def)             Requested size: 360.0pt x 201.57687pt.
 
 
 [61]
@@ -1282,11 +1282,11 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.10.2})
 l.2480 //
           The Visualizer will automatically update because it watches the Da...
 ]
-<figures/seq-token-fire.png, id=2010, 2360.82pt x 1180.41pt>
+<figures/seq-token-fire.png, id=2010, 3147.76pt x 1573.88pt>
 File: figures/seq-token-fire.png Graphic file (type png)
 <use figures/seq-token-fire.png>
 Package pdftex.def Info: figures/seq-token-fire.png  used on input line 2529.
-(pdftex.def)             Requested size: 360.0pt x 179.98975pt.
+(pdftex.def)             Requested size: 360.0pt x 179.99574pt.
 
 
 [68
@@ -1323,12 +1323,12 @@ Underfull \hbox (badness 6608) in paragraph at lines 2767--2768
 to the URL (e.g.,
  []
 
-<figures/seq-backend-simulation.png, id=2125, 2360.82pt x 1439.3775pt>
+<figures/seq-backend-simulation.png, id=2125, 3147.76pt x 1919.17pt>
 File: figures/seq-backend-simulation.png Graphic file (type png)
 <use figures/seq-backend-simulation.png>
 Package pdftex.def Info: figures/seq-backend-simulation.png  used on input line
  2802.
-(pdftex.def)             Requested size: 360.0pt x 219.4773pt.
+(pdftex.def)             Requested size: 360.0pt x 219.48462pt.
 
 
 [75]
@@ -1357,7 +1357,7 @@ Package rerunfilecheck Info: File `l3s-offshore-doc.out' has not changed.
 Here is how much of TeX's memory you used:
  26991 strings out of 468149
  491756 string characters out of 5432050
- 1185449 words of memory out of 5000000
+ 1185436 words of memory out of 5000000
  54012 multiletter control sequences out of 15000+600000
  649070 words of font info for 93 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -1384,7 +1384,7 @@ p\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1728.pk><C:/Users
 /Users/mpp/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.p
 fb><C:/Users/mpp/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/c
 msy10.pfb>
-Output written on l3s-offshore-doc.pdf (79 pages, 1585538 bytes).
+Output written on l3s-offshore-doc.pdf (79 pages, 2023212 bytes).
 PDF statistics:
  3320 PDF objects out of 3580 (max. 8388607)
  1177 named destinations out of 1200 (max. 500000)

@@ -38,7 +38,7 @@ FIGURES_DIR = "figures"
 # Mermaid CLI Settings
 MMDC_THEME = "neutral"      # Scientific theme: clean, minimalist
 MMDC_BACKGROUND = "white"   # White background for print
-MMDC_SCALE = 3              # Scale factor for high resolution (~300 DPI)
+MMDC_SCALE = 4              # Scale factor for high resolution (~400 DPI)
 
 
 def get_script_dir() -> Path:
