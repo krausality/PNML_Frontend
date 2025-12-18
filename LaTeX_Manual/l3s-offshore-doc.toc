@@ -1,191 +1,189 @@
 \babel@toc {english}{}\relax 
-\contentsline {chapter}{Document Information}{iii}{chapter*.1}%
-\contentsline {chapter}{Abstract}{v}{chapter*.4}%
-\contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}%
-\contentsline {section}{\numberline {1.1}Project Context}{1}{section.1.1}%
-\contentsline {section}{\numberline {1.2}Problem Statement}{1}{section.1.2}%
-\contentsline {section}{\numberline {1.3}Solution Approach}{2}{section.1.3}%
-\contentsline {section}{\numberline {1.4}Contributions}{2}{section.1.4}%
-\contentsline {section}{\numberline {1.5}Document Structure}{3}{section.1.5}%
-\contentsline {chapter}{\numberline {2}Fundamentals}{5}{chapter.2}%
-\contentsline {section}{\numberline {2.1}Petri Nets}{5}{section.2.1}%
-\contentsline {subsection}{\numberline {2.1.1}Basic Definitions}{5}{subsection.2.1.1}%
-\contentsline {subsection}{\numberline {2.1.2}Firing Rules}{6}{subsection.2.1.2}%
-\contentsline {subsection}{\numberline {2.1.3}Extensions: Stochastic Petri Nets}{6}{subsection.2.1.3}%
-\contentsline {section}{\numberline {2.2}PNML: Petri Net Markup Language}{6}{section.2.2}%
-\contentsline {subsection}{\numberline {2.2.1}Document Structure}{6}{subsection.2.2.1}%
-\contentsline {subsection}{\numberline {2.2.2}Graphical Information}{7}{subsection.2.2.2}%
-\contentsline {section}{\numberline {2.3}Web Technologies}{7}{section.2.3}%
-\contentsline {subsection}{\numberline {2.3.1}Angular Framework}{7}{subsection.2.3.1}%
-\contentsline {subsection}{\numberline {2.3.2}SVG for Petri Net Rendering}{8}{subsection.2.3.2}%
-\contentsline {subsection}{\numberline {2.3.3}Angular Material}{8}{subsection.2.3.3}%
-\contentsline {section}{\numberline {2.4}Related Concepts}{8}{section.2.4}%
-\contentsline {chapter}{\numberline {3}UI Service: User Interface State Management}{9}{chapter.3}%
-\contentsline {section}{\numberline {3.1}Problem Statement}{9}{section.3.1}%
-\contentsline {section}{\numberline {3.2}Conceptual Overview}{10}{section.3.2}%
-\contentsline {section}{\numberline {3.3}State Definitions}{10}{section.3.3}%
-\contentsline {section}{\numberline {3.4}The UiService Implementation}{11}{section.3.4}%
-\contentsline {subsection}{\numberline {3.4.1}Key Concepts Explained}{13}{subsection.3.4.1}%
-\contentsline {section}{\numberline {3.5}Usage Patterns}{13}{section.3.5}%
-\contentsline {subsection}{\numberline {3.5.1}Changing the UI State}{13}{subsection.3.5.1}%
-\contentsline {subsection}{\numberline {3.5.2}Listening to UI State Changes}{14}{subsection.3.5.2}%
-\contentsline {section}{\numberline {3.6}Data Flow Visualization}{14}{section.3.6}%
-\contentsline {section}{\numberline {3.7}Practical Example: Tab-Aware Behavior}{15}{section.3.7}%
-\contentsline {section}{\numberline {3.8}Summary}{16}{section.3.8}%
-\contentsline {chapter}{\numberline {4}Petri Net Elements: Core Data Model}{19}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Problem Statement}{19}{section.4.1}%
-\contentsline {section}{\numberline {4.2}Core Building Blocks}{19}{section.4.2}%
-\contentsline {section}{\numberline {4.3}Places: State Containers}{19}{section.4.3}%
-\contentsline {section}{\numberline {4.4}Transitions: Action Nodes}{21}{section.4.4}%
-\contentsline {subsection}{\numberline {4.4.1}Firing Rules}{23}{subsection.4.4.1}%
-\contentsline {section}{\numberline {4.5}Arcs: Flow Connections}{23}{section.4.5}%
-\contentsline {section}{\numberline {4.6}The Node Interface}{24}{section.4.6}%
-\contentsline {section}{\numberline {4.7}The Point Class}{25}{section.4.7}%
-\contentsline {section}{\numberline {4.8}Practical Example: Building a Simple Net}{25}{section.4.8}%
-\contentsline {section}{\numberline {4.9}Class Diagram}{27}{section.4.9}%
-\contentsline {section}{\numberline {4.10}Summary}{27}{section.4.10}%
-\contentsline {chapter}{\numberline {5}Data Service: Central Data Store}{29}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Problem Statement}{29}{section.5.1}%
-\contentsline {section}{\numberline {5.2}Conceptual Overview}{30}{section.5.2}%
-\contentsline {section}{\numberline {5.3}Implementation}{30}{section.5.3}%
-\contentsline {section}{\numberline {5.4}Key Concepts}{35}{section.5.4}%
-\contentsline {subsection}{\numberline {5.4.1}Singleton Pattern}{35}{subsection.5.4.1}%
-\contentsline {subsection}{\numberline {5.4.2}Subject vs. BehaviorSubject}{35}{subsection.5.4.2}%
-\contentsline {subsection}{\numberline {5.4.3}Cascading Deletes}{36}{subsection.5.4.3}%
-\contentsline {section}{\numberline {5.5}Usage Patterns}{36}{section.5.5}%
-\contentsline {subsection}{\numberline {5.5.1}Adding Elements}{36}{subsection.5.5.1}%
-\contentsline {subsection}{\numberline {5.5.2}Subscribing to Changes}{37}{subsection.5.5.2}%
-\contentsline {section}{\numberline {5.6}Data Flow Visualization}{38}{section.5.6}%
-\contentsline {section}{\numberline {5.7}Interaction with Other Services}{38}{section.5.7}%
-\contentsline {section}{\numberline {5.8}Summary}{38}{section.5.8}%
-\contentsline {chapter}{\numberline {6}System Architecture}{41}{chapter.6}%
-\contentsline {section}{\numberline {6.1}System Overview}{41}{section.6.1}%
-\contentsline {subsection}{\numberline {6.1.1}Frontend (Angular)}{41}{subsection.6.1.1}%
-\contentsline {subsection}{\numberline {6.1.2}Backend (Flask)}{42}{subsection.6.1.2}%
-\contentsline {section}{\numberline {6.2}Frontend Component Hierarchy}{42}{section.6.2}%
-\contentsline {subsection}{\numberline {6.2.1}Root Components}{42}{subsection.6.2.1}%
-\contentsline {subsection}{\numberline {6.2.2}Tab Components}{42}{subsection.6.2.2}%
-\contentsline {subsection}{\numberline {6.2.3}Dialog Components}{43}{subsection.6.2.3}%
-\contentsline {section}{\numberline {6.3}Service Layer}{43}{section.6.3}%
-\contentsline {subsection}{\numberline {6.3.1}Core Services}{43}{subsection.6.3.1}%
-\contentsline {subsection}{\numberline {6.3.2}Simulation Services}{43}{subsection.6.3.2}%
-\contentsline {subsection}{\numberline {6.3.3}Utility Services}{44}{subsection.6.3.3}%
-\contentsline {section}{\numberline {6.4}Data Flow}{44}{section.6.4}%
-\contentsline {section}{\numberline {6.5}Tab State Management}{44}{section.6.5}%
-\contentsline {subsection}{\numberline {6.5.1}The Tab\$ Observable}{45}{subsection.6.5.1}%
-\contentsline {subsection}{\numberline {6.5.2}Tab Guards in Components}{45}{subsection.6.5.2}%
-\contentsline {chapter}{\numberline {7}Implementation Details}{47}{chapter.7}%
-\contentsline {section}{\numberline {7.1}Zoom and Pan System}{47}{section.7.1}%
-\contentsline {subsection}{\numberline {7.1.1}The Problem}{47}{subsection.7.1.1}%
-\contentsline {subsection}{\numberline {7.1.2}Viewport-Centered Zooming}{47}{subsection.7.1.2}%
-\contentsline {subsection}{\numberline {7.1.3}ResizeObserver Integration}{48}{subsection.7.1.3}%
-\contentsline {section}{\numberline {7.2}Simulation Animation}{48}{section.7.2}%
-\contentsline {subsection}{\numberline {7.2.1}Firing Sequence Format}{48}{subsection.7.2.1}%
-\contentsline {subsection}{\numberline {7.2.2}Animation Loop}{49}{subsection.7.2.2}%
-\contentsline {subsection}{\numberline {7.2.3}Transition Highlighting}{49}{subsection.7.2.3}%
-\contentsline {section}{\numberline {7.3}Token Reset Logic}{49}{section.7.3}%
-\contentsline {subsection}{\numberline {7.3.1}Baseline Snapshot}{50}{subsection.7.3.1}%
-\contentsline {subsection}{\numberline {7.3.2}Tab-Aware Reset}{50}{subsection.7.3.2}%
-\contentsline {section}{\numberline {7.4}Parameter Table}{50}{section.7.4}%
-\contentsline {subsection}{\numberline {7.4.1}Dynamic Form Generation}{51}{subsection.7.4.1}%
-\contentsline {subsection}{\numberline {7.4.2}Reactive Forms Integration}{51}{subsection.7.4.2}%
-\contentsline {section}{\numberline {7.5}Right-Click Statistics}{51}{section.7.5}%
-\contentsline {section}{\numberline {7.6}Data Persistence Warning}{52}{section.7.6}%
-\contentsline {subsection}{\numberline {7.6.1}Initial Dialog}{52}{subsection.7.6.1}%
-\contentsline {subsection}{\numberline {7.6.2}Beforeunload Guard}{52}{subsection.7.6.2}%
-\contentsline {chapter}{\numberline {8}PNML and JSON Data I/O}{53}{chapter.8}%
-\contentsline {section}{\numberline {8.1}Problem Statement}{53}{section.8.1}%
-\contentsline {section}{\numberline {8.2}Supported Formats}{53}{section.8.2}%
-\contentsline {section}{\numberline {8.3}Custom JSON Format}{54}{section.8.3}%
-\contentsline {subsection}{\numberline {8.3.1}Example JSON File}{54}{subsection.8.3.1}%
-\contentsline {section}{\numberline {8.4}Exporting to JSON}{55}{section.8.4}%
-\contentsline {section}{\numberline {8.5}Importing from JSON}{57}{section.8.5}%
-\contentsline {section}{\numberline {8.6}PNML Format}{59}{section.8.6}%
-\contentsline {section}{\numberline {8.7}PNML Import and Export}{60}{section.8.7}%
-\contentsline {subsection}{\numberline {8.7.1}PNML Export}{62}{subsection.8.7.1}%
-\contentsline {section}{\numberline {8.8}Import Flow Visualization}{63}{section.8.8}%
-\contentsline {section}{\numberline {8.9}Handling Missing Layout Data}{63}{section.8.9}%
-\contentsline {section}{\numberline {8.10}Summary}{63}{section.8.10}%
-\contentsline {chapter}{\numberline {9}Layout Algorithms}{67}{chapter.9}%
-\contentsline {section}{\numberline {9.1}Problem Statement}{67}{section.9.1}%
-\contentsline {section}{\numberline {9.2}Available Algorithms}{67}{section.9.2}%
-\contentsline {section}{\numberline {9.3}Spring Embedder Algorithm}{67}{section.9.3}%
-\contentsline {subsection}{\numberline {9.3.1}Force Calculation}{68}{subsection.9.3.1}%
-\contentsline {section}{\numberline {9.4}Sugiyama Algorithm}{71}{section.9.4}%
-\contentsline {subsection}{\numberline {9.4.1}Phase 1: Cycle Removal}{71}{subsection.9.4.1}%
-\contentsline {subsection}{\numberline {9.4.2}Phase 2: Layer Assignment}{72}{subsection.9.4.2}%
-\contentsline {subsection}{\numberline {9.4.3}Phase 3: Vertex Ordering}{74}{subsection.9.4.3}%
-\contentsline {subsection}{\numberline {9.4.4}Phase 4: Coordinate Assignment}{75}{subsection.9.4.4}%
-\contentsline {subsection}{\numberline {9.4.5}Orchestrating the Phases}{76}{subsection.9.4.5}%
-\contentsline {section}{\numberline {9.5}Visual Comparison}{77}{section.9.5}%
-\contentsline {section}{\numberline {9.6}When to Use Which Algorithm}{77}{section.9.6}%
-\contentsline {section}{\numberline {9.7}Summary}{78}{section.9.7}%
-\contentsline {chapter}{\numberline {10}Planning Service: Backend API Integration}{79}{chapter.10}%
-\contentsline {section}{\numberline {10.1}Problem Statement}{79}{section.10.1}%
-\contentsline {section}{\numberline {10.2}System Architecture}{80}{section.10.2}%
-\contentsline {section}{\numberline {10.3}Environment Configuration}{80}{section.10.3}%
-\contentsline {section}{\numberline {10.4}PlanningService Implementation}{80}{section.10.4}%
-\contentsline {section}{\numberline {10.5}Usage in Components}{84}{section.10.5}%
-\contentsline {subsection}{\numberline {10.5.1}Running a Simulation}{84}{subsection.10.5.1}%
-\contentsline {subsection}{\numberline {10.5.2}Loading Example Models}{85}{subsection.10.5.2}%
-\contentsline {section}{\numberline {10.6}Request/Response Flow}{86}{section.10.6}%
-\contentsline {section}{\numberline {10.7}Backend API Endpoints}{86}{section.10.7}%
-\contentsline {section}{\numberline {10.8}Error Handling Patterns}{87}{section.10.8}%
-\contentsline {section}{\numberline {10.9}CORS Configuration}{88}{section.10.9}%
-\contentsline {section}{\numberline {10.10}Summary}{88}{section.10.10}%
-\contentsline {chapter}{\numberline {11}Deployment}{89}{chapter.11}%
-\contentsline {section}{\numberline {11.1}Prerequisites}{89}{section.11.1}%
-\contentsline {subsection}{\numberline {11.1.1}Development Environment}{89}{subsection.11.1.1}%
-\contentsline {subsection}{\numberline {11.1.2}Production Environment}{89}{subsection.11.1.2}%
-\contentsline {section}{\numberline {11.2}Local Development}{89}{section.11.2}%
-\contentsline {subsection}{\numberline {11.2.1}Clone and Install}{89}{subsection.11.2.1}%
-\contentsline {subsection}{\numberline {11.2.2}Development Server}{90}{subsection.11.2.2}%
-\contentsline {subsection}{\numberline {11.2.3}Backend Connection}{90}{subsection.11.2.3}%
-\contentsline {section}{\numberline {11.3}Production Build}{90}{section.11.3}%
-\contentsline {subsection}{\numberline {11.3.1}Angular Production Build}{90}{subsection.11.3.1}%
-\contentsline {subsection}{\numberline {11.3.2}Build Verification}{91}{subsection.11.3.2}%
-\contentsline {section}{\numberline {11.4}Docker Deployment}{91}{section.11.4}%
-\contentsline {subsection}{\numberline {11.4.1}Dockerfile}{91}{subsection.11.4.1}%
-\contentsline {subsection}{\numberline {11.4.2}Nginx Configuration}{91}{subsection.11.4.2}%
-\contentsline {subsection}{\numberline {11.4.3}Building the Docker Image}{92}{subsection.11.4.3}%
-\contentsline {section}{\numberline {11.5}Server Deployment}{92}{section.11.5}%
-\contentsline {subsection}{\numberline {11.5.1}L3S Infrastructure}{92}{subsection.11.5.1}%
-\contentsline {subsection}{\numberline {11.5.2}Deployment Script}{93}{subsection.11.5.2}%
-\contentsline {subsection}{\numberline {11.5.3}Docker Cleanup}{93}{subsection.11.5.3}%
-\contentsline {section}{\numberline {11.6}Environment Configuration}{93}{section.11.6}%
-\contentsline {subsection}{\numberline {11.6.1}Production Environment}{93}{subsection.11.6.1}%
-\contentsline {subsection}{\numberline {11.6.2}Runtime Configuration}{94}{subsection.11.6.2}%
-\contentsline {section}{\numberline {11.7}Troubleshooting}{94}{section.11.7}%
-\contentsline {subsection}{\numberline {11.7.1}Common Issues}{94}{subsection.11.7.1}%
-\contentsline {subsection}{\numberline {11.7.2}Logging}{94}{subsection.11.7.2}%
-\contentsline {chapter}{\numberline {12}Related Work}{95}{chapter.12}%
-\contentsline {section}{\numberline {12.1}Desktop Petri Net Tools}{95}{section.12.1}%
-\contentsline {subsection}{\numberline {12.1.1}WoPeD (Workflow Petri Net Designer)}{95}{subsection.12.1.1}%
-\contentsline {subsection}{\numberline {12.1.2}CPN Tools}{95}{subsection.12.1.2}%
-\contentsline {section}{\numberline {12.2}Web-Based Petri Net Tools}{96}{section.12.2}%
-\contentsline {subsection}{\numberline {12.2.1}i-love-petrinets (Original Fork)}{96}{subsection.12.2.1}%
-\contentsline {subsection}{\numberline {12.2.2}Cytoscape.js}{96}{subsection.12.2.2}%
-\contentsline {section}{\numberline {12.3}Simulation Backends}{96}{section.12.3}%
-\contentsline {subsection}{\numberline {12.3.1}gspn4py}{96}{subsection.12.3.1}%
-\contentsline {subsection}{\numberline {12.3.2}pm4py}{96}{subsection.12.3.2}%
-\contentsline {section}{\numberline {12.4}Summary}{97}{section.12.4}%
-\contentsline {chapter}{\numberline {13}Conclusion and Future Work}{99}{chapter.13}%
-\contentsline {section}{\numberline {13.1}Summary}{99}{section.13.1}%
-\contentsline {subsection}{\numberline {13.1.1}Achievements}{99}{subsection.13.1.1}%
-\contentsline {subsection}{\numberline {13.1.2}Technical Highlights}{99}{subsection.13.1.2}%
-\contentsline {section}{\numberline {13.2}Limitations}{100}{section.13.2}%
-\contentsline {section}{\numberline {13.3}Future Work}{100}{section.13.3}%
-\contentsline {subsection}{\numberline {13.3.1}Short-Term (High Priority)}{100}{subsection.13.3.1}%
-\contentsline {subsection}{\numberline {13.3.2}Medium-Term (Nice-to-Have)}{100}{subsection.13.3.2}%
-\contentsline {subsection}{\numberline {13.3.3}Long-Term (Research Extensions)}{101}{subsection.13.3.3}%
-\contentsline {section}{\numberline {13.4}Acknowledgements}{101}{section.13.4}%
-\contentsline {chapter}{\numberline {A}Appendix: API Reference}{103}{appendix.A}%
-\contentsline {section}{\numberline {A.1}Simulation Endpoints}{103}{section.A.1}%
-\contentsline {subsection}{\numberline {A.1.1}Simple Simulation}{103}{subsection.A.1.1}%
-\contentsline {subsection}{\numberline {A.1.2}Example Models}{103}{subsection.A.1.2}%
-\contentsline {section}{\numberline {A.2}Planning Endpoints}{104}{section.A.2}%
-\contentsline {subsection}{\numberline {A.2.1}Default Parameters}{104}{subsection.A.2.1}%
-\contentsline {subsection}{\numberline {A.2.2}Schedule Calculation}{104}{subsection.A.2.2}%
-\contentsline {section}{\numberline {A.3}Configuration Files}{104}{section.A.3}%
-\contentsline {subsection}{\numberline {A.3.1}Angular Environment}{104}{subsection.A.3.1}%
-\contentsline {subsection}{\numberline {A.3.2}Docker Compose}{104}{subsection.A.3.2}%
+\contentsline {chapter}{\numberline {1}Manual: PNML\_Frontend}{9}{chapter.1}%
+\contentsline {section}{\numberline {1.1}System Architecture Overview}{9}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Chapters}{10}{section.1.2}%
+\contentsline {chapter}{\numberline {2}Petri Net Primitives}{11}{chapter.2}%
+\contentsline {section}{\numberline {2.1}The Motivation: A Board Game Analogy}{11}{section.2.1}%
+\contentsline {subsection}{\numberline {2.1.1}The Use Case: The Coffee Machine}{11}{subsection.2.1.1}%
+\contentsline {section}{\numberline {2.2}The Key Concepts}{12}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}The Place (\texttt {Place})}{12}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}The Transition (\texttt {Transition})}{12}{subsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.2.3}The Arc (\texttt {Arc})}{12}{subsection.2.2.3}%
+\contentsline {section}{\numberline {2.3}Using the Primitives}{12}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}Step 1: Create the Water Tank (Place)}{13}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.2}Step 2: Create the Brew Action (Transition)}{13}{subsection.2.3.2}%
+\contentsline {subsection}{\numberline {2.3.3}Step 3: Connect them (Arc)}{13}{subsection.2.3.3}%
+\contentsline {section}{\numberline {2.4}Under the Hood: Geometry \& Logic}{13}{section.2.4}%
+\contentsline {subsection}{\numberline {2.4.1}Sequence Diagram: Drawing a Line}{14}{subsection.2.4.1}%
+\contentsline {section}{\numberline {2.5}Deep Dive: The Code}{14}{section.2.5}%
+\contentsline {subsection}{\numberline {2.5.1}The \texttt {Place} Class (\texttt {place.ts})}{14}{subsection.2.5.1}%
+\contentsline {subsection}{\numberline {2.5.2}The \texttt {Transition} Class (\texttt {transition.ts})}{15}{subsection.2.5.2}%
+\contentsline {subsection}{\numberline {2.5.3}The \texttt {Arc} Class (\texttt {arc.ts})}{15}{subsection.2.5.3}%
+\contentsline {section}{\numberline {2.6}Conclusion}{16}{section.2.6}%
+\contentsline {chapter}{\numberline {3}Central Data Store (DataService)}{17}{chapter.3}%
+\contentsline {section}{\numberline {3.1}The Motivation: The Shared Whiteboard}{17}{section.3.1}%
+\contentsline {subsection}{\numberline {3.1.1}The Use Case: ``Connecting the Dots''}{17}{subsection.3.1.1}%
+\contentsline {section}{\numberline {3.2}Key Concepts}{18}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}The Storage Arrays}{18}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}The ``Town Crier'' (Observables)}{18}{subsection.3.2.2}%
+\contentsline {section}{\numberline {3.3}Using the DataService}{18}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Step 1: Getting Access}{19}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}Step 2: Adding Elements}{19}{subsection.3.3.2}%
+\contentsline {subsection}{\numberline {3.3.3}Step 3: Connecting Them}{19}{subsection.3.3.3}%
+\contentsline {subsection}{\numberline {3.3.4}Step 4: The Notification}{19}{subsection.3.3.4}%
+\contentsline {section}{\numberline {3.4}Under the Hood: Internal Logic}{20}{section.3.4}%
+\contentsline {subsection}{\numberline {3.4.1}Sequence Diagram: Deleting a Place}{20}{subsection.3.4.1}%
+\contentsline {section}{\numberline {3.5}Deep Dive: The Code}{20}{section.3.5}%
+\contentsline {subsection}{\numberline {3.5.1}The Storage and Safety}{20}{subsection.3.5.1}%
+\contentsline {subsection}{\numberline {3.5.2}The Smart Removal Logic}{21}{subsection.3.5.2}%
+\contentsline {subsection}{\numberline {3.5.3}The ``Trigger'' Mechanism}{21}{subsection.3.5.3}%
+\contentsline {section}{\numberline {3.6}Conclusion}{22}{section.3.6}%
+\contentsline {chapter}{\numberline {4}The Main Visualizer (PetriNetComponent)}{23}{chapter.4}%
+\contentsline {section}{\numberline {4.1}The Motivation: The Artist Analogy}{23}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}The Use Case: ``The Magic Canvas''}{23}{subsection.4.1.1}%
+\contentsline {section}{\numberline {4.2}Key Concepts}{24}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}SVG (Scalable Vector Graphics)}{24}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}The Loop (\texttt {*ngFor})}{24}{subsection.4.2.2}%
+\contentsline {subsection}{\numberline {4.2.3}The Event Dispatcher}{24}{subsection.4.2.3}%
+\contentsline {section}{\numberline {4.3}Using the Visualizer}{25}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Step 1: The Template (HTML)}{25}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}Step 2: Reacting to Changes}{25}{subsection.4.3.2}%
+\contentsline {subsection}{\numberline {4.3.3}Step 3: Handling Clicks}{26}{subsection.4.3.3}%
+\contentsline {section}{\numberline {4.4}Under the Hood: The Interaction Loop}{26}{section.4.4}%
+\contentsline {subsection}{\numberline {4.4.1}Sequence Diagram: Creating a Place}{27}{subsection.4.4.1}%
+\contentsline {section}{\numberline {4.5}Deep Dive: Key Code Blocks}{27}{section.4.5}%
+\contentsline {subsection}{\numberline {4.5.1}Translating Mouse Coordinates}{27}{subsection.4.5.1}%
+\contentsline {subsection}{\numberline {4.5.2}Styling States (\texttt {ngClass})}{28}{subsection.4.5.2}%
+\contentsline {subsection}{\numberline {4.5.3}Displaying Tokens}{28}{subsection.4.5.3}%
+\contentsline {subsection}{\numberline {4.5.4}Running the Animation (Simulation)}{28}{subsection.4.5.4}%
+\contentsline {section}{\numberline {4.6}Conclusion}{29}{section.4.6}%
+\contentsline {chapter}{\numberline {5}PNML/XML Translator (PnmlService)}{31}{chapter.5}%
+\contentsline {section}{\numberline {5.1}The Motivation: The Universal Translator}{31}{section.5.1}%
+\contentsline {subsection}{\numberline {5.1.1}The Use Case: Saving and Loading}{31}{subsection.5.1.1}%
+\contentsline {section}{\numberline {5.2}Key Concepts}{32}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}PNML (XML)}{32}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}Parsing (Deserialization)}{32}{subsection.5.2.2}%
+\contentsline {subsection}{\numberline {5.2.3}Serialization}{33}{subsection.5.2.3}%
+\contentsline {section}{\numberline {5.3}Using the Service}{33}{section.5.3}%
+\contentsline {subsection}{\numberline {5.3.1}Exporting (Downloading)}{33}{subsection.5.3.1}%
+\contentsline {subsection}{\numberline {5.3.2}Importing (Uploading)}{33}{subsection.5.3.2}%
+\contentsline {section}{\numberline {5.4}Under the Hood: The Parsing Flow}{34}{section.5.4}%
+\contentsline {subsection}{\numberline {5.4.1}Sequence Diagram: Import Process}{34}{subsection.5.4.1}%
+\contentsline {section}{\numberline {5.5}Deep Dive: The Code}{34}{section.5.5}%
+\contentsline {subsection}{\numberline {5.5.1}Generating XML (The Template)}{35}{subsection.5.5.1}%
+\contentsline {subsection}{\numberline {5.5.2}The Main Parse Function}{35}{subsection.5.5.2}%
+\contentsline {subsection}{\numberline {5.5.3}Parsing Specific Elements}{35}{subsection.5.5.3}%
+\contentsline {subsection}{\numberline {5.5.4}Handling Arcs (The Tricky Part)}{36}{subsection.5.5.4}%
+\contentsline {section}{\numberline {5.6}Conclusion}{36}{section.5.6}%
+\contentsline {chapter}{\numberline {6}Graph Layout Architect (Sugiyama/Spring Embedder)}{39}{chapter.6}%
+\contentsline {section}{\numberline {6.1}The Motivation: The ``Tangled Mess''}{39}{section.6.1}%
+\contentsline {subsection}{\numberline {6.1.1}The Use Case: Auto-Layout}{39}{subsection.6.1.1}%
+\contentsline {section}{\numberline {6.2}Key Concepts}{40}{section.6.2}%
+\contentsline {subsection}{\numberline {6.2.1}The Spring Embedder (Physics)}{40}{subsection.6.2.1}%
+\contentsline {subsection}{\numberline {6.2.2}The Sugiyama (Hierarchy)}{40}{subsection.6.2.2}%
+\contentsline {section}{\numberline {6.3}Using the Layout Services}{40}{section.6.3}%
+\contentsline {subsection}{\numberline {6.3.1}Using Spring Embedder}{41}{subsection.6.3.1}%
+\contentsline {subsection}{\numberline {6.3.2}Using Sugiyama}{41}{subsection.6.3.2}%
+\contentsline {section}{\numberline {6.4}Under the Hood: Spring Embedder Logic}{41}{section.6.4}%
+\contentsline {subsection}{\numberline {6.4.1}Sequence Diagram: The Physics Loop}{42}{subsection.6.4.1}%
+\contentsline {subsection}{\numberline {6.4.2}Deep Dive: Spring Embedder Code}{42}{subsection.6.4.2}%
+\contentsline {subsubsection}{The Main Loop}{42}{section*.2}%
+\contentsline {subsubsection}{The Physics Math}{43}{section*.3}%
+\contentsline {section}{\numberline {6.5}Under the Hood: Sugiyama Logic}{43}{section.6.5}%
+\contentsline {subsection}{\numberline {6.5.1}The 4-Step Pipeline}{43}{subsection.6.5.1}%
+\contentsline {subsection}{\numberline {6.5.2}Deep Dive: Sugiyama Code}{43}{subsection.6.5.2}%
+\contentsline {subsection}{\numberline {6.5.3}Handling ``Dummy Nodes''}{44}{subsection.6.5.3}%
+\contentsline {section}{\numberline {6.6}Conclusion}{44}{section.6.6}%
+\contentsline {chapter}{\numberline {7}Interaction Handler (EditMoveElementsService)}{47}{chapter.7}%
+\contentsline {section}{\numberline {7.1}The Motivation: Physics of the Mouse}{47}{section.7.1}%
+\contentsline {subsection}{\numberline {7.1.1}The Use Case: ``The Fine Adjustment''}{47}{subsection.7.1.1}%
+\contentsline {section}{\numberline {7.2}Key Concepts}{48}{section.7.2}%
+\contentsline {subsection}{\numberline {7.2.1}The Drag Cycle}{48}{subsection.7.2.1}%
+\contentsline {subsection}{\numberline {7.2.2}The Delta ($\Delta $)}{48}{subsection.7.2.2}%
+\contentsline {subsection}{\numberline {7.2.3}Anchors (The Knee Joints)}{48}{subsection.7.2.3}%
+\contentsline {section}{\numberline {7.3}Using the Service}{49}{section.7.3}%
+\contentsline {subsection}{\numberline {7.3.1}Step 1: Grabbing an Object}{49}{subsection.7.3.1}%
+\contentsline {subsection}{\numberline {7.3.2}Step 2: Dragging the Mouse}{49}{subsection.7.3.2}%
+\contentsline {subsection}{\numberline {7.3.3}Step 3: Letting Go}{49}{subsection.7.3.3}%
+\contentsline {section}{\numberline {7.4}Under the Hood: The Movement Logic}{49}{section.7.4}%
+\contentsline {subsection}{\numberline {7.4.1}Sequence Diagram: Dragging a Node}{50}{subsection.7.4.1}%
+\contentsline {section}{\numberline {7.5}Deep Dive: The Code}{50}{section.7.5}%
+\contentsline {subsection}{\numberline {7.5.1}Initialization}{50}{subsection.7.5.1}%
+\contentsline {subsection}{\numberline {7.5.2}The Move Loop (The Physics)}{51}{subsection.7.5.2}%
+\contentsline {subsection}{\numberline {7.5.3}Panning the Canvas}{51}{subsection.7.5.3}%
+\contentsline {subsection}{\numberline {7.5.4}Bending Lines (Inserting Anchors)}{52}{subsection.7.5.4}%
+\contentsline {section}{\numberline {7.6}Conclusion}{52}{section.7.6}%
+\contentsline {chapter}{\numberline {8}Camera Controller (ZoomService)}{53}{chapter.8}%
+\contentsline {section}{\numberline {8.1}The Motivation: Looking Through the Lens}{53}{section.8.1}%
+\contentsline {subsection}{\numberline {8.1.1}The Use Case: ``Fit to View''}{53}{subsection.8.1.1}%
+\contentsline {section}{\numberline {8.2}Key Concepts}{54}{section.8.2}%
+\contentsline {subsection}{\numberline {8.2.1}The State Variables}{54}{subsection.8.2.1}%
+\contentsline {subsection}{\numberline {8.2.2}The CSS Transform}{54}{subsection.8.2.2}%
+\contentsline {subsection}{\numberline {8.2.3}The ``Pin'' (Zoom Point)}{54}{subsection.8.2.3}%
+\contentsline {section}{\numberline {8.3}Under the Hood: The Flow}{55}{section.8.3}%
+\contentsline {subsection}{\numberline {8.3.1}Sequence Diagram: Clicking ``Zoom In''}{55}{subsection.8.3.1}%
+\contentsline {section}{\numberline {8.4}Deep Dive: The Code}{55}{section.8.4}%
+\contentsline {subsection}{\numberline {8.4.1}Storage (The State)}{55}{subsection.8.4.1}%
+\contentsline {subsection}{\numberline {8.4.2}The Combined Output (\texttt {transform\$})}{56}{subsection.8.4.2}%
+\contentsline {subsection}{\numberline {8.4.3}Smart Zooming (\texttt {zoomToPoint})}{56}{subsection.8.4.3}%
+\contentsline {subsection}{\numberline {8.4.4}Implementing ``Fit Content''}{57}{subsection.8.4.4}%
+\contentsline {section}{\numberline {8.5}Solving the Mouse Coordinate Problem}{57}{section.8.5}%
+\contentsline {section}{\numberline {8.6}Conclusion}{58}{section.8.6}%
+\contentsline {chapter}{\numberline {9}UI State Manager (UiService)}{59}{chapter.9}%
+\contentsline {section}{\numberline {9.1}The Motivation: The ``Remote Control''}{59}{section.9.1}%
+\contentsline {subsection}{\numberline {9.1.1}The Use Case: Switching Modes}{59}{subsection.9.1.1}%
+\contentsline {section}{\numberline {9.2}Key Concepts}{60}{section.9.2}%
+\contentsline {subsection}{\numberline {9.2.1}Tab State (The TV Channel)}{60}{subsection.9.2.1}%
+\contentsline {subsection}{\numberline {9.2.2}Button State (The Active Tool)}{60}{subsection.9.2.2}%
+\contentsline {subsection}{\numberline {9.2.3}BehaviorSubjects (The Status LED)}{60}{subsection.9.2.3}%
+\contentsline {section}{\numberline {9.3}Using the UiService}{60}{section.9.3}%
+\contentsline {subsection}{\numberline {9.3.1}Step 1: Changing the Channel (Toolbar)}{61}{subsection.9.3.1}%
+\contentsline {subsection}{\numberline {9.3.2}Step 2: Listening for Signals (Visualizer)}{61}{subsection.9.3.2}%
+\contentsline {subsection}{\numberline {9.3.3}Step 3: Checking the Active Tool}{61}{subsection.9.3.3}%
+\contentsline {section}{\numberline {9.4}Under the Hood: The Logic}{61}{section.9.4}%
+\contentsline {subsection}{\numberline {9.4.1}Sequence Diagram: Creating a Place}{62}{subsection.9.4.1}%
+\contentsline {section}{\numberline {9.5}Deep Dive: The Code}{62}{section.9.5}%
+\contentsline {subsection}{\numberline {9.5.1}Managing Tabs (The Channels)}{62}{subsection.9.5.1}%
+\contentsline {subsection}{\numberline {9.5.2}Managing Simulation Steps (The Timeline)}{63}{subsection.9.5.2}%
+\contentsline {subsection}{\numberline {9.5.3}Simulation Modes (Auto vs Manual)}{63}{subsection.9.5.3}%
+\contentsline {section}{\numberline {9.6}Conclusion}{63}{section.9.6}%
+\contentsline {chapter}{\numberline {10}Simulation Engine (TokenGameService)}{65}{chapter.10}%
+\contentsline {section}{\numberline {10.1}The Motivation: The Rulebook}{65}{section.10.1}%
+\contentsline {subsection}{\numberline {10.1.1}The Use Case: ``Firing'' a Transition}{66}{subsection.10.1.1}%
+\contentsline {section}{\numberline {10.2}Key Concepts}{66}{section.10.2}%
+\contentsline {subsection}{\numberline {10.2.1}Firing}{66}{subsection.10.2.1}%
+\contentsline {subsection}{\numberline {10.2.2}The ``Game State''}{66}{subsection.10.2.2}%
+\contentsline {subsection}{\numberline {10.2.3}History (The Stack)}{67}{subsection.10.2.3}%
+\contentsline {section}{\numberline {10.3}Using the Service}{67}{section.10.3}%
+\contentsline {subsection}{\numberline {10.3.1}Step 1: Checking Rules}{67}{subsection.10.3.1}%
+\contentsline {subsection}{\numberline {10.3.2}Step 2: Firing (The Move)}{67}{subsection.10.3.2}%
+\contentsline {subsection}{\numberline {10.3.3}Step 3: Time Travel (Undo)}{68}{subsection.10.3.3}%
+\contentsline {section}{\numberline {10.4}Under the Hood: The Flow}{68}{section.10.4}%
+\contentsline {subsection}{\numberline {10.4.1}Sequence Diagram: Firing Logic}{68}{subsection.10.4.1}%
+\contentsline {section}{\numberline {10.5}Deep Dive: The Code}{69}{section.10.5}%
+\contentsline {subsection}{\numberline {10.5.1}The History Storage}{69}{subsection.10.5.1}%
+\contentsline {subsection}{\numberline {10.5.2}Capturing a Snapshot}{69}{subsection.10.5.2}%
+\contentsline {subsection}{\numberline {10.5.3}The Fire Method (The Core Logic)}{70}{subsection.10.5.3}%
+\contentsline {subsection}{\numberline {10.5.4}Implementing Undo (\texttt {revertToPreviousState})}{70}{subsection.10.5.4}%
+\contentsline {subsection}{\numberline {10.5.5}Applying the State}{71}{subsection.10.5.5}%
+\contentsline {section}{\numberline {10.6}Conclusion}{71}{section.10.6}%
+\contentsline {chapter}{\numberline {11}Backend Integrator (PlanningService)}{73}{chapter.11}%
+\contentsline {section}{\numberline {11.1}The Motivation: The ``Phone Line''}{73}{section.11.1}%
+\contentsline {subsection}{\numberline {11.1.1}The Use Case: ``Heavy Simulation''}{74}{subsection.11.1.1}%
+\contentsline {section}{\numberline {11.2}Key Concepts}{74}{section.11.2}%
+\contentsline {subsection}{\numberline {11.2.1}HTTP Requests (GET and POST)}{74}{subsection.11.2.1}%
+\contentsline {subsection}{\numberline {11.2.2}Asynchronous (The Waiting Game)}{74}{subsection.11.2.2}%
+\contentsline {subsection}{\numberline {11.2.3}FormData (The Envelope)}{74}{subsection.11.2.3}%
+\contentsline {section}{\numberline {11.3}Using the Integrator}{75}{section.11.3}%
+\contentsline {subsection}{\numberline {11.3.1}Step 1: Preparing the Data}{75}{subsection.11.3.1}%
+\contentsline {subsection}{\numberline {11.3.2}Step 2: Calling the Service}{75}{subsection.11.3.2}%
+\contentsline {section}{\numberline {11.4}Under the Hood: The Communication Flow}{75}{section.11.4}%
+\contentsline {subsection}{\numberline {11.4.1}Sequence Diagram: Running a Simulation}{76}{subsection.11.4.1}%
+\contentsline {section}{\numberline {11.5}Deep Dive: The Code}{76}{section.11.5}%
+\contentsline {subsection}{\numberline {11.5.1}Setup and Environment}{76}{subsection.11.5.1}%
+\contentsline {subsection}{\numberline {11.5.2}The Simulation Call (\texttt {runSimpleSimulation})}{77}{subsection.11.5.2}%
+\contentsline {subsection}{\numberline {11.5.3}The Helper (\texttt {runSimpleSimulationFromString})}{77}{subsection.11.5.3}%
+\contentsline {subsection}{\numberline {11.5.4}Fetching Defaults (\texttt {getDefaults})}{77}{subsection.11.5.4}%
+\contentsline {subsection}{\numberline {11.5.5}Error Handling (\texttt {handleError})}{78}{subsection.11.5.5}%
+\contentsline {section}{\numberline {11.6}Integration: The ``Parameter Input'' Form}{78}{section.11.6}%
+\contentsline {section}{\numberline {11.7}Conclusion}{79}{section.11.7}%

@@ -1,61 +1,54 @@
-\documentclass[a4paper,twoside,openright,11pt]{book}
-% ==============================================================================
-% L3S-Offshore-2 Frontend - Technical Documentation
-% ==============================================================================
+\documentclass[a4paper,11pt]{book}
 
-% --- Packages ---
+% ============================================================================
+% PNML_Frontend Manual - Full LaTeX Edition
+% ============================================================================
+
+% --- Core Packages ---
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
-\usepackage[english]{babel}  % Changed to English for L3S
-
-\usepackage{listings}
-\usepackage{amssymb}
+\usepackage[english]{babel}
 \usepackage{amsmath}
+\usepackage{amssymb}
 \usepackage{graphicx}
-\usepackage{url}
 \usepackage{hyperref}
-\usepackage{xspace}
 \usepackage{xcolor}
+\usepackage{listings}
+\usepackage{enumitem}
 \usepackage{float}
-\usepackage{booktabs}  % Better tables
-\usepackage{caption}
-\usepackage{subcaption}
-\usepackage{tikz}
-\usetikzlibrary{positioning, shapes.geometric, arrows.meta}
+\usepackage{booktabs}
 
-% --- Typography Fixes ---
+% --- TikZ for Diagrams (replacing Mermaid) ---
+\usepackage{tikz}
+\usetikzlibrary{positioning, shapes.geometric, arrows.meta, fit, calc, backgrounds}
+
+% --- Typography ---
 \setlength{\emergencystretch}{3em}
-\usepackage{etoolbox}
-\apptocmd{\sloppy}{\hbadness 2000\relax}{}{}
 \hyphenpenalty=5000
 \tolerance=1000
 
-% --- Graphics ---
-\newcommand{\stdScaleFactor}{0.45}
-\graphicspath{{contents/figures/}}
-
-% --- Code Listings Configuration ---
+% --- Code Listing Style ---
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
 \definecolor{codepurple}{rgb}{0.58,0,0.82}
 \definecolor{backcolour}{rgb}{0.95,0.95,0.92}
 
 \lstdefinestyle{codestyle}{
-    backgroundcolor=\color{backcolour},   
+    backgroundcolor=\color{backcolour},
     commentstyle=\color{codegreen},
     keywordstyle=\color{blue},
     numberstyle=\tiny\color{codegray},
     stringstyle=\color{codepurple},
     basicstyle=\ttfamily\footnotesize,
-    breakatwhitespace=false,         
-    breaklines=true,                 
-    captionpos=b,                    
-    keepspaces=true,                 
-    numbers=left,                    
-    numbersep=5pt,                  
-    showspaces=false,                
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
     showstringspaces=false,
-    showtabs=false,                  
+    showtabs=false,
     tabsize=2,
     frame=single
 }
@@ -63,135 +56,2977 @@
 
 % TypeScript language definition
 \lstdefinelanguage{TypeScript}{
-  keywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, let, const, if, in, while, do, else, case, break, class, export, boolean, throw, implements, import, this, interface, private, public, protected, async, await, readonly, type, enum, extends, static, void, never, any, unknown},
-  keywordstyle=\color{blue}\bfseries,
-  ndkeywords={Injectable, Component, Input, Output, ViewChild, HostListener, OnInit, OnDestroy, AfterViewInit, Observable, Subject, BehaviorSubject, Subscription},
-  ndkeywordstyle=\color{codepurple}\bfseries,
-  identifierstyle=\color{black},
-  sensitive=true,
-  comment=[l]{//},
-  morecomment=[s]{/*}{*/},
-  commentstyle=\color{codegreen}\ttfamily,
-  stringstyle=\color{red}\ttfamily,
-  morestring=[b]',
-  morestring=[b]"
+    keywords={typeof, new, true, false, catch, function, return, null, switch, var, let, const, if, in, while, do, else, case, break, class, export, boolean, throw, implements, import, this, interface, private, public, protected, async, await, readonly, type, enum, extends, static, void, never, any, unknown, for, of, get},
+    keywordstyle=\color{blue}\bfseries,
+    ndkeywords={Injectable, Component, Input, Output, ViewChild, HostListener, OnInit, OnDestroy, AfterViewInit, Observable, Subject, BehaviorSubject, Subscription, Place, Transition, Arc, Node, Point, Map},
+    ndkeywordstyle=\color{codepurple}\bfseries,
+    identifierstyle=\color{black},
+    sensitive=true,
+    comment=[l]{//},
+    morecomment=[s]{/*}{*/},
+    commentstyle=\color{codegreen}\ttfamily,
+    stringstyle=\color{red}\ttfamily,
+    morestring=[b]',
+    morestring=[b]"
 }
 
-% JSON language definition
-\lstdefinelanguage{json}{
-  basicstyle=\ttfamily\footnotesize,
-  stringstyle=\color{red},
-  numbers=left,
-  numberstyle=\tiny\color{codegray},
-  stepnumber=1,
-  numbersep=5pt,
-  showstringspaces=false,
-  breaklines=true,
-  morestring=[b]"
+% XML language definition
+\lstdefinelanguage{XML}{
+    morestring=[b]",
+    morecomment=[s]{<!--}{-->},
+    stringstyle=\color{red}\ttfamily,
+    commentstyle=\color{codegreen}\ttfamily,
+    keywordstyle=\color{blue}\bfseries,
+    morekeywords={place,transition,arc,name,graphics,position,text,pnml,net}
 }
 
-% YAML language definition
-\lstdefinelanguage{yaml}{
-  keywords={true,false,null,y,n},
-  keywordstyle=\color{blue}\bfseries,
-  basicstyle=\ttfamily\footnotesize,
-  sensitive=false,
-  comment=[l]{\#},
-  commentstyle=\color{codegreen}\ttfamily,
-  stringstyle=\color{red}\ttfamily,
-  morestring=[b]',
-  morestring=[b]"
+% HTML language definition
+\lstdefinelanguage{HTML}{
+    morestring=[b]",
+    morecomment=[s]{<!--}{-->},
+    stringstyle=\color{red}\ttfamily,
+    commentstyle=\color{codegreen}\ttfamily,
+    keywordstyle=\color{blue}\bfseries,
+    morekeywords={svg,g,circle,text,rect,line,polyline}
 }
-
-% Docker language definition (simplified shell)
-\lstdefinelanguage{docker}{
-  keywords={FROM, RUN, CMD, LABEL, EXPOSE, ENV, ADD, COPY, ENTRYPOINT, VOLUME, USER, WORKDIR, ARG, ONBUILD, STOPSIGNAL, HEALTHCHECK, SHELL, AS},
-  keywordstyle=\color{blue}\bfseries,
-  basicstyle=\ttfamily\footnotesize,
-  sensitive=false,
-  comment=[l]{\#},
-  commentstyle=\color{codegreen}\ttfamily,
-  stringstyle=\color{red}\ttfamily,
-  morestring=[b]',
-  morestring=[b]"
-}
-
-% --- L3S Project Style ---
-\usepackage{l3s-project-doc}
-
-% --- Project Metadata ---
-\projectname{L3S-Offshore-2 Frontend}
-\projectsubtitle{Web-based Petri Net Visualization and Simulation Tool}
-\institution{L3S Research Center}
-\researchgroup{Knowledge-Based Systems Group}
-\university{Leibniz Universität Hannover}
-\authorname{Martin Krauser}
-\authoremail{martin.krauser@stud.uni-hannover.de}
-\supervisor{Shengrui Peng}
-\supervisoremail{}
-\projectperiod{March 2025 -- January 2026}
-\docversion{1.0}
-\docdate{November 2025}
-\city{Hannover}
 
 % --- Hyperref Configuration ---
 \hypersetup{
     colorlinks=true,
     linkcolor=blue,
-    filecolor=magenta,      
     urlcolor=cyan,
-    pdftitle={L3S-Offshore-2 Frontend Documentation},
-    pdfauthor={Martin Krauser},
+    pdftitle={PNML Frontend Manual},
+    pdfauthor={PNML Frontend Team}
 }
 
-% ==============================================================================
+% --- TikZ Styles for Petri Net Diagrams ---
+\tikzstyle{place}=[circle, draw=black, fill=white, minimum size=8mm, thick]
+\tikzstyle{transition}=[rectangle, draw=black, fill=gray!20, minimum width=8mm, minimum height=12mm, thick]
+\tikzstyle{component}=[rectangle, draw=blue!50, fill=blue!10, rounded corners, minimum width=3cm, minimum height=1cm, align=center, font=\small]
+\tikzstyle{arrow}=[-{Stealth[length=3mm]}, thick]
+\tikzstyle{seqparticipant}=[rectangle, draw=black, fill=yellow!20, minimum width=2cm, minimum height=0.8cm, align=center, font=\small]
+\tikzstyle{seqarrow}=[-{Stealth[length=2mm]}, thick]
+\tikzstyle{seqnote}=[rectangle, draw=black!50, fill=white, align=left, font=\scriptsize]
+
+% ============================================================================
 \begin{document}
 
-\frontmatter
+\title{PNML\_Frontend Manual\\{\large LaTeX Edition}}
+\author{Martin Krause}
+\date{\today}
 
 \maketitle
 
-\clearpage
-\makedocinfo
-
-\clearpage
-\input{contents/00-abstract.tex}
-
 \tableofcontents
-\listoffigures
-\listoftables
 
-\mainmatter
+% ============================================================================
+% CHAPTER: Manual Overview
+% ============================================================================
+\chapter{Manual: PNML\_Frontend}
 
-% Part I: Introduction and Background
-\input{contents/01-introduction.tex}
-\input{contents/02-fundamentals.tex}
+This project is a web-based \textbf{Petri net visualizer and editor} that allows users to create, modify, and simulate complex system models. It features a central \textbf{Data Store} that synchronizes the state of \emph{Places}, \emph{Transitions}, and \emph{Arcs} across an interactive \textbf{SVG canvas}, an automatic \textbf{Graph Layout} engine, and a \textbf{Simulation} controller. Users can construct nets via drag-and-drop, import \textbf{PNML files}, and run token-based simulations either manually or via a backend service.
 
-% Part II: Core Concepts (based on Markdown Manual structure)
-\input{contents/03a-ui-service.tex}
-\input{contents/03b-petri-net-elements.tex}
-\input{contents/03c-data-service.tex}
+\section{System Architecture Overview}
 
-% Part III: System Design
-\input{contents/03-architecture.tex}
+The following diagram shows the main components and their relationships:
 
-% Part IV: Implementation Details
-\input{contents/04-implementation.tex}
-\input{contents/04b-pnml-json-io.tex}
-\input{contents/04c-layout-algorithms.tex}
-\input{contents/04d-planning-service.tex}
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=1.5cm and 2cm, scale=0.85, transform shape]
+    % Nodes
+    \node[component] (dataservice) {Central Data Store\\(DataService)};
+    \node[component, right=2.5cm of dataservice] (uiservice) {UI State Manager\\(UiService)};
+    \node[component, below=1.2cm of dataservice] (primitives) {Petri Net Primitives};
+    \node[component, left=2.5cm of dataservice] (pnmlservice) {PNML/XML Translator\\(PnmlService)};
+    \node[component, below=1.2cm of pnmlservice] (layout) {Graph Layout Architect\\(Sugiyama/Spring)};
+    \node[component, below=2.8cm of dataservice] (visualizer) {The Main Visualizer\\(PetriNetComponent)};
+    \node[component, left=2.5cm of visualizer] (editservice) {Interaction Handler\\(EditMoveElementsService)};
+    \node[component, right=2.5cm of visualizer] (tokengame) {Simulation Engine\\(TokenGameService)};
+    \node[component, below=1.2cm of visualizer] (zoomservice) {Camera Controller\\(ZoomService)};
+    \node[component, right=2.5cm of uiservice] (planning) {Backend Integrator\\(PlanningService)};
 
-% Part V: Deployment and Conclusion
-\input{contents/05-deployment.tex}
-\input{contents/06-related-work.tex}
-\input{contents/07-conclusion.tex}
+    % Arrows with labels
+    \draw[arrow] (dataservice) -- node[right, font=\scriptsize] {stores} (primitives);
+    \draw[arrow] (pnmlservice) -- node[above, font=\scriptsize] {populates} (dataservice);
+    \draw[arrow] (pnmlservice) -- node[left, font=\scriptsize] {invokes} (layout);
+    \draw[arrow] (visualizer) -- node[right, font=\scriptsize] {renders from} (dataservice);
+    \draw[arrow] (visualizer) -- node[above, font=\scriptsize] {subscribes to} (uiservice);
+    \draw[arrow] (visualizer) -- node[above, font=\scriptsize] {delegates to} (editservice);
+    \draw[arrow] (visualizer) -- node[above, font=\scriptsize] {triggers} (tokengame);
+    \draw[arrow] (visualizer) -- node[right, font=\scriptsize] {applies} (zoomservice);
+    \draw[arrow] (editservice) -- node[left, font=\scriptsize] {updates} (dataservice);
+    \draw[arrow] (tokengame) -- node[right, font=\scriptsize] {modifies} (dataservice);
+    \draw[arrow] (layout) -- node[below, font=\scriptsize] {rearranges} (dataservice);
+    \draw[arrow] (uiservice) -- node[above, font=\scriptsize] {triggers} (planning);
+    \draw[arrow] (planning) -- node[below, font=\scriptsize] {returns steps} (uiservice);
+\end{tikzpicture}
+\caption{PNML\_Frontend System Architecture}
+\label{fig:architecture}
+\end{figure}
 
-\appendix
-\input{contents/A-appendix.tex}
+\section{Chapters}
 
-\bibliographystyle{abbrv}
-\bibliography{references}
+\begin{enumerate}
+    \item \hyperref[chap:primitives]{Petri Net Primitives}
+    \item \hyperref[chap:dataservice]{Central Data Store (DataService)}
+    \item \hyperref[chap:visualizer]{The Main Visualizer (PetriNetComponent)}
+    \item \hyperref[chap:pnmlservice]{PNML/XML Translator (PnmlService)}
+    \item \hyperref[chap:layout]{Graph Layout Architect (Sugiyama/Spring Embedder)}
+    \item \hyperref[chap:interaction]{Interaction Handler (EditMoveElementsService)}
+    \item \hyperref[chap:zoom]{Camera Controller (ZoomService)}
+    \item \hyperref[chap:uiservice]{UI State Manager (UiService)}
+    \item \hyperref[chap:tokengame]{Simulation Engine (TokenGameService)}
+    \item \hyperref[chap:planning]{Backend Integrator (PlanningService)}
+\end{enumerate}
 
-\backmatter
+% ============================================================================
+% CHAPTER 1: Petri Net Primitives
+% ============================================================================
+\chapter{Petri Net Primitives}
+\label{chap:primitives}
+
+Welcome to the \textbf{PNML\_Frontend} project! If you are new to Petri nets, don't worry. We are going to start with the absolute basics.
+
+Before we can build a complex application that simulates workflows, we need to define the fundamental ``language'' we are speaking. Just as a sentence is made of nouns and verbs, a Petri net is built from three specific logical blocks.
+
+We call these the \textbf{Petri Net Primitives}.
+
+\section{The Motivation: A Board Game Analogy}
+
+Imagine you are building a digital board game. Before you design the rules or the confusing strategies, you need to code the physical pieces:
+\begin{enumerate}
+    \item \textbf{Circles (Places):} Where chips sit.
+    \item \textbf{Rectangles (Transitions):} Actions that move chips.
+    \item \textbf{Arrows (Arcs):} The paths showing where chips go.
+\end{enumerate}
+
+In our application, we cannot just draw shapes on a screen. We need smart objects that know their own rules. A Circle needs to know how many chips it has. A Rectangle needs to know if it's allowed to move chips.
+
+\subsection{The Use Case: The Coffee Machine}
+
+Let's build a tiny piece of logic for a Coffee Machine.
+\begin{itemize}
+    \item \textbf{Place:} \texttt{Water Tank} (Contains 1 unit of water).
+    \item \textbf{Transition:} \texttt{Brew} (The action).
+    \item \textbf{Goal:} Move the unit of water into the coffee pot.
+\end{itemize}
+
+This chapter walks you through the classes that make this possible.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=3cm]
+    \node[place, label=above:{Water Tank}] (p1) {1};
+    \node[transition, right=of p1, label=above:{Brew}] (t1) {};
+    \node[place, right=of t1, label=above:{Coffee Pot}] (p2) {0};
+    
+    \draw[arrow] (p1) -- (t1);
+    \draw[arrow] (t1) -- (p2);
+\end{tikzpicture}
+\caption{Coffee Machine Petri Net Example}
+\label{fig:coffee-machine}
+\end{figure}
+
+\section{The Key Concepts}
+
+\subsection{The Place (\texttt{Place})}
+
+Think of a \textbf{Place} as a bucket. It sits at a specific \texttt{x,y} coordinate on the screen. Its most important job is to hold \textbf{Tokens}.
+\begin{itemize}
+    \item \textbf{Shape:} Always a Circle.
+    \item \textbf{Data:} The number of tokens (e.g., \texttt{token: 5}).
+\end{itemize}
+
+\subsection{The Transition (\texttt{Transition})}
+
+Think of a \textbf{Transition} as an engine or a processor. It waits for resources to arrive, consumes them, and produces something new.
+\begin{itemize}
+    \item \textbf{Shape:} Always a Rectangle (or Box).
+    \item \textbf{Logic:} It checks to see if there are enough tokens in the connected Places to ``fire'' (execute).
+\end{itemize}
+
+\subsection{The Arc (\texttt{Arc})}
+
+The \textbf{Arc} is the pipe connecting them. It is strictly directional.
+\begin{itemize}
+    \item \textbf{Shape:} A line with an arrow.
+    \item \textbf{Logic:} It connects a \texttt{Node} (Place/Transition) to another \texttt{Node}.
+\end{itemize}
+
+\section{Using the Primitives}
+
+Let's look at how we create these objects in code to solve our \textbf{Coffee Machine} use case.
+
+\subsection{Step 1: Create the Water Tank (Place)}
+
+We define a location and create a \texttt{Place} with 1 token.
+
+\begin{lstlisting}[language=TypeScript]
+import { Point } from './point';
+import { Place } from './place';
+
+// Define position (x=100, y=100)
+const tankPos = new Point(100, 100);
+
+// Create Place: 1 token, at position, ID='p1', Label='Water'
+const waterTank = new Place(1, tankPos, 'p1', 'Water');
+\end{lstlisting}
+
+\textbf{What happened?} We now have a logic object representing a tank with 1 unit of ``water'' (token).
+
+\subsection{Step 2: Create the Brew Action (Transition)}
+
+Now we create the action that will use the water.
+
+\begin{lstlisting}[language=TypeScript]
+import { Transition } from './transition';
+
+// Define position nearby (x=300, y=100)
+const brewPos = new Point(300, 100);
+
+// Create Transition
+const brewAction = new Transition(brewPos, 't1', 'Brew');
+\end{lstlisting}
+
+\subsection{Step 3: Connect them (Arc)}
+
+We need a pipe to move water to the brewer.
+
+\begin{lstlisting}[language=TypeScript]
+import { Arc } from './arc';
+
+// Create an Arc from Tank -> Brew Action
+// Weight 1 means it moves 1 token at a time
+const pipe = new Arc(waterTank, brewAction, 1);
+
+// Tell the transition about this incoming connection
+pipe.appendSelfToTransition();
+\end{lstlisting}
+
+\textbf{What happened?} The \texttt{brewAction} now knows it is connected to the \texttt{waterTank}. Specifically, \texttt{waterTank} is a ``Pre-Arc'' (input) for the transition.
+
+\section{Under the Hood: Geometry \& Logic}
+
+Before diving into the source code, let's understand a hidden complexity.
+
+When we draw this on screen in the Main Visualizer (Chapter~\ref{chap:visualizer}), we want the arrow to stop exactly at the edge of the circle or square. We don't want the arrow overlapping the shape, and we don't want a gap.
+
+Each primitive knows how to calculate its \textbf{Intersection Point}.
+
+\subsection{Sequence Diagram: Drawing a Line}
+
+Here is what happens when the visualizer asks an Arc, ``Where are your points?''
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=0.8cm, scale=0.9, transform shape]
+    % Participants
+    \node[seqparticipant] (V) {Visualizer};
+    \node[seqparticipant, right=2cm of V] (A) {Arc};
+    \node[seqparticipant, right=2cm of A] (P) {Place (From)};
+    \node[seqparticipant, right=2cm of P] (T) {Transition (To)};
+    
+    % Lifelines
+    \draw[dashed] (V.south) -- ++(0,-8cm);
+    \draw[dashed] (A.south) -- ++(0,-8cm);
+    \draw[dashed] (P.south) -- ++(0,-8cm);
+    \draw[dashed] (T.south) -- ++(0,-8cm);
+    
+    % Messages
+    \draw[seqarrow] ([yshift=-1cm]V.south) -- node[above, font=\scriptsize] {get polyLinePointsArray} ([yshift=-1cm]A.south);
+    
+    \node[seqnote, right=0.2cm of A, yshift=-1.8cm] {Needs to find\\start \& end};
+    
+    \draw[seqarrow] ([yshift=-2.5cm]A.south) -- node[above, font=\scriptsize] {intersectionOfBoundary...} ([yshift=-2.5cm]P.south);
+    
+    \node[seqnote, right=0.2cm of P, yshift=-3.3cm] {Calculate Circle\\Edge Math};
+    
+    \draw[seqarrow, dashed] ([yshift=-4cm]P.south) -- node[above, font=\scriptsize] {Return Point (Edge)} ([yshift=-4cm]A.south);
+    
+    \draw[seqarrow] ([yshift=-5cm]A.south) -- node[above, font=\scriptsize] {intersectionOfBoundary...} ([yshift=-5cm]T.south);
+    
+    \node[seqnote, right=0.2cm of T, yshift=-5.8cm] {Calculate Rectangle\\Edge Math};
+    
+    \draw[seqarrow, dashed] ([yshift=-6.5cm]T.south) -- node[above, font=\scriptsize] {Return Point (Edge)} ([yshift=-6.5cm]A.south);
+    
+    \draw[seqarrow, dashed] ([yshift=-7.5cm]A.south) -- node[above, font=\scriptsize] {Returns [Start, End]} ([yshift=-7.5cm]V.south);
+\end{tikzpicture}
+\caption{Sequence Diagram: Arc requests boundary intersection points}
+\label{fig:seq-polyline}
+\end{figure}
+
+\section{Deep Dive: The Code}
+
+Let's look at the actual files provided.
+
+\subsection{The \texttt{Place} Class (\texttt{place.ts})}
+
+This class implements \texttt{Node}. Notice the \texttt{intersectionOfBoundaryWithLineTo} method. This is pure geometry.
+
+\begin{lstlisting}[language=TypeScript]
+export class Place implements Node {
+    token: number;
+    position: Point;
+    // ... id and label properties
+
+    // Calculates where a line hits the edge of this circle
+    intersectionOfBoundaryWithLineTo(p: Point): Point {
+        const r = radius; // Defined in constants
+        const m = this.position; // Center of circle
+        
+        // ... Math calculation (Standard Sine/Cosine trig) ...
+        
+        // Returns the point exactly on the circle's edge
+        return new Point(xIntersect, yIntersect);
+    }
+}
+\end{lstlisting}
+
+\subsection{The \texttt{Transition} Class (\texttt{transition.ts})}
+
+The transition is smarter. It has logic to check if it's ``Active''. A transition is active if all the places feeding into it have enough tokens.
+
+\begin{lstlisting}[language=TypeScript]
+export class Transition implements Node {
+    // ... properties ...
+
+    // Checks if we have enough tokens to fire
+    get isActive(): boolean {
+        for (let preArc of this.preArcs) {
+            // Check if the source Place has enough tokens
+            // Note: arc weights are stored as negative numbers for inputs
+            if ((preArc.from as Place).token + preArc.weight < 0) {
+                return false; 
+            }
+        }
+        return true; // All input places satisfied!
+    }
+}
+\end{lstlisting}
+
+\subsection{The \texttt{Arc} Class (\texttt{arc.ts})}
+
+The Arc acts as the bridge. Notice how the constructor automatically adjusts weights: negative if leaving a Place (removing tokens), positive if entering a Place (adding tokens).
+
+\begin{lstlisting}[language=TypeScript]
+export class Arc {
+    from: Node;
+    to: Node;
+    weight: number; 
+
+    constructor(from: Node, to: Node, weight: number = 1) {
+        this.from = from;
+        this.to = to;
+        
+        // If coming FROM a Place, weight is negative (subtraction)
+        if (from instanceof Place) {
+            this.weight = -1 * Math.abs(weight);
+        } else {
+            this.weight = Math.abs(weight);
+        }
+    }
+    // ...
+}
+\end{lstlisting}
+
+Also, the Arc handles the geometry request we saw in the Sequence Diagram:
+
+\begin{lstlisting}[language=TypeScript]
+    get polyLinePointsArray(): Point[] {
+        // ...
+        
+        // Ask the 'From' node where the line should start
+        start = this.from.intersectionOfBoundaryWithLineTo(pForStartCalc);
+
+        // Ask the 'To' node where the line should end
+        end = this.to.intersectionOfBoundaryWithLineTo(pForEndCalc);
+
+        return [start, ...this.anchors, end];
+    }
+\end{lstlisting}
+
+\section{Conclusion}
+
+You have now mastered the alphabet of our application!
+\begin{itemize}
+    \item \textbf{Places} hold the state.
+    \item \textbf{Transitions} hold the rules.
+    \item \textbf{Arcs} connect them and handle the geometry of drawing lines.
+\end{itemize}
+
+However, having these objects floating around in memory isn't enough. We need a way to manage them, create them, delete them, and find them by ID. We need a ``Manager''.
+
+In the next chapter, we will build the brain that holds all these pieces together.
+
+\textbf{Next Chapter:} \hyperref[chap:dataservice]{Central Data Store (DataService)}
+
+% ============================================================================
+
+\chapter{Central Data Store (DataService)}
+\label{chap:dataservice}
+
+In the previous chapter, \hyperref[chap:primitives]{Petri Net Primitives}, we learned how to create the fundamental building blocks: Places, Transitions, and Arcs.
+
+But right now, those objects are just ghost logic floating in the void. We have ``bricks,'' but we don't have a ``building'' or a ``construction site.''
+
+If you create a \texttt{Place} in one code file, how does the drawing engine know it exists? If you delete a \texttt{Transition} in the layout tool, how does the simulation engine know it's gone?
+
+We need a single, shared brain. We call this the \textbf{DataService}.
+
+\section{The Motivation: The Shared Whiteboard}
+
+Imagine a team of engineers working in a room. To collaborate effectively, they use a large \textbf{Whiteboard} on the wall.
+\begin{itemize}
+    \item The \textbf{Visualizer} looks at the board to see what to draw.
+    \item The \textbf{Simulation} reads the board to move tokens around.
+    \item The \textbf{Mouse Handler} erases things from the board when you click delete.
+\end{itemize}
+
+The \texttt{DataService} is that whiteboard. It is the \textbf{Single Source of Truth}.
+
+\subsection{The Use Case: ``Connecting the Dots''}
+
+Let's stick with our coffee machine example. We have a \texttt{Water Tank} (Place) and a \texttt{Brew} (Transition).
+
+\textbf{Goal:} We want to connect them with an Arc and ensure the entire application looks at the new connection instantly.
+
+\section{Key Concepts}
+
+\subsection{The Storage Arrays}
+
+The DataService holds private lists (arrays) of your items.
+\begin{itemize}
+    \item \texttt{\_places}: A list of all circles.
+    \item \texttt{\_transitions}: A list of all rectangles.
+    \item \texttt{\_arcs}: A list of all arrows.
+\end{itemize}
+
+\subsection{The ``Town Crier'' (Observables)}
+
+This is the most ``magical'' part of the service. In modern web development, simply changing a variable isn't enough; you have to tell the screen to update.
+
+We use a concept called \textbf{RxJS Observables}. Think of it as a \textbf{Town Crier} or a \textbf{Group Chat}.
+\begin{enumerate}
+    \item \textbf{Subject (\texttt{dataChangedSubject}):} This is the megaphone. When we change data, we shout into this.
+    \item \textbf{Observable (\texttt{dataChanged\$}):} This is what the components listen to. When the megaphone shouts, everyone listening wakes up and refreshes their screen.
+\end{enumerate}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=1.5cm]
+    % Components
+    \node[component, minimum width=2.5cm] (ds) {DataService\\(Whiteboard)};
+    \node[component, minimum width=2cm, above left=1.5cm and 1cm of ds] (vis) {Visualizer};
+    \node[component, minimum width=2cm, above right=1.5cm and 1cm of ds] (sim) {Simulation};
+    \node[component, minimum width=2cm, below=1.5cm of ds] (mouse) {Mouse Handler};
+    
+    % Subject/Observable
+    \node[rectangle, draw=orange, fill=orange!20, minimum width=1.5cm, right=2cm of ds, align=center] (obs) {dataChanged\$\\(Town Crier)};
+    
+    % Arrows
+    \draw[arrow, <->] (vis) -- (ds);
+    \draw[arrow, <->] (sim) -- (ds);
+    \draw[arrow, <->] (mouse) -- (ds);
+    \draw[arrow, ->] (ds) -- node[above, font=\scriptsize] {trigger} (obs);
+    \draw[arrow, dashed, ->] (obs) to[bend right=30] node[right, font=\scriptsize] {notify} (vis.east);
+    \draw[arrow, dashed, ->] (obs) to[bend left=30] node[right, font=\scriptsize] {notify} (sim.east);
+\end{tikzpicture}
+\caption{DataService as Single Source of Truth with Observable Pattern}
+\label{fig:dataservice-pattern}
+\end{figure}
+
+\section{Using the DataService}
+
+Let's solve our ``Connecting the Dots'' use case.
+
+\subsection{Step 1: Getting Access}
+
+In Angular, we don't say \texttt{new DataService()}. We ask the framework to give us the shared instance. This is called \textbf{Dependency Injection}.
+
+\begin{lstlisting}[language=TypeScript]
+// Inside a component
+constructor(private dataService: DataService) {
+   // Now 'this.dataService' is the shared whiteboard
+}
+\end{lstlisting}
+
+\subsection{Step 2: Adding Elements}
+
+We define our primitives (like in Chapter~\ref{chap:primitives}) and put them into the service's arrays.
+
+\begin{lstlisting}[language=TypeScript]
+// Create the objects
+const tank = new Place(1, new Point(0,0), 'p1');
+const brew = new Transition(new Point(100,0), 't1');
+
+// Put them on the "Whiteboard"
+this.dataService.places = [tank];
+this.dataService.transitions = [brew];
+\end{lstlisting}
+
+\subsection{Step 3: Connecting Them}
+
+The \texttt{DataService} has a helper method called \texttt{connectNodes}. This is smarter than doing it manually because it automatically creates the \texttt{Arc} and updates the internal logic.
+
+\begin{lstlisting}[language=TypeScript]
+// Connect Tank -> Brew
+// The service creates a new Arc and saves it internally
+this.dataService.connectNodes(tank, brew);
+\end{lstlisting}
+
+\textbf{What happened?} An Arc was created. The \texttt{brew} transition now knows \texttt{tank} is its input. But... the screen hasn't updated yet!
+
+\subsection{Step 4: The Notification}
+
+Usually, methods like \texttt{connectNodes} trigger the update automatically. But if you wanted to listen to updates in your component, you would do this:
+
+\begin{lstlisting}[language=TypeScript]
+// Listen for the Town Crier
+this.dataService.dataChanged$.subscribe(() => {
+    console.log("Something changed! I should redraw the screen.");
+    this.redrawPetriNet();
+});
+\end{lstlisting}
+
+\section{Under the Hood: Internal Logic}
+
+How does the service keep everything essentially organized? Let's trace what happens when we delete something.
+
+\subsection{Sequence Diagram: Deleting a Place}
+
+Imagine the user selects a Place and hits ``Delete''.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=0.8cm, scale=0.85, transform shape]
+    % Participants
+    \node[seqparticipant] (UI) {User Interface};
+    \node[seqparticipant, right=1.8cm of UI] (DS) {Data Service};
+    \node[seqparticipant, right=1.8cm of DS] (AR) {Array Logic};
+    \node[seqparticipant, right=1.8cm of AR, align=center] (OBS) {Observable\\(Town Crier)};
+    
+    % Lifelines
+    \draw[dashed] (UI.south) -- ++(0,-9cm);
+    \draw[dashed] (DS.south) -- ++(0,-9cm);
+    \draw[dashed] (AR.south) -- ++(0,-9cm);
+    \draw[dashed] (OBS.south) -- ++(0,-9cm);
+    
+    % Messages
+    \draw[seqarrow] ([yshift=-1cm]UI.south) -- node[above, font=\scriptsize] {removePlace(target)} ([yshift=-1cm]DS.south);
+    \node[seqnote, right=0.1cm of UI, yshift=-1.5cm] {User clicked\\Delete};
+    
+    \draw[seqarrow] ([yshift=-2.5cm]DS.south) -- node[above, font=\scriptsize] {Find \& remove Arcs} ([yshift=-2.5cm]AR.south);
+    
+    \draw[seqarrow] ([yshift=-3.5cm]AR.south) -- node[above, font=\scriptsize] {Remove Place from array} ([yshift=-3.5cm]AR.south -| AR.south);
+    
+    \draw[seqarrow] ([yshift=-5cm]DS.south) -- node[above, font=\scriptsize] {triggerDataChanged()} ([yshift=-5cm]OBS.south);
+    \node[seqnote, right=0.1cm of DS, yshift=-5.5cm] {Shout into\\Megaphone!};
+    
+    \draw[seqarrow, dashed] ([yshift=-7cm]OBS.south) -- node[above, font=\scriptsize] {Notify ``Data Changed!''} ([yshift=-7cm]UI.south);
+    
+    \draw[seqarrow] ([yshift=-8.5cm]UI.south) -- node[above, font=\scriptsize] {Redraw Screen} ([yshift=-8.5cm]UI.south -| UI.south);
+\end{tikzpicture}
+\caption{Sequence Diagram: Deleting a Place triggers cascading updates}
+\label{fig:seq-delete-place}
+\end{figure}
+
+\section{Deep Dive: The Code}
+
+Let's look at \texttt{src/app/tr-services/data.service.ts} to see how this is built.
+
+\subsection{The Storage and Safety}
+
+The service keeps the data \texttt{private}. This prevents other parts of the app from accidentally wiping the array. We access data using \textbf{Getters}.
+
+\begin{lstlisting}[language=TypeScript]
+export class DataService {
+    // Private storage - the "Real" data
+    private _places: Place[] = [];
+    private _transitions: Transition[] = [];
+    private _arcs: Arc[] = [];
+
+    // Public access - Read Only access
+    getPlaces(): Place[] {
+        return this._places;
+    }
+    // ... similar getters for transitions and arcs
+}
+\end{lstlisting}
+
+\subsection{The Smart Removal Logic}
+
+When removing a Place, we can't just delete the circle. We must also delete any arrows (arcs) connected to it, otherwise, we'd have arrows pointing to nothing (which crashes the app).
+
+\begin{lstlisting}[language=TypeScript]
+removePlace(deletablePlace: Place): Place[] {
+    // 1. Find all arcs touching this place
+    const deletableArcs = this._arcs.filter(
+        (arc) => arc.from === deletablePlace || arc.to === deletablePlace,
+    );
+
+    // 2. Remove those arcs first
+    deletableArcs.forEach((arc) => this.removeArc(arc));
+
+    // 3. Remove the place itself
+    this._places = this._places.filter((place) => place !== deletablePlace);
+    
+    // 4. Shout to the app that data changed
+    this.triggerDataChanged(); 
+    return this._places;
+}
+\end{lstlisting}
+
+\subsection{The ``Trigger'' Mechanism}
+
+This is the heart of the reactivity. Whenever you modify data (add, remove, connect), you call this method.
+
+\begin{lstlisting}[language=TypeScript]
+// The Town Crier Subject
+private dataChangedSubject = new Subject<{fitContent: boolean}>();
+
+// The Public Listener
+public dataChanged$ = this.dataChangedSubject.asObservable();
+
+public triggerDataChanged(fitContent: boolean = false): void {
+    // Emit the event. fitContent tells the camera if it should zoom to fit.
+    console.log('Triggering Update');
+    this.dataChangedSubject.next({ fitContent });
+}
+\end{lstlisting}
+
+\section{Conclusion}
+
+The \textbf{DataService} is the backbone of our application. It ensures that no matter how many components we build---layout engines, simulators, or exporters---they all look at the exact same Petri net model.
+
+\begin{itemize}
+    \item It holds the Arrays (\texttt{\_places}, etc.).
+    \item It protects data integrity (deleting Arcs when Places are deleted).
+    \item It notifies the app when changes happen via \texttt{dataChanged\$}.
+\end{itemize}
+
+Now that we have a place to store our data, we need a way to actually \textbf{see} it. In the next chapter, we will build the component that reads this data and draws it onto the screen.
+
+\textbf{Next Chapter:} \hyperref[chap:visualizer]{The Main Visualizer (PetriNetComponent)}
+
+\chapter{The Main Visualizer (PetriNetComponent)}
+\label{chap:visualizer}
+
+In the previous chapter, \hyperref[chap:dataservice]{Central Data Store (DataService)}, we built the application's ``brain.'' We have a secure place to store Places, Transitions, and Arcs.
+
+But currently, our application is invisible. The data exists in memory, but the user sees a blank screen.
+
+We need a ``Painter.'' We need a component that takes the raw lists of objects and renders them into beautiful, interactive shapes. This is the job of the \textbf{PetriNetComponent}.
+
+\section{The Motivation: The Artist Analogy}
+
+Imagine you are directing a play.
+\begin{itemize}
+    \item \textbf{The Script (DataService):} Contains all the characters and instructions.
+    \item \textbf{The Stage (PetriNetComponent):} This is where the visualization happens.
+\end{itemize}
+
+The Stage has two responsibilities:
+\begin{enumerate}
+    \item \textbf{Rendering:} If the script says ``Enter Hamlet,'' the stage must show an actor.
+    \item \textbf{Interaction:} If the audience throws a tomato (clicks a mouse), the stage must react.
+\end{enumerate}
+
+\subsection{The Use Case: ``The Magic Canvas''}
+
+\textbf{Goal:} The user clicks on a blank white area. A circle (Place) appears.
+
+This sounds simple, but it involves translating a pixel coordinate (Mouse X,Y) into a logical object, storing it, and then drawing it back onto the screen.
+
+\section{Key Concepts}
+
+\subsection{SVG (Scalable Vector Graphics)}
+
+We don't draw with pixels (like MS Paint). We draw with math. We use an \textbf{SVG Canvas}.
+\begin{itemize}
+    \item To draw a Place, we write \texttt{<circle cx="100" cy="100" r="30" />}.
+    \item To draw a Transition, we write \texttt{<rect x="200" y="200" ... />}.
+\end{itemize}
+
+\subsection{The Loop (\texttt{*ngFor})}
+
+We do not manually write \texttt{<circle>} for every single place. We use Angular's specific HTML command \texttt{*ngFor}.
+
+Think of this as a \textbf{Photocopier}. We give it one template (a circle) and a list of data (Places array). It photocopies the circle for every item in the list.
+
+\subsection{The Event Dispatcher}
+
+This component acts like a \textbf{Traffic Cop}. When you click the mouse, the Visualizer asks: ``What tool are you holding?''
+\begin{itemize}
+    \item If you hold the \textbf{``Add''} tool: It adds a Place.
+    \item If you hold the \textbf{``Delete''} tool: It removes the item you clicked.
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=1.5cm and 2cm]
+    % Components
+    \node[component, minimum width=3cm] (vis) {PetriNetComponent\\(The Stage)};
+    \node[component, minimum width=2.5cm, above left=1.5cm and 0.5cm of vis] (ds) {DataService\\(Script)};
+    \node[component, minimum width=2.5cm, above right=1.5cm and 0.5cm of vis] (ui) {UiService\\(Tool State)};
+    \node[rectangle, draw=green!60, fill=green!10, minimum width=2cm, below=1.5cm of vis, align=center] (svg) {SVG Canvas\\(Output)};
+    \node[rectangle, draw=red!60, fill=red!10, minimum width=2cm, left=2cm of vis, align=center] (mouse) {Mouse Events\\(Input)};
+    
+    % Arrows
+    \draw[arrow] (ds) -- node[left, font=\scriptsize] {getPlaces()} (vis);
+    \draw[arrow] (vis) -- node[right, font=\scriptsize] {check tool} (ui);
+    \draw[arrow] (vis) -- node[right, font=\scriptsize] {render} (svg);
+    \draw[arrow] (mouse) -- node[above, font=\scriptsize] {click} (vis);
+    \draw[arrow, dashed] (vis) to[bend left=20] node[left, font=\scriptsize] {push()} (ds);
+\end{tikzpicture}
+\caption{PetriNetComponent: The Stage between Data and Display}
+\label{fig:visualizer-overview}
+\end{figure}
+
+\section{Using the Visualizer}
+
+Let's see how this component solves the ``Magic Canvas'' use case.
+
+\subsection{Step 1: The Template (HTML)}
+
+In \texttt{petri-net.component.html}, we define the canvas. We use the \textbf{DataService} to get the list of places.
+
+\begin{lstlisting}[language=HTML]
+<!-- The Canvas -->
+<svg #drawingArea id="drawingArea" class="canvas">
+    
+    <!-- The Loop: Create a group <g> for every place -->
+    <g *ngFor="let place of dataService.getPlaces()">
+        
+        <!-- Draw the circle using the place's position -->
+        <circle 
+            [attr.cx]="place.position.x"
+            [attr.cy]="place.position.y"
+            class="place">
+        </circle>
+
+        <!-- Draw the number of tokens inside -->
+        <text [attr.x]="place.position.x" [attr.y]="place.position.y">
+            {{ place.token }}
+        </text>
+    </g>
+</svg>
+\end{lstlisting}
+
+\textbf{What happened?} If the DataService has 3 places, Angular automatically draws 3 circles on the screen.
+
+\subsection{Step 2: Reacting to Changes}
+
+The component needs to know when the DataService changes so it can refresh the drawing. We do this in the initialization code (\texttt{ngOnInit}).
+
+\begin{lstlisting}[language=TypeScript]
+// petri-net.component.ts
+ngOnInit(): void {
+    // Subscribe to the "Town Crier" from the DataService
+    this.dataService.dataChanged$.subscribe((data) => {
+        
+        // When data changes, maybe fit the view (zoom) 
+        if (data?.fitContent) {
+            this.fitContentToView();
+        }
+        // Angular automatically re-renders the *ngFor loops
+    });
+}
+\end{lstlisting}
+
+\subsection{Step 3: Handling Clicks}
+
+When the user clicks the canvas, we need to decide what to do.
+
+\begin{lstlisting}[language=TypeScript]
+// Inside petri-net.component.ts
+dispatchSVGClick(event: MouseEvent, drawingArea: HTMLElement) {
+    event.preventDefault();
+
+    // Check what button is currently active in the toolbar
+    if (this.uiService.button === ButtonState.Place) {
+        // If "Place" button is active, create a place!
+        this.addPlace(event, drawingArea);
+    }
+}
+\end{lstlisting}
+
+\section{Under the Hood: The Interaction Loop}
+
+Ideally, drawing should be instant. But logically, it follows a strict cycle.
+
+\begin{enumerate}
+    \item User clicks Canvas.
+    \item Visualizer calculates where (X, Y).
+    \item Visualizer tells \textbf{DataService} ``Add a Place here.''
+    \item \textbf{DataService} updates the array.
+    \item \textbf{DataService} shouts ``Data Changed!''
+    \item Visualizer hears the shout and updates the HTML.
+\end{enumerate}
+
+\subsection{Sequence Diagram: Creating a Place}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=0.8cm, scale=0.85, transform shape]
+    % Participants
+    \node[seqparticipant] (User) {User};
+    \node[seqparticipant, right=1.5cm of User] (V) {Visualizer};
+    \node[seqparticipant, right=1.5cm of V] (UI) {UiService};
+    \node[seqparticipant, right=1.5cm of UI] (DS) {DataService};
+    
+    % Lifelines
+    \draw[dashed] (User.south) -- ++(0,-9cm);
+    \draw[dashed] (V.south) -- ++(0,-9cm);
+    \draw[dashed] (UI.south) -- ++(0,-9cm);
+    \draw[dashed] (DS.south) -- ++(0,-9cm);
+    
+    % Messages
+    \draw[seqarrow] ([yshift=-1cm]User.south) -- node[above, font=\scriptsize] {Click on Canvas} ([yshift=-1cm]V.south);
+    
+    \draw[seqarrow] ([yshift=-2cm]V.south) -- node[above, font=\scriptsize] {Check active button?} ([yshift=-2cm]UI.south);
+    
+    \draw[seqarrow, dashed] ([yshift=-2.8cm]UI.south) -- node[above, font=\scriptsize] {ButtonState.Place} ([yshift=-2.8cm]V.south);
+    
+    \node[seqnote, right=0.1cm of V, yshift=-3.8cm] {Calculate\\X,Y coords};
+    
+    \draw[seqarrow] ([yshift=-5cm]V.south) -- node[above, font=\scriptsize] {places.push(new Place)} ([yshift=-5cm]DS.south);
+    
+    \node[seqnote, right=0.1cm of DS, yshift=-5.8cm] {trigger\\DataChanged()};
+    
+    \draw[seqarrow, dashed] ([yshift=-7cm]DS.south) -- node[above, font=\scriptsize] {Update your screen!} ([yshift=-7cm]V.south);
+    
+    \draw[seqarrow] ([yshift=-8.5cm]V.south) -- node[above, font=\scriptsize] {Draws new Circle} ([yshift=-8.5cm]User.south);
+\end{tikzpicture}
+\caption{Sequence Diagram: Creating a Place via Click}
+\label{fig:seq-create-place}
+\end{figure}
+
+\section{Deep Dive: Key Code Blocks}
+
+Let's look at the actual implementation in \texttt{petri-net.component.ts}.
+
+\subsection{Translating Mouse Coordinates}
+
+A mouse click gives coordinates relative to the \emph{window} (e.g., top-left of your browser). We need coordinates relative to the \emph{SVG canvas}.
+
+\begin{lstlisting}[language=TypeScript]
+createPlace(event: MouseEvent, drawingArea: HTMLElement): Place {
+    // Helper service to do the math (Window X/Y -> SVG X/Y)
+    const point = this.svgCoordinatesService.getRelativeEventCoords(
+        event,
+        drawingArea,
+    );
+    
+    // Create new Place with 0 tokens at that point
+    return new Place(0, point, this.getPlaceId());
+}
+\end{lstlisting}
+
+\subsection{Styling States (\texttt{ngClass})}
+
+We don't just draw white circles. Sometimes circles are red (error), green (simulation), or have shadows (editable). We use \texttt{[ngClass]} to swap CSS classes dynamically.
+
+\begin{lstlisting}[language=HTML]
+<circle
+    [ngClass]="{
+        'place': true,                           <!-- Always applies -->
+        'editable': isPlaceEditable(place),      <!-- Only if editable -->
+        'active': place === selectedPlace        <!-- Only if selected -->
+    }"
+    ...
+>
+</circle>
+\end{lstlisting}
+
+\subsection{Displaying Tokens}
+
+A Petri net place isn't just a circle; it holds tokens. In the HTML, we overlay text centered on the circle.
+
+\begin{lstlisting}[language=HTML]
+<text class="token-label"
+      [attr.x]="place.position.x"
+      [attr.y]="place.position.y"
+      text-anchor="middle"
+      dominant-baseline="central">
+    
+    <!-- Only show number if tokens > 0 -->
+    {{ place.token > 0 ? place.token : "" }}
+</text>
+\end{lstlisting}
+
+\subsection{Running the Animation (Simulation)}
+
+This component is also responsible for showing the ``movie'' when we simulate the net. It uses a timer to update the screen step-by-step.
+
+\begin{lstlisting}[language=TypeScript]
+private animateNextStep(): void {
+    // 1. Get the next step from the script
+    const currentStep = this.uiService.getCurrentSimulationStep();
+    
+    // 2. Display the state on screen
+    this.displayStateForStep(currentStep);
+
+    // 3. Wait a bit, then do it again (Recursive Loop)
+    this.animationTimer = setTimeout(() => {
+        this.animateNextStep(); 
+    }, 1000); // 1-second delay
+}
+\end{lstlisting}
+
+\section{Conclusion}
+
+The \textbf{PetriNetComponent} is the window into our application. It doesn't ``own'' the data (the \hyperref[chap:dataservice]{DataService} does that), but it makes the data usable.
+
+It handles the magic triangle of:
+\begin{enumerate}
+    \item \textbf{Events:} Listening to your mouse.
+    \item \textbf{Logic:} Asking ``What tool are we using?''
+    \item \textbf{Rendering:} Drawing SVG shapes based on data arrays.
+\end{enumerate}
+
+Now that we can verify our internal data structures by seeing them on screen, we run into a new problem. How do we save this diagram? Or how do we load a standard Petri net file from the internet?
+
+We need a translator.
+
+\textbf{Next Chapter:} \hyperref[chap:pnmlservice]{PNML/XML Translator (PnmlService)}
+
+\chapter{PNML/XML Translator (PnmlService)}
+\label{chap:pnmlservice}
+
+In the previous chapter, \hyperref[chap:visualizer]{The Main Visualizer (PetriNetComponent)}, we learned how to draw our Petri net on the screen. We can click to add Places and Transitions, and everything looks great.
+
+But we have a major problem: \textbf{Amnesia}.
+
+If you refresh your browser, your drawing disappears. If you want to send your Petri net to a friend, you can't. The data only lives in your computer's temporary memory (RAM).
+
+We need a way to save our work to a file. We use the \textbf{PnmlService} to solve this.
+
+\section{The Motivation: The Universal Translator}
+
+Computer programs speak different languages.
+\begin{itemize}
+    \item \textbf{Our App:} Speaks ``JavaScript Objects'' (e.g., \texttt{new Place(...)}).
+    \item \textbf{The File System:} Speaks ``Text/String'' (e.g., \texttt{<place id="p1">}).
+\end{itemize}
+
+The standard language for saving Petri nets is called \textbf{PNML} (Petri Net Markup Language). It is based on \textbf{XML} (similar to HTML).
+
+We need a \textbf{Translator}:
+\begin{enumerate}
+    \item \textbf{Import (Read):} Reads an XML file and creates JavaScript objects.
+    \item \textbf{Export (Write):} Takes JavaScript objects and writes an XML file.
+\end{enumerate}
+
+\subsection{The Use Case: Saving and Loading}
+
+\begin{itemize}
+    \item \textbf{Goal:} You draw a coffee machine workflow and click ``Download.''
+    \item \textbf{Result:} A file named \texttt{petri-net.pnml} is downloaded to your computer.
+    \item \textbf{Later:} You upload that file, and the app reconstructs the drawing exactly as it was.
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=2cm]
+    % Components
+    \node[component, minimum width=2.5cm] (app) {Application\\(JS Objects)};
+    \node[component, minimum width=2.5cm, right=3cm of app] (file) {File System\\(XML Text)};
+    \node[component, minimum width=3cm, below=2cm of app, xshift=1.5cm] (pnml) {PnmlService\\(Translator)};
+    
+    % Arrows
+    \draw[arrow, bend left=15] (app) to node[above, font=\scriptsize] {Export (Serialize)} (file);
+    \draw[arrow, bend left=15] (file) to node[below, font=\scriptsize] {Import (Parse)} (app);
+    \draw[arrow] (pnml) -- (app);
+    \draw[arrow] (pnml) -- (file);
+\end{tikzpicture}
+\caption{PnmlService as Universal Translator between App and Files}
+\label{fig:pnml-translator}
+\end{figure}
+
+\section{Key Concepts}
+
+\subsection{PNML (XML)}
+
+PNML is just text wrapped in tags. It describes the net's structure.
+Here is what a single Place looks like in PNML:
+
+\begin{lstlisting}[language=XML]
+<place id="p1">
+    <name> <text>Water Tank</text> </name>
+    <graphics>
+        <position x="100" y="100"/>
+    </graphics>
+</place>
+\end{lstlisting}
+
+\subsection{Parsing (Deserialization)}
+
+\textbf{Parsing} is the act of reading that text and extracting meaning.
+\begin{itemize}
+    \item The translator looks for \texttt{<position x="100">}.
+    \item It converts \texttt{"100"} (text) into \texttt{100} (number).
+    \item It runs \texttt{new Place(...)}.
+\end{itemize}
+
+\subsection{Serialization}
+
+\textbf{Serialization} is the reverse.
+\begin{itemize}
+    \item It looks at a \texttt{Place} object.
+    \item It gives it a string template: \texttt{<place id="\$\{place.id\}">...}.
+    \item It combines them all into one long text string.
+\end{itemize}
+
+\section{Using the Service}
+
+Let's see how we use this service to save and load data.
+
+\subsection{Exporting (Downloading)}
+
+The \texttt{PnmlService} makes this incredibly easy. It grabs the data directly from the \hyperref[chap:dataservice]{Central Data Store (DataService)}.
+
+\begin{lstlisting}[language=TypeScript]
+// Inside a toolbar component
+exportNet() {
+    // 1. Ask the service to write existing data to a file
+    this.pnmlService.writePNML();
+}
+\end{lstlisting}
+
+\textbf{What happens?} The browser will immediately prompt you to download a file named \texttt{petri-net-with-love.pnml}.
+
+\subsection{Importing (Uploading)}
+
+When a user uploads a file, we read the text inside it and pass it to the service.
+
+\begin{lstlisting}[language=TypeScript]
+// Assume 'fileContent' is the string read from the uploaded file
+importNet(fileContent: string) {
+    
+    // 1. Pass the XML string to the parser
+    this.pnmlService.parse(fileContent);
+
+    // Note: The service automatically updates the DataService!
+}
+\end{lstlisting}
+
+\textbf{What happens?}
+\begin{enumerate}
+    \item The service reads the file.
+    \item It deletes the current net.
+    \item It creates the new Places/Transitions/Arcs.
+    \item It tells the application to zoom in (Fit to View).
+\end{enumerate}
+
+\section{Under the Hood: The Parsing Flow}
+
+How does a text file become a running application?
+
+\begin{enumerate}
+    \item \textbf{Dependencies:} We use a library called \texttt{xml2js}. It converts the XML text into a raw, messy JSON object.
+    \item \textbf{Generic Processing:} The \texttt{PnmlService} iterates through that messy object looking for keywords like ``place'' or ``arc''.
+    \item \textbf{Instantiation:} For every match, it creates a real Class instance (\texttt{new Place()}).
+    \item \textbf{Auto-Layout:} If the file doesn't have coordinates (X, Y), the service calls the \hyperref[chap:layout]{Graph Layout Architect} to calculate them automatically.
+\end{enumerate}
+
+\subsection{Sequence Diagram: Import Process}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=0.8cm, scale=0.8, transform shape]
+    % Participants
+    \node[seqparticipant] (User) {User};
+    \node[seqparticipant, right=1.2cm of User] (PNML) {PnmlService};
+    \node[seqparticipant, right=1.2cm of PNML] (XML) {xml2js};
+    \node[seqparticipant, right=1.2cm of XML] (DS) {DataService};
+    \node[seqparticipant, right=1.2cm of DS] (LAY) {Layout};
+    
+    % Lifelines
+    \draw[dashed] (User.south) -- ++(0,-10cm);
+    \draw[dashed] (PNML.south) -- ++(0,-10cm);
+    \draw[dashed] (XML.south) -- ++(0,-10cm);
+    \draw[dashed] (DS.south) -- ++(0,-10cm);
+    \draw[dashed] (LAY.south) -- ++(0,-10cm);
+    
+    % Messages
+    \draw[seqarrow] ([yshift=-1cm]User.south) -- node[above, font=\scriptsize] {parse(xmlString)} ([yshift=-1cm]PNML.south);
+    
+    \draw[seqarrow] ([yshift=-2cm]PNML.south) -- node[above, font=\scriptsize] {Convert to JSON} ([yshift=-2cm]XML.south);
+    
+    \draw[seqarrow, dashed] ([yshift=-3cm]XML.south) -- node[above, font=\scriptsize] {raw objects} ([yshift=-3cm]PNML.south);
+    
+    \node[seqnote, right=0.1cm of PNML, yshift=-4cm] {Loop: Create\\Place/Trans/Arc};
+    
+    \draw[seqarrow] ([yshift=-5.5cm]PNML.south) -- node[above, font=\scriptsize] {Update arrays} ([yshift=-5.5cm]DS.south);
+    
+    \node[seqnote, right=0.1cm of PNML, yshift=-6.5cm] {If positions\\missing...};
+    
+    \draw[seqarrow] ([yshift=-7.5cm]PNML.south) -- node[above, font=\scriptsize] {applySugiyama()} ([yshift=-7.5cm]LAY.south);
+    
+    \draw[seqarrow] ([yshift=-8.5cm]PNML.south) -- node[above, font=\scriptsize] {triggerDataChanged(true)} ([yshift=-8.5cm]DS.south);
+    
+    \draw[seqarrow, dashed] ([yshift=-9.5cm]DS.south) -- node[above, font=\scriptsize] {Update Screen} ([yshift=-9.5cm]User.south);
+\end{tikzpicture}
+\caption{Sequence Diagram: PNML Import Process}
+\label{fig:seq-pnml-import}
+\end{figure}
+
+\section{Deep Dive: The Code}
+
+Let's look at \texttt{src/app/tr-services/pnml.service.ts}.
+
+\subsection{Generating XML (The Template)}
+
+When generating the text file, we map every object to a string. Notice how we manually construct the XML tags.
+
+\begin{lstlisting}[language=TypeScript]
+// Helper to convert a Place object to an XML string
+getPlaceString(place: Place): string {
+    return `      <place id="${place.id}">
+    <name>
+      <text>${place.label}</text>
+    </name>
+    <graphics>
+      <position x="${place.position.x}" y="${place.position.y}"/>
+    </graphics>
+ </place>`;
+}
+\end{lstlisting}
+
+\subsection{The Main Parse Function}
+
+The \texttt{parse} method is the controller. It delegates the hard work to specific functions.
+
+\begin{lstlisting}[language=TypeScript]
+parse(xmlString: string) {
+    // 1. Convert XML string to a raw Javascript Object
+    const result = xml2js(xmlString) as PnmlPetriNet;
+
+    // 2. Extract specific lists from the raw object
+    // (Implementation details hidden: filtering for 'place', 'transition')
+    
+    // 3. Convert raw data into Application Class instances
+    const places = this.parsePnmlPlaces(pnmlPlaces);
+    const transitions = this.parsePnmlTransitions(pnmlTransitions);
+    
+    // 4. Update the Single Source of Truth
+    this.dataService.places = places;
+    this.dataService.transitions = transitions;
+    
+    // 5. Update the UI
+    this.dataService.triggerDataChanged(true);
+}
+\end{lstlisting}
+
+\subsection{Parsing Specific Elements}
+
+Here is how we translate the raw data into a \texttt{Place}. We have to be careful---sometimes attributes are missing (like coordinates), so we set defaults.
+
+\begin{lstlisting}[language=TypeScript]
+private parsePnmlPlaces(list: Array<PnmlElement>): Place[] {
+    const places: Place[] = [];
+    
+    list.forEach((pnmlPlace) => {
+        // Extract ID and Name
+        const id = pnmlPlace.attributes.id;
+        
+        // Extract Position (Logic simplified for readability)
+        // If x/y exist, use them. If not, use (0,0).
+        let point = new Point(attr.x, attr.y); 
+
+        // Create the real object
+        places.push(new Place(tokens, point, id, name));
+    });
+    return places;
+}
+\end{lstlisting}
+
+\subsection{Handling Arcs (The Tricky Part)}
+
+Arcs are harder because they connect two things. In XML, an Arc is just: \texttt{source="p1" target="t1"}.
+In our code, an \texttt{Arc} needs references to the actual \texttt{Place} and \texttt{Transition} objects, not just their names.
+
+\begin{lstlisting}[language=TypeScript]
+private parsePnmlArcs(list, places, transitions): Arc[] {
+    list.forEach((pnmlArc) => {
+        // 1. Get the string IDs
+        const sId = pnmlArc.attributes.source;
+        const tId = pnmlArc.attributes.target;
+
+        // 2. Find the actual objects in our memory
+        const sourceNode = this.retrieveNode(places, transitions, sId);
+        const targetNode = this.retrieveNode(places, transitions, tId);
+
+        // 3. Create the connection
+        if (sourceNode && targetNode) {
+            const arc = new Arc(sourceNode, targetNode, weight);
+            arcs.push(arc);
+        }
+    });
+    return arcs;
+}
+\end{lstlisting}
+
+\section{Conclusion}
+
+The \textbf{PnmlService} is our bridge to the outside world.
+\begin{itemize}
+    \item It allows users to save their work (Serialization).
+    \item It allows the app to load existing nets (Parsing).
+    \item It links the dumb text of a file to the smart objects in our \textbf{DataService}.
+\end{itemize}
+
+However, we mentioned a specific edge case: \textbf{What happens if the loaded file has no X/Y coordinates?}
+
+Currently, the PnmlService just puts them at \texttt{(0,0)}, creating a jumbled pile of elements on top of each other.
+
+We need an automatic architect to organize that pile into a readable graph.
+
+\textbf{Next Chapter:} \hyperref[chap:layout]{Graph Layout Architect (Sugiyama/Spring Embedder)}
+
+\chapter{Graph Layout Architect (Sugiyama/Spring Embedder)}
+\label{chap:layout}
+
+In the previous chapter, \hyperref[chap:pnmlservice]{PNML/XML Translator (PnmlService)}, we learned how to import Petri net files.
+
+However, we ended on a cliffhanger. Sometimes, imported files contain only the \emph{logic} (connections) but no \emph{geometry} (positions). If a file doesn't say where the nodes go, the \texttt{PnmlService} piles them all at x=0, y=0.
+
+This results in a ``Tangled Mess''---a black blob of overlapping circles and rectangles.
+
+We need an \textbf{Interior Designer}. We need an algorithm to automatically look at the connections and decide the best, most readable arrangement for the furniture. This is the job of the \textbf{Graph Layout Architect}.
+
+\section{The Motivation: The ``Tangled Mess''}
+
+Imagine you just moved into a new house (imported a file). The movers dumped every single chair, table, and lamp into the exact center of the living room. You can't reach the fridge because the sofa is on top of it.
+
+\subsection{The Use Case: Auto-Layout}
+
+\begin{enumerate}
+    \item \textbf{Input:} A Petri net where every Place and Transition is at \texttt{(0,0)}.
+    \item \textbf{Action:} The user presses the ``Auto Layout'' button.
+    \item \textbf{Result:} The graph untangles itself. The nodes spread out, arrows point in a logical direction, and the diagram becomes readable.
+\end{enumerate}
+
+We provide two different ``Interior Designers'' for two different tastes:
+\begin{enumerate}
+    \item \textbf{Sugiyama:} Strict, organized, hierarchical (Top-to-Bottom).
+    \item \textbf{Spring Embedder:} Organic, physics-based (Explodes outward).
+\end{enumerate}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=1cm]
+    % Before layout - tangled mess
+    \begin{scope}[xshift=0cm]
+        \node[place, fill=red!20] (p1) at (0,0) {};
+        \node[transition, fill=red!20] (t1) at (0.2,0.1) {};
+        \node[place, fill=red!20] (p2) at (-0.1,0.2) {};
+        \node[transition, fill=red!20] (t2) at (0.15,-0.1) {};
+        \node[below=1.5cm of p1, font=\small] {Before: Tangled Mess};
+    \end{scope}
+    
+    % Arrow
+    \draw[-{Stealth[length=4mm]}, very thick] (1.5,0) -- (3.5,0) node[midway, above] {Layout};
+    
+    % After Sugiyama - hierarchical
+    \begin{scope}[xshift=6cm]
+        \node[place] (sp1) at (0,1) {};
+        \node[transition] (st1) at (0,0) {};
+        \node[place] (sp2) at (-0.8,-1) {};
+        \node[place] (sp3) at (0.8,-1) {};
+        \draw[arrow] (sp1) -- (st1);
+        \draw[arrow] (st1) -- (sp2);
+        \draw[arrow] (st1) -- (sp3);
+        \node[below=0.5cm of sp2, xshift=0.4cm, font=\small] {Sugiyama};
+    \end{scope}
+    
+    % After Spring - organic
+    \begin{scope}[xshift=10cm]
+        \node[place] (ep1) at (0,0.8) {};
+        \node[transition] (et1) at (1,0) {};
+        \node[place] (ep2) at (-0.5,-0.8) {};
+        \node[transition] (et2) at (0.8,-1) {};
+        \draw[arrow] (ep1) -- (et1);
+        \draw[arrow] (et1) -- (ep2);
+        \draw[arrow] (ep2) -- (et2);
+        \node[below=0.3cm of et2, font=\small] {Spring Embedder};
+    \end{scope}
+\end{tikzpicture}
+\caption{Layout transforms tangled nodes into readable graphs}
+\label{fig:layout-before-after}
+\end{figure}
+
+\section{Key Concepts}
+
+\subsection{The Spring Embedder (Physics)}
+
+This approach treats the diagram like a physical system in space.
+\begin{itemize}
+    \item \textbf{Magnets (Repulsion):} Every node (Place/Transition) hates every other node. They try to push each other away.
+    \item \textbf{Springs (Attraction):} If two nodes are connected by an Arc, they are tied together with an elastic spring. They try to pull close.
+\end{itemize}
+
+The algorithm runs a simulation. The nodes push and pull until they find a comfortable balance (Equilibrium).
+
+\subsection{The Sugiyama (Hierarchy)}
+
+This approach treats the diagram like a corporate organizational chart or a waterfall.
+\begin{itemize}
+    \item \textbf{Layers:} It organizes nodes into ranks. Input moves to Process, Process moves to Output.
+    \item \textbf{Crossings:} It specifically tries to minimize the number of times arrows cross over each other.
+\end{itemize}
+
+\section{Using the Layout Services}
+
+These services are tools you can call whenever the graph gets messy.
+
+\subsection{Using Spring Embedder}
+
+The \texttt{LayoutSpringEmbedderService} does the heavy lifting. You just need to tell it to start.
+
+\begin{lstlisting}[language=TypeScript]
+// Inside a component or toolbar
+layoutWithPhysics() {
+    // 1. Run the physics simulation
+    // This moves the nodes in the DataService directly
+    this.springEmbedderService.layoutSpringEmbedder();
+}
+\end{lstlisting}
+
+\subsection{Using Sugiyama}
+
+The \texttt{LayoutSugiyamaService} works similarly but is instantaneous (it calculates math rather than running a simulation loop).
+
+\begin{lstlisting}[language=TypeScript]
+layoutHierarchical() {
+    // 1. Calculate layers and positions
+    this.sugiyamaService.applySugiyamaLayout();
+    
+    // 2. Tell the visualizer to update
+    this.dataService.triggerDataChanged();
+}
+\end{lstlisting}
+
+\section{Under the Hood: Spring Embedder Logic}
+
+Let's look at how the ``Physics'' engine works. It uses a loop that runs hundreds of times (iterations).
+
+\subsection{Sequence Diagram: The Physics Loop}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=0.8cm, scale=0.85, transform shape]
+    % Participants
+    \node[seqparticipant] (App) {App};
+    \node[seqparticipant, right=1.5cm of App] (SE) {SpringEmbedder};
+    \node[seqparticipant, right=1.5cm of SE] (Node) {Node (Logic)};
+    \node[seqparticipant, right=1.5cm of Node] (DS) {DataService};
+    
+    % Lifelines
+    \draw[dashed] (App.south) -- ++(0,-9cm);
+    \draw[dashed] (SE.south) -- ++(0,-9cm);
+    \draw[dashed] (Node.south) -- ++(0,-9cm);
+    \draw[dashed] (DS.south) -- ++(0,-9cm);
+    
+    % Messages
+    \draw[seqarrow] ([yshift=-1cm]App.south) -- node[above, font=\scriptsize] {layoutSpringEmbedder()} ([yshift=-1cm]SE.south);
+    
+    % Loop box
+    \draw[thick, rounded corners] ([yshift=-1.8cm, xshift=-0.3cm]SE.south) rectangle ([yshift=-6.5cm, xshift=4.5cm]SE.south);
+    \node[font=\scriptsize, anchor=north west] at ([yshift=-1.8cm, xshift=-0.2cm]SE.south) {loop [100 iterations]};
+    
+    \node[seqnote, right=0.1cm of SE, yshift=-2.8cm] {Calculate\\Repulsion};
+    
+    \node[seqnote, right=0.1cm of SE, yshift=-3.8cm] {Calculate\\Attraction};
+    
+    \draw[seqarrow] ([yshift=-5cm]SE.south) -- node[above, font=\scriptsize] {Update position} ([yshift=-5cm]Node.south);
+    
+    \node[seqnote, right=0.1cm of SE, yshift=-6cm] {sleep(1ms)};
+    
+    \draw[seqarrow] ([yshift=-7.5cm]SE.south) -- node[above, font=\scriptsize] {triggerDataChanged()} ([yshift=-7.5cm]DS.south);
+    
+    \draw[seqarrow, dashed] ([yshift=-8.5cm]DS.south) -- node[above, font=\scriptsize] {Redraw finished!} ([yshift=-8.5cm]App.south);
+\end{tikzpicture}
+\caption{Sequence Diagram: Spring Embedder Physics Loop}
+\label{fig:seq-spring-embedder}
+\end{figure}
+
+\subsection{Deep Dive: Spring Embedder Code}
+
+Open \texttt{src/app/tr-services/layout-spring-embedder.service.ts}.
+
+\subsubsection{The Main Loop}
+
+We run a \texttt{while} loop until the nodes stop moving significantly (stability) or we hit a limit.
+
+\begin{lstlisting}[language=TypeScript]
+async layoutSpringEmbedder() {
+    let iterations = 1;
+    
+    // Keep running until max iterations or force is tiny
+    while (iterations <= this.maxIterations) {
+        
+        // 1. Calculate where everyone wants to move
+        // (Implementation details hidden in helper method)
+        this.calculateAndApplyForces(nodes);
+
+        // 2. Wait 1ms so user can see the movement (Animated)
+        await this.sleep(1);
+        
+        iterations++;
+    }
+}
+\end{lstlisting}
+
+\subsubsection{The Physics Math}
+
+We calculate two forces. Notice how simple the concept is when broken down:
+
+\begin{lstlisting}[language=TypeScript]
+// 1. Repulsion: "Get away from me!"
+// Applied between ANY two nodes
+const repulsionForce = this.calculateRepulsionForce(nodeA, nodeB);
+
+// 2. Springs: "Come back!" 
+// Applied only between CONNECTED nodes (Arcs)
+const springForce = this.calculateSpringForce(nodeA, connectedNodeB);
+
+// Final move is the combination of both
+totalForce = repulsionForce + springForce;
+\end{lstlisting}
+
+\section{Under the Hood: Sugiyama Logic}
+
+The Sugiyama algorithm is much more complex, so we split it into four distinct steps. It is a \textbf{Pipeline}.
+
+\subsection{The 4-Step Pipeline}
+
+\begin{enumerate}
+    \item \textbf{Cycle Removal:} You can't make a perfect ``waterfall'' hierarchy if water flows back up (cycles). We temporarily reverse those arrows.
+    \item \textbf{Layer Assignment:} Assign every node a ``Rank'' (Row 1, Row 2, Row 3).
+    \item \textbf{Vertex Ordering:} Shuffle nodes within their row to stop arrows from crossing like shoelaces.
+    \item \textbf{Coordinate Assignment:} Finally, turn ``Row 1, Position 2'' into ``x=100, y=50''.
+\end{enumerate}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=0.5cm]
+    \node[component, minimum width=2.8cm] (s1) {1. Cycle Removal};
+    \node[component, minimum width=2.8cm, right=0.8cm of s1] (s2) {2. Layer Assignment};
+    \node[component, minimum width=2.8cm, right=0.8cm of s2] (s3) {3. Vertex Ordering};
+    \node[component, minimum width=2.8cm, right=0.8cm of s3] (s4) {4. Coord Assignment};
+    
+    \draw[arrow] (s1) -- (s2);
+    \draw[arrow] (s2) -- (s3);
+    \draw[arrow] (s3) -- (s4);
+\end{tikzpicture}
+\caption{Sugiyama Algorithm: 4-Step Pipeline}
+\label{fig:sugiyama-pipeline}
+\end{figure}
+
+\subsection{Deep Dive: Sugiyama Code}
+
+Open \texttt{src/app/tr-services/layout-sugiyama.service.ts}.
+
+Notice how the \texttt{applySugiyamaLayout} method acts as a manager delegating work to 4 sub-services. This is great software design!
+
+\begin{lstlisting}[language=TypeScript]
+applySugiyamaLayout() {
+    // Step 1: Break infinite loops
+    const cycleService = new CycleRemovalService(nodes, arcs);
+    cycleService.removeCycles();
+
+    // Step 2: Assign rows
+    const layerService = new LayerAssignmentService(nodes, arcs);
+    const layers = layerService.assignLayers();
+
+    // Step 3: Shuffle to untangle lines
+    const orderingService = new VertexOrderingService(layers, nodes, arcs);
+    orderingService.orderVertices();
+
+    // Step 4: Finalize X/Y coordinates
+    const coordService = new CoordinateAssignmentService(layers, arcs, nodes);
+    coordService.assignCoordinates();
+}
+\end{lstlisting}
+
+\subsection{Handling ``Dummy Nodes''}
+
+Sometimes an arrow is very long, jumping from Layer 1 to Layer 5. This confuses the algorithm.
+The \texttt{VertexOrderingService} inserts invisible ``Dummy Nodes'' in layers 2, 3, and 4 to guide the arrow politely through the ranks.
+
+\begin{lstlisting}[language=TypeScript]
+// Inside vertex-ordering.service.ts
+private insertDummyNodes() {
+    // If an arrow skips a layer...
+    if (layerDiff > 1) {
+        // Create a fake node to fill the gap
+        const dummy = new DummyNode();
+        
+        // Split the long arrow into two short ones
+        this.splitArc(longArc, dummy);
+    }
+}
+\end{lstlisting}
+
+\textbf{Why do this?} It forces the straight lines to bend around obstacles, making the graph look much cleaner.
+
+\section{Conclusion}
+
+We now have a powerful set of tools to organize our Petri net.
+\begin{itemize}
+    \item \textbf{Spring Embedder} is fun to watch and great for untangling clumps.
+    \item \textbf{Sugiyama} is professional and great for structured workflows.
+\end{itemize}
+
+Both services modify the \texttt{position} of the nodes inside the \hyperref[chap:dataservice]{Central Data Store (DataService)}.
+
+Now the graph looks beautiful. But wait---what if the algorithm put a node slightly too far to the left? As a user, I want to grab it and move it myself. I want to rename it. I want to delete it.
+
+We need to handle user interaction.
+
+\textbf{Next Chapter:} \hyperref[chap:interaction]{Interaction Handler (EditMoveElementsService)}
+
+\chapter{Interaction Handler (EditMoveElementsService)}
+\label{chap:interaction}
+
+In the previous chapter, \hyperref[chap:layout]{Graph Layout Architect (Sugiyama/Spring Embedder)}, we used powerful algorithms to automatically organize our Petri net.
+
+The result is usually good, but rarely perfect. Maybe the algorithm placed a specific transition too close to a label, or perhaps you just prefer a specific layout for aesthetic reasons.
+
+You need to reach into the screen and grab the objects. You need a ``Hand.''
+
+This is the job of the \textbf{EditMoveElementsService}.
+
+\section{The Motivation: Physics of the Mouse}
+
+The browser gives us raw events: ``The mouse is at pixel (500, 300).''
+Our objects live in a coordinate system: ``Place P1 is at x=10, y=10.''
+
+If we just set \texttt{P1.x = 500}, the object would teleport instantly under your mouse cursor, which feels jarring and unnatural.
+
+\subsection{The Use Case: ``The Fine Adjustment''}
+
+\textbf{Goal:} The user clicks on a Transition and drags it 10 pixels to the right.
+
+\textbf{Requirement:}
+\begin{enumerate}
+    \item Verify the user is allowed to move things (using the \textbf{Move Tool}).
+    \item Also move any arrows (Arcs) connected to that Transition so the lines don't break.
+\end{enumerate}
+
+\section{Key Concepts}
+
+\subsection{The Drag Cycle}
+
+Every logic involving dragging follows this 3-step cycle:
+\begin{enumerate}
+    \item \textbf{Initialize (\texttt{mousedown}):} ``I have grabbed object X. I am starting at position Y.''
+    \item \textbf{Update (\texttt{mousemove}):} ``I have moved 2 pixels. Update object X by +2 pixels.''
+    \item \textbf{Finalize (\texttt{mouseup}):} ``I have let go. Forget object X.''
+\end{enumerate}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=2.5cm]
+    \node[component, minimum width=2.5cm] (init) {1. Initialize\\(mousedown)};
+    \node[component, minimum width=2.5cm, right=of init] (update) {2. Update\\(mousemove)};
+    \node[component, minimum width=2.5cm, right=of update] (final) {3. Finalize\\(mouseup)};
+    
+    \draw[arrow] (init) -- (update);
+    \draw[arrow] (update) -- (final);
+    \draw[arrow, dashed, bend right=40] (update) to node[below, font=\scriptsize] {repeat} (update);
+\end{tikzpicture}
+\caption{The 3-Step Drag Cycle}
+\label{fig:drag-cycle}
+\end{figure}
+
+\subsection{The Delta ($\Delta$)}
+
+We rarely set absolute coordinates during a drag. Instead, we calculate the \textbf{Difference} (Delta) between the last frame and the current frame.
+\begin{itemize}
+    \item Frame 1: Mouse at 100.
+    \item Frame 2: Mouse at 105.
+    \item \textbf{Delta:} +5.
+    \item \textbf{Action:} Add 5 to the Object's position.
+\end{itemize}
+
+\subsection{Anchors (The Knee Joints)}
+
+An Arc is a line. But sometimes, you want a bent line.
+An \textbf{Anchor} is a point in the middle of a line. Imagine it like a knee joint. We can grab this joint and move it to bend the pipe around obstacles.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=3cm]
+    % Straight line
+    \begin{scope}[xshift=0cm]
+        \node[place] (p1) at (0,0) {};
+        \node[transition] (t1) at (3,0) {};
+        \draw[arrow] (p1) -- (t1);
+        \node[below=0.3cm of p1, xshift=1.5cm, font=\small] {Straight Arc};
+    \end{scope}
+    
+    % Bent line with anchor
+    \begin{scope}[xshift=6cm]
+        \node[place] (p2) at (0,0) {};
+        \node[transition] (t2) at (3,0) {};
+        \node[circle, fill=orange, inner sep=2pt] (anchor) at (1.5,1) {};
+        \draw[arrow] (p2) -- (anchor) -- (t2);
+        \node[above=0.1cm of anchor, font=\scriptsize] {Anchor};
+        \node[below=0.3cm of p2, xshift=1.5cm, font=\small] {Bent Arc};
+    \end{scope}
+\end{tikzpicture}
+\caption{Anchors allow bending lines around obstacles}
+\label{fig:anchors}
+\end{figure}
+
+\section{Using the Service}
+
+This service is primarily used by the \hyperref[chap:visualizer]{Main Visualizer (PetriNetComponent)} to react to mouse events.
+
+\subsection{Step 1: Grabbing an Object}
+
+When the user clicks, we tell the service what they clicked on.
+
+\begin{lstlisting}[language=TypeScript]
+// Inside the visualizer component (on mousedown)
+onNodeDown(event: MouseEvent, node: Node) {
+    if (this.uiService.button === ButtonState.Move) {
+        // Prepare the service to move this specific node
+        this.moveService.initializeNodeMove(event, node);
+    }
+}
+\end{lstlisting}
+
+\subsection{Step 2: Dragging the Mouse}
+
+As the mouse moves, we ask the service to calculate the math.
+
+\begin{lstlisting}[language=TypeScript]
+// Inside the visualizer component (on mousemove)
+onMouseMove(event: MouseEvent) {
+    // This function automatically calculates the Delta
+    // and updates the coordinates in the DataService
+    this.moveService.moveNodeByMousePositionChange(event);
+}
+\end{lstlisting}
+
+\subsection{Step 3: Letting Go}
+
+When the user releases the mouse button.
+
+\begin{lstlisting}[language=TypeScript]
+// Inside the visualizer component (on mouseup)
+onMouseUp() {
+    // Clear the memory so we don't keep moving things
+    this.moveService.finalizeMove();
+}
+\end{lstlisting}
+
+\section{Under the Hood: The Movement Logic}
+
+What actually happens when you drag a node? It's not just the node that moves; the attached lines must stretch or shrink.
+
+\subsection{Sequence Diagram: Dragging a Node}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=0.8cm, scale=0.85, transform shape]
+    % Participants
+    \node[seqparticipant] (User) {User};
+    \node[seqparticipant, right=1.3cm of User] (MS) {MoveService};
+    \node[seqparticipant, right=1.3cm of MS] (Node) {Node};
+    \node[seqparticipant, right=1.3cm of Node, align=center] (Arcs) {Connected\\Arcs};
+    
+    % Lifelines
+    \draw[dashed] (User.south) -- ++(0,-10cm);
+    \draw[dashed] (MS.south) -- ++(0,-10cm);
+    \draw[dashed] (Node.south) -- ++(0,-10cm);
+    \draw[dashed] (Arcs.south) -- ++(0,-10cm);
+    
+    % Messages
+    \draw[seqarrow] ([yshift=-1cm]User.south) -- node[above, font=\scriptsize] {mousedown (100,100)} ([yshift=-1cm]MS.south);
+    
+    \node[seqnote, right=0.1cm of MS, yshift=-1.8cm] {Store initialPos\\Find connected Arcs};
+    
+    \draw[seqarrow] ([yshift=-3cm]User.south) -- node[above, font=\scriptsize] {mousemove (105,102)} ([yshift=-3cm]MS.south);
+    
+    \node[seqnote, right=0.1cm of MS, yshift=-4cm] {Delta: x=+5, y=+2};
+    
+    \draw[seqarrow] ([yshift=-5cm]MS.south) -- node[above, font=\scriptsize] {x += 5, y += 2} ([yshift=-5cm]Node.south);
+    
+    \draw[seqarrow] ([yshift=-6cm]MS.south) -- node[above, font=\scriptsize] {Shift anchors} ([yshift=-6cm]Arcs.south);
+    
+    \node[seqnote, right=0.1cm of MS, yshift=-7cm] {Update initialPos\\= (105,102)};
+    
+    \draw[seqarrow] ([yshift=-8.5cm]User.south) -- node[above, font=\scriptsize] {mouseup} ([yshift=-8.5cm]MS.south);
+    
+    \node[seqnote, right=0.1cm of MS, yshift=-9.3cm] {Clear state};
+\end{tikzpicture}
+\caption{Sequence Diagram: Dragging a Node with Connected Arcs}
+\label{fig:seq-drag-node}
+\end{figure}
+
+\section{Deep Dive: The Code}
+
+Let's look at \texttt{src/app/tr-services/edit-move-elements.service.ts}.
+
+\subsection{Initialization}
+
+When we start moving a node, we do a bit of setup work. We look through the \hyperref[chap:dataservice]{Central Data Store (DataService)} to find connected Arcs.
+
+\textbf{Why?} If we didn't do this, dragging a Place would leave the arrows pointing at empty space (broken lines).
+
+\begin{lstlisting}[language=TypeScript]
+initializeNodeMove(event: MouseEvent, node: Node) {
+    this.node = node;
+
+    // Pre-calculate which arcs are attached to this node
+    // This saves performance during the rapid drag loop
+    this.dataService.getArcs().forEach((arc) => {
+        if (arc.from === node || arc.to === node) {
+            this.nodeArcs.push(arc);
+        }
+    });
+
+    // Remember where we started
+    this.initialMousePos.x = event.clientX;
+    this.initialMousePos.y = event.clientY;
+}
+\end{lstlisting}
+
+\subsection{The Move Loop (The Physics)}
+
+This function is called dozens of times per second. It keeps the ``physics'' feeling responsive.
+
+\begin{lstlisting}[language=TypeScript]
+moveNodeByMousePositionChange(event: MouseEvent) {
+    if (this.node) {
+        // 1. Calculate how far the mouse has moved
+        const deltaX = event.clientX - this.initialMousePos.x;
+        const deltaY = event.clientY - this.initialMousePos.y;
+
+        // 2. Apply that movement to the node
+        this.node.position.x += deltaX;
+        this.node.position.y += deltaY;
+
+        // 3. Move connected lines slightly so they follow nicely
+        this.moveConnectedAnchors(deltaX, deltaY);
+
+        // 4. Reset tracker for the next frame
+        this.initialMousePos.x = event.clientX;
+        this.initialMousePos.y = event.clientY;
+    }
+}
+\end{lstlisting}
+
+\subsection{Panning the Canvas}
+
+Sometimes you aren't grabbing a node; you are grabbing the background to move the whole map.
+This loops through \textbf{everything} in the DataService.
+
+\begin{lstlisting}[language=TypeScript]
+movePetrinetPositionByMousePositionChange(event: MouseEvent) {
+    // Calculate Delta
+    const deltaX = event.clientX - this.initialMousePos.x;
+    
+    // Apply Delta to EVERY Place and Transition
+    [...this.dataService.getPlaces(), ...this.dataService.getTransitions()]
+        .forEach((node) => {
+            node.position.x += deltaX;
+            // ...
+        });
+        
+    // Also move every Arc Anchor
+    // ...
+}
+\end{lstlisting}
+
+\subsection{Bending Lines (Inserting Anchors)}
+
+This is a cool feature. If a line is straight, you can click the middle of it to create a ``joint.''
+The service uses \texttt{SvgCoordinatesService} to translate the screen click into the chart's math coordinates.
+
+\begin{lstlisting}[language=TypeScript]
+insertAnchorIntoLineSegmentStart(event, arc, lineSegment, drawingArea) {
+    // 1. Calculate where exactly on the map you clicked
+    const anchor = this.svgCoordinatesService.getRelativeEventCoords(
+        event,
+        drawingArea
+    );
+
+    // 2. Add this point to the Arc's list of joints
+    arc.anchors.push(anchor);
+
+    // 3. Immediately switch the tool to "Move" 
+    // This lets the user drag the new joint instantly
+    this.uiService.button = ButtonState.Move;
+    this.initializeAnchorMove(event, anchor);
+}
+\end{lstlisting}
+
+\section{Conclusion}
+
+The \textbf{EditMoveElementsService} brings the static picture to life.
+\begin{itemize}
+    \item It handles the \textbf{Delta Math} (Current Position $-$ Old Position).
+    \item It performs \textbf{Cascading Updates} (Moving a node also adjusts its connected Arcs).
+    \item It allows for \textbf{Complex Interactions} like bending lines by inserting anchors.
+\end{itemize}
+
+We can now organize our graph manually by dragging elements around. But what if the graph is huge? What if we need to see the ``Big Picture'' or zoom in on a tiny detail?
+
+Moving the elements isn't enough; we need to move the \emph{camera}.
+
+\textbf{Next Chapter:} \hyperref[chap:zoom]{Camera Controller (ZoomService)}
+
+\chapter{Camera Controller (ZoomService)}
+\label{chap:zoom}
+
+In the previous chapter, \hyperref[chap:interaction]{Interaction Handler (EditMoveElementsService)}, we learned how to grab specific nodes and move them around. We became the ``Hand'' that arranges the furniture.
+
+But what if the room is too big? What if you stick a node in the far-right corner, and now you have to scroll for five minutes to find it? Or what if you import a massive Petri net that is 50 times wider than your screen?
+
+Moving the \emph{objects} isn't enough. We need to move the \emph{camera}. We need to control the \textbf{Viewport}.
+
+This is the job of the \textbf{ZoomService}.
+
+\section{The Motivation: Looking Through the Lens}
+
+Imagine holding a physical map.
+\begin{itemize}
+    \item \textbf{Panning (Offset):} You slide the map left, right, up, or down on the table to see a different city.
+    \item \textbf{Zooming (Scale):} You bring your face closer to the map to see street names, or pull back to see the whole country.
+\end{itemize}
+
+In our code, the \textbf{SVG Canvas} is that map. The \texttt{ZoomService} calculates exactly how much to ``slide'' (translate) and ``magnify'' (scale) that canvas so the user sees exactly what they want.
+
+\subsection{The Use Case: ``Fit to View''}
+
+This is the most critical feature in any diagramming tool.
+\begin{enumerate}
+    \item \textbf{Scenario:} User imports a file with 500 nodes.
+    \item \textbf{Problem:} The nodes are scattered over a huge area (e.g., from x=0 to x=5000). The user sees a white screen because the camera is looking at an empty spot.
+    \item \textbf{Solution:} The user clicks \textbf{``Fit Content.''}
+    \item \textbf{Result:} The service calculates the perfect zoom level (Scale) and position (Offset) to fit every single node perfectly onto the screen.
+\end{enumerate}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=0.9]
+    % Before - zoomed in too much
+    \begin{scope}[xshift=0cm]
+        \draw[thick] (0,0) rectangle (3,2);
+        \node[place, scale=2] at (1,1) {};
+        \node[below=0.3cm, font=\small] at (1.5,0) {Zoomed In (Scale=2.0)};
+        \node[font=\scriptsize] at (1.5,-0.8) {Can't see other nodes};
+    \end{scope}
+    
+    % Arrow
+    \draw[-{Stealth[length=4mm]}, very thick] (4,1) -- (5.5,1) node[midway, above, font=\small] {Fit};
+    
+    % After - fit to view
+    \begin{scope}[xshift=7cm]
+        \draw[thick] (0,0) rectangle (3,2);
+        \node[place, scale=0.6] at (0.5,1.5) {};
+        \node[transition, scale=0.6] at (1.5,1) {};
+        \node[place, scale=0.6] at (2.5,0.5) {};
+        \node[place, scale=0.6] at (1,0.5) {};
+        \draw[arrow, scale=0.5] (0.7,1.4) -- (1.3,1.1);
+        \draw[arrow, scale=0.5] (1.7,0.9) -- (2.3,0.6);
+        \node[below=0.3cm, font=\small] at (1.5,0) {Fit Content (Scale=0.5)};
+        \node[font=\scriptsize] at (1.5,-0.8) {All nodes visible};
+    \end{scope}
+\end{tikzpicture}
+\caption{Fit Content adjusts Scale and Offset to show all nodes}
+\label{fig:fit-content}
+\end{figure}
+
+\section{Key Concepts}
+
+\subsection{The State Variables}
+
+The camera is defined by just two sets of numbers:
+\begin{enumerate}
+    \item \textbf{Scale (Zoom Level):} A multiplier.
+    \begin{itemize}
+        \item \texttt{1.0} = Actual size (100\%).
+        \item \texttt{0.5} = Half size (Zoomed out).
+        \item \texttt{2.0} = Double size (Zoomed in).
+    \end{itemize}
+    \item \textbf{Offset (Pan Position):} An \texttt{x, y} coordinate. This tells us how many pixels we shifted the canvas from the top-left corner.
+\end{enumerate}
+
+\subsection{The CSS Transform}
+
+Ultimately, this service produces a single string of text that the browser understands.
+It looks like this: \texttt{translate(100px, 50px) scale(1.5)}. This tells the browser: ``Move everything right 100px, down 50px, and make it 50\% bigger.''
+
+\subsection{The ``Pin'' (Zoom Point)}
+
+When you use a map app (like Google Maps) and scroll your mouse wheel, the map zooms \emph{towards your mouse cursor}. It feels like sticking a pin in the map at your mouse position; everything expands around that pin. This requires some clever math.
+
+\section{Under the Hood: The Flow}
+
+How does the application know to update the screen? Just like the \hyperref[chap:dataservice]{Central Data Store (DataService)}, the \texttt{ZoomService} triggers updates that other components listen to.
+
+\subsection{Sequence Diagram: Clicking ``Zoom In''}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=0.8cm, scale=0.85, transform shape]
+    % Participants
+    \node[seqparticipant] (User) {User};
+    \node[seqparticipant, right=1.2cm of User] (TB) {Toolbar};
+    \node[seqparticipant, right=1.2cm of TB] (ZS) {ZoomService};
+    \node[seqparticipant, right=1.2cm of ZS] (OBS) {Observables};
+    \node[seqparticipant, right=1.2cm of OBS] (V) {Visualizer};
+    
+    % Lifelines
+    \draw[dashed] (User.south) -- ++(0,-8cm);
+    \draw[dashed] (TB.south) -- ++(0,-8cm);
+    \draw[dashed] (ZS.south) -- ++(0,-8cm);
+    \draw[dashed] (OBS.south) -- ++(0,-8cm);
+    \draw[dashed] (V.south) -- ++(0,-8cm);
+    
+    % Messages
+    \draw[seqarrow] ([yshift=-1cm]User.south) -- node[above, font=\scriptsize] {Click (+)} ([yshift=-1cm]TB.south);
+    
+    \draw[seqarrow] ([yshift=-2cm]TB.south) -- node[above, font=\scriptsize] {zoomIn()} ([yshift=-2cm]ZS.south);
+    
+    \node[seqnote, right=0.1cm of ZS, yshift=-3cm] {Calculate new\\Scale: 1.0 $\rightarrow$ 1.1};
+    
+    \draw[seqarrow] ([yshift=-4.5cm]ZS.south) -- node[above, font=\scriptsize] {scaleSubject.next(1.1)} ([yshift=-4.5cm]OBS.south);
+    
+    \draw[seqarrow, dashed] ([yshift=-5.5cm]OBS.south) -- node[above, font=\scriptsize] {Update transform} ([yshift=-5.5cm]V.south);
+    
+    \draw[seqarrow] ([yshift=-7cm]V.south) -- node[above, font=\scriptsize] {Screen gets bigger} ([yshift=-7cm]User.south);
+\end{tikzpicture}
+\caption{Sequence Diagram: Zoom In via Toolbar Button}
+\label{fig:seq-zoom-in}
+\end{figure}
+
+\section{Deep Dive: The Code}
+
+Let's explore \texttt{src/app/tr-services/zoom.service.ts} to see how we build this camera.
+
+\subsection{Storage (The State)}
+
+We use \texttt{BehaviorSubject} (special Observables) to hold the current camera position. This allows other parts of the app to always know where the camera is.
+
+\begin{lstlisting}[language=TypeScript]
+export class ZoomService {
+    // Current Zoom level (starts at 1.0)
+    private scaleSubject = new BehaviorSubject<number>(1);
+    
+    // Current Pan position (starts at 0,0)
+    private offsetSubject = new BehaviorSubject<Point>({ x: 0, y: 0 });
+
+    // Public streams that components can listen to
+    public scale$ = this.scaleSubject.asObservable();
+    public offset$ = this.offsetSubject.asObservable();
+}
+\end{lstlisting}
+
+\subsection{The Combined Output (\texttt{transform\$})}
+
+The visualizer doesn't want to do math. It just wants a string to put into the HTML. We check both \texttt{scale} and \texttt{offset} and combine them into one string automatically.
+
+\begin{lstlisting}[language=TypeScript]
+// Combines the two streams into one CSS string
+public transform$: Observable<string> = combineLatest([
+    this.scale$,
+    this.offset$,
+]).pipe(
+    // Result: "translate(50 100) scale(1.5)"
+    map(([scale, offset]) => 
+        `translate(${offset.x} ${offset.y}) scale(${scale})`
+    )
+);
+\end{lstlisting}
+
+\subsection{Smart Zooming (\texttt{zoomToPoint})}
+
+When zooming, we don't just change the scale. We must also change the offset to keep the image stable.
+Imagine zooming towards a tree in a photo. The tree needs to stay in the same spot on your screen while the background expands.
+
+\begin{lstlisting}[language=TypeScript]
+private zoomToPoint(screenPoint: Point, targetScale: number): void {
+    const currentOffset = this.currentOffset;
+    const currentScale = this.currentScale;
+
+    // Math formula: Keep the 'screenPoint' stationary
+    const newOffsetX = screenPoint.x - 
+        (screenPoint.x - currentOffset.x) * (targetScale / currentScale);
+    const newOffsetY = screenPoint.y - 
+        (screenPoint.y - currentOffset.y) * (targetScale / currentScale);
+
+    // Update the state
+    this.offsetSubject.next({ x: newOffsetX, y: newOffsetY });
+    this.scaleSubject.next(targetScale);
+}
+\end{lstlisting}
+
+\subsection{Implementing ``Fit Content''}
+
+This is the most complex function, but logically it is simple steps.
+\begin{enumerate}
+    \item Get all Place/Transition positions.
+    \item Find the edges (Bounding Box).
+    \item Calculate how small the scale needs to be to fit that box in our window.
+\end{enumerate}
+
+\begin{lstlisting}[language=TypeScript]
+fitContent(viewportWidth: number, viewportHeight: number): void {
+    // Step 1: Find the edges of the drawing
+    const bbox = this.calculateContentBoundingBox();
+    if (!bbox) return; // Empty graph
+
+    const contentWidth = bbox.maxX - bbox.minX;
+    
+    // Step 2: Calculate scale ratio 
+    // Example: If content is 1000px and screen is 500px, scale is 0.5
+    const scaleX = viewportWidth / contentWidth;
+    let newScale = Math.min(scaleX, scaleY); // Fit both height and width
+
+    // Step 3: Apply the new zoom
+    this.scaleSubject.next(newScale);
+    // (Offset calculation omitted for brevity)
+}
+\end{lstlisting}
+
+\section{Solving the Mouse Coordinate Problem}
+
+There is a catch!
+
+If scale is \texttt{0.5} (zoomed out), and you move your mouse \texttt{100 pixels} on the screen, logically you have moved \texttt{200 pixels} in the zoomed-out world.
+
+If we don't account for this, placing a new node would be inaccurate. The node would appear in the wrong spot.
+
+We solve this with the \textbf{SvgCoordinatesService} (\texttt{src/app/tr-services/svg-coordinates-service.ts}). It injects the \texttt{ZoomService} to do the reverse math.
+
+\begin{lstlisting}[language=TypeScript]
+// Inside svg-coordinates-service.ts
+getRelativeEventCoords(event: MouseEvent, drawingArea: HTMLElement): Point {
+    // 1. Get raw pixel position from browser
+    let rawX = event.clientX - svgRect.left;
+
+    // 2. Adjust for the current Pan (Offset)
+    // 3. Divide by Scale (Zoom)
+    let scaledX = (rawX - this.zoomService.currentOffset.x) 
+                  / this.zoomService.currentScale;
+
+    // Result: The logic coordinate exactly under the mouse
+    return new Point(scaledX, scaledY);
+}
+\end{lstlisting}
+
+\section{Conclusion}
+
+The \textbf{ZoomService} acts as the lens of a camera.
+\begin{itemize}
+    \item It tracks \textbf{Scale} and \textbf{Offset}.
+    \item It generates the \textbf{CSS Transform} string for the visualizer.
+    \item It ensures mouse clicks map to the correct logical coordinates, no matter how zoomed in or out you are.
+    \item It powers the magical ``Fit Content'' button that saves users from getting lost in infinite space.
+\end{itemize}
+
+With this in place, our application is fully navigable. We can load data, see it, organize it, and move around it.
+
+However, currently, we are checking ``Which button is active?'' (Place tool vs Move tool) using simple variables. As our application grows, we need a robust way to manage the state of the User Interface (Toolbars, Sidebars, Active Modes).
+
+\textbf{Next Chapter:} \hyperref[chap:uiservice]{UI State Manager (UiService)}
+
+\chapter{UI State Manager (UiService)}
+\label{chap:uiservice}
+
+In the previous chapter, \hyperref[chap:zoom]{Camera Controller (ZoomService)}, we gave users the ability to pan and zoom around the canvas. We can now navigate the world we are building.
+
+But a modern application is more than just a canvas. It has modes. You might be \textbf{Building} a net, \textbf{Simulating} a token game, or \textbf{Analyzing} the math behind it. You also have tools: a cursor might be a ``Selector,'' a ``Delete Tool,'' or a ``Magic Wand.''
+
+How does the Toolbar talk to the Canvas? If you click ``Delete'' in the top menu, how does the canvas know that your next click should destroy an object?
+
+We need a central ``Remote Control.'' This is the \textbf{UiService}.
+
+\section{The Motivation: The ``Remote Control''}
+
+Imagine you are watching TV. The TV screen (The Visualizer) displays the picture, but it doesn't decide \emph{what} to show. You hold a remote control (The Toolbar) that tells the TV what to do.
+
+In our application:
+\begin{itemize}
+    \item \textbf{The Toolbar} sends signals (Channels/Volume).
+    \item \textbf{The UiService} is the infrared beam carrying the signal.
+    \item \textbf{The Visualizer} receives the signal and changes behavior.
+\end{itemize}
+
+\subsection{The Use Case: Switching Modes}
+
+\textbf{Goal:} The user moves from the \textbf{``Build''} tab (where they draw circles) to the \textbf{``Simulation''} tab (where they watch tokens move).
+
+\textbf{Action:} The drawing tools must disappear, and the ``Play/Pause'' buttons must appear.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=1.5cm]
+    % Toolbar
+    \node[component, minimum width=3cm] (toolbar) {Toolbar\\(Remote Control)};
+    
+    % UiService
+    \node[component, minimum width=3cm, right=2.5cm of toolbar, fill=orange!20] (ui) {UiService\\(Signal Carrier)};
+    
+    % Visualizer
+    \node[component, minimum width=3cm, right=2.5cm of ui] (vis) {Visualizer\\(TV Screen)};
+    
+    % Arrows
+    \draw[arrow] (toolbar) -- node[above, font=\scriptsize] {tab = Simulation} (ui);
+    \draw[arrow] (ui) -- node[above, font=\scriptsize] {tab\$ emits} (vis);
+    
+    % State boxes below
+    \node[rectangle, draw=blue!50, fill=blue!10, below=1cm of ui, minimum width=2cm, font=\small] (tab) {TabState};
+    \node[rectangle, draw=green!50, fill=green!10, left=0.5cm of tab, minimum width=2cm, font=\small] (btn) {ButtonState};
+    \node[rectangle, draw=red!50, fill=red!10, right=0.5cm of tab, minimum width=2cm, font=\small] (sim) {SimulationStep};
+    
+    \draw[dashed] (ui) -- (tab);
+    \draw[dashed] (ui) -- (btn);
+    \draw[dashed] (ui) -- (sim);
+\end{tikzpicture}
+\caption{UiService as Central Remote Control between Toolbar and Visualizer}
+\label{fig:uiservice-remote}
+\end{figure}
+
+\section{Key Concepts}
+
+\subsection{Tab State (The TV Channel)}
+
+The application has major modes, which we call \textbf{Tabs}.
+\begin{itemize}
+    \item \textbf{Build:} The edit mode.
+    \item \textbf{Simulation:} The playback mode.
+    \item \textbf{Analyze/Code:} Advanced modes.
+\end{itemize}
+
+Only one Tab can be active at a time. When the Tab changes, the entire interface rearranges itself.
+
+\subsection{Button State (The Active Tool)}
+
+Inside a specific channel, you have specific buttons.
+\begin{itemize}
+    \item \textbf{Move:} Standard cursor.
+    \item \textbf{Place:} Click to add a circle.
+    \item \textbf{Delete:} Click to remove an item.
+\end{itemize}
+
+\subsection{BehaviorSubjects (The Status LED)}
+
+Just like in previous chapters, we use \textbf{Observables}. Think of this as a status light on your dashboard.
+\begin{itemize}
+    \item If the \texttt{tab\$} light turns green, everyone knows we are in Simulation mode.
+    \item If the \texttt{button\$} light turns red, everyone knows the Delete tool is active.
+\end{itemize}
+
+\section{Using the UiService}
+
+Let's see how components use this remote control to solve our ``Switching Modes'' use case.
+
+\subsection{Step 1: Changing the Channel (Toolbar)}
+
+When the user clicks a tab in the top menu (\texttt{ButtonBarComponent}), we update the service.
+
+\begin{lstlisting}[language=TypeScript]
+// Inside button-bar.component.ts
+tabClicked(tabName: string) {
+    if (tabName === 'simulation') {
+        // Switch the channel to Simulation
+        this.uiService.tab = TabState.Simulation;
+        
+        // Clear any specific tool being held
+        this.uiService.button = null;
+    }
+}
+\end{lstlisting}
+
+\subsection{Step 2: Listening for Signals (Visualizer)}
+
+The visualizer needs to know what mode we are in so it can hide or show helper lines.
+
+\begin{lstlisting}[language=TypeScript]
+// Inside a component constructor
+constructor(public uiService: UiService) {}
+
+// Inside the HTML template
+<div *ngIf="uiService.tab === TabState.Build">
+   <!-- Only show these tools if we are Building -->
+   <button (click)="selectPlaceTool()">Add Place</button>
+</div>
+\end{lstlisting}
+
+\subsection{Step 3: Checking the Active Tool}
+
+When you click on the canvas, the visualizer asks the \texttt{UiService}: ``What tool is the user holding?''
+
+\begin{lstlisting}[language=TypeScript]
+// Inside the visualizer, handling a mouse click
+onCanvasClick() {
+    // Check the 'button' property on the service
+    if (this.uiService.button === ButtonState.Delete) {
+        this.deleteObjectUnderMouse();
+    } else {
+        this.selectObjectUnderMouse();
+    }
+}
+\end{lstlisting}
+
+\section{Under the Hood: The Logic}
+
+The \texttt{UiService} is a purely logical state container. It does not manipulate the DOM or draw SVG. It simply holds variables and shouts when they change.
+
+\subsection{Sequence Diagram: Creating a Place}
+
+Here is the flow of information when a user selects the ``Add Place'' tool and clicks the canvas.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=0.8cm, scale=0.85, transform shape]
+    % Participants
+    \node[seqparticipant] (User) {User};
+    \node[seqparticipant, right=1.3cm of User] (TB) {Toolbar};
+    \node[seqparticipant, right=1.3cm of TB] (UI) {UiService};
+    \node[seqparticipant, right=1.3cm of UI] (C) {Canvas};
+    
+    % Lifelines
+    \draw[dashed] (User.south) -- ++(0,-9cm);
+    \draw[dashed] (TB.south) -- ++(0,-9cm);
+    \draw[dashed] (UI.south) -- ++(0,-9cm);
+    \draw[dashed] (C.south) -- ++(0,-9cm);
+    
+    % Messages
+    \draw[seqarrow] ([yshift=-1cm]User.south) -- node[above, font=\scriptsize] {Clicks ``Add Place''} ([yshift=-1cm]TB.south);
+    
+    \draw[seqarrow] ([yshift=-2cm]TB.south) -- node[above, font=\scriptsize] {button = Place} ([yshift=-2cm]UI.south);
+    
+    \node[seqnote, right=0.1cm of UI, yshift=-2.8cm] {Notify:\\``Tool Changed!''};
+    
+    \draw[seqarrow] ([yshift=-4cm]User.south) -- node[above, font=\scriptsize] {Clicks whitespace} ([yshift=-4cm]C.south);
+    
+    \draw[seqarrow] ([yshift=-5cm]C.south) -- node[above, font=\scriptsize] {Check button?} ([yshift=-5cm]UI.south);
+    
+    \draw[seqarrow, dashed] ([yshift=-6cm]UI.south) -- node[above, font=\scriptsize] {Returns ``Place''} ([yshift=-6cm]C.south);
+    
+    \node[seqnote, right=0.1cm of C, yshift=-7cm] {Create new\\Circle logic};
+    
+    \draw[seqarrow] ([yshift=-8.5cm]C.south) -- node[above, font=\scriptsize] {Circle appears} ([yshift=-8.5cm]User.south);
+\end{tikzpicture}
+\caption{Sequence Diagram: Tool Selection and Place Creation}
+\label{fig:seq-tool-place}
+\end{figure}
+
+\section{Deep Dive: The Code}
+
+Let's look at \texttt{src/app/tr-services/ui.service.ts} to see how this simple state machine is built.
+
+\subsection{Managing Tabs (The Channels)}
+
+We use a private variable \texttt{\_tab} to store the value, and a \texttt{BehaviorSubject} to broadcast changes.
+
+\begin{lstlisting}[language=TypeScript]
+export class UiService {
+    // 1. Default start state is 'Build'
+    private _tab: TabState = TabState.Build;
+    
+    // 2. The Broadcast system
+    private _tab$ = new BehaviorSubject<TabState>(this._tab);
+    public tab$ = this._tab$.asObservable();
+
+    // 3. Setter: When you change the variable, we notify subscribers
+    public set tab(value: TabState) {
+        this._tab = value;
+        this._tab$.next(value); // Broadcast!
+    }
+}
+\end{lstlisting}
+
+\subsection{Managing Simulation Steps (The Timeline)}
+
+The \texttt{UiService} also acts as the scoreboard for the Simulation. It tracks which ``Step'' (or frame) of the movie we are currently watching.
+
+\begin{lstlisting}[language=TypeScript]
+// Tracks current progress (0 = Start, 10 = Step 10)
+private _currentSimulationStep$ = new BehaviorSubject<number>(0);
+
+// Public method to move the timeline
+setCurrentSimulationStep(step: number): void {
+    this._currentSimulationStep$.next(step);
+}
+
+// Public getter
+getCurrentSimulationStep(): number {
+    return this._currentSimulationStep$.getValue();
+}
+\end{lstlisting}
+
+\subsection{Simulation Modes (Auto vs Manual)}
+
+This service also tracks if the simulation is playing automatically (like a video) or if the user is manually clicking tokens (like a game).
+
+\begin{lstlisting}[language=TypeScript]
+// 'automatic' or 'manual'
+private _simulationMode$ = new BehaviorSubject<SimulationMode>('automatic');
+
+setSimulationMode(mode: SimulationMode): void {
+    // If switching TO manual, remember where we paused
+    if (mode === 'manual') {
+        this.lastAutomaticStep = this.getCurrentSimulationStep();
+    }
+    this._simulationMode$.next(mode);
+}
+\end{lstlisting}
+
+\textbf{Why save the step?} If you are watching a simulation and pause it to click around manually, you want the ``Resume'' button to pick up exactly where you left off, not restart from the beginning.
+
+\section{Conclusion}
+
+The \textbf{UiService} connects the disparate parts of our application.
+\begin{itemize}
+    \item It allows the \textbf{Toolbar} to influence the \textbf{Canvas}.
+    \item It allows different components to stay in sync (e.g., if you switch tabs, all tools reset).
+    \item It acts as the single source of truth for ``What is the user doing right now?''
+\end{itemize}
+
+Now that we have a fully controllable interface---we can load files, zoom, move nodes, and switch modes---it is time to implement the most complex feature of a Petri net application: \textbf{The Logic.}
+
+We need a service that understands the rules of the Token Game. It needs to calculate which transitions can fire and move the tokens from Place A to Place B.
+
+\textbf{Next Chapter:} \hyperref[chap:tokengame]{Simulation Engine (TokenGameService)}
+
+\chapter{Simulation Engine (TokenGameService)}
+\label{chap:tokengame}
+
+In the previous chapter, \hyperref[chap:uiservice]{UI State Manager (UiService)}, we built the ``Remote Control'' for our application. We can switch between ``Build Mode'' and ``Simulation Mode.''
+
+However, switching to Simulation Mode currently just changes the toolbar buttons. If you click on a Transition, nothing happens. The tokens sit still. The application has no idea how to actually play the game.
+
+We need a \textbf{Rulebook}. We need a service that enforces the mathematical logic of Petri nets. This is the \textbf{TokenGameService}.
+
+\section{The Motivation: The Rulebook}
+
+Imagine you are playing a board game like Chess or Monopoly.
+\begin{itemize}
+    \item \textbf{The Board:} \hyperref[chap:primitives]{Petri Net Primitives} (Places/Transitions).
+    \item \textbf{The Pieces:} Tokens.
+    \item \textbf{The Player:} You.
+\end{itemize}
+
+But who tells you if a move is legal? Who remembers where the pieces were before you knocked the board over?
+
+The \textbf{TokenGameService} has two jobs:
+\begin{enumerate}
+    \item \textbf{The Referee:} It decides if a Transition is allowed to ``Fire'' (execute).
+    \item \textbf{The Historian:} It records every move so you can ``Undo'' if you make a mistake.
+\end{enumerate}
+
+\subsection{The Use Case: ``Firing'' a Transition}
+
+\begin{itemize}
+    \item \textbf{Scenario:} We have a Place (Water) with 1 token connected to a Transition (Brew).
+    \item \textbf{Action:} The user clicks the ``Brew'' transition.
+    \item \textbf{Logic:} The service checks: ``Do we have water?'' (Yes). It subtracts 1 token from Water and adds 1 token to Coffee.
+    \item \textbf{Undo:} The user clicks ``Step Back.'' The token returns to the Water tank.
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=2.5cm]
+    % Before firing
+    \begin{scope}[xshift=0cm]
+        \node[place, label=above:{Water}] (p1) {1};
+        \node[transition, right=of p1, label=above:{Brew}] (t1) {};
+        \node[place, right=of t1, label=above:{Coffee}] (p2) {0};
+        \draw[arrow] (p1) -- (t1);
+        \draw[arrow] (t1) -- (p2);
+        \node[below=1cm of t1, font=\small] {Before: Water=1, Coffee=0};
+    \end{scope}
+    
+    % Arrow
+    \draw[-{Stealth[length=4mm]}, very thick] (5.5,0) -- (7,0) node[midway, above, font=\small] {Fire!};
+    
+    % After firing
+    \begin{scope}[xshift=9cm]
+        \node[place, label=above:{Water}] (p1b) {0};
+        \node[transition, right=of p1b, label=above:{Brew}, fill=green!30] (t1b) {};
+        \node[place, right=of t1b, label=above:{Coffee}] (p2b) {1};
+        \draw[arrow] (p1b) -- (t1b);
+        \draw[arrow] (t1b) -- (p2b);
+        \node[below=1cm of t1b, font=\small] {After: Water=0, Coffee=1};
+    \end{scope}
+\end{tikzpicture}
+\caption{Firing a Transition: Tokens move from input to output places}
+\label{fig:firing-transition}
+\end{figure}
+
+\section{Key Concepts}
+
+\subsection{Firing}
+
+In Petri net terms, \textbf{Firing} means a transition executes.
+\begin{enumerate}
+    \item \textbf{Consume:} It removes tokens from input places.
+    \item \textbf{Produce:} It adds tokens to output places.
+\end{enumerate}
+
+\subsection{The ``Game State''}
+
+The state of a Petri net is simply a snapshot of \textbf{where the tokens are right now}. It is a list:
+\begin{itemize}
+    \item Place A: 5 tokens
+    \item Place B: 0 tokens
+    \item Place C: 1 token
+\end{itemize}
+
+\subsection{History (The Stack)}
+
+To enable ``Undo,'' we use a \textbf{Stack} (Last-In, First-Out).
+\begin{itemize}
+    \item Every time you make a move, we take a photo of the board (Current State) and put it on top of a pile.
+    \item When you click \textbf{Undo}, we take the top photo and arrange the board to match it.
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=0.5cm]
+    % Stack visualization
+    \node[rectangle, draw, minimum width=2.5cm, minimum height=0.8cm, fill=blue!10] (s3) {State 3 (Current)};
+    \node[rectangle, draw, minimum width=2.5cm, minimum height=0.8cm, fill=blue!20, below=0.1cm of s3] (s2) {State 2};
+    \node[rectangle, draw, minimum width=2.5cm, minimum height=0.8cm, fill=blue!30, below=0.1cm of s2] (s1) {State 1};
+    \node[rectangle, draw, minimum width=2.5cm, minimum height=0.8cm, fill=blue!40, below=0.1cm of s1] (s0) {State 0 (Initial)};
+    
+    \node[left=1cm of s3, font=\small] {$\leftarrow$ Pop (Undo)};
+    \node[right=1cm of s3, font=\small] {Push (Fire) $\rightarrow$};
+    
+    \node[below=0.5cm of s0, font=\small] {History Stack (LIFO)};
+\end{tikzpicture}
+\caption{History Stack enables Undo functionality}
+\label{fig:history-stack}
+\end{figure}
+
+\section{Using the Service}
+
+Let's see how we use this engine to move tokens.
+
+\subsection{Step 1: Checking Rules}
+
+Before firing, we usually want to know if it's even possible.
+
+\begin{lstlisting}[language=TypeScript]
+// Inside a component
+checkIfCanFire(transition: Transition) {
+    // The Transition class itself knows if it has enough tokens
+    if (transition.isActive) {
+        console.log("Ready to brew!");
+        // We can safely call the service
+        this.tokenGameService.fire(transition);
+    }
+}
+\end{lstlisting}
+
+\subsection{Step 2: Firing (The Move)}
+
+When the user clicks, we tell the engine to execute the math.
+
+\begin{lstlisting}[language=TypeScript]
+// Perform the move
+this.tokenGameService.fire(myTransition);
+
+// Note: This modifies the 'token' counts inside the DataService directly.
+// The Visualizer will automatically update because it watches the DataService.
+\end{lstlisting}
+
+\subsection{Step 3: Time Travel (Undo)}
+
+If the user wants to go back.
+
+\begin{lstlisting}[language=TypeScript]
+// Go back one step
+this.tokenGameService.revertToPreviousState();
+
+// Reset to the very beginning (restart game)
+this.tokenGameService.resetGame();
+\end{lstlisting}
+
+\section{Under the Hood: The Flow}
+
+What happens when you click a transition? The service performs a ``Save, then Update'' operation.
+
+\subsection{Sequence Diagram: Firing Logic}
+
+Here is the lifecycle of a single move.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=0.8cm, scale=0.85, transform shape]
+    % Participants
+    \node[seqparticipant] (User) {User};
+    \node[seqparticipant, right=1.2cm of User] (TG) {TokenGame};
+    \node[seqparticipant, right=1.2cm of TG] (T) {Transition};
+    \node[seqparticipant, right=1.2cm of T] (P) {Place};
+    \node[seqparticipant, right=1.2cm of P] (H) {History};
+    
+    % Lifelines
+    \draw[dashed] (User.south) -- ++(0,-10cm);
+    \draw[dashed] (TG.south) -- ++(0,-10cm);
+    \draw[dashed] (T.south) -- ++(0,-10cm);
+    \draw[dashed] (P.south) -- ++(0,-10cm);
+    \draw[dashed] (H.south) -- ++(0,-10cm);
+    
+    % Messages
+    \draw[seqarrow] ([yshift=-1cm]User.south) -- node[above, font=\scriptsize] {fire(transition)} ([yshift=-1cm]TG.south);
+    
+    \draw[seqarrow] ([yshift=-2cm]TG.south) -- node[above, font=\scriptsize] {isActive?} ([yshift=-2cm]T.south);
+    
+    \draw[seqarrow, dashed] ([yshift=-2.8cm]T.south) -- node[above, font=\scriptsize] {true} ([yshift=-2.8cm]TG.south);
+    
+    \draw[seqarrow] ([yshift=-4cm]TG.south) -- node[above, font=\scriptsize] {push(state)} ([yshift=-4cm]H.south);
+    \node[seqnote, right=0.1cm of H, yshift=-4.5cm] {Save ``Before''};
+    
+    \draw[seqarrow] ([yshift=-6cm]TG.south) -- node[above, font=\scriptsize] {Subtract input tokens} ([yshift=-6cm]P.south);
+    
+    \draw[seqarrow] ([yshift=-7cm]TG.south) -- node[above, font=\scriptsize] {Add output tokens} ([yshift=-7cm]P.south);
+    
+    \node[seqnote, right=0.1cm of P, yshift=-8cm] {Data Changed!};
+    
+    \draw[seqarrow, dashed] ([yshift=-9cm]P.south) -- node[above, font=\scriptsize] {Screen updates} ([yshift=-9cm]User.south);
+\end{tikzpicture}
+\caption{Sequence Diagram: Token Game Firing Logic}
+\label{fig:seq-fire}
+\end{figure}
+
+\section{Deep Dive: The Code}
+
+Let's look into \texttt{src/app/tr-services/token-game.service.ts}.
+
+\subsection{The History Storage}
+
+We need to remember the token count for every single place. We use a \texttt{Map} where the key is the \texttt{Place} object, and the value is the \texttt{number} of tokens.
+
+\begin{lstlisting}[language=TypeScript]
+export class TokenGameService {
+    // A stack (array) of states. 
+    // Each state is a Map of Place -> TokenCount
+    private _tokenHistory: Map<Place, number>[] = [];
+
+    constructor(protected dataService: DataService) {}
+    // ...
+}
+\end{lstlisting}
+
+\subsection{Capturing a Snapshot}
+
+Before we change anything, we walk through every place in the \hyperref[chap:dataservice]{Central Data Store (DataService)} and write down how many tokens it has.
+
+\begin{lstlisting}[language=TypeScript]
+private getGameState(): Map<Place, number> {
+    const tokenMapping = new Map<Place, number>();
+    
+    // Loop through all existing places
+    for (let place of this.dataService.getPlaces()) {
+        // Save the pair: [Place Object, 3 tokens]
+        tokenMapping.set(place, place.token);
+    }
+    return tokenMapping;
+}
+\end{lstlisting}
+
+\subsection{The Fire Method (The Core Logic)}
+
+This is the heart of the engine. Notice how it saves the state \emph{before} doing the math.
+
+\begin{lstlisting}[language=TypeScript]
+fire(transition: Transition) {
+    // 1. Check the rule
+    if (transition.isActive) {
+        
+        // 2. Save history for Undo
+        this.saveCurrentGameState();
+
+        // 3. Subtract tokens from inputs (Pre-places)
+        for (let arc of transition.preArcs) {
+            // Note: arc.weight is usually stored as negative for inputs
+            (arc.from as Place).token += arc.weight;
+        }
+        
+        // 4. Add tokens to outputs (Post-places)
+        for (let arc of transition.postArcs) {
+            (arc.to as Place).token += arc.weight;
+        }
+    }
+}
+\end{lstlisting}
+
+\textbf{Why \texttt{+= arc.weight} for subtraction?}
+In \hyperref[chap:primitives]{Chapter 1}, we learned that input arcs store their weight as a negative number (e.g., $-1$). So $5 + (-1) = 4$. This makes the math elegantly simple.
+
+\subsection{Implementing Undo (\texttt{revertToPreviousState})}
+
+To undo, we pop the last snapshot off the stack and force the current places to match those numbers.
+
+\begin{lstlisting}[language=TypeScript]
+revertToPreviousState() {
+    // 1. Get the last saved photo
+    const state = this._tokenHistory.pop();
+    
+    // 2. If history is empty, do nothing
+    if (!state) return;
+
+    // 3. Overwrite current reality with the saved photo
+    this.setGameState(state);
+}
+\end{lstlisting}
+
+\subsection{Applying the State}
+
+This helper function takes a snapshot and applies it to the living objects.
+
+\begin{lstlisting}[language=TypeScript]
+private setGameState(state: Map<Place, number>) {
+    for (let place of this.dataService.getPlaces()) {
+        const tokens = state.get(place);
+        
+        // Safety check: ensure the place still exists
+        if (tokens !== undefined) {
+            place.token = tokens;
+        }
+    }
+}
+\end{lstlisting}
+
+\section{Conclusion}
+
+The \textbf{TokenGameService} brings our static diagrams to life.
+\begin{itemize}
+    \item It acts as the \textbf{Referee}, ensuring only valid moves occur.
+    \item It acts as the \textbf{Time Machine}, saving snapshots of the world before every move so we can undo them.
+    \item It directly manipulates the tokens in the \texttt{DataService}, which causes the \texttt{PetriNetComponent} to redraw the screen instantly.
+\end{itemize}
+
+We now have a fully functional application! We can draw, edit, zoom, save, and manually play the token game.
+
+But... manual playing is slow. What if we want to ask a computer: ``Is there a path from State A to State B?'' or ``Find the shortest route to finish the process''? For this, we need to connect our frontend to a powerful backend algorithm.
+
+\textbf{Next Chapter:} \hyperref[chap:planning]{Backend Integrator (PlanningService)}
+
+\chapter{Backend Integrator (PlanningService)}
+\label{chap:planning}
+
+In the previous chapter, \hyperref[chap:tokengame]{Simulation Engine (TokenGameService)}, we built a logic engine that runs directly inside your browser. It allows you to manually click transitions and play the ``Token Game.''
+
+But there is a limit. Your browser is great for drawing and simple logic, but it isn't a supercomputer.
+
+What if you need to simulate a workflow 10,000 times to maximize efficiency? What if you need to calculate complex mathematical reachability graphs? If we tried to do this in the visualization loop, your browser would freeze and crash.
+
+We need to send this heavy work to a dedicated server. We need the \textbf{PlanningService}.
+
+\section{The Motivation: The ``Phone Line''}
+
+Think of your application like a \textbf{Restaurant}.
+\begin{itemize}
+    \item \textbf{The Frontend (Your App):} This is the Dining Area. It looks nice, handles menus (UI), and seats guests (Layout).
+    \item \textbf{The Backend (Server):} This is the Kitchen. It is noisy, hot, and full of heavy machinery to cook the food.
+\end{itemize}
+
+The Waiter (Frontend) doesn't cook the steak at the table. The Waiter takes the order, sends it to the kitchen, and waits for the finished plate to come back.
+
+The \textbf{PlanningService} is that connection between the Dining Area and the Kitchen.
+
+\subsection{The Use Case: ``Heavy Simulation''}
+
+\textbf{Goal:} The user has drawn a complex Offshore Wind Farm logistics model. They want to know: ``If I run this for 1 year, how much money do I lose?''
+\begin{enumerate}
+    \item \textbf{Action:} User clicks ``Run Simulation.''
+    \item \textbf{Process:} The app bundles the Petri net into a file, uploads it to the backend server, and waits.
+    \item \textbf{Result:} The server returns a JSON report with raw data, which the frontend displays.
+\end{enumerate}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=2cm]
+    % Frontend (Dining Area)
+    \node[component, minimum width=3cm, fill=blue!10, align=center] (frontend) {Frontend\\(Dining Area)};
+    
+    % Internet
+    \node[rectangle, draw=gray, fill=gray!10, minimum width=2cm, right=2cm of frontend, align=center] (internet) {Internet\\(Phone Line)};
+    
+    % Backend (Kitchen)
+    \node[component, minimum width=3cm, fill=red!10, right=2cm of internet, align=center] (backend) {Backend\\(Kitchen)};
+    
+    % Arrows
+    \draw[arrow] (frontend) -- node[above, font=\scriptsize] {POST /sim} node[below, font=\scriptsize] {PNML File} (internet);
+    \draw[arrow] (internet) -- (backend);
+    \draw[arrow, dashed] (backend) -- node[above, font=\scriptsize] {JSON Result} (internet);
+    \draw[arrow, dashed] (internet) -- (frontend);
+    
+    % Labels below
+    \node[below=0.5cm of frontend, font=\small, align=center] {UI, Layout,\\Light Logic};
+    \node[below=0.5cm of backend, font=\small, align=center] {Heavy Math,\\10,000 Simulations};
+\end{tikzpicture}
+\caption{PlanningService: The Phone Line between Frontend and Backend}
+\label{fig:planning-service}
+\end{figure}
+
+\section{Key Concepts}
+
+\subsection{HTTP Requests (GET and POST)}
+
+This is how the web talks.
+\begin{itemize}
+    \item \textbf{GET:} ``Hey Server, give me the default settings.'' (Like asking for a menu).
+    \item \textbf{POST:} ``Hey Server, here is a file. Process it and tell me the answer.'' (Like submitting an order).
+\end{itemize}
+
+\subsection{Asynchronous (The Waiting Game)}
+
+When you order food, you don't freeze like a statue until it arrives. You keep chatting.
+Similarly, our requests are \textbf{Asynchronous}. We send the request, let the user keep moving the mouse, and when the server replies 2 seconds later, we handle the result.
+
+\subsection{FormData (The Envelope)}
+
+To send a file (like our \texttt{.pnml} model) across the internet, we can't just send text. We wrap it in a special digital envelope called \texttt{FormData}. This allows us to attach files just like an email attachment.
+
+\section{Using the Integrator}
+
+Let's look at how we solve the ``Heavy Simulation'' use case.
+
+\subsection{Step 1: Preparing the Data}
+
+First, we need the text of our Petri net. We use the logic from \hyperref[chap:pnmlservice]{PNML/XML Translator (PnmlService)} to generate the string.
+
+\begin{lstlisting}[language=TypeScript]
+// Inside a component (e.g., ParameterInputComponent)
+const pnmlString = this.pnmlService.writePNMLToString();
+
+// Define how many times to run the sim
+const runs = 100;
+\end{lstlisting}
+
+\subsection{Step 2: Calling the Service}
+
+We inject the \texttt{PlanningService} and ask it to send the data. Notice we are sending a \textbf{String}, and the service converts it to a file automatically.
+
+\begin{lstlisting}[language=TypeScript]
+// Call the method
+this.planningService.runSimpleSimulationFromString(pnmlString, runs)
+    .subscribe({
+        next: (result) => {
+             console.log("Success! The server replied:", result);
+             this.showResults(result);
+        },
+        error: (err) => {
+             console.error("The kitchen is on fire!", err);
+        }
+    });
+\end{lstlisting}
+
+\textbf{What happens?} The \texttt{.subscribe()} part is crucial. It tells the app: ``Send the message now, and wake me up when the answer arrives.''
+
+\section{Under the Hood: The Communication Flow}
+
+What happens in those few seconds between clicking ``Run'' and seeing the result?
+
+\begin{enumerate}
+    \item \textbf{Frontend:} Wraps the XML string into a virtual file.
+    \item \textbf{Network:} Travels across the internet to the URL (e.g., \texttt{api/simulation}).
+    \item \textbf{Backend:} The Java/Python server parses the file, runs the heavy math, and generates a JSON response.
+    \item \textbf{Frontend:} Receives the JSON and updates the UI status message.
+\end{enumerate}
+
+\subsection{Sequence Diagram: Running a Simulation}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=0.8cm, scale=0.8, transform shape]
+    % Participants
+    \node[seqparticipant] (UI) {Component};
+    \node[seqparticipant, right=1.2cm of UI] (PS) {PlanningService};
+    \node[seqparticipant, right=1.2cm of PS] (WWW) {Internet};
+    \node[seqparticipant, right=1.2cm of WWW] (BE) {Backend};
+    
+    % Lifelines
+    \draw[dashed] (UI.south) -- ++(0,-11cm);
+    \draw[dashed] (PS.south) -- ++(0,-11cm);
+    \draw[dashed] (WWW.south) -- ++(0,-11cm);
+    \draw[dashed] (BE.south) -- ++(0,-11cm);
+    
+    % Messages
+    \draw[seqarrow] ([yshift=-1cm]UI.south) -- node[above, font=\scriptsize] {runSimulation(xml)} ([yshift=-1cm]PS.south);
+    
+    \node[seqnote, right=0.1cm of PS, yshift=-2cm] {String $\rightarrow$ File\\Create FormData};
+    
+    \draw[seqarrow] ([yshift=-3.5cm]PS.south) -- node[above, font=\scriptsize] {HTTP POST /sim} ([yshift=-3.5cm]WWW.south);
+    
+    \draw[seqarrow] ([yshift=-4.5cm]WWW.south) -- node[above, font=\scriptsize] {Transfer...} ([yshift=-4.5cm]BE.south);
+    
+    \node[seqnote, right=0.1cm of BE, yshift=-5.5cm] {Heavy CPU\\Calculations};
+    
+    \draw[seqarrow, dashed] ([yshift=-7cm]BE.south) -- node[above, font=\scriptsize] {JSON Result} ([yshift=-7cm]WWW.south);
+    
+    \draw[seqarrow, dashed] ([yshift=-8cm]WWW.south) -- node[above, font=\scriptsize] {Response 200 OK} ([yshift=-8cm]PS.south);
+    
+    \draw[seqarrow, dashed] ([yshift=-9cm]PS.south) -- node[above, font=\scriptsize] {emit(result)} ([yshift=-9cm]UI.south);
+    
+    \node[seqnote, right=0.1cm of UI, yshift=-10cm] {status = ``Success''};
+\end{tikzpicture}
+\caption{Sequence Diagram: Running a Backend Simulation}
+\label{fig:seq-planning}
+\end{figure}
+
+\section{Deep Dive: The Code}
+
+Let's look at \texttt{src/app/tr-services/planning.service.ts} to see how the ``Phone Line'' is constructed.
+
+\subsection{Setup and Environment}
+
+We don't hardcode the server address (like \texttt{localhost}). We use an environment variable so the app works in development and production.
+
+\begin{lstlisting}[language=TypeScript]
+@Injectable({ providedIn: 'root' })
+export class PlanningService {
+    // Construct the phone number from configuration
+    private simpleSimApiUrl = 
+        `${environment.backendApiUrl}/simulation-petri-nets/simple-sim`;
+
+    constructor(private http: HttpClient) { }
+}
+\end{lstlisting}
+
+\subsection{The Simulation Call (\texttt{runSimpleSimulation})}
+
+This is the most important method. It prepares the ``Envelope'' (\texttt{FormData}). It accepts a real JavaScript \texttt{File} object.
+
+\begin{lstlisting}[language=TypeScript]
+runSimpleSimulation(pnmlFile: File, runs: number = 1): Observable<any> {
+    // 1. Create the envelope
+    const formData = new FormData();
+    
+    // 2. Stuff the file and parameters inside
+    formData.append('pnml_model', pnmlFile, pnmlFile.name);
+    formData.append('num_runs', runs.toString());
+
+    // 3. Send via HTTP POST
+    return this.http.post<any>(this.simpleSimApiUrl, formData)
+        .pipe(
+            // 4. Attach a safety net for errors
+            catchError(this.handleError)
+        );
+}
+\end{lstlisting}
+
+\subsection{The Helper (\texttt{runSimpleSimulationFromString})}
+
+Often, the file doesn't exist on the user's hard drive; it exists in the browser's memory (because the user just drew it). This helper converts the string to a file on the fly.
+
+\begin{lstlisting}[language=TypeScript]
+runSimpleSimulationFromString(content: string, runs: number = 1): Observable<any> {
+    // Create a virtual file from the text string
+    const blob = new Blob([content], { type: 'application/xml' });
+    const file = new File([blob], 'current_model.pnml');
+
+    // Reuse the main method
+    return this.runSimpleSimulation(file, runs);
+}
+\end{lstlisting}
+
+\subsection{Fetching Defaults (\texttt{getDefaults})}
+
+Sometimes we just need to read data (GET), like asking the server ``What are valid parameters?''.
+
+\begin{lstlisting}[language=TypeScript]
+getDefaults(): Observable<any> {
+    // Simple GET request
+    return this.http.get<any>(`${this.apiUrl}/defaults`)
+        .pipe(catchError(this.handleError));
+}
+\end{lstlisting}
+
+\subsection{Error Handling (\texttt{handleError})}
+
+If the server crashes or the internet disconnects, we don't want the user to see a blank screen. We catch the error and format a nice message.
+
+\begin{lstlisting}[language=TypeScript]
+private handleError(error: HttpErrorResponse) {
+    let msg = 'Unknown Error';
+    
+    if (error.status === 0) {
+        msg = 'Network Error: Is the server running?';
+    } else {
+        msg = `Server Error (Code ${error.status}): ${error.message}`;
+    }
+    
+    console.error(msg);
+    return throwError(() => new Error(msg));
+}
+\end{lstlisting}
+
+\section{Integration: The ``Parameter Input'' Form}
+
+Included in the project is \texttt{parameter-input.component.ts}. This is the UI form where the user types ``Runs: 100''.
+
+It connects to the \texttt{PlanningService} in its \texttt{runSimulation} method.
+
+\begin{lstlisting}[language=TypeScript]
+// Inside parameter-input.component.ts
+
+runSimulation(): void {
+    this.isLoadingSimulation = true;
+
+    // 1. Call the service
+    this.planningService.runPlanning(planningData)
+        .pipe(finalize(() => {
+             // This runs whether success or fail (turn off spinner)
+             this.isLoadingSimulation = false;
+        }))
+        .subscribe({
+            next: (response) => {
+                this.statusMessage = "Simulation Complete!";
+            },
+            error: (err) => {
+                this.statusMessage = "Error: " + err.message;
+            }
+        });
+}
+\end{lstlisting}
+
+\textbf{What is \texttt{finalize}?} It's a handy operator that ensures your ``Loading...'' spinner stops spinning, even if the request executes successfully or fails miserably.
+
+\section{Conclusion}
+
+The \textbf{PlanningService} is the gateway to power.
+
+\begin{itemize}
+    \item It handles \textbf{HTTP Communication} with the backend.
+    \item It manages \textbf{File Uploads} via \texttt{FormData}.
+    \item It provides \textbf{Observables} so the UI can stay responsive while waiting.
+    \item It enables \textbf{Isomorphic Simulation}: We can run simple tests in the browser (\hyperref[chap:tokengame]{TokenGameService}) or massive simulations on the server using the exact same logical model.
+\end{itemize}
+
+\vspace{1cm}
+\begin{center}
+\rule{0.8\textwidth}{0.4pt}
+\end{center}
+\vspace{0.5cm}
+
+\textbf{Congratulations!} You have completed the \textbf{PNML\_Frontend} manual series.
+
+You now understand the full stack of the application:
+\begin{enumerate}
+    \item \textbf{Primitives:} The atoms (Place, Transition, Arc).
+    \item \textbf{DataService:} The central brain.
+    \item \textbf{Visualizer:} The artist.
+    \item \textbf{PnmlService:} The translator.
+    \item \textbf{Graph Layout:} The architect.
+    \item \textbf{Interaction/Zoom:} The controls.
+    \item \textbf{Ui/TokenGame:} The logic.
+    \item \textbf{PlanningService:} The bridge to the backend.
+\end{enumerate}
+
+You are now ready to extend the application, add new simulation types, or design your own custom Petri net tools!
 
 \end{document}

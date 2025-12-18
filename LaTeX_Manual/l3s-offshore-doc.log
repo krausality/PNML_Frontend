@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.7.31)  27 NOV 2025 13:34
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.7.31)  18 DEC 2025 01:17
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -80,50 +80,6 @@ Package babel Info: Hyphen rules for 'australian' set to \l@ukenglish
 Package babel Info: Hyphen rules for 'newzealand' set to \l@ukenglish
 (babel)             (\language73). Reported on input line 108.
 ))
-(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/listings\listings.sty
-(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval.sty
-Package: keyval 2022/05/29 v1.15 key=value parser (DPC)
-\KV@toks@=\toks19
-)
-\lst@mode=\count286
-\lst@gtempboxa=\box53
-\lst@token=\toks20
-\lst@length=\count287
-\lst@currlwidth=\dimen150
-\lst@column=\count288
-\lst@pos=\count289
-\lst@lostspace=\dimen151
-\lst@width=\dimen152
-\lst@newlines=\count290
-\lst@lineno=\count291
-\lst@maxwidth=\dimen153
-
-(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstpatch.sty
-File: lstpatch.sty 2024/09/23 1.10c (Carsten Heinz)
-)
-(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstmisc.sty
-File: lstmisc.sty 2024/09/23 1.10c (Carsten Heinz)
-\c@lstnumber=\count292
-\lst@skipnumbers=\count293
-\lst@framebox=\box54
-)
-(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/listings\listings.cfg
-File: listings.cfg 2024/09/23 1.10c listings configuration
-))
-Package: listings 2024/09/23 1.10c (Carsten Heinz)
-
-(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amssymb.sty
-Package: amssymb 2013/01/14 v3.01 AMS font symbols
-
-(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amsfonts.sty
-Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
-\@emptytoks=\toks21
-\symAMSa=\mathgroup4
-\symAMSb=\mathgroup5
-LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
-LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
-(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
-))
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsmath.sty
 Package: amsmath 2025/06/16 v2.17y AMS math features
 \@mathmargin=\skip51
@@ -134,67 +90,82 @@ Package: amstext 2024/11/17 v2.01 AMS text
 
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsgen.sty
 File: amsgen.sty 1999/11/30 v2.0 generic functions
-\@emptytoks=\toks22
-\ex@=\dimen154
+\@emptytoks=\toks19
+\ex@=\dimen150
 ))
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsbsy.sty
 Package: amsbsy 1999/11/29 v1.2d Bold Symbols
-\pmbraise@=\dimen155
+\pmbraise@=\dimen151
 )
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsopn.sty
 Package: amsopn 2022/04/08 v2.04 operator names
 )
-\inf@bad=\count294
+\inf@bad=\count286
 LaTeX Info: Redefining \frac on input line 233.
-\uproot@=\count295
-\leftroot@=\count296
+\uproot@=\count287
+\leftroot@=\count288
 LaTeX Info: Redefining \overline on input line 398.
 LaTeX Info: Redefining \colon on input line 409.
-\classnum@=\count297
-\DOTSCASE@=\count298
+\classnum@=\count289
+\DOTSCASE@=\count290
 LaTeX Info: Redefining \ldots on input line 495.
 LaTeX Info: Redefining \dots on input line 498.
 LaTeX Info: Redefining \cdots on input line 619.
-\Mathstrutbox@=\box55
-\strutbox@=\box56
+\Mathstrutbox@=\box53
+\strutbox@=\box54
 LaTeX Info: Redefining \big on input line 721.
 LaTeX Info: Redefining \Big on input line 722.
 LaTeX Info: Redefining \bigg on input line 723.
 LaTeX Info: Redefining \Bigg on input line 724.
-\big@size=\dimen156
+\big@size=\dimen152
 LaTeX Font Info:    Redeclaring font encoding OML on input line 742.
 LaTeX Font Info:    Redeclaring font encoding OMS on input line 743.
-\macc@depth=\count299
+\macc@depth=\count291
 LaTeX Info: Redefining \bmod on input line 904.
 LaTeX Info: Redefining \pmod on input line 909.
 LaTeX Info: Redefining \smash on input line 939.
 LaTeX Info: Redefining \relbar on input line 969.
 LaTeX Info: Redefining \Relbar on input line 970.
-\c@MaxMatrixCols=\count300
+\c@MaxMatrixCols=\count292
 \dotsspace@=\muskip17
-\c@parentequation=\count301
-\dspbrk@lvl=\count302
-\tag@help=\toks23
-\row@=\count303
-\column@=\count304
-\maxfields@=\count305
-\andhelp@=\toks24
-\eqnshift@=\dimen157
-\alignsep@=\dimen158
-\tagshift@=\dimen159
-\tagwidth@=\dimen160
-\totwidth@=\dimen161
-\lineht@=\dimen162
-\@envbody=\toks25
+\c@parentequation=\count293
+\dspbrk@lvl=\count294
+\tag@help=\toks20
+\row@=\count295
+\column@=\count296
+\maxfields@=\count297
+\andhelp@=\toks21
+\eqnshift@=\dimen153
+\alignsep@=\dimen154
+\tagshift@=\dimen155
+\tagwidth@=\dimen156
+\totwidth@=\dimen157
+\lineht@=\dimen158
+\@envbody=\toks22
 \multlinegap=\skip52
 \multlinetaggap=\skip53
-\mathdisplay@stack=\toks26
+\mathdisplay@stack=\toks23
 LaTeX Info: Redefining \[ on input line 2949.
 LaTeX Info: Redefining \] on input line 2950.
 )
+(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amssymb.sty
+Package: amssymb 2013/01/14 v3.01 AMS font symbols
+
+(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amsfonts.sty
+Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
+))
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphicx.sty
 Package: graphicx 2024/12/31 v1.2e Enhanced LaTeX Graphics (DPC,SPQR)
 
+(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval.sty
+Package: keyval 2022/05/29 v1.15 key=value parser (DPC)
+\KV@toks@=\toks24
+)
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphics.sty
 Package: graphics 2024/08/06 v1.4g Standard LaTeX Graphics (DPC,SPQR)
 
@@ -208,15 +179,10 @@ Package graphics Info: Driver file: pdftex.def on input line 106.
  (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/graphics-def\pdftex.def
 File: pdftex.def 2024/04/13 v1.2c Graphics/color driver for pdftex
 ))
-\Gin@req@height=\dimen163
-\Gin@req@width=\dimen164
-) (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/url\url.sty
-\Urlmuskip=\muskip18
-Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
-)
-(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hyperref.sty
+\Gin@req@height=\dimen159
+\Gin@req@width=\dimen160
+) (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hyperref.sty
 Package: hyperref 2025-07-12 v7.01o Hypertext links for LaTeX
-
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/generic/iftex\iftex.sty
 Package: iftex 2024/12/12 v1.0g TeX engine tests
 )
@@ -259,18 +225,18 @@ Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/kvoptions\kvoptions.sty
 Package: kvoptions 2022-06-15 v3.15 Key value format for package options (HO)
 ))
-\c@section@level=\count306
+\c@section@level=\count298
 ) (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/etoolbox\etoolbox.sty
 Package: etoolbox 2025/02/11 v2.5l e-TeX tools for LaTeX (JAW)
-\etb@tempcnta=\count307
+\etb@tempcnta=\count299
 )
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\stringenc.sty
 Package: stringenc 2019/11/29 v1.12 Convert strings between diff. encodings (HO
 )
 )
-\@linkdim=\dimen165
-\Hy@linkcounter=\count308
-\Hy@pagecounter=\count309
+\@linkdim=\dimen161
+\Hy@linkcounter=\count300
+\Hy@pagecounter=\count301
  (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\pd1enc.def
 File: pd1enc.def 2025-07-12 v7.01o Hyperref: PDFDocEncoding definition (HO)
 Now handling font encoding PD1 ...
@@ -279,7 +245,7 @@ Now handling font encoding PD1 ...
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/generic/intcalc\intcalc.sty
 Package: intcalc 2019/12/15 v1.3 Expandable calculations with integers (HO)
 )
-\Hy@SavedSpaceFactor=\count310
+\Hy@SavedSpaceFactor=\count302
 
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\puenc.def
 File: puenc.def 2025-07-12 v7.01o Hyperref: PDF Unicode definition (HO)
@@ -293,9 +259,14 @@ Package hyperref Info: Plain pages OFF on input line 4210.
 Package hyperref Info: Backreferencing OFF on input line 4215.
 Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
 Package hyperref Info: Bookmarks ON on input line 4462.
-\c@Hy@tempcnt=\count311
+\c@Hy@tempcnt=\count303
+
+(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/url\url.sty
+\Urlmuskip=\muskip18
+Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
+)
 LaTeX Info: Redefining \url on input line 4801.
-\XeTeXLinkMargin=\dimen166
+\XeTeXLinkMargin=\dimen162
 
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/generic/bitset\bitset.sty
 Package: bitset 2019/12/09 v1.3 Handle bit-vector datatype (HO)
@@ -305,9 +276,9 @@ ty
 Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO
 )
 ))
-\Fld@menulength=\count312
-\Field@Width=\dimen167
-\Fld@charsize=\dimen168
+\Fld@menulength=\count304
+\Field@Width=\dimen163
+\Fld@charsize=\dimen164
 Package hyperref Info: Hyper figures OFF on input line 6078.
 Package hyperref Info: Link nesting OFF on input line 6083.
 Package hyperref Info: Hyper index ON on input line 6086.
@@ -315,16 +286,16 @@ Package hyperref Info: backreferencing OFF on input line 6093.
 Package hyperref Info: Link coloring OFF on input line 6098.
 Package hyperref Info: Link coloring with OCG OFF on input line 6103.
 Package hyperref Info: PDF/A mode OFF on input line 6108.
-\Hy@abspage=\count313
-\c@Item=\count314
-\c@Hfootnote=\count315
+\Hy@abspage=\count305
+\c@Item=\count306
+\c@Hfootnote=\count307
 )
 Package hyperref Info: Driver (autodetected): hpdftex.
 
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hpdftex.def
 File: hpdftex.def 2025-07-12 v7.01o Hyperref driver for pdfTeX
-\Fld@listcount=\count316
-\c@bookmark@seq@number=\count317
+\Fld@listcount=\count308
+\c@bookmark@seq@number=\count309
 
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/rerunfilecheck\rerunfilec
 heck.sty
@@ -338,9 +309,6 @@ Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 84.
 )
 \Hy@SectionHShift=\skip54
-)
-(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/tools\xspace.sty
-Package: xspace 2014/10/28 v1.13 Space after command names (DPC,MH)
 )
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/xcolor\xcolor.sty
 Package: xcolor 2024/09/29 v3.02 LaTeX color extensions (UK)
@@ -361,61 +329,70 @@ Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1370.
 Package xcolor Info: Model `Gray' substituted by `gray' on input line 1371.
 Package xcolor Info: Model `wave' substituted by `hsb' on input line 1372.
 )
+(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/listings\listings.sty
+\lst@mode=\count310
+\lst@gtempboxa=\box55
+\lst@token=\toks25
+\lst@length=\count311
+\lst@currlwidth=\dimen165
+\lst@column=\count312
+\lst@pos=\count313
+\lst@lostspace=\dimen166
+\lst@width=\dimen167
+\lst@newlines=\count314
+\lst@lineno=\count315
+\lst@maxwidth=\dimen168
+
+(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstpatch.sty
+File: lstpatch.sty 2024/09/23 1.10c (Carsten Heinz)
+)
+(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstmisc.sty
+File: lstmisc.sty 2024/09/23 1.10c (Carsten Heinz)
+\c@lstnumber=\count316
+\lst@skipnumbers=\count317
+\lst@framebox=\box56
+)
+(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/listings\listings.cfg
+File: listings.cfg 2024/09/23 1.10c listings configuration
+))
+Package: listings 2024/09/23 1.10c (Carsten Heinz)
+
+(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/enumitem\enumitem.sty
+Package: enumitem 2025/02/06 v3.11 Customized lists
+\labelindent=\skip55
+\enit@outerparindent=\dimen169
+\enit@toks=\toks26
+\enit@inbox=\box57
+\enit@count@id=\count318
+\enitdp@description=\count319
+)
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/float\float.sty
 Package: float 2001/11/08 v1.3d Float enhancements (AL)
-\c@float@type=\count318
+\c@float@type=\count320
 \float@exts=\toks27
-\float@box=\box57
+\float@box=\box58
 \@float@everytoks=\toks28
-\@floatcapt=\box58
+\@floatcapt=\box59
 )
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/booktabs\booktabs.sty
 Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
-\heavyrulewidth=\dimen169
-\lightrulewidth=\dimen170
-\cmidrulewidth=\dimen171
-\belowrulesep=\dimen172
-\belowbottomsep=\dimen173
-\aboverulesep=\dimen174
-\abovetopsep=\dimen175
-\cmidrulesep=\dimen176
-\cmidrulekern=\dimen177
-\defaultaddspace=\dimen178
-\@cmidla=\count319
-\@cmidlb=\count320
-\@aboverulesep=\dimen179
-\@belowrulesep=\dimen180
-\@thisruleclass=\count321
-\@lastruleclass=\count322
-\@thisrulewidth=\dimen181
-)
-(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption.sty
-Package: caption 2023/08/05 v3.6o Customizing captions (AR)
-
-(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption3.sty
-Package: caption3 2023/07/31 v2.4d caption3 kernel (AR)
-\caption@tempdima=\dimen182
-\captionmargin=\dimen183
-\caption@leftmargin=\dimen184
-\caption@rightmargin=\dimen185
-\caption@width=\dimen186
-\caption@indent=\dimen187
-\caption@parindent=\dimen188
-\caption@hangindent=\dimen189
-Package caption Info: Standard document class detected.
-)
-\c@caption@flags=\count323
-\c@continuedfloat=\count324
-Package caption Info: float package is loaded.
-Package caption Info: hyperref package is loaded.
-Package caption Info: listings package is loaded.
-)
-(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/caption\subcaption.sty
-Package: subcaption 2023/07/28 v1.6b Sub-captions (AR)
-Package caption Info: New subtype `subfigure' on input line 238.
-\c@subfigure=\count325
-Package caption Info: New subtype `subtable' on input line 238.
-\c@subtable=\count326
+\heavyrulewidth=\dimen170
+\lightrulewidth=\dimen171
+\cmidrulewidth=\dimen172
+\belowrulesep=\dimen173
+\belowbottomsep=\dimen174
+\aboverulesep=\dimen175
+\abovetopsep=\dimen176
+\cmidrulesep=\dimen177
+\cmidrulekern=\dimen178
+\defaultaddspace=\dimen179
+\@cmidla=\count321
+\@cmidlb=\count322
+\@aboverulesep=\dimen180
+\@belowrulesep=\dimen181
+\@thisruleclass=\count323
+\@lastruleclass=\count324
+\@thisrulewidth=\dimen182
 )
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/pgf/frontendlayer\tikz.st
 y (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/pgf/basiclayer\pgf.sty
@@ -423,12 +400,12 @@ y (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/pgf/basiclayer\pgf.sty
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfutil-c
 ommon.tex
 \pgfutil@everybye=\toks29
-\pgfutil@tempdima=\dimen190
-\pgfutil@tempdimb=\dimen191
+\pgfutil@tempdima=\dimen183
+\pgfutil@tempdimb=\dimen184
 )
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfutil-l
 atex.def
-\pgfutil@abb=\box59
+\pgfutil@abb=\box60
 )
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgfrcs.co
 de.tex
@@ -454,26 +431,26 @@ ode.tex
 braryfiltered.code.tex
 \pgfkeys@tmptoks=\toks32
 ))
-\pgf@x=\dimen192
-\pgf@y=\dimen193
-\pgf@xa=\dimen194
-\pgf@ya=\dimen195
-\pgf@xb=\dimen196
-\pgf@yb=\dimen197
-\pgf@xc=\dimen198
-\pgf@yc=\dimen199
-\pgf@xd=\dimen256
-\pgf@yd=\dimen257
+\pgf@x=\dimen185
+\pgf@y=\dimen186
+\pgf@xa=\dimen187
+\pgf@ya=\dimen188
+\pgf@xb=\dimen189
+\pgf@yb=\dimen190
+\pgf@xc=\dimen191
+\pgf@yc=\dimen192
+\pgf@xd=\dimen193
+\pgf@yd=\dimen194
 \w@pgf@writea=\write3
 \r@pgf@reada=\read3
-\c@pgf@counta=\count327
-\c@pgf@countb=\count328
-\c@pgf@countc=\count329
-\c@pgf@countd=\count330
+\c@pgf@counta=\count325
+\c@pgf@countb=\count326
+\c@pgf@countc=\count327
+\c@pgf@countd=\count328
 \t@pgf@toka=\toks33
 \t@pgf@tokb=\toks34
 \t@pgf@tokc=\toks35
-\pgf@sys@id@count=\count331
+\pgf@sys@id@count=\count329
 
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgf.cfg
 File: pgf.cfg 2023-01-15 v3.1.10 (3.1.10)
@@ -491,8 +468,8 @@ File: pgfsys-common-pdf.def 2023-01-15 v3.1.10 (3.1.10)
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsyss
 oftpath.code.tex
 File: pgfsyssoftpath.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgfsyssoftpath@smallbuffer@items=\count332
-\pgfsyssoftpath@bigbuffer@items=\count333
+\pgfsyssoftpath@smallbuffer@items=\count330
+\pgfsyssoftpath@bigbuffer@items=\count331
 )
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/systemlayer\pgfsysp
 rotocol.code.tex
@@ -508,9 +485,9 @@ ex
 de.tex)
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathparser.
 code.tex
-\pgfmath@dimen=\dimen258
-\pgfmath@count=\count334
-\pgfmath@box=\box60
+\pgfmath@dimen=\dimen195
+\pgfmath@count=\count332
+\pgfmath@box=\box61
 \pgfmath@toks=\toks36
 \pgfmath@stack@operand=\toks37
 \pgfmath@stack@operation=\toks38
@@ -537,59 +514,59 @@ ns.integerarithmetics.code.tex)
 de.tex)
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfmathfloat.c
 ode.tex
-\c@pgfmathroundto@lastzeros=\count335
+\c@pgfmathroundto@lastzeros=\count333
 ))
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/math\pgfint.code.te
 x)
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorep
 oints.code.tex
 File: pgfcorepoints.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgf@picminx=\dimen259
-\pgf@picmaxx=\dimen260
-\pgf@picminy=\dimen261
-\pgf@picmaxy=\dimen262
-\pgf@pathminx=\dimen263
-\pgf@pathmaxx=\dimen264
-\pgf@pathminy=\dimen265
-\pgf@pathmaxy=\dimen266
-\pgf@xx=\dimen267
-\pgf@xy=\dimen268
-\pgf@yx=\dimen269
-\pgf@yy=\dimen270
-\pgf@zx=\dimen271
-\pgf@zy=\dimen272
+\pgf@picminx=\dimen196
+\pgf@picmaxx=\dimen197
+\pgf@picminy=\dimen198
+\pgf@picmaxy=\dimen199
+\pgf@pathminx=\dimen256
+\pgf@pathmaxx=\dimen257
+\pgf@pathminy=\dimen258
+\pgf@pathmaxy=\dimen259
+\pgf@xx=\dimen260
+\pgf@xy=\dimen261
+\pgf@yx=\dimen262
+\pgf@yy=\dimen263
+\pgf@zx=\dimen264
+\pgf@zy=\dimen265
 )
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorep
 athconstruct.code.tex
 File: pgfcorepathconstruct.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgf@path@lastx=\dimen273
-\pgf@path@lasty=\dimen274
+\pgf@path@lastx=\dimen266
+\pgf@path@lasty=\dimen267
 )
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorep
 athusage.code.tex
 File: pgfcorepathusage.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgf@shorten@end@additional=\dimen275
-\pgf@shorten@start@additional=\dimen276
+\pgf@shorten@end@additional=\dimen268
+\pgf@shorten@start@additional=\dimen269
 )
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcores
 copes.code.tex
 File: pgfcorescopes.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgfpic=\box61
-\pgf@hbox=\box62
-\pgf@layerbox@main=\box63
-\pgf@picture@serial@count=\count336
+\pgfpic=\box62
+\pgf@hbox=\box63
+\pgf@layerbox@main=\box64
+\pgf@picture@serial@count=\count334
 )
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcoreg
 raphicstate.code.tex
 File: pgfcoregraphicstate.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgflinewidth=\dimen277
+\pgflinewidth=\dimen270
 )
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcoret
 ransformations.code.tex
 File: pgfcoretransformations.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgf@pt@x=\dimen278
-\pgf@pt@y=\dimen279
-\pgf@pt@temp=\dimen280
+\pgf@pt@x=\dimen271
+\pgf@pt@y=\dimen272
+\pgf@pt@temp=\dimen273
 )
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcoreq
 uick.code.tex
@@ -606,14 +583,14 @@ File: pgfcorepathprocessing.code.tex 2023-01-15 v3.1.10 (3.1.10)
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorea
 rrows.code.tex
 File: pgfcorearrows.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgfarrowsep=\dimen281
+\pgfarrowsep=\dimen274
 )
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcores
 hade.code.tex
 File: pgfcoreshade.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgf@max=\dimen282
-\pgf@sys@shading@range@num=\count337
-\pgf@shadingcount=\count338
+\pgf@max=\dimen275
+\pgf@sys@shading@range@num=\count335
+\pgf@shadingcount=\count336
 )
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorei
 mage.code.tex
@@ -622,7 +599,7 @@ File: pgfcoreimage.code.tex 2023-01-15 v3.1.10 (3.1.10)
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcoree
 xternal.code.tex
 File: pgfcoreexternal.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgfexternal@startupbox=\box64
+\pgfexternal@startupbox=\box65
 )
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/basiclayer\pgfcorel
 ayers.code.tex
@@ -643,7 +620,7 @@ File: pgfcorerdf.code.tex 2023-01-15 v3.1.10 (3.1.10)
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodulesh
 apes.code.tex
 File: pgfmoduleshapes.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgfnodeparttextbox=\box65
+\pgfnodeparttextbox=\box66
 )
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodulepl
 ot.code.tex
@@ -652,8 +629,8 @@ File: pgfmoduleplot.code.tex 2023-01-15 v3.1.10 (3.1.10)
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibility\pgfcomp
 -version-0-65.sty
 Package: pgfcomp-version-0-65 2023-01-15 v3.1.10 (3.1.10)
-\pgf@nodesepstart=\dimen283
-\pgf@nodesepend=\dimen284
+\pgf@nodesepstart=\dimen276
+\pgf@nodesepend=\dimen277
 )
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/pgf/compatibility\pgfcomp
 -version-1-18.sty
@@ -670,8 +647,8 @@ ex))
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/utilities\pgffor.co
 de.tex
 Package: pgffor 2023-01-15 v3.1.10 (3.1.10)
-\pgffor@iter=\dimen285
-\pgffor@skip=\dimen286
+\pgffor@iter=\dimen278
+\pgffor@skip=\dimen279
 \pgffor@stack=\toks39
 \pgffor@toks=\toks40
 ))
@@ -682,34 +659,34 @@ Package: tikz 2023-01-15 v3.1.10 (3.1.10)
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflibrar
 yplothandlers.code.tex
 File: pgflibraryplothandlers.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgf@plot@mark@count=\count339
-\pgfplotmarksize=\dimen287
+\pgf@plot@mark@count=\count337
+\pgfplotmarksize=\dimen280
 )
-\tikz@lastx=\dimen288
-\tikz@lasty=\dimen289
-\tikz@lastxsaved=\dimen290
-\tikz@lastysaved=\dimen291
-\tikz@lastmovetox=\dimen292
-\tikz@lastmovetoy=\dimen293
-\tikzleveldistance=\dimen294
-\tikzsiblingdistance=\dimen295
-\tikz@figbox=\box66
-\tikz@figbox@bg=\box67
-\tikz@tempbox=\box68
-\tikz@tempbox@bg=\box69
-\tikztreelevel=\count340
-\tikznumberofchildren=\count341
-\tikznumberofcurrentchild=\count342
-\tikz@fig@count=\count343
+\tikz@lastx=\dimen281
+\tikz@lasty=\dimen282
+\tikz@lastxsaved=\dimen283
+\tikz@lastysaved=\dimen284
+\tikz@lastmovetox=\dimen285
+\tikz@lastmovetoy=\dimen286
+\tikzleveldistance=\dimen287
+\tikzsiblingdistance=\dimen288
+\tikz@figbox=\box67
+\tikz@figbox@bg=\box68
+\tikz@tempbox=\box69
+\tikz@tempbox@bg=\box70
+\tikztreelevel=\count338
+\tikznumberofchildren=\count339
+\tikznumberofcurrentchild=\count340
+\tikz@fig@count=\count341
 
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/modules\pgfmodulema
 trix.code.tex
 File: pgfmodulematrix.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgfmatrixcurrentrow=\count344
-\pgfmatrixcurrentcolumn=\count345
-\pgf@matrix@numberofcolumns=\count346
+\pgfmatrixcurrentrow=\count342
+\pgfmatrixcurrentcolumn=\count343
+\pgf@matrix@numberofcolumns=\count344
 )
-\tikz@expandcount=\count347
+\tikz@expandcount=\count345
 
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tikz/
 libraries\tikzlibrarytopaths.code.tex
@@ -730,61 +707,65 @@ File: pgflibraryshapes.geometric.code.tex 2023-01-15 v3.1.10 (3.1.10)
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflibrar
 yarrows.meta.code.tex
 File: pgflibraryarrows.meta.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgfarrowinset=\dimen296
-\pgfarrowlength=\dimen297
-\pgfarrowwidth=\dimen298
-\pgfarrowlinewidth=\dimen299
-) (l3s-project-doc.sty
-Package: l3s-project-doc 
+\pgfarrowinset=\dimen289
+\pgfarrowlength=\dimen290
+\pgfarrowwidth=\dimen291
+\pgfarrowlinewidth=\dimen292
 )
-Package hyperref Info: Option `colorlinks' set `true' on input line 145.
+(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tikz/
+libraries\tikzlibraryfit.code.tex
+File: tikzlibraryfit.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tikz/
+libraries\tikzlibrarycalc.code.tex
+File: tikzlibrarycalc.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tikz/
+libraries\tikzlibrarybackgrounds.code.tex
+File: tikzlibrarybackgrounds.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgf@layerbox@background=\box71
+\pgf@layerboxsaved@background=\box72
+)
+Package hyperref Info: Option `colorlinks' set `true' on input line 100.
 
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdfte
 x.def
 File: l3backend-pdftex.def 2025-06-09 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count348
-) (l3s-offshore-doc.aux
-
-LaTeX Warning: Label `sec:data-flow' multiply defined.
-
-
-LaTeX Warning: Label `sec:planning-endpoints' multiply defined.
-
-)
+\l__color_backend_stack_int=\count346
+) (l3s-offshore-doc.aux)
 \openout1 = `l3s-offshore-doc.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 148.
-LaTeX Font Info:    ... okay on input line 148.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 148.
-LaTeX Font Info:    ... okay on input line 148.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 148.
-LaTeX Font Info:    ... okay on input line 148.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 148.
-LaTeX Font Info:    ... okay on input line 148.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 148.
-LaTeX Font Info:    ... okay on input line 148.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 148.
-LaTeX Font Info:    ... okay on input line 148.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 148.
-LaTeX Font Info:    ... okay on input line 148.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 148.
-LaTeX Font Info:    ... okay on input line 148.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 148.
-LaTeX Font Info:    ... okay on input line 148.
-\c@lstlisting=\count349
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 112.
+LaTeX Font Info:    ... okay on input line 112.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 112.
+LaTeX Font Info:    ... okay on input line 112.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 112.
+LaTeX Font Info:    ... okay on input line 112.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 112.
+LaTeX Font Info:    ... okay on input line 112.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 112.
+LaTeX Font Info:    ... okay on input line 112.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 112.
+LaTeX Font Info:    ... okay on input line 112.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 112.
+LaTeX Font Info:    ... okay on input line 112.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 112.
+LaTeX Font Info:    ... okay on input line 112.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 112.
+LaTeX Font Info:    ... okay on input line 112.
 
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count350
-\scratchdimen=\dimen300
-\scratchbox=\box70
-\nofMPsegments=\count351
-\nofMParguments=\count352
+\scratchcounter=\count347
+\scratchdimen=\dimen293
+\scratchbox=\box73
+\nofMPsegments=\count348
+\nofMParguments=\count349
 \everyMPshowfont=\toks41
-\MPscratchCnt=\count353
-\MPscratchDim=\dimen301
-\MPnumerator=\count354
-\makeMPintoPDFobject=\count355
+\MPscratchCnt=\count350
+\MPscratchDim=\dimen294
+\MPnumerator=\count351
+\makeMPintoPDFobject=\count352
 \everyMPtoPDFconversion=\toks42
 )
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-bas
@@ -796,402 +777,291 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/00miktex\epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 ))
-Package hyperref Info: Link coloring ON on input line 148.
+Package hyperref Info: Link coloring ON on input line 112.
  (l3s-offshore-doc.out) (l3s-offshore-doc.out)
 \@outlinefile=\write4
 \openout4 = `l3s-offshore-doc.out'.
 
-Package caption Info: Begin \AtBeginDocument code.
-Package caption Info: End \AtBeginDocument code.
+\c@lstlisting=\count353
+LaTeX Font Info:    Trying to load font information for U+msa on input line 119
+.
 
+(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Trying to load font information for U+msb on input line 119
+.
+
+(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+)
 
 [1
-
 
 
 {C:/Users/mpp/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}]
 
 [2
 
-
-]
-LaTeX Font Info:    Trying to load font information for U+msa on input line 155
-.
- (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
-File: umsa.fd 2013/01/14 v3.01 AMS symbols A
-)
-LaTeX Font Info:    Trying to load font information for U+msb on input line 155
-.
-
-(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
-File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-)
-Overfull \hbox (75.36694pt too wide) in paragraph at lines 155--155
-[] 
- []
-
-
-
-[3] (contents/00-abstract.tex
-
-[4
-
-
-]
-
-[5])
-
-[6
-
-
 ] (l3s-offshore-doc.toc
 
-[7]
+[3]
 
-[8]
+[4]
 
-[9]
+[5]
 
-[10])
+[6])
 \tf@toc=\write5
 \openout5 = `l3s-offshore-doc.toc'.
 
 
 
-[11]
+[7]
 
-[12
+[8
 
-] (l3s-offshore-doc.lof)
-\tf@lof=\write6
-\openout6 = `l3s-offshore-doc.lof'.
-
-
-
-[13]
-
-[14
-
-] (l3s-offshore-doc.lot)
-\tf@lot=\write7
-\openout7 = `l3s-offshore-doc.lot'.
-
-
-
-[15]
-
-[16
-
-] (contents/01-introduction.tex
+]
 Chapter 1.
 
-
-[1
-
-]
-
-[2]) (contents/02-fundamentals.tex
-
-[3]
-
-[4
-
-]
-Chapter 2.
+Overfull \hbox (164.67786pt too wide) in paragraph at lines 162--163
+ [][] 
+ []
 
 
-[5] (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstlang1.sty
-File: lstlang1.sty 2024/09/23 1.10c listings language file
-) (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstmisc.sty
-File: lstmisc.sty 2024/09/23 1.10c (Carsten Heinz)
-)
-Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on i
-nput line 61.
+Underfull \vbox (badness 2790) has occurred while \output is active []
 
-
-[6]
-
-[7]) (contents/03a-ui-service.tex
-
-[8]
-Chapter 3.
 
 
 [9
-
-]
-LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <9> not available
-(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 50.
-
-
-
-Overfull \hbox (11.40228pt too wide) has occurred while \output is active
-\T1/cmr/m/n/10.95 10 \T1/cmr/m/sl/10.95 CHAPTER 3.  UI SERVICE: USER INTERFACE 
-STATE MANAGEMENT
- []
+pdfTeX warning (ext4): destination with the same identifier (name{figure.1.1}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.171     \item \hyperref
+                         [chap:dataservice]{Central Data Store (DataService)}]
 
 [10]
-Overfull \hbox (73.81296pt too wide) in paragraph at lines 97--98
-[][][][] 
- []
+Chapter 2.
 
 
-Overfull \hbox (73.81296pt too wide) in paragraph at lines 99--101
-[][][][] 
- []
-
-
-
-[11]
-Overfull \hbox (73.81296pt too wide) in paragraph at lines 130--131
-[][][][] 
- []
-
-
-Overfull \hbox (73.81296pt too wide) in paragraph at lines 132--134
-[][][][] 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 149--149
-[]\T1/cmr/m/n/10.95 Listing 3.2: |UiService core implementation
- []
-
-
-Underfull \hbox (badness 1552) in paragraph at lines 154--155
-[]\T1/cmr/m/n/10.95 Makes \T1/cmtt/m/n/10.95 UiService \T1/cmr/m/n/10.95 a \T1/
-cmr/bx/n/10.95 sin-gle-ton\T1/cmr/m/n/10.95 ---
- []
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-
-
-Overfull \hbox (11.40228pt too wide) has occurred while \output is active
-\T1/cmr/m/n/10.95 12 \T1/cmr/m/sl/10.95 CHAPTER 3.  UI SERVICE: USER INTERFACE 
-STATE MANAGEMENT
- []
-
-[12]
-
-[13]
-Underfull \hbox (badness 7814) in paragraph at lines 278--279
-[]\T1/cmr/bx/n/10.95 State Up-date\T1/cmr/m/n/10.95 : \T1/cmtt/m/n/10.95 Button
-BarComponent \T1/cmr/m/n/10.95 sets \T1/cmtt/m/n/10.95 uiService.tab =
- []
-
-
-
-
-Overfull \hbox (11.40228pt too wide) has occurred while \output is active
-\T1/cmr/m/n/10.95 14 \T1/cmr/m/sl/10.95 CHAPTER 3.  UI SERVICE: USER INTERFACE 
-STATE MANAGEMENT
- []
-
-[14]
-Underfull \hbox (badness 10000) in paragraph at lines 279--280
-[]\T1/cmr/bx/n/10.95 Internal Up-date\T1/cmr/m/n/10.95 : \T1/cmtt/m/n/10.95 UiS
-ervice \T1/cmr/m/n/10.95 up-dates \T1/cmtt/m/n/10.95 _tab \T1/cmr/m/n/10.95 and
- calls
- []
-
-
-
-[15]) (contents/03b-petri-net-elements.tex
-
-
-Overfull \hbox (11.40228pt too wide) has occurred while \output is active
-\T1/cmr/m/n/10.95 16 \T1/cmr/m/sl/10.95 CHAPTER 3.  UI SERVICE: USER INTERFACE 
-STATE MANAGEMENT
- []
-
-[16]
-
-[17]
-
-
-Overfull \hbox (11.40228pt too wide) has occurred while \output is active
-\T1/cmr/m/n/10.95 18 \T1/cmr/m/sl/10.95 CHAPTER 3.  UI SERVICE: USER INTERFACE 
-STATE MANAGEMENT
- []
-
-[18
+[11
 
 ]
-Chapter 4.
+LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <12> not available
+(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 232.
+LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <9> not available
+(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 265.
 
-Overfull \hbox (35.57909pt too wide) in paragraph at lines 25--34
+
+[12
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.1}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.269 const 
+            tankPos = new Point(100, 100);]
+Overfull \hbox (101.75981pt too wide) in paragraph at lines 353--354
  [][] 
  []
 
 
 
-[19]
-
-[20]
-
-[21]
-Underfull \hbox (badness 10000) in paragraph at lines 179--179
-[]\T1/cmr/m/n/10.95 Listing 4.2: |Transition class definition
+[13]
+Overfull \hbox (6.26967pt too wide) in paragraph at lines 364--365
+\T1/cmr/m/n/10.95 This class im-ple-ments \T1/cmtt/m/n/10.95 Node\T1/cmr/m/n/10
+.95 . No-tice the \T1/cmtt/m/n/10.95 intersectionOfBoundaryWithLineTo
  []
 
 
-Underfull \vbox (badness 1515) has occurred while \output is active []
+
+[14
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.2}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.381  
+          }]
+
+[15]
+
+[16]
+Chapter 3.
 
 
+[17
+
+]
+LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <10.95> not available
+(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 510.
+
+
+[18
+pdfTeX warning (ext4): destination with the same identifier (name{figure.3.1}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.546 \begin{lstlisting}[language=TypeScript]
+                                             ]
+
+[19]
+
+[20
+pdfTeX warning (ext4): destination with the same identifier (name{figure.3.2}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.649  
+          getPlaces(): Place[] {]
+
+[21]
 
 [22]
+Chapter 4.
 
-[23]
 
-[24]
+[23
+
+]
+
+[24
+pdfTeX warning (ext4): destination with the same identifier (name{figure.4.1}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.789 \subsection
+                 {Step 1: The Template (HTML)}]
 
 [25]
+Overfull \hbox (3.82054pt too wide) in paragraph at lines 899--900
+ [][] 
+ []
+
+
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 
 [26]
 
-[27]) (contents/03c-data-service.tex
+[27
+pdfTeX warning (ext4): destination with the same identifier (name{figure.4.2}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.928 
+      ]
 
 [28]
+
+[29]
+
+[30
+
+]
 Chapter 5.
 
 
-[29
-
-]
-Overfull \hbox (73.81296pt too wide) in paragraph at lines 72--73
-[][][][] 
- []
-
-
-
-[30]
-Overfull \hbox (73.81296pt too wide) in paragraph at lines 74--76
-[][][][] 
- []
-
-
-Overfull \hbox (73.81296pt too wide) in paragraph at lines 88--89
-[][][][] 
- []
-
-
-Overfull \hbox (73.81296pt too wide) in paragraph at lines 90--92
-[][][][] 
- []
-
-
-Overfull \hbox (73.81296pt too wide) in paragraph at lines 102--103
-[][][][] 
- []
-
-
-Overfull \hbox (73.81296pt too wide) in paragraph at lines 104--106
-[][][][] 
- []
-
-
-Overfull \hbox (73.81296pt too wide) in paragraph at lines 111--112
-[][][][] 
- []
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-
 [31]
-Overfull \hbox (73.81296pt too wide) in paragraph at lines 113--115
-[][][][] 
- []
 
-
-Overfull \hbox (73.81296pt too wide) in paragraph at lines 120--121
-[][][][] 
- []
-
-
-Overfull \hbox (73.81296pt too wide) in paragraph at lines 122--124
-[][][][] 
- []
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-
-[32]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
+[32
+pdfTeX warning (ext4): destination with the same identifier (name{figure.5.1}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.1077     \item I
+                  t combines them all into one long text string.]
 
 [33]
-Overfull \hbox (73.81296pt too wide) in paragraph at lines 218--219
-[][][][] 
- []
 
-
-Overfull \hbox (73.81296pt too wide) in paragraph at lines 220--222
-[][][][] 
- []
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-
-[34]
-Overfull \hbox (73.81296pt too wide) in paragraph at lines 254--255
-[][][][] 
- []
-
-
-Overfull \hbox (73.81296pt too wide) in paragraph at lines 256--258
-[][][][] 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 269--269
-[]\T1/cmr/m/n/10.95 Listing 5.1: |DataService core implementation
- []
-
-
+[34
+pdfTeX warning (ext4): destination with the same identifier (name{figure.5.2}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.1182 \begin{lstlisting}[language=TypeScript]
+                                              ]
 
 [35]
 
 [36]
 
 [37]
-Overfull \hbox (7.04187pt too wide) in paragraph at lines 436--448
+
+[38
+
+]
+Chapter 6.
+
+Overfull \hbox (40.04062pt too wide) in paragraph at lines 1354--1355
  [][] 
  []
 
 
 
-[38]) (contents/03-architecture.tex
-
 [39]
 
-[40
 
-]
-Chapter 6.
+Overfull \hbox (67.78061pt too wide) has occurred while \output is active
+\T1/cmr/m/n/10.95 40 \T1/cmr/m/sl/10.95 CHAPTER 6.  GRAPH LAYOUT ARCHITECT (SUG
+IYAMA/SPRING EMBEDDER)
+ []
+
+[40
+pdfTeX warning (ext4): destination with the same identifier (name{figure.6.1}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.1387 \begin{lstlisting}[language=TypeScript]
+                                              ]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
 
 
 [41]
 
-[42]
 
-[43]
+Overfull \hbox (67.78061pt too wide) has occurred while \output is active
+\T1/cmr/m/n/10.95 42 \T1/cmr/m/sl/10.95 CHAPTER 6.  GRAPH LAYOUT ARCHITECT (SUG
+IYAMA/SPRING EMBEDDER)
+ []
 
-[44]) (contents/04-implementation.tex
+[42
+pdfTeX warning (ext4): destination with the same identifier (name{figure.6.2}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.1485 \begin{lstlisting}[language=TypeScript]
+                                              ]
+Overfull \hbox (82.8062pt too wide) in paragraph at lines 1522--1523
+ [][] 
+ []
+
+
+
+[43
+pdfTeX warning (ext4): destination with the same identifier (name{figure.6.3}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.1533 \begin{lstlisting}[language=TypeScript]
+                                              ]
+
+
+Overfull \hbox (67.78061pt too wide) has occurred while \output is active
+\T1/cmr/m/n/10.95 44 \T1/cmr/m/sl/10.95 CHAPTER 6.  GRAPH LAYOUT ARCHITECT (SUG
+IYAMA/SPRING EMBEDDER)
+ []
+
+[44]
 
 [45]
+
+
+Overfull \hbox (67.78061pt too wide) has occurred while \output is active
+\T1/cmr/m/n/10.95 46 \T1/cmr/m/sl/10.95 CHAPTER 6.  GRAPH LAYOUT ARCHITECT (SUG
+IYAMA/SPRING EMBEDDER)
+ []
 
 [46
 
@@ -1201,13 +1071,72 @@ Chapter 7.
 
 [47]
 
-[48]
+Package pgf Warning: Returning node center instead of a point on node border. D
+id you specify a point identical to the center of node ``update''? on input lin
+e 1638.
+
+
+Package pgf Warning: Returning node center instead of a point on node border. D
+id you specify a point identical to the center of node ``update''? on input lin
+e 1638.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1644.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `\Delta' on input line 1644.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1644.
+
+
+
+
+Overfull \hbox (41.25237pt too wide) has occurred while \output is active
+\T1/cmr/m/n/10.95 48 \T1/cmr/m/sl/10.95 CHAPTER 7.  INTERACTION HANDLER (EDITMO
+VEELEMENTSSERVICE)
+ []
+
+[48
+pdfTeX warning (ext4): destination with the same identifier (name{figure.7.1}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.1688 \subsection
+                  {Step 1: Grabbing an Object}
+pdfTeX warning (ext4): destination with the same identifier (name{figure.7.2}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.1688 \subsection
+                  {Step 1: Grabbing an Object}]
 
 [49]
 
-[50]
 
-[51]) (contents/04b-pnml-json-io.tex
+Overfull \hbox (41.25237pt too wide) has occurred while \output is active
+\T1/cmr/m/n/10.95 50 \T1/cmr/m/sl/10.95 CHAPTER 7.  INTERACTION HANDLER (EDITMO
+VEELEMENTSSERVICE)
+ []
+
+[50
+pdfTeX warning (ext4): destination with the same identifier (name{figure.7.3}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.1794  
+           this.initialMousePos.x = event.clientX;]
+
+[51]
+
+
+Overfull \hbox (41.25237pt too wide) has occurred while \output is active
+\T1/cmr/m/n/10.95 52 \T1/cmr/m/sl/10.95 CHAPTER 7.  INTERACTION HANDLER (EDITMO
+VEELEMENTSSERVICE)
+ []
 
 [52]
 Chapter 8.
@@ -1217,347 +1146,202 @@ Chapter 8.
 
 ]
 
-[54]
+[54
+pdfTeX warning (ext4): destination with the same identifier (name{figure.8.1}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.1973 
+       ]
+Overfull \hbox (6.77885pt too wide) in paragraph at lines 2005--2006
+ [][] 
+ []
 
-[55]
-Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
+[55
+pdfTeX warning (ext4): destination with the same identifier (name{figure.8.2}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.2026  
+           // Public streams that components can listen to]
 
 [56]
-Underfull \hbox (badness 6141) in paragraph at lines 194--194
-[]\T1/cmr/m/n/10.95 Listing 8.3: |JSON export service (src/app/tr-services/expo
-rt-json-
+Overfull \hbox (160.3201pt too wide) in paragraph at lines 2107--2108
+[]\T1/cmr/m/n/10.95 We solve this with the \T1/cmr/bx/n/10.95 Svg-Co-or-di-nate
+sSer-vice \T1/cmr/m/n/10.95 (\T1/cmtt/m/n/10.95 src/app/tr-services/svg-coordin
+ates-service.ts\T1/cmr/m/n/10.95 ).
  []
 
 
 
 [57]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
 
 [58]
-
-[59]
-
-[60]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-
-[61]
-
-[62]
-
-[63]) (contents/04c-layout-algorithms.tex
-
-[64]
-
-[65]
-
-[66
-
-]
 Chapter 9.
 
-Overfull \hbox (6.98373pt too wide) in paragraph at lines 27--35
+Overfull \hbox (39.53848pt too wide) in paragraph at lines 2193--2194
  [][] 
  []
 
 
 
-[67]
+[59
+
+]
+
+[60
+pdfTeX warning (ext4): destination with the same identifier (name{figure.9.1}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.2236 \begin{lstlisting}[language=TypeScript]
+                                              ]
+
+[61]
+
+[62
+pdfTeX warning (ext4): destination with the same identifier (name{figure.9.2}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.2345  
+           }]
+
+[63]
+
+[64]
+Chapter 10.
+
+
+[65
+
+]
+Overfull \hbox (121.90529pt too wide) in paragraph at lines 2462--2463
+ [][] 
+ []
+
+
+
+[66
+pdfTeX warning (ext4): destination with the same identifier (name{figure.10.1})
+ has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.2491     \item W
+                  hen you click \textbf{Undo}, we take the top photo and arr...
+]
+
+[67
+pdfTeX warning (ext4): destination with the same identifier (name{figure.10.2})
+ has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.2541 //
+          The Visualizer will automatically update because it watches the Da...
+]
+Overfull \hbox (52.84537pt too wide) in paragraph at lines 2598--2599
+ [][] 
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
 
 [68]
-Underfull \vbox (badness 10000) has occurred while \output is active []
 
-
-
-[69]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
+[69
+pdfTeX warning (ext4): destination with the same identifier (name{figure.10.3})
+ has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.2628  
+           const tokenMapping = new Map<Place, number>();]
 
 [70]
 
 [71]
 
-[72]
+[72
+
+]
+Chapter 11.
+
 
 [73]
 
-[74]
+[74
+pdfTeX warning (ext4): destination with the same identifier (name{figure.11.1})
+ has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.2798 \subsection
+                  {Step 1: Preparing the Data}]
+Underfull \hbox (badness 6608) in paragraph at lines 2836--2837
+[]\T1/cmr/bx/n/10.95 Network: \T1/cmr/m/n/10.95 Trav-els across the in-ter-net 
+to the URL (e.g.,
+ []
+
+
 
 [75]
 
-[76]
-Underfull \hbox (badness 10000) in paragraph at lines 488--488
-[]\T1/cmr/m/n/10.95 Listing 9.6: |Sugiyama layout service
- []
+[76
+pdfTeX warning (ext4): destination with the same identifier (name{figure.11.2})
+ has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.2904 \begin{lstlisting}[language=TypeScript]
+                                              ]
 
-
-
-[77]) (contents/04d-planning-service.tex
+[77]
 
 [78]
-Chapter 10.
 
-
-[79
-
-]
-Underfull \hbox (badness 10000) in paragraph at lines 73--73
-[]\T1/cmr/m/n/10.95 Listing 10.2: |Production environment
- []
-
-
-
-
-Overfull \hbox (3.46092pt too wide) has occurred while \output is active
-\T1/cmr/m/n/10.95 80 \T1/cmr/m/sl/10.95 CHAPTER 10.  PLANNING SERVICE: BACKEND 
-API INTEGRATION
- []
-
-[80]
-Overfull \hbox (73.81296pt too wide) in paragraph at lines 99--100
-[][][][] 
- []
-
-
-Overfull \hbox (73.81296pt too wide) in paragraph at lines 101--103
-[][][][] 
- []
-
-
-Overfull \hbox (73.81296pt too wide) in paragraph at lines 135--136
-[][][][] 
- []
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-
-[81]
-Overfull \hbox (73.81296pt too wide) in paragraph at lines 137--139
-[][][][] 
- []
-
-
-Overfull \hbox (73.81296pt too wide) in paragraph at lines 157--158
-[][][][] 
- []
-
-
-Overfull \hbox (73.81296pt too wide) in paragraph at lines 159--161
-[][][][] 
- []
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-
-
-Overfull \hbox (3.46092pt too wide) has occurred while \output is active
-\T1/cmr/m/n/10.95 82 \T1/cmr/m/sl/10.95 CHAPTER 10.  PLANNING SERVICE: BACKEND 
-API INTEGRATION
- []
-
-[82]
-Overfull \hbox (73.81296pt too wide) in paragraph at lines 181--182
-[][][][] 
- []
-
-
-Overfull \hbox (73.81296pt too wide) in paragraph at lines 183--185
-[][][][] 
- []
-
-
-Overfull \hbox (73.81296pt too wide) in paragraph at lines 205--206
-[][][][] 
- []
-
-
-Overfull \hbox (73.81296pt too wide) in paragraph at lines 207--209
-[][][][] 
- []
-
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-
-[83]
-
-
-Overfull \hbox (3.46092pt too wide) has occurred while \output is active
-\T1/cmr/m/n/10.95 84 \T1/cmr/m/sl/10.95 CHAPTER 10.  PLANNING SERVICE: BACKEND 
-API INTEGRATION
- []
-
-[84]
-
-[85]
-Overfull \hbox (44.42886pt too wide) in paragraph at lines 370--371
- [][] 
- []
-
-
-Overfull \hbox (132.97325pt too wide) in paragraph at lines 382--393
- [][] 
- []
-
-
-
-
-Overfull \hbox (3.46092pt too wide) has occurred while \output is active
-\T1/cmr/m/n/10.95 86 \T1/cmr/m/sl/10.95 CHAPTER 10.  PLANNING SERVICE: BACKEND 
-API INTEGRATION
- []
-
-[86]
-(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstlang1.sty
-File: lstlang1.sty 2024/09/23 1.10c listings language file
-)
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-
-[87]) (contents/05-deployment.tex
-
-
-Overfull \hbox (3.46092pt too wide) has occurred while \output is active
-\T1/cmr/m/n/10.95 88 \T1/cmr/m/sl/10.95 CHAPTER 10.  PLANNING SERVICE: BACKEND 
-API INTEGRATION
- []
-
-[88]
-Chapter 11.
-(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstlang1.sty
-File: lstlang1.sty 2024/09/23 1.10c listings language file
-)
-(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstlang1.sty
-File: lstlang1.sty 2024/09/23 1.10c listings language file
-)
-
-[89
-
-]
-
-[90]
-
-[91]
-
-[92]
-
-[93]
-Underfull \hbox (badness 10000) in paragraph at lines 254--255
-[]\T1/cmr/m/n/10.95 Check logs with \T1/cmtt/m/n/10.95 docker logs
- []
-
-) (contents/06-related-work.tex
-
-[94]
-Chapter 12.
-
-
-[95
-
-]) (contents/07-conclusion.tex
-
-[96]
-
-[97]
-
-[98
-
-]
-Chapter 13.
-
-
-[99]
-
-[100]) (contents/A-appendix.tex
-
-[101]
-
-[102
-
-]
-Appendix A.
-
-
-[103]
-
-[104]) (l3s-offshore-doc.bbl
-
-[105]
-
-[106
-
-])
-
-[107]
-
-[108
-
-] (l3s-offshore-doc.aux)
+[79] (l3s-offshore-doc.aux)
  ***********
 LaTeX2e <2025-06-01> patch level 1
 L3 programming layer <2025-07-19>
  ***********
-
-
-LaTeX Warning: There were multiply-defined labels.
-
 Package rerunfilecheck Info: File `l3s-offshore-doc.out' has not changed.
-(rerunfilecheck)             Checksum: 6830EB3F1E02E586A67709927E656F0C;29916.
+(rerunfilecheck)             Checksum: CC4B79BE7CCD1C136694E739D74F01DB;36712.
  ) 
 Here is how much of TeX's memory you used:
- 29957 strings out of 468149
- 542166 string characters out of 5432050
- 1637127 words of memory out of 5000000
- 55490 multiletter control sequences out of 15000+600000
- 646603 words of font info for 80 fonts, out of 8000000 for 9000
+ 27113 strings out of 468149
+ 491930 string characters out of 5432050
+ 1212150 words of memory out of 5000000
+ 54134 multiletter control sequences out of 15000+600000
+ 649070 words of font info for 93 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 84i,10n,87p,517b,2150s stack positions out of 10000i,1000n,20000p,200000b,200000s
- <C:\Users\mpp\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm09
+ 84i,8n,87p,588b,2136s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ <C:\Users\mpp\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt09
 00.pk> <C:\Users\mpp\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ec
-rm0800.pk> <C:\Users\mpp\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi60
-0\ecrm1000.pk> <C:\Users\mpp\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/d
-pi600\ecti1095.pk> <C:\Users\mpp\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/
-ec/dpi600\ectt0900.pk> <C:\Users\mpp\AppData\Local\MiKTeX\fonts/pk/ljfour/jknap
-pen/ec/dpi600\ecrm0600.pk> <C:\Users\mpp\AppData\Local\MiKTeX\fonts/pk/ljfour/j
-knappen/ec/dpi600\ecbx1200.pk> <C:\Users\mpp\AppData\Local\MiKTeX\fonts/pk/ljfo
-ur/jknappen/ec/dpi600\ectt1095.pk> <C:\Users\mpp\AppData\Local\MiKTeX\fonts/pk/
-ljfour/jknappen/ec/dpi600\ecsl1095.pk> <C:\Users\mpp\AppData\Local\MiKTeX\fonts
-/pk/ljfour/jknappen/ec/dpi600\tcrm1095.pk> <C:\Users\mpp\AppData\Local\MiKTeX\f
-onts/pk/ljfour/jknappen/ec/dpi600\ecbx1095.pk> <C:\Users\mpp\AppData\Local\MiKT
-eX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx2488.pk> <C:\Users\mpp\AppData\Local\
-MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1095.pk> <C:\Users\mpp\AppData\Lo
-cal\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt1000.pk> <C:\Users\mpp\AppDat
-a\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1728.pk> <C:\Users\mpp\Ap
-pData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1440.pk> <C:\Users\mp
-p\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx2074.pk> <C:\User
-s\mpp\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1200.pk> <C:\
-Users\mpp\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1440.pk><
-C:/Users/mpp/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi1
-0.pfb><C:/Users/mpp/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/c
-m/cmmi6.pfb><C:/Users/mpp/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsf
-onts/cm/cmmi8.pfb><C:/Users/mpp/AppData/Local/Programs/MiKTeX/fonts/type1/publi
-c/amsfonts/cm/cmr10.pfb><C:/Users/mpp/AppData/Local/Programs/MiKTeX/fonts/type1
-/public/amsfonts/cm/cmr6.pfb><C:/Users/mpp/AppData/Local/Programs/MiKTeX/fonts/
-type1/public/amsfonts/cm/cmr8.pfb><C:/Users/mpp/AppData/Local/Programs/MiKTeX/f
-onts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/mpp/AppData/Local/Programs/M
-iKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/mpp/AppData/Local/Prog
-rams/MiKTeX/fonts/type1/public/amsfonts/symbols/msam10.pfb><C:/Users/mpp/AppDat
-a/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on l3s-offshore-doc.pdf (124 pages, 1219338 bytes).
+rm0600.pk> <C:\Users\mpp\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi60
+0\ectt1200.pk> <C:\Users\mpp\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/d
+pi600\tcrm1095.pk> <C:\Users\mpp\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/
+ec/dpi600\ecbx1200.pk> <C:\Users\mpp\AppData\Local\MiKTeX\fonts/pk/ljfour/jknap
+pen/ec/dpi600\ecrm0800.pk> <C:\Users\mpp\AppData\Local\MiKTeX\fonts/pk/ljfour/j
+knappen/ec/dpi600\ecrm1000.pk> <C:\Users\mpp\AppData\Local\MiKTeX\fonts/pk/ljfo
+ur/jknappen/ec/dpi600\ecbx1440.pk> <C:\Users\mpp\AppData\Local\MiKTeX\fonts/pk/
+ljfour/jknappen/ec/dpi600\ecti1095.pk> <C:\Users\mpp\AppData\Local\MiKTeX\fonts
+/pk/ljfour/jknappen/ec/dpi600\ecbx2074.pk> <C:\Users\mpp\AppData\Local\MiKTeX\f
+onts/pk/ljfour/jknappen/ec/dpi600\ecsl1095.pk> <C:\Users\mpp\AppData\Local\MiKT
+eX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt1095.pk> <C:\Users\mpp\AppData\Local\
+MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1095.pk> <C:\Users\mpp\AppData\Lo
+cal\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx2488.pk> <C:\Users\mpp\AppDat
+a\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1095.pk> <C:\Users\mpp\Ap
+pData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1200.pk> <C:\Users\mp
+p\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1728.pk><C:/Users
+/mpp/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:
+/Users/mpp/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.p
+fb><C:/Users/mpp/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/c
+msy10.pfb><C:/Users/mpp/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfon
+ts/cm/cmsy8.pfb>
+Output written on l3s-offshore-doc.pdf (79 pages, 814503 bytes).
 PDF statistics:
- 5315 PDF objects out of 6186 (max. 8388607)
- 2600 named destinations out of 2984 (max. 500000)
- 1533 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 3339 PDF objects out of 3580 (max. 8388607)
+ 1177 named destinations out of 1200 (max. 500000)
+ 1501 words of extra memory for PDF output out of 10000 (max. 10000000)
 
