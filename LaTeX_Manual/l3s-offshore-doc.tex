@@ -26,6 +26,7 @@
 \usepackage{enumitem}
 \usepackage{float}
 \usepackage{booktabs}
+\usepackage[most]{tcolorbox}  % For colored notice boxes
 
 % --- TikZ for Diagrams (replacing Mermaid) ---
 \usepackage{tikz}
@@ -2548,6 +2549,8 @@ Let's look into \texttt{src/app/tr-services/token-game.service.ts}.
 
 We need to remember the token count for every single place. We use a \texttt{Map} where the key is the \texttt{Place} object, and the value is the \texttt{number} of tokens.
 
+% SOURCE: src/app/tr-services/token-game.service.ts, Lines 10-13
+% STATUS: VERIFIED - Code matches source exactly
 \begin{lstlisting}[language=TypeScript]
 export class TokenGameService {
     // A stack (array) of states. 
@@ -2563,6 +2566,9 @@ export class TokenGameService {
 
 Before we change anything, we walk through every place in the \hyperref[chap:dataservice]{Central Data Store (DataService)} and write down how many tokens it has.
 
+% SOURCE: src/app/tr-services/token-game.service.ts, Lines 64-70
+% STATUS: VERIFIED - Logic identical to source
+% NOTE: Comments in listing are added for didactic purposes; original code has no inline comments
 \begin{lstlisting}[language=TypeScript]
 private getGameState(): Map<Place, number> {
     const tokenMapping = new Map<Place, number>();
@@ -2580,6 +2586,9 @@ private getGameState(): Map<Place, number> {
 
 This is the heart of the engine. Notice how it saves the state \emph{before} doing the math.
 
+% SOURCE: src/app/tr-services/token-game.service.ts, Lines 16-31
+% STATUS: VERIFIED - Logic identical to source
+% NOTE: Comments renumbered for didactic purposes; original comments differ slightly
 \begin{lstlisting}[language=TypeScript]
 fire(transition: Transition) {
     // 1. Check the rule
@@ -2609,6 +2618,9 @@ In \hyperref[chap:primitives]{Chapter 1}, we learned that input arcs store their
 
 To undo, we pop the last snapshot off the stack and force the current places to match those numbers.
 
+% SOURCE: src/app/tr-services/token-game.service.ts, Lines 45-51
+% STATUS: VERIFIED - Logic identical to source
+% NOTE: Comments renumbered for didactic purposes; original has different comment style
 \begin{lstlisting}[language=TypeScript]
 revertToPreviousState() {
     // 1. Get the last saved photo
@@ -2626,6 +2638,11 @@ revertToPreviousState() {
 
 This helper function takes a snapshot and applies it to the living objects.
 
+% SOURCE: src/app/tr-services/token-game.service.ts, Lines 72-82
+% STATUS: SIMPLIFIED - Error handling removed for clarity
+% NOTE: Original throws Error if place not found:
+%       if (tokens === undefined) { throw new Error("..."); } else { place.token = tokens; }
+%       Simplified version uses: if (tokens !== undefined) { place.token = tokens; }
 \begin{lstlisting}[language=TypeScript]
 private setGameState(state: Map<Place, number>) {
     for (let place of this.dataService.getPlaces()) {
@@ -2656,6 +2673,64 @@ But... manual playing is slow. What if we want to ask a computer: ``Is there a p
 
 \chapter{Backend Integrator (PlanningService)}
 \label{chap:planning}
+
+% =============================================================================
+% ARCHITECTURAL STATUS NOTICE (December 2025)
+% =============================================================================
+% This chapter documents the PlanningService as implemented in the Frontend.
+% However, the Backend (l3s-offshore-2) has evolved with a dual-service architecture
+% that creates integration gaps. See API_ARCHITECTURE.md in the backend repo.
+%
+% CRITICAL FINDINGS:
+%
+% 1. TWO INCOMPATIBLE API SERVICES EXIST IN BACKEND:
+%    - dto_srv (/dto/*): Nested JSON format, used by Frontend for defaults display
+%    - offshore_plan_srv (/offshore-plan/*): Flat JSON format, actual simulation
+%
+% 2. ENDPOINT STATUS:
+%    | Frontend Method              | Backend Endpoint              | Status           |
+%    |------------------------------|-------------------------------|------------------|
+%    | getDefaults()                | GET /dto/planning/defaults    | ✓ WORKS          |
+%    | runPlanning(data)            | POST /dto/planning            | ⚠ PLACEHOLDER    |
+%    | runSimpleSimulation(file)    | POST /simulation-petri-nets/* | ✓ WORKS (generic)|
+%
+% 3. THE runPlanning() PROBLEM:
+%    The Frontend's runPlanning() calls POST /dto/planning which returns MOCK DATA.
+%    The actual offshore simulation lives at /offshore-plan/calc-* endpoints,
+%    but these use an incompatible FLAT parameter format (MATLAB-style).
+%
+% 4. FORMAT INCOMPATIBILITY:
+%    - Frontend sends: { "scenario_definition": { "port_config": { "max_owt_components": 50 }}}
+%    - Backend expects: { "basePort_storageCapacity": 50 }
+%
+% 5. RECOMMENDATIONS FOR L3S-OFFSHORE-3:
+%    Option A: Add format conversion layer in Frontend before calling offshore_plan_srv
+%    Option B: Unify Backend to single format (see API_ARCHITECTURE.md recommendations)
+%    Option C: Implement real simulation in dto_srv (high effort)
+%
+% For full details, see: l3s-offshore-2/src/l3s_offshore_2/api/API_ARCHITECTURE.md
+% =============================================================================
+
+\begin{tcolorbox}[colback=yellow!10, colframe=orange!80!black, title={\textbf{⚠ Architectural Notice}}]
+\textbf{Integration Status (December 2025):} The Frontend's \texttt{PlanningService} is designed
+to communicate with the \texttt{l3s-offshore-2} backend. However, the backend contains
+\textbf{two separate API services} with \textbf{incompatible parameter formats}:
+
+\begin{itemize}
+    \item \texttt{dto\_srv} (\texttt{/dto/*}): Nested JSON --- used by Frontend for parameter display
+    \item \texttt{offshore\_plan\_srv} (\texttt{/offshore-plan/*}): Flat JSON --- actual simulation engine
+\end{itemize}
+
+\textbf{Current Limitations:}
+\begin{enumerate}
+    \item \texttt{GET /dto/planning/defaults} works correctly for displaying parameters.
+    \item \texttt{POST /dto/planning} returns \textbf{placeholder/mock data} only.
+    \item The actual simulation endpoints (\texttt{/offshore-plan/calc-*}) are \textbf{not connected} to the Frontend.
+    \item \texttt{runSimpleSimulation()} works for \textbf{generic Petri net simulation}, not offshore planning.
+\end{enumerate}
+
+For full architectural documentation, see \texttt{API\_ARCHITECTURE.md} in the backend repository.
+\end{tcolorbox}
 
 In the previous chapter, \hyperref[chap:tokengame]{Simulation Engine (TokenGameService)}, we built a logic engine that runs directly inside your browser. It allows you to manually click transitions and play the ``Token Game.''
 
@@ -2821,6 +2896,9 @@ Let's look at \texttt{src/app/tr-services/planning.service.ts} to see how the ``
 
 We don't hardcode the server address (like \texttt{localhost}). We use an environment variable so the app works in development and production.
 
+% SOURCE: src/app/tr-services/planning.service.ts, Lines 51-58
+% STATUS: VERIFIED - Matches source (apiUrl field omitted for focus)
+% NOTE: Original has additional private apiUrl field (L55) not shown here
 \begin{lstlisting}[language=TypeScript]
 @Injectable({ providedIn: 'root' })
 export class PlanningService {
@@ -2836,6 +2914,9 @@ export class PlanningService {
 
 This is the most important method. It prepares the ``Envelope'' (\texttt{FormData}). It accepts a real JavaScript \texttt{File} object.
 
+% SOURCE: src/app/tr-services/planning.service.ts, Lines 97-110
+% STATUS: VERIFIED - Logic identical to source
+% NOTE: Comments numbered for didactic purposes. Original has German comment about Content-Type header.
 \begin{lstlisting}[language=TypeScript]
 runSimpleSimulation(pnmlFile: File, runs: number = 1): Observable<any> {
     // 1. Create the envelope
@@ -2858,6 +2939,12 @@ runSimpleSimulation(pnmlFile: File, runs: number = 1): Observable<any> {
 
 Often, the file doesn't exist on the user's hard drive; it exists in the browser's memory (because the user just drew it). This helper converts the string to a file on the fly.
 
+% SOURCE: src/app/tr-services/planning.service.ts, Lines 118-133
+% STATUS: SIMPLIFIED - Shows idealized delegation pattern
+% NOTE: Original code does NOT delegate to runSimpleSimulation(); instead duplicates FormData logic.
+%       Original signature: runSimpleSimulationFromString(pnmlContent, runs=1, fileName='current_model.pnml')
+%       Original creates File and duplicates: formData.append('pnml_model', ...), then inline POST.
+%       This version shows cleaner pattern: create File, delegate to runSimpleSimulation(file, runs).
 \begin{lstlisting}[language=TypeScript]
 runSimpleSimulationFromString(content: string, runs: number = 1): Observable<any> {
     // Create a virtual file from the text string
@@ -2873,6 +2960,8 @@ runSimpleSimulationFromString(content: string, runs: number = 1): Observable<any
 
 Sometimes we just need to read data (GET), like asking the server ``What are valid parameters?''.
 
+% SOURCE: src/app/tr-services/planning.service.ts, Lines 65-68
+% STATUS: VERIFIED - Code matches source exactly
 \begin{lstlisting}[language=TypeScript]
 getDefaults(): Observable<any> {
     // Simple GET request
@@ -2885,6 +2974,12 @@ getDefaults(): Observable<any> {
 
 If the server crashes or the internet disconnects, we don't want the user to see a blank screen. We catch the error and format a nice message.
 
+% SOURCE: src/app/tr-services/planning.service.ts, Lines 172-186
+% STATUS: SIMPLIFIED - Error messages translated to English and logic condensed
+% NOTE: Original uses German messages: 'Unbekannter Fehler!', 'Fehler:', 'Serverfehler: Code ...'
+%       Original checks: if (error.error instanceof ErrorEvent) for client vs server distinction.
+%       Original appends JSON.stringify(error.error) for detailed server error objects.
+%       This version shows simplified English version focusing on network vs server errors.
 \begin{lstlisting}[language=TypeScript]
 private handleError(error: HttpErrorResponse) {
     let msg = 'Unknown Error';
@@ -2906,6 +3001,15 @@ Included in the project is \texttt{parameter-input.component.ts}. This is the UI
 
 It connects to the \texttt{PlanningService} in its \texttt{runSimulation} method.
 
+% SOURCE: src/app/tr-components/parameter-input/parameter-input.component.ts, Lines 205-265
+% STATUS: HEAVILY SIMPLIFIED - Shows core pattern only, omits ~80% of production code
+% NOTE: Original method is ~60 lines with complex validation and debugging:
+%       - Entry checks: if (!this.initialLoadDone) return; if (parameterFormGroup.invalid) return;
+%       - Performance timing: console.time('[PERF] SERVICE_CALL_runPlanning')
+%       - Data transformation: planningData = this.reconstructNestedObject(formGroup.value)
+%       - Response parsing: if (response.status === 'SUCCESS') ... else ... hasError logic
+%       - Change detection: this.cdr.detectChanges() called 3 times for UI updates
+%       This version shows the essential Observable pattern: service call + finalize + subscribe.
 \begin{lstlisting}[language=TypeScript]
 // Inside parameter-input.component.ts
 
@@ -2941,6 +3045,67 @@ The \textbf{PlanningService} is the gateway to power.
     \item It provides \textbf{Observables} so the UI can stay responsive while waiting.
     \item It enables \textbf{Isomorphic Simulation}: We can run simple tests in the browser (\hyperref[chap:tokengame]{TokenGameService}) or massive simulations on the server using the exact same logical model.
 \end{itemize}
+
+\section{Appendix: Backend API Reference}
+
+% =============================================================================
+% This section documents the actual backend endpoints available in l3s-offshore-2
+% as of December 2025. Derived from API_ARCHITECTURE.md in the backend repository.
+% =============================================================================
+
+For completeness, here is a reference of all backend endpoints available in the \texttt{l3s-offshore-2} backend:
+
+\subsection{Endpoints Used by This Frontend}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{Frontend Method} & \textbf{Endpoint} & \textbf{Status} \\
+\hline
+\texttt{getDefaults()} & \texttt{GET /dto/planning/defaults} & \textcolor{green!60!black}{Working} \\
+\texttt{runPlanning()} & \texttt{POST /dto/planning} & \textcolor{orange}{Placeholder} \\
+\texttt{runSimpleSimulation()} & \texttt{POST /simulation-petri-nets/simple-sim} & \textcolor{green!60!black}{Working} \\
+\texttt{getAvailableExampleModels()} & \texttt{GET /simulation-petri-nets/example-models} & \textcolor{green!60!black}{Working} \\
+\texttt{loadExampleModelByName()} & \texttt{GET /simulation-petri-nets/example-models/\{name\}} & \textcolor{green!60!black}{Working} \\
+\hline
+\end{tabular}
+\caption{Frontend methods and their corresponding backend endpoints}
+\end{table}
+
+\subsection{Available but Not Connected (Offshore Planning)}
+
+The backend provides fully functional offshore planning simulation at these endpoints, but the Frontend is \textbf{not currently connected} to them:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Endpoint} & \textbf{Purpose} \\
+\hline
+\texttt{GET /offshore-plan/get-tpn-cyclic-model} & Returns Petri net model definition \\
+\texttt{POST /offshore-plan/calc-operation-duration} & Calculates expected operation duration \\
+\texttt{POST /offshore-plan/calc-opt-install-cycle-single-vessel} & Single installation cycle simulation \\
+\texttt{POST /offshore-plan/calc-opt-schedule-single-vessel-to-horizon} & Full planning horizon simulation \\
+\texttt{POST /offshore-plan/display-single-vessel-schedule} & Generate PDF schedule visualization \\
+\hline
+\end{tabular}
+\caption{Backend offshore planning endpoints (not connected to Frontend)}
+\end{table}
+
+\begin{tcolorbox}[colback=blue!5, colframe=blue!60!black, title={\textbf{Integration Roadmap}}]
+To enable full offshore planning simulation from the Frontend:
+
+\begin{enumerate}
+    \item \textbf{Option A (Recommended):} Add a format conversion layer in the Frontend that transforms nested parameters to the flat MATLAB-compatible format expected by \texttt{/offshore-plan/*} endpoints.
+    
+    \item \textbf{Option B:} Implement the simulation logic directly in \texttt{dto\_srv} (Backend change), making \texttt{POST /dto/planning} return real results instead of mock data.
+    
+    \item \textbf{Option C:} Unify the Backend to use a single parameter format (requires coordinated Frontend + Backend changes).
+\end{enumerate}
+
+See \texttt{API\_ARCHITECTURE.md} in \texttt{l3s-offshore-2} for detailed recommendations.
+\end{tcolorbox}
 
 \vspace{1cm}
 \begin{center}

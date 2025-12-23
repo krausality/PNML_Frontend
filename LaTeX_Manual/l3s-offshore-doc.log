@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.7.31)  20 DEC 2025 18:43
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.7.31)  23 DEC 2025 17:21
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -414,6 +414,9 @@ Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
 \@lastruleclass=\count327
 \@thisrulewidth=\dimen190
 )
+(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcolorbox.sty
+Package: tcolorbox 2025/07/08 version 6.7.1 text color boxes
+
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/pgf/frontendlayer\tikz.st
 y (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/pgf/basiclayer\pgf.sty
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/pgf/utilities\pgfrcs.sty
@@ -712,6 +715,134 @@ File: pgfmodulematrix.code.tex 2023-01-15 v3.1.10 (3.1.10)
 libraries\tikzlibrarytopaths.code.tex
 File: tikzlibrarytopaths.code.tex 2023-01-15 v3.1.10 (3.1.10)
 )))
+(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/tools\verbatim.sty
+Package: verbatim 2024-01-22 v1.5x LaTeX2e package for verbatim enhancements
+\every@verbatim=\toks42
+\verbatim@line=\toks43
+\verbatim@in@stream=\read4
+)
+(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/environ\environ.sty
+Package: environ 2014/05/04 v0.3 A new way to define environments
+
+(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/trimspaces\trimspaces.sty
+Package: trimspaces 2009/09/17 v1.1 Trim spaces around a token list
+))
+\tcb@titlebox=\box71
+\tcb@upperbox=\box72
+\tcb@lowerbox=\box73
+\tcb@phantombox=\box74
+\c@tcbbreakpart=\count349
+\c@tcblayer=\count350
+\c@tcolorbox@number=\count351
+\l__tcobox_tmpa_box=\box75
+\l__tcobox_tmpa_dim=\dimen297
+\tcb@temp=\box76
+\tcb@temp=\box77
+\tcb@temp=\box78
+\tcb@temp=\box79
+
+(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbraster.code.
+tex
+Library (tcolorbox): 'tcbraster.code.tex' version '6.7.1'
+\c@tcbrastercolumn=\count352
+\c@tcbrasterrow=\count353
+\c@tcbrasternum=\count354
+\c@tcbraster=\count355
+)
+(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbskins.code.t
+ex
+Library (tcolorbox): 'tcbskins.code.tex' version '6.7.1'
+
+(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/tikzfill\tikzfill.image.s
+ty
+Package: tikzfill.image 2023/08/08 v1.0.1 Image filling library for TikZ
+
+(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/tikzfill\tikzfill-common.
+sty
+Package: tikzfill-common 2023/08/08 v1.0.1 Auxiliary code for tikzfill
+)
+(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/tikzfill\tikzlibraryfill.
+image.code.tex
+File: tikzlibraryfill.image.code.tex 2023/08/08 v1.0.1 Image filling library
+\l__tikzfill_img_box=\box80
+))
+(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbskinsjigsaw.
+code.tex
+Library (tcolorbox): 'tcbskinsjigsaw.code.tex' version '6.7.1'
+))
+(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbbreakable.co
+de.tex
+Library (tcolorbox): 'tcbbreakable.code.tex' version '6.7.1'
+(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/pdfcol\pdfcol.sty
+Package: pdfcol 2022-09-21 v1.7 Handle new color stacks for pdfTeX (HO)
+)
+Package pdfcol Info: New color stack `tcb@breakable' = 1 on input line 23.
+\tcb@testbox=\box81
+\tcb@totalupperbox=\box82
+\tcb@totallowerbox=\box83
+)
+(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbhooks.code.t
+ex
+Library (tcolorbox): 'tcbhooks.code.tex' version '6.7.1'
+)
+(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbtheorems.cod
+e.tex
+Library (tcolorbox): 'tcbtheorems.code.tex' version '6.7.1'
+)
+(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbfitting.code
+.tex
+Library (tcolorbox): 'tcbfitting.code.tex' version '6.7.1'
+\tcbfitdim=\dimen298
+\tcb@lowerfitdim=\dimen299
+\tcb@upperfitdim=\dimen300
+\tcb@cur@hbadness=\count356
+)
+(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcblistingsutf8
+.code.tex
+Library (tcolorbox): 'tcblistingsutf8.code.tex' version '6.7.1'
+
+(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcblistings.cod
+e.tex
+Library (tcolorbox): 'tcblistings.code.tex' version '6.7.1'
+
+(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcblistingscore
+.code.tex
+Library (tcolorbox): 'tcblistingscore.code.tex' version '6.7.1'
+
+(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbprocessing.c
+ode.tex
+Library (tcolorbox): 'tcbprocessing.code.tex' version '6.7.1'
+)
+\c@tcblisting=\count357
+))
+(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/listingsutf8\listingsutf8
+.sty
+Package: listingsutf8 2019-12-10 v1.5 Allow UTF-8 in listings input (HO)
+))
+(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbexternal.cod
+e.tex
+Library (tcolorbox): 'tcbexternal.code.tex' version '6.7.1'
+)
+(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbmagazine.cod
+e.tex
+Library (tcolorbox): 'tcbmagazine.code.tex' version '6.7.1'
+)
+(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbvignette.cod
+e.tex
+Library (tcolorbox): 'tcbvignette.code.tex' version '6.7.1'
+
+(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tikz/
+libraries\tikzlibraryfadings.code.tex
+File: tikzlibraryfadings.code.tex 2023-01-15 v3.1.10 (3.1.10)
+
+(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflibrar
+yfadings.code.tex
+File: pgflibraryfadings.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)))
+(C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/tcolorbox\tcbposter.code.
+tex
+Library (tcolorbox): 'tcbposter.code.tex' version '6.7.1'
+))
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tikz/
 libraries\tikzlibrarypositioning.code.tex
 File: tikzlibrarypositioning.code.tex 2023-01-15 v3.1.10 (3.1.10)
@@ -727,10 +858,10 @@ File: pgflibraryshapes.geometric.code.tex 2023-01-15 v3.1.10 (3.1.10)
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/libraries\pgflibrar
 yarrows.meta.code.tex
 File: pgflibraryarrows.meta.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgfarrowinset=\dimen297
-\pgfarrowlength=\dimen298
-\pgfarrowwidth=\dimen299
-\pgfarrowlinewidth=\dimen300
+\pgfarrowinset=\dimen301
+\pgfarrowlength=\dimen302
+\pgfarrowwidth=\dimen303
+\pgfarrowlinewidth=\dimen304
 )
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tikz/
 libraries\tikzlibraryfit.code.tex
@@ -743,36 +874,36 @@ File: tikzlibrarycalc.code.tex 2023-01-15 v3.1.10 (3.1.10)
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/generic/pgf/frontendlayer/tikz/
 libraries\tikzlibrarybackgrounds.code.tex
 File: tikzlibrarybackgrounds.code.tex 2023-01-15 v3.1.10 (3.1.10)
-\pgf@layerbox@background=\box71
-\pgf@layerboxsaved@background=\box72
+\pgf@layerbox@background=\box84
+\pgf@layerboxsaved@background=\box85
 )
-Package hyperref Info: Option `colorlinks' set `true' on input line 109.
+Package hyperref Info: Option `colorlinks' set `true' on input line 110.
 
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdfte
 x.def
 File: l3backend-pdftex.def 2025-06-09 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count349
+\l__color_backend_stack_int=\count358
 ) (l3s-offshore-doc.aux)
 \openout1 = `l3s-offshore-doc.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 121.
-LaTeX Font Info:    ... okay on input line 121.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 121.
-LaTeX Font Info:    ... okay on input line 121.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 121.
-LaTeX Font Info:    ... okay on input line 121.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 121.
-LaTeX Font Info:    ... okay on input line 121.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 121.
-LaTeX Font Info:    ... okay on input line 121.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 121.
-LaTeX Font Info:    ... okay on input line 121.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 121.
-LaTeX Font Info:    ... okay on input line 121.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 121.
-LaTeX Font Info:    ... okay on input line 121.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 121.
-LaTeX Font Info:    ... okay on input line 121.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 122.
+LaTeX Font Info:    ... okay on input line 122.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 122.
+LaTeX Font Info:    ... okay on input line 122.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 122.
+LaTeX Font Info:    ... okay on input line 122.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 122.
+LaTeX Font Info:    ... okay on input line 122.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 122.
+LaTeX Font Info:    ... okay on input line 122.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 122.
+LaTeX Font Info:    ... okay on input line 122.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 122.
+LaTeX Font Info:    ... okay on input line 122.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 122.
+LaTeX Font Info:    ... okay on input line 122.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 122.
+LaTeX Font Info:    ... okay on input line 122.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -811,17 +942,17 @@ LaTeX Font Info:    ... okay on input line 121.
 
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count350
-\scratchdimen=\dimen301
-\scratchbox=\box73
-\nofMPsegments=\count351
-\nofMParguments=\count352
-\everyMPshowfont=\toks42
-\MPscratchCnt=\count353
-\MPscratchDim=\dimen302
-\MPnumerator=\count354
-\makeMPintoPDFobject=\count355
-\everyMPtoPDFconversion=\toks43
+\scratchcounter=\count359
+\scratchdimen=\dimen305
+\scratchbox=\box86
+\nofMPsegments=\count360
+\nofMParguments=\count361
+\everyMPshowfont=\toks44
+\MPscratchCnt=\count362
+\MPscratchDim=\dimen306
+\MPnumerator=\count363
+\makeMPintoPDFobject=\count364
+\everyMPtoPDFconversion=\toks45
 )
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-bas
 e.sty
@@ -832,19 +963,19 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/00miktex\epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 ))
-Package hyperref Info: Link coloring ON on input line 121.
+Package hyperref Info: Link coloring ON on input line 122.
  (l3s-offshore-doc.out) (l3s-offshore-doc.out)
 \@outlinefile=\write4
 \openout4 = `l3s-offshore-doc.out'.
 
-\c@lstlisting=\count356
-LaTeX Font Info:    Trying to load font information for U+msa on input line 128
+\c@lstlisting=\count365
+LaTeX Font Info:    Trying to load font information for U+msa on input line 129
 .
 
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 128
+LaTeX Font Info:    Trying to load font information for U+msb on input line 129
 .
 
 (C:\Users\mpp\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
@@ -877,7 +1008,7 @@ l.41 ...alizer (PetriNetComponent)}{17}{chapter.4}
 [4]
 Chapter 1.
 
-Overfull \hbox (69.43375pt too wide) in paragraph at lines 171--172
+Overfull \hbox (69.43375pt too wide) in paragraph at lines 172--173
  [][] 
  []
 
@@ -890,13 +1021,13 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.1.1})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.186     \item \hyperref
+l.187     \item \hyperref
                          [chap:uiservice]{UI State Manager (UiService)}]
 
 [6]
 Chapter 2.
 LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <12> not available
-(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 241.
+(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 242.
 
 
 [7
@@ -906,18 +1037,18 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.2.1})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.245     \item \textbf
+l.246     \item \textbf
                        {Shape:} Always a Circle.]
 LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <9> not available
-(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 274.
+(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 275.
 
 
 [8]
-<figures/seq-arc-intersection.png, id=1034, 3147.76pt x 1774.63pt>
+<figures/seq-arc-intersection.png, id=1070, 3147.76pt x 1774.63pt>
 File: figures/seq-arc-intersection.png Graphic file (type png)
 <use figures/seq-arc-intersection.png>
 Package pdftex.def Info: figures/seq-arc-intersection.png  used on input line 3
-54.
+55.
 (pdftex.def)             Requested size: 455.24411pt x 256.65134pt.
 
 
@@ -926,7 +1057,7 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.2.2})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.367 \begin{lstlisting}[language=TypeScript]
+l.368 \begin{lstlisting}[language=TypeScript]
                                               <./figures/seq-arc-intersection.p
 ng>]
 
@@ -940,7 +1071,7 @@ Chapter 3.
 
 ]
 LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <10.95> not available
-(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 511.
+(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 512.
 
 
 [13
@@ -948,12 +1079,12 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.3.1})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.572 \begin{lstlisting}[language=TypeScript]
+l.573 \begin{lstlisting}[language=TypeScript]
                                              ]
-<figures/seq-delete-place.png, id=1149, 3147.76pt x 1758.57pt>
+<figures/seq-delete-place.png, id=1185, 3147.76pt x 1758.57pt>
 File: figures/seq-delete-place.png Graphic file (type png)
 <use figures/seq-delete-place.png>
-Package pdftex.def Info: figures/seq-delete-place.png  used on input line 624.
+Package pdftex.def Info: figures/seq-delete-place.png  used on input line 625.
 (pdftex.def)             Requested size: 455.24411pt x 254.3287pt.
 
 
@@ -962,7 +1093,7 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.3.2})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.633 \subsection
+l.634 \subsection
                  {The Storage and Safety} <./figures/seq-delete-place.png>]
 
 [15]
@@ -980,12 +1111,12 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.4.1})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.807  
+l.808  
           </g>]
-<figures/seq-create-place.png, id=1245, 3147.76pt x 2059.695pt>
+<figures/seq-create-place.png, id=1281, 3147.76pt x 2059.695pt>
 File: figures/seq-create-place.png Graphic file (type png)
 <use figures/seq-create-place.png>
-Package pdftex.def Info: figures/seq-create-place.png  used on input line 887.
+Package pdftex.def Info: figures/seq-create-place.png  used on input line 888.
 (pdftex.def)             Requested size: 455.24411pt x 297.87813pt.
 
 
@@ -996,7 +1127,7 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.4.2})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.921  
+l.922  
               'editable': isPlaceEditable(place),      <!-- Only if editable...
  <./figures/seq-create-place.png>]
 
@@ -1013,12 +1144,12 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.5.1})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.1080  
+l.1081  
            this.pnmlService.writePNML();]
-<figures/seq-pnml-import.png, id=1363, 3147.76pt x 1698.345pt>
+<figures/seq-pnml-import.png, id=1399, 3147.76pt x 1698.345pt>
 File: figures/seq-pnml-import.png Graphic file (type png)
 <use figures/seq-pnml-import.png>
-Package pdftex.def Info: figures/seq-pnml-import.png  used on input line 1149.
+Package pdftex.def Info: figures/seq-pnml-import.png  used on input line 1150.
 (pdftex.def)             Requested size: 455.24411pt x 245.6188pt.
 
 
@@ -1029,7 +1160,7 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.5.2})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.1189  
+l.1190  
            const places = this.parsePnmlPlaces(pnmlPlaces); <./figures/seq-pnml
 -import.png>]
 
@@ -1048,13 +1179,13 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.6.1})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.1385  
+l.1386  
            // 2. Tell the visualizer to update]
-<figures/seq-spring-embedder.png, id=1497, 3147.76pt x 2216.28pt>
+<figures/seq-spring-embedder.png, id=1533, 3147.76pt x 2216.28pt>
 File: figures/seq-spring-embedder.png Graphic file (type png)
 <use figures/seq-spring-embedder.png>
 Package pdftex.def Info: figures/seq-spring-embedder.png  used on input line 14
-20.
+21.
 (pdftex.def)             Requested size: 455.24411pt x 320.52383pt.
 
 
@@ -1063,7 +1194,7 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.6.2})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.1433 \begin{lstlisting}[language=TypeScript]
+l.1434 \begin{lstlisting}[language=TypeScript]
                                                <./figures/seq-spring-embedder.p
 ng>]
 
@@ -1072,7 +1203,7 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.6.3})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.1502 N
+l.1503 N
         otice how the \texttt{applySugiyamaLayout} method acts as a manager ...
 ]
 
@@ -1081,24 +1212,24 @@ Chapter 7.
 
 Package pgf Warning: Returning node center instead of a point on node border. D
 id you specify a point identical to the center of node ``update''? on input lin
-e 1609.
+e 1610.
 
 
 Package pgf Warning: Returning node center instead of a point on node border. D
 id you specify a point identical to the center of node ``update''? on input lin
-e 1609.
+e 1610.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 1615.
+(hyperref)                removing `math shift' on input line 1616.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\Delta' on input line 1615.
+(hyperref)                removing `\Delta' on input line 1616.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 1615.
+(hyperref)                removing `math shift' on input line 1616.
 
 
 
@@ -1109,7 +1240,7 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.7.1})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.1619     \item F
+l.1620     \item F
                   rame 1: Mouse at 100.]
 
 [34
@@ -1117,12 +1248,12 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.7.2})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.1690 \begin{lstlisting}[language=TypeScript]
+l.1691 \begin{lstlisting}[language=TypeScript]
                                               ]
-<figures/seq-drag-node.png, id=1620, 3147.76pt x 2272.49pt>
+<figures/seq-drag-node.png, id=1656, 3147.76pt x 2272.49pt>
 File: figures/seq-drag-node.png Graphic file (type png)
 <use figures/seq-drag-node.png>
-Package pdftex.def Info: figures/seq-drag-node.png  used on input line 1730.
+Package pdftex.def Info: figures/seq-drag-node.png  used on input line 1731.
 (pdftex.def)             Requested size: 455.24411pt x 328.65306pt.
 
 
@@ -1131,7 +1262,7 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.7.3})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.1744 
+l.1745 
         <./figures/seq-drag-node.png>]
 
 [36]
@@ -1143,10 +1274,10 @@ Chapter 8.
 [38
 
 ]
-<figures/seq-zoom-in.png, id=1721, 3147.76pt x 1244.65pt>
+<figures/seq-zoom-in.png, id=1757, 3147.76pt x 1244.65pt>
 File: figures/seq-zoom-in.png Graphic file (type png)
 <use figures/seq-zoom-in.png>
-Package pdftex.def Info: figures/seq-zoom-in.png  used on input line 1962.
+Package pdftex.def Info: figures/seq-zoom-in.png  used on input line 1963.
 (pdftex.def)             Requested size: 455.24411pt x 180.00432pt.
 
 
@@ -1155,7 +1286,7 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.8.1})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.1966 
+l.1967 
        ]
 
 [40
@@ -1163,9 +1294,9 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.8.2})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.2010 
+l.2011 
         <./figures/seq-zoom-in.png>]
-Overfull \hbox (65.07599pt too wide) in paragraph at lines 2064--2065
+Overfull \hbox (65.07599pt too wide) in paragraph at lines 2065--2066
 []\T1/cmr/m/n/10.95 We solve this with the \T1/cmr/bx/n/10.95 Svg-Co-or-di-nate
 sSer-vice \T1/cmr/m/n/10.95 (\T1/cmtt/m/n/10.95 src/app/tr-services/svg-coordin
 ates-service.ts\T1/cmr/m/n/10.95 ).
@@ -1186,15 +1317,15 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.9.1})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.2162     \item \textbf
+l.2163     \item \textbf
                         {Simulation:} The playback mode.]
 
 [44]
-<figures/seq-tool-selection.png, id=1847, 3147.76pt x 1762.585pt>
+<figures/seq-tool-selection.png, id=1883, 3147.76pt x 1762.585pt>
 File: figures/seq-tool-selection.png Graphic file (type png)
 <use figures/seq-tool-selection.png>
 Package pdftex.def Info: figures/seq-tool-selection.png  used on input line 226
-7.
+8.
 (pdftex.def)             Requested size: 455.24411pt x 254.90936pt.
 
 
@@ -1203,7 +1334,7 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.9.2})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.2282  
+l.2283  
            // 1. Default start state is 'Build' <./figures/seq-tool-selection.p
 ng>]
 
@@ -1212,7 +1343,7 @@ ng>]
 [47]
 Chapter 10.
 
-Overfull \hbox (26.66118pt too wide) in paragraph at lines 2410--2411
+Overfull \hbox (26.66118pt too wide) in paragraph at lines 2411--2412
  [][] 
  []
 
@@ -1227,18 +1358,18 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.10.1})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.2468 \begin{lstlisting}[language=TypeScript]
+l.2469 \begin{lstlisting}[language=TypeScript]
                                               
 pdfTeX warning (ext4): destination with the same identifier (name{figure.10.2})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.2468 \begin{lstlisting}[language=TypeScript]
+l.2469 \begin{lstlisting}[language=TypeScript]
                                               ]
-<figures/seq-token-fire.png, id=1928, 3147.76pt x 1573.88pt>
+<figures/seq-token-fire.png, id=1964, 3147.76pt x 1573.88pt>
 File: figures/seq-token-fire.png Graphic file (type png)
 <use figures/seq-token-fire.png>
-Package pdftex.def Info: figures/seq-token-fire.png  used on input line 2538.
+Package pdftex.def Info: figures/seq-token-fire.png  used on input line 2539.
 (pdftex.def)             Requested size: 455.24411pt x 227.61838pt.
 
 
@@ -1249,11 +1380,11 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.10.3})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.2583 \begin{lstlisting}[language=TypeScript]
+l.2592 \begin{lstlisting}[language=TypeScript]
                                                <./figures/seq-token-fire.png>]
 
 [52]
-Underfull \hbox (badness 10000) in paragraph at lines 2648--2649
+Underfull \hbox (badness 10000) in paragraph at lines 2665--2666
 []\T1/cmr/m/n/10.95 It di-rectly ma-nip-u-lates the to-kens in the \T1/cmtt/m/n
 /10.95 DataService\T1/cmr/m/n/10.95 , which causes the
  []
@@ -1262,6 +1393,19 @@ Underfull \hbox (badness 10000) in paragraph at lines 2648--2649
 
 [53]
 Chapter 11.
+
+l3s-offshore-doc.tex:2714: LaTeX Error: Unicode character ⚠ (U+26A0)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.2714 ...tle={\textbf{⚠ Architectural Notice}}]
+                                                  
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
 
 
 [54
@@ -1273,45 +1417,79 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.11.1})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.2761  
-               },]
-<figures/seq-backend-simulation.png, id=2060, 3147.76pt x 1919.17pt>
+l.2817 \begin{lstlisting}[language=TypeScript]
+                                              ]
+<figures/seq-backend-simulation.png, id=2088, 3147.76pt x 1919.17pt>
 File: figures/seq-backend-simulation.png Graphic file (type png)
 <use figures/seq-backend-simulation.png>
 Package pdftex.def Info: figures/seq-backend-simulation.png  used on input line
- 2811.
+ 2886.
 (pdftex.def)             Requested size: 455.24411pt x 277.55505pt.
 
 
-[56
+[56]
+
+[57
 pdfTeX warning (ext4): destination with the same identifier (name{figure.11.2})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.2824 \begin{lstlisting}[language=TypeScript]
-                                               <./figures/seq-backend-simulatio
-n.png>]
-
-[57]
+l.2927  
+           formData.append('num_runs', runs.toString()); <./figures/seq-backend
+-simulation.png>]
 
 [58]
+Overfull \hbox (60.33101pt too wide) in paragraph at lines 3062--3073
+ [][] 
+ []
 
-[59] (l3s-offshore-doc.aux)
+
+Overfull \hbox (106.85991pt too wide) in paragraph at lines 3082--3093
+ [][] 
+ []
+
+
+
+[59
+pdfTeX warning (ext4): destination with the same identifier (name{table.11.1}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.3094 \end{table}
+                  ]
+
+[60
+pdfTeX warning (ext4): destination with the same identifier (name{table.11.2}) 
+has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.3132 \end{document}
+                     ] (l3s-offshore-doc.aux)
  ***********
 LaTeX2e <2025-06-01> patch level 1
 L3 programming layer <2025-07-19>
  ***********
-Package rerunfilecheck Info: File `l3s-offshore-doc.out' has not changed.
-(rerunfilecheck)             Checksum: CC4B79BE7CCD1C136694E739D74F01DB;36712.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+
+Package rerunfilecheck Warning: File `l3s-offshore-doc.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `l3s-offshore-doc.out':
+(rerunfilecheck)             Before: CC4B79BE7CCD1C136694E739D74F01DB;36712
+(rerunfilecheck)             After:  ACC12C2DF8A5FBDF416582DE13A6A940;37487.
  ) 
 Here is how much of TeX's memory you used:
- 27453 strings out of 468149
- 499239 string characters out of 5432050
- 1315521 words of memory out of 5000000
- 54486 multiletter control sequences out of 15000+600000
+ 32592 strings out of 468149
+ 647211 string characters out of 5432050
+ 1493912 words of memory out of 5000000
+ 59528 multiletter control sequences out of 15000+600000
  648244 words of font info for 92 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 84i,8n,87p,588b,2115s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 98i,8n,101p,588b,2115s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <C:\Users\mpp\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt09
 00.pk> <C:\Users\mpp\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ec
 rm0600.pk> <C:\Users\mpp\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi60
@@ -1333,9 +1511,9 @@ pData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1728.pk><C:/Users/mpp
 rs/mpp/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><
 C:/Users/mpp/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy1
 0.pfb>
-Output written on l3s-offshore-doc.pdf (60 pages, 1983407 bytes).
+Output written on l3s-offshore-doc.pdf (61 pages, 2001337 bytes).
 PDF statistics:
- 3188 PDF objects out of 3580 (max. 8388607)
- 1157 named destinations out of 1200 (max. 500000)
- 1551 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 3248 PDF objects out of 3580 (max. 8388607)
+ 1170 named destinations out of 1200 (max. 500000)
+ 1695 words of extra memory for PDF output out of 10000 (max. 10000000)
 
