@@ -1,0 +1,17 @@
+sequenceDiagram
+    participant UI as User Interface
+    participant DS as Data Service
+    participant AR as Array Logic
+    participant OBS as Observable (Town Crier)
+
+    UI->>DS: removePlace(targetPlace)
+    Note right of UI: User clicked Delete
+    
+    DS->>AR: Find and remove Arcs attached to place
+    AR->>AR: Remove Place from _places array
+    
+    DS->>OBS: triggerDataChanged()
+    Note right of DS: Shout into Megaphone!
+    
+    OBS-->>UI: Notify "Data Changed!"
+    UI->>UI: Redraw Screen (Place is gone)

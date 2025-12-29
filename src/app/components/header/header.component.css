@@ -1,15 +1,19 @@
 /* 
   Hauptcontainer für den Banner. 
-  Flexbox wird für eine robuste und flexible Ausrichtung von Titel und Logos verwendet.
+  Flexbox wird für eine robuste und flexible Ausrichtung verwendet.
   - display: flex: Aktiviert das Flexbox-Layout.
-  - justify-content: space-between: Platziert den Titel links und die Logos rechts mit maximalem Abstand.
+  - justify-content: flex-start: Platziert den Titel linksbündig.
   - align-items: center: Zentriert die Elemente vertikal.
   - padding: Sorgt für Innenabstand.
   - border-bottom: Erzeugt eine subtile Trennlinie zum Rest der App.
+  
+  HINWEIS: Logos wurden aus dem Header entfernt (siehe footer.component).
+  Die justify-content Eigenschaft wurde von 'space-between' auf 'flex-start' geändert,
+  da keine rechte Spalte mehr benötigt wird.
 */
 .banner-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   padding: 8px 24px;
   background-color: #f8f9fa; /* Ein heller, neutraler Hintergrund */
@@ -29,20 +33,20 @@
 }
 
 /* 
-  Flexbox-Container für die Logos, um deren Abstand und Ausrichtung zu steuern.
+  HINWEIS: Die folgenden Logo-Styles werden nicht mehr im Header verwendet,
+  aber für zukünftige Referenz beibehalten (auskommentiert).
+  Die Logo-Implementierung befindet sich nun in footer.component.css.
 */
+
+/*
 .logo-container {
   display: flex;
   align-items: center;
-  gap: 20px; /* Abstand zwischen den Logos */
+  gap: 20px;
 }
 
-/* 
-  Einheitliche Größe und Stil für alle Logos im Banner.
-  - max-height: Stellt sicher, dass die Logos nicht zu hoch werden und das Header-Layout sprengen.
-  - object-fit: contain: Sorgt dafür, dass das Logo-Seitenverhältnis beibehalten wird.
-*/
 .logo-img {
   max-height: 40px;
   object-fit: contain;
 }
+*/

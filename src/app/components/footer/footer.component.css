@@ -1,24 +1,198 @@
-.footer-font {
+/* ============================================================================
+   FOOTER COMPONENT STYLES
+   ============================================================================
+   
+   Dieser Footer ist in zwei Hauptsektionen unterteilt:
+   1. Logo-Sektion (oben/links): Zeigt Universitäts- und Forschungszentrum-Logos
+   2. Credits-Sektion (unten/rechts): Zeigt Entwickler-Credits und rechtliche Links
+   
+   Design-Rationale:
+   - Logos wurden vom Header hierher verschoben für bessere Sichtbarkeit
+   - Logo-Größe: 60px (150% der ursprünglichen 40px aus dem Header)
+   - Responsive Verhalten für mobile Geräte implementiert
+   ============================================================================ */
+
+/* 
+   Haupt-Container für den gesamten Footer.
+   Verwendet Flexbox für flexible Anordnung der Sektionen.
+*/
+.footer-container {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    gap: 20px;
+}
+
+/* ============================================================================
+   LOGO-SEKTION STYLES
+   ============================================================================ */
+
+/* 
+   Container für die Logo-Sektion.
+   Angular FlexLayout-Direktiven (fxLayout, fxLayoutAlign, fxLayoutGap) werden
+   in der HTML-Template verwendet für responsive Verhalten.
+   
+   Hinweis: fxLayout.xs="column" in HTML sorgt für vertikale Stapelung auf
+   mobilen Geräten (< 600px).
+*/
+.footer-logo-section {
+    margin-bottom: 10px;
+    padding: 10px 0;
+}
+
+/* 
+   Link-Container für jedes Logo.
+   - display: inline-block: Ermöglicht Größenanpassung und Hover-Effekte
+   - transition: Sanfte Animation bei Hover
+   - cursor: pointer wird automatisch durch <a>-Tag gesetzt
+*/
+.footer-logo-link {
+    display: inline-block;
+    text-decoration: none;
+    transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
+}
+
+/* 
+   Hover-Effekt für Logo-Links.
+   - transform: scale(1.05): Leichte Vergrößerung beim Hovern (5%)
+   - opacity: 0.8: Leichte Transparenz für visuelles Feedback
+   
+   Accessibility-Hinweis: Diese Effekte sind auch für Tastatur-Navigation
+   über :focus sichtbar (siehe unten).
+*/
+.footer-logo-link:hover {
+    transform: scale(1.05);
+    opacity: 0.8;
+}
+
+/* 
+   Focus-State für Tastatur-Navigation (Accessibility).
+   Gleicher visueller Effekt wie :hover für konsistente UX.
+*/
+.footer-logo-link:focus {
+    transform: scale(1.05);
+    opacity: 0.8;
+    outline: 2px solid #112F4A; /* L3S-Dunkelblau für Fokus-Ring */
+    outline-offset: 4px;
+}
+
+/* 
+   Logo-Bild Styles.
+   - max-height: 60px: 150% der ursprünglichen Header-Größe (40px) für
+     bessere Sichtbarkeit gemäß Anforderung
+   - object-fit: contain: Erhält das Seitenverhältnis der SVG-Logos
+   - display: block: Verhindert unerwünschte Inline-Spacing-Probleme
+*/
+.footer-logo-img {
+    max-height: 60px;
+    height: auto;
+    width: auto;
+    object-fit: contain;
+    display: block;
+}
+
+/* ============================================================================
+   CREDITS-SEKTION STYLES
+   ============================================================================ */
+
+/* 
+   Container für die Credits-Sektion.
+   Behält das rechtsbündige Layout der ursprünglichen Implementation bei.
+*/
+.footer-credits-section {
     text-align: right;
     font-weight: 300;
-    font-size: 14px; /* Etwas kleiner für Credits */
+    font-size: 14px;
     margin: 0;
     line-height: 1.4;
-    color: #555; /* Etwas dezenter */
-    padding: 10px 20px; /* Add some padding */
+    color: #555;
 }
 
-.footer-font a {
+/* 
+   Link-Styles in der Credits-Sektion.
+*/
+.footer-credits-section a {
     color: #337ab7; /* Standard-Linkfarbe */
     text-decoration: none;
+    transition: text-decoration 0.2s ease-in-out;
 }
 
-.footer-font a:hover {
+.footer-credits-section a:hover {
     text-decoration: underline;
 }
 
-/* Optional: Add specific styles for the credits sections */
-.footer-font > div {
+/* 
+   Fokus-State für Links (Accessibility).
+*/
+.footer-credits-section a:focus {
+    outline: 2px solid #337ab7;
+    outline-offset: 2px;
+    text-decoration: underline;
+}
+
+/* 
+   Abstände zwischen Credits-Elementen.
+*/
+.footer-credits-section > div {
     margin-bottom: 5px;
+}
+
+/* ============================================================================
+   RESPONSIVE DESIGN - MOBILE GERÄTE
+   ============================================================================
+   
+   Media Queries für Bildschirme < 768px (Tablets und Smartphones).
+   Angular FlexLayout behandelt bereits < 600px durch fxLayout.xs="column",
+   aber zusätzliche Anpassungen werden hier vorgenommen.
+   ============================================================================ */
+
+@media screen and (max-width: 767px) {
+    /* 
+       Verkleinere Logos auf mobilen Geräten für bessere Darstellung.
+       48px entspricht 120% der ursprünglichen Header-Größe.
+    */
+    .footer-logo-img {
+        max-height: 48px;
+    }
+
+    /* 
+       Zentriere Footer-Container auf mobilen Geräten.
+    */
+    .footer-container {
+        align-items: center;
+        text-align: center;
+    }
+
+    /* 
+       Zentriere auch die Credits-Sektion auf mobilen Geräten.
+    */
+    .footer-credits-section {
+        text-align: center;
+    }
+
+    /* 
+       Reduziere Gap zwischen Logo-Sektion und Credits auf mobilen Geräten.
+    */
+    .footer-logo-section {
+        margin-bottom: 15px;
+    }
+}
+
+/* 
+   Extra kleine Geräte (< 480px): Weitere Anpassungen.
+*/
+@media screen and (max-width: 479px) {
+    .footer-logo-img {
+        max-height: 40px; /* Zurück zur ursprünglichen Header-Größe */
+    }
+
+    .footer-container {
+        padding: 15px 10px;
+        gap: 15px;
+    }
+
+    .footer-credits-section {
+        font-size: 12px; /* Etwas kleinere Schrift für sehr kleine Displays */
+    }
 }
 

@@ -1,6 +1,6 @@
 .button-container {
     display: inline-flex;
-    height: 50px;
+    align-items: center;
 }
 
 .float-right {

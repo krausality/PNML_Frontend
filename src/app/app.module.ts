@@ -46,6 +46,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatCheckboxModule } from '@angular/material/checkbox'; // Import MatCheckboxModule
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -76,6 +77,7 @@ import { OffshoreViewComponent } from './tr-components/offshore-view/offshore-vi
 import { PlaybackControlsComponent } from './tr-components/playback-controls/playback-controls.component'; // Import PlaybackControlsComponent
 import { TransitionFiringInfoPopupComponent } from './tr-components/transition-firing-info-popup/transition-firing-info-popup.component';
 import { HeaderComponent } from './components/header/header.component';
+import { DataPersistenceInfoDialogComponent } from './tr-components/data-persistence-info-dialog/data-persistence-info-dialog.component'; // Import DataPersistenceInfoDialogComponent
 
 @NgModule({
     declarations: [
@@ -98,7 +100,9 @@ import { HeaderComponent } from './components/header/header.component';
         SpeedControlComponent, // Add SpeedControlComponent
         OffshoreViewComponent,
         PlaybackControlsComponent, // Add PlaybackControlsComponent
-        TransitionFiringInfoPopupComponent, HeaderComponent,
+        TransitionFiringInfoPopupComponent,
+        HeaderComponent,
+        DataPersistenceInfoDialogComponent, // Add DataPersistenceInfoDialogComponent
     ],
     imports: [
         BrowserModule,
@@ -113,6 +117,7 @@ import { HeaderComponent } from './components/header/header.component';
         MatSelectModule,
         MatTabsModule,
         MatDialogModule,
+        MatCheckboxModule, // Add MatCheckboxModule
         MatListModule,
         MatMenuModule,
         MatTooltipModule,

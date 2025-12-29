@@ -31,20 +31,55 @@ import { Observable, Subscription } from 'rxjs';
     templateUrl: './button-bar.component.html',
     styleUrls: ['./button-bar.component.css'],
 })
+/**
+ * Primary top-level control surface for the Petri net application.
+ *
+ * The button bar orchestrates high-level interactions across tabs (Build, Simulation,
+ * Analyze, etc.) and acts as the composition root for cross-cutting services. It exposes
+ * commands for editing, simulation, export, layout, and analysis features, while keeping
+ * stateful coordination (such as tab selection, simulation triggers, and background tasks)
+ * centralized in one component for easier maintenance.
+ */
 export class ButtonBarComponent implements OnInit, OnDestroy {
+    /** Enum shortcuts for template readability (avoid fully qualified access). */
     readonly TabState = TabState;
+    /** Enum shortcut for button tool states (used in template bindings). */
     readonly ButtonState = ButtonState;
+    /** Enum shortcut that feeds code editor format toggle buttons. */
     readonly CodeEditorFormat = CodeEditorFormat;
 
+    /** Standardized Material tooltip delay shared across icon buttons. */
     readonly showTooltipDelay = showTooltipDelay;
 
-    public petrinetCss: string = '';    public availableModels$: Observable<string[]> | undefined;
+    /** Optional inline CSS overrides that can be injected from host contexts. */
+    public petrinetCss: string = '';
+    /** Lazy-loaded collection of example PNML models provided by the backend. */
+    public availableModels$: Observable<string[]> | undefined;
+    /** Loading guard for example models dropdown; prevents redundant requests/UI flicker. */
     public isLoadingModels = false;
-    public numberOfSimulations: number = 10; // Default value for multi-run simulations
+    /** Default number of runs for multi-run simulation workflows. */
+    public numberOfSimulations: number = 10;
+    /** Signals when multi-run simulations are in progress to disable UI appropriately. */
     public isMultiRunInProgress = false;
+    /** Tracks whether we have results to offer for download in the Simulation tab. */
     public hasMultiRunResults = false;
+    /** Aggregates subscription for multi-run results stream. */
     private resultsSubscription: Subscription | undefined;
+    /** Watches model mutations so we can lazily refresh simulation data. */
+    private dataChangedSubscription: Subscription | undefined;
+    /** Manages the lifecycle of the pending automatic simulation observable. */
+    private autoSimulationSubscription: Subscription | undefined;
+    /** Ensures only one auto-simulation runs at a time, preventing duplicate backend calls. */
+    private isAutoSimulationInProgress = false;
+    /** Dirty bit indicating the Build/Code tabs modified the net since last simulation. */
+    private netDirty = true;
 
+    /**
+     * Constructor wires together all collaborating services. While a long argument list may
+     * appear intimidating, each dependency corresponds to a feature group surfaced directly
+     * in the button bar (export, layouting, simulation, dialogs, etc.). Keeping the wiring in
+     * one place reduces indirection and eases reasoning about cross-service interactions.
+     */
     constructor(
         protected uiService: UiService,
         protected exportJsonDataService: ExportJsonDataService,
@@ -57,9 +92,17 @@ export class ButtonBarComponent implements OnInit, OnDestroy {
         protected placeInvariantsService: PlaceInvariantsService,
         private layoutSpringEmebdderService: LayoutSpringEmbedderService,
         private layoutSugiyamaService: LayoutSugiyamaService,
-        private planningService: PlanningService // Inject PlanningService
+        private planningService: PlanningService
     ) {}
 
+    /**
+     * Initializes asynchronous data sources and subscriptions that power the button bar.
+     *
+     * Responsibilities:
+     *  - Kick off loading of example models so the Simulation tab menu is ready when opened.
+     *  - Track availability of multi-run results for enabling/disabling download buttons.
+     *  - Observe Petri net edits in Build/Code tabs to mark simulation results as stale.
+     */
     ngOnInit(): void {
         this.isLoadingModels = true;
         this.availableModels$ = this.planningService.getAvailableExampleModels();
@@ -71,17 +114,39 @@ export class ButtonBarComponent implements OnInit, OnDestroy {
         this.resultsSubscription = this.uiService.simulationResultsMultiRun$.subscribe(results => {
             this.hasMultiRunResults = !!results; // true wenn results nicht null/undefined, sonst false
         });
+
+        this.dataChangedSubscription = this.dataService.dataChanged$.subscribe(() => {
+            if ([this.TabState.Build, this.TabState.Code].includes(this.uiService.tab)) {
+                this.netDirty = true;
+            }
+        });
     }
 
+    /**
+     * Lifecycle clean-up to prevent memory leaks when the component is destroyed, such as during
+     * module teardown or embedded reuse. Always guard unsubscribes because Angular may call this
+     * before `ngOnInit` completes in some edge cases.
+     */
     ngOnDestroy(): void {
         if (this.resultsSubscription) {
             this.resultsSubscription.unsubscribe();
         }
+        if (this.dataChangedSubscription) {
+            this.dataChangedSubscription.unsubscribe();
+        }
+        if (this.autoSimulationSubscription) {
+            this.autoSimulationSubscription.unsubscribe();
+        }
     }
 
-    // Gets called when a tab is clicked
-    // Sets the "tab" property in the uiService
-    // Empties the "button" property in the uiService
+    /**
+     * Central tab routing entry point invoked by Angular Material's tab change events.
+     *
+     * The method updates global UI state, triggers feature-specific side-effects (e.g. clearing
+     * token history when returning to Build, resetting inequalities for Analyze, or lazily running
+     * simulations), and ensures transient selections are cleared. The deliberate switch statement
+     * keeps the control flow explicit and easy to extend when new tabs appear.
+     */
     tabClicked(tab: string) {
         this.uiService.tabTransitioning = true;
 
@@ -95,6 +160,9 @@ export class ButtonBarComponent implements OnInit, OnDestroy {
                 break;
             case 'simulation':
                 this.uiService.tab = this.TabState.Simulation;
+                this.uiService.setSimulationMode('automatic');
+                this.tokenGameService.clearGameHistory();
+                this.ensureSimulationUpToDate();
                 break;
             case 'save':
                 this.uiService.tab = this.TabState.Save;
@@ -118,32 +186,100 @@ export class ButtonBarComponent implements OnInit, OnDestroy {
         }, 1100);
     }
 
-    // Gets called when a button is clicked that needs its state saved globally
-    // Sets the "button" property in the uiService
+    /**
+     * Propagates tool-button selections to the shared UiService so other components stay in sync.
+     * This keeps the active tool canonical even when the same control surface appears in multiple
+     * views (e.g. overlays, dialogs). The separation also simplifies unit-testing downstream consumers.
+     */
     buttonClicked(button: ButtonState) {
         this.uiService.button = button;
         this.uiService.buttonState$.next(button);
     }
 
+    /** Opens the action management dialog for editing transition labels and shortcuts. */
     openActionDialog() {
         this.matDialog.open(ManageActionsPopupComponent);
     }
 
+    /**
+     * Ensures the Simulation tab reflects the latest Petri net model.
+     *
+     * Strategy:
+     *  - Skip work if another refresh is running or the net is known to be up to date.
+     *  - Clear simulation state when the net is empty/invalid to avoid stale displays.
+     *  - Otherwise, serialize PNML and invoke the backend simple simulation endpoint.
+     *  - Handle both success and failure paths, resetting the dirty bit in all cases so we do not
+     *    hammer the backend unnecessarily.
+     */
+    private ensureSimulationUpToDate(): void {
+        if (!this.netDirty || this.isAutoSimulationInProgress) {
+            return;
+        }
+
+        if (this.dataService.isEmpty()) {
+            this.uiService.simulationResults$.next(null);
+            this.uiService.resetSimulationSteps();
+            this.netDirty = false;
+            return;
+        }
+
+        const pnmlContent = this.pnmlService.getPNML();
+        if (!pnmlContent || !pnmlContent.trim()) {
+            this.uiService.simulationResults$.next(null);
+            this.uiService.resetSimulationSteps();
+            this.netDirty = false;
+            return;
+        }
+
+        this.isAutoSimulationInProgress = true;
+        if (this.autoSimulationSubscription) {
+            this.autoSimulationSubscription.unsubscribe();
+        }
+
+        this.autoSimulationSubscription = this.planningService
+            .runSimpleSimulationFromString(pnmlContent, 1, 'current_model.pnml')
+            .subscribe({
+                next: (results) => {
+                    if (results && results.results) {
+                        this.uiService.simulationResults$.next(results.results);
+                        this.netDirty = false;
+                    } else {
+                        this.matDialog.open(ErrorPopupComponent, {
+                            data: { error: 'Simulation API call successful, but "results" property is missing.' },
+                        });
+                        this.netDirty = false;
+                    }
+                    this.isAutoSimulationInProgress = false;
+                },
+                error: (err) => {
+                    console.error('Automatic simulation failed:', err);
+                    this.matDialog.open(ErrorPopupComponent, {
+                        data: { error: 'Simulation API call failed. Check console for errors.' },
+                    });
+                    this.netDirty = false;
+                    this.isAutoSimulationInProgress = false;
+                },
+            });
+    }
+
+    /** Displays a confirmation dialog that clears the entire Petri net. */
     openClearDialog() {
         this.matDialog.open(ClearPopupComponent);
     }
 
+    /** Presents contextual help based on the currently active tab. */
     openHelpDialog() {
         this.matDialog.open(HelpPopupComponent);
     }
 
+    /** Convenience wrapper for surfacing recoverable errors to the user. */
     openErrorDialog(errorMessage: string) {
-        // Method to open the error dialog
         this.matDialog.open(ErrorPopupComponent, {
             data: { message: errorMessage },
         });
     }
 
+    /** Opens the place invariants table in a large dialog for analysis workflows. */
     openPlaceInvariantsTable() {
         this.matDialog.open(PlaceInvariantsTableComponent, {
             width: '80vw',
@@ -166,6 +302,7 @@ export class ButtonBarComponent implements OnInit, OnDestroy {
      * Starts or resumes the animation playback.
      */
     public play(): void {
+        this.uiService.setSimulationMode('automatic');
         this.uiService.startAnimation();
     }
 
@@ -182,6 +319,68 @@ export class ButtonBarComponent implements OnInit, OnDestroy {
     public stop(): void {
         this.uiService.stopAnimation();
         this.uiService.setCurrentSimulationStep(0);
+    }
+
+    /**
+     * Returns the user from manual token game mode back to automatic simulation playback.
+     * 
+     * This method performs a complete reset to prepare for automatic mode:
+     * 1. Clears manual mode game history (undo stack)
+     * 2. Resets simulation display to initial state (step 0)
+     * 3. Switches simulation mode to 'automatic'
+     * 
+     * **Rationale:**
+     * By setting the simulation step to 0, we trigger displayStateForStep(0) which:
+     * - Restores tokens to Build-tab initial marking
+     * - Shows highlights for initially enabled transitions
+     * - Resets the timeline to the beginning
+     * 
+     * This is consistent with the STOP button behavior and ensures the user
+     * sees the same initial state as when the simulation first loaded.
+     * 
+     * **Effect:**
+     * After calling this, automatic mode starts from a clean slate with:
+     * - Tokens at Build-tab values
+     * - Timeline at position 0
+     * - Highlights showing initially enabled transitions
+     * - Ready for automatic playback
+     * 
+     * **Called by:**
+     * "Return to Automatic Playback" button in the Simulation tab UI
+     * 
+     * @see tokenGameService.clearGameHistory - Clears the undo/redo history
+     * @see uiService.setCurrentSimulationStep - Triggers displayStateForStep(0)
+     * @see uiService.setSimulationMode - Switches mode to 'automatic'
+     * @see stop - Similar method called by STOP button
+     */
+    public returnToAutomaticMode(): void {
+        console.log('ButtonBarComponent: Returning to automatic mode');
+        
+        // Clear manual mode history
+        this.tokenGameService.clearGameHistory();
+        
+        // Get the step where automatic mode was last active
+        const savedStep = this.uiService.getLastAutomaticStep();
+        console.log(`ButtonBarComponent: Restoring to saved automatic step: ${savedStep}`);
+        
+        // Reset display to that step - this triggers displayStateForStep()
+        // which restores tokens and shows highlights for that step
+        this.uiService.setCurrentSimulationStep(savedStep);
+        
+        // Switch mode to automatic
+        this.uiService.setSimulationMode('automatic');
+        
+        console.log(`ButtonBarComponent: Returned to automatic mode at step ${savedStep}`);
+    }
+
+    public onManualRestart(): void {
+        this.tokenGameService.resetGame();
+        this.uiService.triggerManualHighlightUpdate();
+    }
+
+    public onManualRewind(): void {
+        this.tokenGameService.revertToPreviousState();
+        this.uiService.triggerManualHighlightUpdate();
     }
 
     /**
@@ -209,6 +408,10 @@ export class ButtonBarComponent implements OnInit, OnDestroy {
     }
 
     // --- Layout Controls ---
+    /**
+     * Applies graph layout algorithms to improve readability of the current Petri net.
+     * Additional algorithms can slot into the switch while reusing termination semantics.
+     */
     applyLayout(layoutAlgorithm: string) {
         switch (layoutAlgorithm) {
             case 'spring-embedder':
@@ -281,11 +484,13 @@ export class ButtonBarComponent implements OnInit, OnDestroy {
                             if (results && results.results) {
                                 console.log('ButtonBarComponent.uploadPnmlFile: Simulation results received, passing to UiService.', results.results);
                                 this.uiService.simulationResults$.next(results.results);
+                                this.netDirty = false;
                             } else {
                                 console.warn('ButtonBarComponent.uploadPnmlFile: Simulation results received, but "results" property is missing or empty:', results);
                                 this.matDialog.open(ErrorPopupComponent, {
                                     data: { error: 'Simulation API call successful, but "results" property is missing.' },
                                 });
+                                this.netDirty = false;
                             }
                         },
                         error: (err) => {
@@ -293,6 +498,7 @@ export class ButtonBarComponent implements OnInit, OnDestroy {
                             this.matDialog.open(ErrorPopupComponent, {
                                 data: { error: 'Simulation API call failed. Check console for errors.' },
                             });
+                            this.netDirty = false;
                         }
                     });
 
@@ -341,16 +547,19 @@ export class ButtonBarComponent implements OnInit, OnDestroy {
                         next: (results) => {
                             if (results && results.results) {
                                 this.uiService.simulationResults$.next(results.results);
+                                this.netDirty = false;
                             } else {
                                 this.matDialog.open(ErrorPopupComponent, {
                                     data: { error: 'Simulation API call successful, but "results" property is missing.' },
                                 });
+                                this.netDirty = false;
                             }
                         },
                         error: (err) => {
                             this.matDialog.open(ErrorPopupComponent, {
                                 data: { error: 'Simulation API call failed. Check console for errors.' },
                             });
+                            this.netDirty = false;
                         }
                     });
                 } catch (e) {

@@ -1,0 +1,207 @@
+/* ============================================================================
+   DATA PERSISTENCE INFO DIALOG STYLES
+   ============================================================================
+   
+   Material Design themed dialog for informing users about data persistence.
+   
+   Design Goals:
+   - Clear, friendly information presentation
+   - Proper visual hierarchy (title > content > actions)
+   - Responsive for mobile devices
+   - Accessible color contrasts (WCAG AA compliant)
+   - Consistent with application's L3S branding
+   ============================================================================ */
+
+/* Dialog Container
+   - Provides consistent padding and maximum width
+   - Ensures content doesn't overflow on small screens
+*/
+.dialog-container {
+    max-width: 600px;
+    padding: 8px;
+}
+
+/* ============================================================================
+   HEADER SECTION
+   ============================================================================ */
+
+.dialog-header {
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.info-icon {
+    color: #2196F3; /* Material Blue for info messages */
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+}
+
+.dialog-title {
+    margin: 0 !important;
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: #112F4A; /* L3S Dunkelblau */
+}
+
+/* ============================================================================
+   CONTENT SECTION
+   ============================================================================ */
+
+.dialog-content {
+    line-height: 1.6;
+    color: #333;
+}
+
+.main-message {
+    font-size: 1.1rem;
+    margin-bottom: 16px;
+    padding: 12px;
+    background-color: #E3F2FD; /* Light blue background */
+    border-left: 4px solid #2196F3;
+    border-radius: 4px;
+}
+
+.warning-message {
+    font-size: 1rem;
+    margin-top: 16px;
+    margin-bottom: 8px;
+    color: #D32F2F; /* Material Red for warnings */
+}
+
+.info-list {
+    margin-left: 24px;
+    margin-bottom: 16px;
+}
+
+.info-list li {
+    margin-bottom: 6px;
+    color: #555;
+}
+
+.recommendation {
+    font-size: 1rem;
+    margin-top: 16px;
+    margin-bottom: 12px;
+    padding: 12px;
+    background-color: #FFF9C4; /* Light yellow background */
+    border-left: 4px solid #FBC02D; /* Yellow accent */
+    border-radius: 4px;
+}
+
+.additional-info {
+    font-size: 0.9rem;
+    color: #666;
+    font-style: italic;
+    margin-top: 12px;
+}
+
+/* ============================================================================
+   ACTIONS SECTION
+   ============================================================================ */
+
+.dialog-actions {
+    padding-top: 16px;
+    border-top: 1px solid #dee2e6;
+    width: 100%;
+}
+
+.dont-show-checkbox {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.close-button {
+    min-width: 140px;
+    font-weight: 500;
+}
+
+/* ============================================================================
+   RESPONSIVE DESIGN - MOBILE DEVICES
+   ============================================================================ */
+
+@media screen and (max-width: 599px) {
+    .dialog-container {
+        max-width: 100%;
+        padding: 4px;
+    }
+
+    .dialog-title {
+        font-size: 1.25rem;
+    }
+
+    .info-icon {
+        font-size: 28px;
+        width: 28px;
+        height: 28px;
+    }
+
+    .main-message {
+        font-size: 1rem;
+        padding: 10px;
+    }
+
+    .recommendation {
+        font-size: 0.95rem;
+        padding: 10px;
+    }
+
+    .info-list {
+        margin-left: 16px;
+    }
+
+    .close-button {
+        width: 100%;
+    }
+}
+
+/* Very small devices (< 400px) */
+@media screen and (max-width: 399px) {
+    .dialog-title {
+        font-size: 1.1rem;
+    }
+
+    .main-message,
+    .recommendation {
+        font-size: 0.9rem;
+    }
+
+    .info-list li {
+        font-size: 0.85rem;
+    }
+}
+
+/* ============================================================================
+   ACCESSIBILITY ENHANCEMENTS
+   ============================================================================ */
+
+/* Ensure sufficient color contrast for text */
+.dialog-content strong {
+    font-weight: 600;
+    color: #000;
+}
+
+/* Focus states for checkbox */
+.dont-show-checkbox:focus-within {
+    outline: 2px solid #112F4A;
+    outline-offset: 4px;
+    border-radius: 4px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .main-message {
+        border-left-width: 6px;
+        font-weight: 500;
+    }
+
+    .recommendation {
+        border-left-width: 6px;
+        font-weight: 500;
+    }
+
+    .warning-message {
+        font-weight: 600;
+    }
+}

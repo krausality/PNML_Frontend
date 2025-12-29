@@ -12,6 +12,7 @@ import { ErrorPopupComponent } from '../error-popup/error-popup.component';
 import { UiService } from 'src/app/tr-services/ui.service';
 import { CodeEditorFormat } from 'src/app/tr-enums/ui-state';
 import { ButtonState } from 'src/app/tr-enums/ui-state';
+import { LayoutSugiyamaService } from 'src/app/tr-services/layout-sugiyama.service';
 
 import { createJsonSchemaValidator } from './json-schema.validator';
 
@@ -35,6 +36,7 @@ export class CodeEditorComponent implements OnInit {
         private dataService: DataService,
         private uiService: UiService,
         private matDialog: MatDialog,
+        private layoutSugiyamaService: LayoutSugiyamaService,
     ) {}
 
     ngOnInit() {
@@ -120,5 +122,7 @@ export class CodeEditorComponent implements OnInit {
         this.dataService.transitions = transitions;
         this.dataService.arcs = arcs;
         this.dataService.actions = actions;
+        // Nach dem Setzen: UI-Update mit Auto-Zoom/Fit-Content
+        this.dataService.triggerDataChanged(true);
     }
 }

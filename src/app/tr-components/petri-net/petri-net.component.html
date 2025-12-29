@@ -17,7 +17,6 @@
     id="drawingArea"
     class="canvas"
     [ngClass]="{
-        dragging: editMoveElementsService.isCanvasDragInProcess,
         'move-mode': uiService.button === ButtonState.Move,
         'play-mode': uiService.tab === TabState.Simulation,
         'tab-transitioning': uiService.tabTransitioning,
@@ -133,7 +132,9 @@
             (mousedown)="dispatchTransitionMouseDown($event, transition)"
             (mouseup)="dispatchTransitionMouseUp($event, transition)"
             (wheel)="onWheelEventTransition($event, transition)"
-        >            <rect
+            (contextmenu)="onTransitionRightClick($event, transition)"
+        >
+            <rect
                 [ngClass]="{
                     transition: true,
                     active: transition.isActive,
@@ -378,7 +379,7 @@
 
 <!-- Timeline Component -->
 <app-timeline
-    *ngIf="uiService.hasSimulationData()"
+    *ngIf="uiService.tab === TabState.Simulation && uiService.hasSimulationData()"
     [totalSteps]="(uiService.totalSimulationSteps$ | async) ?? 0"
     [currentStep]="(uiService.currentSimulationStep$ | async) ?? 0"
     (stepChanged)="onTimelineStepChanged($event)">

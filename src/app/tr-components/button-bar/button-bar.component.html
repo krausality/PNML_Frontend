@@ -210,9 +210,10 @@
                     <button mat-menu-item disabled>Keine Modelle gefunden</button>
                 </ng-template>
             </mat-menu>
-        </div>
+            
+            <!-- Spacer to push right-aligned buttons -->
+            <div style="flex-grow: 1;"></div>
 
-        <div class="button-container float-right">
             <!-- Apply Spring Embedder layout (once) -->
             <button
                 mat-stroked-button
@@ -258,18 +259,20 @@
                 [isPlaying]="isPlaying"
                 [currentStep]="currentStep"
                 [isHistoryEmpty]="tokenGameService.isGameHistoryEmpty()"
+                [simulationMode]="(uiService.simulationMode$ | async) ?? 'automatic'"
                 (play)="play()"
                 (pause)="pause()"
                 (stop)="stop()"
-                (restart)="tokenGameService.resetGame()"
-                (rewind)="tokenGameService.revertToPreviousState()">
+                (restart)="onManualRestart()"
+                (rewind)="onManualRewind()"
+                (returnToAutomatic)="returnToAutomaticMode()">
             </app-playback-controls>
 
             <div class="divider"></div>
 
             <!-- Multi-Run Simulation Section -->
-            <span style="margin-right: 10px;">Run multiple simulations:</span>
-            <mat-form-field appearance="outline" style="width: 120px; margin-right: 10px;">
+            <span class="section-label">Run multiple simulations:</span>
+            <mat-form-field appearance="fill" class="number-input">
                 <mat-label>Number of Runs</mat-label>
                 <input matInput type="number" min="1" [(ngModel)]="numberOfSimulations">
             </mat-form-field>
@@ -342,9 +345,10 @@
             >
                 Linear Combination
             </button>
-        </div>
+            
+            <!-- Spacer to push right-aligned buttons -->
+            <div style="flex-grow: 1;"></div>
 
-        <div class="button-container float-right">
             <button
                 mat-icon-button
                 (click)="openHelpDialog()"
@@ -423,9 +427,10 @@
             >
                 SVG
             </button>
-        </div>
+            
+            <!-- Spacer to push right-aligned buttons -->
+            <div style="flex-grow: 1;"></div>
 
-        <div class="button-container float-right">
             <button
                 mat-icon-button
                 (click)="openHelpDialog()"
@@ -468,9 +473,10 @@
             >
                 <mat-icon>task</mat-icon>
             </button>
-        </div>
+            
+            <!-- Spacer to push right-aligned buttons -->
+            <div style="flex-grow: 1;"></div>
 
-        <div class="button-container float-right">
             <!-- Switch code editor to json format -->
             <button
                 mat-stroked-button

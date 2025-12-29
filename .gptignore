@@ -46,6 +46,8 @@
         "node_modules",
         "backend",
         "archive",
-        "PLAN*.md"
+        "PLAN*.md",
+        "LaTeX_Manual",
+        "Markdown_Manual"
     ]
 }

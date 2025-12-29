@@ -92,10 +92,82 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
     private viewInitialized = false;
     public isFrequencyAnalysisActive = false;
     private frequencySubscription: Subscription | undefined;
+    
+    /**
+     * Tracks the previously active tab to enable context-aware behavior during tab switches.
+     * 
+     * Primary use case: Detecting tab switches FROM Code tab (50% width) to other tabs (100% width)
+     * to trigger smooth viewport re-fitting during CSS transitions.
+     * 
+     * @see shouldAutoFit - Flag enabled when switching from Code tab
+     * @see resizeObserver - Observer that reacts to viewport changes during tab transitions
+     */
+    private _previousTab: TabState | null = null;
 
-    // ADDED: Subscription for speed changes and previous speed tracking
+    /**
+     * Subscription to simulation speed changes for dynamic animation timing.
+     * 
+     * When simulation speed changes (via SpeedControlComponent), this subscription
+     * adjusts the animation timer delay to match the new speed multiplier.
+     * 
+     * @see BASE_ANIMATION_DELAY_MS - Base delay used for speed calculations
+     * @see animateNextStep - Method that applies the speed-adjusted delay
+     */
     private speedSubscription: Subscription | undefined;
-    private previousSpeedMultiplier: number = 1; // Initialize with a non-zero value, ideally from UiService on init
+    
+    /**
+     * Tracks the previous speed multiplier to detect actual speed changes.
+     * 
+     * Prevents unnecessary timer restarts when speed hasn't actually changed.
+     * Initialized to 1 (normal speed) to match default UiService state.
+     */
+    private previousSpeedMultiplier: number = 1;
+
+    /**
+     * ResizeObserver for reactive viewport dimension tracking.
+     * 
+     * Monitors the petri-net drawing area for size changes caused by:
+     * - Tab switches (Code tab: 50% width ↔ Other tabs: 100% width)
+     * - CSS transitions (smooth width animations over 500ms)
+     * - Window resizes (user dragging browser window)
+     * - Layout changes (sidebar toggles, panel resizing, etc.)
+     * 
+     * Benefits over manual approaches:
+     * - No hardcoded timing assumptions (works with any CSS transition duration)
+     * - Browser-native API (highly performant, no polling overhead)
+     * - Fires during transitions (enables smooth, incremental re-fitting)
+     * - Handles all viewport changes (not limited to specific scenarios)
+     * 
+     * The observer automatically updates zoom service viewport dimensions and
+     * can trigger auto-fitting when the shouldAutoFit flag is enabled.
+     * 
+     * @see shouldAutoFit - Flag controlling whether auto-fit is triggered on resize
+     * @see ngAfterViewInit - Where the observer is initialized
+     * @see ngOnDestroy - Where the observer is cleaned up to prevent memory leaks
+     */
+    private resizeObserver: ResizeObserver | null = null;
+    
+    /**
+     * Flag controlling automatic content fitting during viewport resize events.
+     * 
+     * When enabled (true), the ResizeObserver will automatically call fitContentToView()
+     * whenever the viewport size changes. This creates smooth, reactive zoom adjustments
+     * during CSS transitions.
+     * 
+     * Typical lifecycle during tab switch from Code → Build:
+     * 1. Tab switch detected → shouldAutoFit = true
+     * 2. CSS transition starts (width: 50% → 100%)
+     * 3. ResizeObserver fires multiple times during transition
+     * 4. fitContentToView() called on each resize event (smooth zoom adjustment)
+     * 5. After 700ms → shouldAutoFit = false (prevents unintended fits)
+     * 
+     * This flag is intentionally transient (enabled only during specific transitions)
+     * to prevent auto-fitting during unrelated viewport changes (e.g., unrelated window resizes).
+     * 
+     * @see resizeObserver - The observer that checks this flag
+     * @see fitContentToView - The method called when flag is true
+     */
+    private shouldAutoFit: boolean = false;
 
     constructor(
         private parserService: ParserService,
@@ -238,12 +310,336 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
                 }
             }
         });
+
+        /**
+         * Tab-awareness subscription for context-sensitive UI behavior and marking management.
+         * 
+         * This central subscription orchestrates the PetriNetComponent's response to tab switches,
+         * ensuring proper isolation between editing (Build/Code) and execution (Simulation) contexts.
+         * 
+         * **Core responsibilities:**
+         * 
+         * 1. **Baseline Snapshot Management**
+         *    - Creates initial token marking snapshot on first tab switch if none exists
+         *    - Updates snapshot when entering Simulation tab to capture Build-tab state
+         *    - Ensures there's always a valid baseline to reset to (prevents "reset to 0" bug)
+         * 
+         * 2. **Tab-Specific Behavior**
+         *    - **Simulation tab:** Enables highlighting, resumes animation, creates snapshot
+         *    - **Build/Code/Save/Analyze tabs:** Resets tokens, clears highlights, stops animation
+         *    - **Offshore tab:** Early exit (has separate DataService instance, no interference)
+         * 
+         * 3. **Viewport Re-Fitting (Code tab transitions)**
+         *    - Detects switches FROM Code tab (50% width) to other tabs (100% width)
+         *    - Enables auto-fit flag for ResizeObserver to trigger smooth zoom adjustment
+         *    - Uses 700ms timeout to disable flag after CSS transition completes
+         * 
+         * 4. **Previous Tab Tracking**
+         *    - Updates `_previousTab` at strategic points to enable context-aware logic
+         *    - Ensures accurate detection of "coming from Code tab" scenarios
+         * 
+         * **Why tab-awareness matters:**
+         * - **Prevents marking bleeding:** Simulation token changes don't leak to Build tab
+         * - **Improves performance:** No DOM updates when tab is not visible
+         * - **Better UX:** Clear separation between contexts (edit vs. execute)
+         * - **Smooth transitions:** Code tab width change doesn't cause jarring zoom jumps
+         * 
+         * **The marking lifecycle:**
+         * ```
+         * Load PNML → Build tab (tokens: p1=3, p2=5)
+         *    ↓
+         * Switch to Simulation → Snapshot created (initialMarkings = {p1:3, p2:5})
+         *    ↓
+         * Play simulation / Manual game → Tokens change (p1=7, p2=2)
+         *    ↓
+         * Switch to Build → resetTokensToInitialMarking() → Tokens restored (p1=3, p2=5)
+         * ```
+         * 
+         * **Memory leak prevention:**
+         * This subscription is automatically cleaned up in ngOnDestroy() via the _subs array.
+         * 
+         * @see initialMarkings - Map storing baseline token counts
+         * @see resetTokensToInitialMarking - Method that restores baseline tokens
+         * @see shouldAutoFit - Flag enabling auto-fit during Code tab transitions
+         * @see resizeObserver - Observer that reacts to viewport changes
+         * @see TabState - Enum defining all available tabs
+         */
+        this._subs.push(
+            this.uiService.tab$.subscribe(newTab => {
+                console.log(`PetriNetComponent: Tab changed from ${this._previousTab !== null ? TabState[this._previousTab] : 'null'} to ${TabState[newTab]}`);
+                
+                /**
+                 * BASELINE SNAPSHOT CREATION (First-time fallback)
+                 * 
+                 * Creates a baseline snapshot of current token distribution if:
+                 * - Places exist in the DataService (network is loaded)
+                 * - No snapshot exists yet (initialMarkings is empty)
+                 * 
+                 * This ensures there's always a valid baseline to reset to, preventing the
+                 * "reset to 0" fallback in resetTokensToInitialMarking() from triggering.
+                 * 
+                 * Typical scenario: User loads PNML in Build tab, switches to Save tab
+                 * (never visited Simulation). Without this, tokens would reset to 0.
+                 * 
+                 * The snapshot captures the current state, which is usually the Build-tab
+                 * baseline loaded from PNML/JSON files.
+                 */
+                if (this.dataService.getPlaces().length > 0 && this.initialMarkings.size === 0) {
+                    this.initialMarkings.clear();
+                    this.dataService.getPlaces().forEach(place => {
+                        this.initialMarkings.set(place.id, place.token);
+                    });
+                    console.log('PetriNetComponent: Created baseline snapshot (first-time):', this.initialMarkings);
+                }
+                
+                if (newTab === TabState.Simulation) {
+                    // Switched TO Simulation tab
+                    console.log('PetriNetComponent: Switched to Simulation tab - enabling simulation features');
+                    
+                    /**
+                     * Enable auto-fit during viewport resize when coming from Code tab.
+                     * 
+                     * Rationale (ResizeObserver-based approach):
+                     * - Code tab displays petri-net at 50% width (split with code-editor)
+                     * - Simulation tab displays petri-net at 100% width
+                     * - CSS transition animates width change over 500ms (app.component.css)
+                     * - ResizeObserver fires callbacks during transition → multiple fitContentToView() calls
+                     * - This creates smooth, reactive re-fitting as viewport animates to new size
+                     * 
+                     * This ensures the net is smoothly fitted and centered when entering Simulation from Code tab.
+                     */
+                    if (this._previousTab === TabState.Code) {
+                        console.log('PetriNetComponent: Coming from Code tab to Simulation, enabling auto-fit during CSS transition');
+                        
+                        // Enable auto-fit for upcoming resize events triggered by CSS transition
+                        this.shouldAutoFit = true;
+                        
+                        // Disable auto-fit after CSS transition completes (500ms + buffer)
+                        setTimeout(() => {
+                            this.shouldAutoFit = false;
+                            console.log('PetriNetComponent: Auto-fit disabled after CSS transition');
+                        }, 700);
+                    }
+                    
+                    /**
+                     * Create/update snapshot of current token distribution when entering Simulation.
+                     * 
+                     * This ensures we have a reliable baseline to reset to when leaving Simulation tab,
+                     * even if no simulation results were ever loaded. This snapshot is taken EVERY time
+                     * we enter Simulation tab, ensuring it always reflects the most recent Build-tab state
+                     * (user might have edited tokens in Build before switching to Simulation).
+                     * 
+                     * This OVERWRITES the baseline snapshot created above, which is intentional:
+                     * we want to capture the Build-tab state immediately before entering Simulation.
+                     */
+                    if (this.dataService.getPlaces().length > 0) {
+                        this.initialMarkings.clear();
+                        this.dataService.getPlaces().forEach(place => {
+                            this.initialMarkings.set(place.id, place.token);
+                        });
+                        console.log('PetriNetComponent: Updated snapshot for Simulation tab:', this.initialMarkings);
+                    }
+                    
+                    // Re-enable highlighting if we're in manual mode
+                    if (this.uiService.isManualMode()) {
+                        console.log('PetriNetComponent: Re-enabling manual mode highlighting');
+                        this.highlightManualModeTransitions();
+                    }
+                    
+                    // Resume animation if it was running
+                    if (this.uiService.isAnimationRunning() && this.isSimulating) {
+                        console.log('PetriNetComponent: Resuming animation after tab switch');
+                        const currentSpeed = this.uiService.getAnimationSpeedMultiplier();
+                        if (currentSpeed > 0) {
+                            this.animateNextStep();
+                        }
+                    }
+                    
+                    // Update previous tab for next transition
+                    this._previousTab = newTab;
+                } else {
+                    // Switched AWAY FROM Simulation tab
+                    console.log('PetriNetComponent: Switched away from Simulation tab - disabling simulation features');
+                    
+                    /**
+                     * OFFSHORE TAB GUARD: Skip token reset for isolated DataService.
+                     * 
+                     * The Offshore tab has fundamentally different architecture:
+                     * - Uses `providers: [DataService]` in OffshoreViewComponent decorator
+                     * - Creates a separate, isolated DataService instance (not the root singleton)
+                     * - Renders its own PetriNetComponent instance with the isolated DataService
+                     * - Operates on completely different places/transitions/arcs arrays
+                     * 
+                     * **Why we skip token reset for Offshore:**
+                     * 1. **Data isolation:** Resetting Standard DataService when switching to Offshore
+                     *    would modify data that won't be displayed (Offshore shows its own data)
+                     * 2. **State preservation:** When returning from Offshore, Standard DataService
+                     *    should remain unchanged, preserving Build/Code/Analyze state
+                     * 3. **No bleeding possible:** The two DataService instances are completely separate
+                     *    - Standard instance: Used by Build/Code/Analyze/Simulation tabs
+                     *    - Offshore instance: Used exclusively by Offshore tab
+                     * 
+                     * **What we still do for Offshore:**
+                     * - Clear highlights (consistent UI, prevents stale highlights on canvas)
+                     * - Stop animation timer (prevents background activity)
+                     * - Update _previousTab (for accurate tracking)
+                     * 
+                     * **Architecture diagram:**
+                     * ```
+                     * Standard Tabs (Build/Code/Simulation) → Standard DataService (singleton)
+                     *                                           ↑ This instance
+                     * 
+                     * Offshore Tab → OffshoreViewComponent → Offshore DataService (local)
+                     *                 ↑ Separate component      ↑ Separate instance
+                     * ```
+                     * 
+                     * @see OffshoreViewComponent - Component with `providers: [DataService]`
+                     * @see DataService - Injectable with `providedIn: 'root'` (singleton by default)
+                     */
+                    if (newTab === TabState.Offshore) {
+                        console.log('PetriNetComponent: Switched to Offshore tab (separate DataService), skipping token reset');
+                        
+                        // Clear visual artifacts
+                        this.clearAllTransitionHighlights();
+                        
+                        // Stop animation timer
+                        if (this.animationTimer) {
+                            console.log('PetriNetComponent: Clearing animation timer on Offshore switch');
+                            clearTimeout(this.animationTimer);
+                            this.animationTimer = null;
+                        }
+                        
+                        // Update previous tab before early return
+                        this._previousTab = newTab;
+                        
+                        // Early return - NO token reset for Offshore
+                        return;
+                    }
+                    
+                    // For all other tabs (Build, Code, Save, Analyze): perform full cleanup
+                    
+                    // Clear all highlights immediately
+                    this.clearAllTransitionHighlights();
+                    
+                    // Stop animation timer (but preserve animation state for resume)
+                    if (this.animationTimer) {
+                        console.log('PetriNetComponent: Clearing animation timer on tab switch');
+                        clearTimeout(this.animationTimer);
+                        this.animationTimer = null;
+                    }
+                    
+                    /**
+                     * Reset tokens to Build-tab values when leaving Simulation tab.
+                     * 
+                     * Rationale:
+                     * - Manual mode changes should not persist when user switches to Build/Code tabs
+                     * - Build tab is the source of truth for token distribution
+                     * - This ensures consistency: what user sees in Build = what simulation starts with
+                     * 
+                     * ALWAYS reset tokens, regardless of whether initialMarkings is populated.
+                     * This prevents marking bleeding from Simulation tab to other tabs even when
+                     * simulation was never initialized (e.g., user manually changed tokens in Simulation
+                     * without loading simulation results first).
+                     * 
+                     * The resetTokensToInitialMarking() method has fallback logic (sets to 0 if no
+                     * initial marking stored), ensuring robust behavior in all scenarios.
+                     */
+                    console.log('PetriNetComponent: Resetting tokens to Build-tab values on tab switch');
+                    this.resetTokensToInitialMarking();
+                    
+                    /**
+                     * Enable auto-fit during viewport resize when coming from Code tab.
+                     * 
+                     * Rationale (ResizeObserver-based approach):
+                     * - Code tab displays petri-net at 50% width (split with code-editor)
+                     * - Other tabs (Build, Save, Analyze) display petri-net at 100% width
+                     * - CSS transition animates width change over 500ms (app.component.css)
+                     * - ResizeObserver fires callbacks during transition → multiple fitContentToView() calls
+                     * - This creates smooth, reactive re-fitting as viewport animates to new size
+                     * 
+                     * Advantages over setTimeout approach:
+                     * - No hardcoded timing assumptions (works regardless of CSS transition duration)
+                     * - Handles all viewport changes (tab switches, window resizes, etc.)
+                     * - Browser-native API (efficient, no polling)
+                     * - Smooth visual update during transition (not just at end)
+                     * 
+                     * Implementation:
+                     * - Set shouldAutoFit flag before CSS transition starts
+                     * - ResizeObserver detects viewport size changes during transition
+                     * - Auto-fit is applied at each resize event (smooth zoom adjustment)
+                     * - Flag is cleared 700ms later (after 500ms transition + buffer)
+                     * 
+                     * This ensures the net is smoothly fitted and centered during the CSS transition,
+                     * preventing the "zoomed too small" issue when returning to full-width tabs.
+                     */
+                    if (this._previousTab === TabState.Code) {
+                        console.log('PetriNetComponent: Coming from Code tab, enabling auto-fit during CSS transition');
+                        
+                        // Enable auto-fit for upcoming resize events triggered by CSS transition
+                        this.shouldAutoFit = true;
+                        
+                        // Disable auto-fit after CSS transition completes (500ms + buffer)
+                        setTimeout(() => {
+                            this.shouldAutoFit = false;
+                            console.log('PetriNetComponent: Auto-fit disabled after CSS transition');
+                        }, 700);
+                    }
+                    
+                    // Update previous tab for next transition
+                    this._previousTab = newTab;
+                }
+            })
+        );
         this._subs.push(this.speedSubscription); // Ensure cleanup
 
         this.frequencySubscription = this.uiService.transitionFiringFrequencies$.subscribe(frequencies => {
             this.isFrequencyAnalysisActive = (frequencies !== null && frequencies.size > 0);
         });
         this._subs.push(this.frequencySubscription);
+
+        this._subs.push(
+            this.uiService.manualHighlightUpdate$.subscribe(transition => {
+                if (this.uiService.isManualMode()) {
+                    this.highlightManualModeTransitions(transition ?? undefined);
+                }
+            })
+        );
+
+        /**
+         * Subscription to simulation mode changes.
+         * 
+         * When switching TO manual mode, we invalidate currentStepBeingDisplayed by setting it to -1.
+         * This ensures that when returning to automatic mode (via "Return to Automatic Playback"),
+         * the subscription to currentSimulationStep$ will definitely trigger displayStateForStep()
+         * even if the step number happens to be the same as before.
+         * 
+         * **Why this is needed:**
+         * In manual mode, tokens are changed by manual transition firings, but currentStepBeingDisplayed
+         * is not updated. When returning to automatic at the saved step (e.g., step 5), we need to
+         * restore the tokens/highlights for that step via displayStateForStep(5), but the subscription
+         * has a guard `step !== this.currentStepBeingDisplayed`. By setting currentStepBeingDisplayed = -1
+         * when entering manual mode, we ensure the guard passes when returning to automatic.
+         * 
+         * **Example flow:**
+         * 1. Automatic mode at step 5 → currentStepBeingDisplayed = 5
+         * 2. Switch to manual → currentStepBeingDisplayed = -1 (this subscription)
+         * 3. Fire transitions manually → tokens change, currentStepBeingDisplayed still -1
+         * 4. Return to automatic at step 5 → setCurrentSimulationStep(5) called
+         * 5. Subscription checks: 5 !== -1 → true → calls displayStateForStep(5)
+         * 6. Tokens/highlights restored correctly!
+         * 
+         * @see currentStepBeingDisplayed - The variable being invalidated
+         * @see displayStateForStep - The method that needs to be called
+         * @see currentSimulationStep$ subscription - The subscription that checks the guard
+         */
+        this._subs.push(
+            this.uiService.simulationMode$.subscribe(mode => {
+                if (mode === 'manual') {
+                    console.log('PetriNetComponent: Switched to manual mode, invalidating currentStepBeingDisplayed');
+                    this.currentStepBeingDisplayed = -1;
+                }
+            })
+        );
     }
 
     ngAfterViewInit(): void {
@@ -269,6 +665,47 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
         if (this.drawingArea?.nativeElement) {
             const rect = this.drawingArea.nativeElement.getBoundingClientRect();
             this.zoomService.setViewportDimensions(rect.width, rect.height);
+
+            /**
+             * Setup ResizeObserver for automatic viewport dimension updates.
+             * 
+             * This enables reactive viewport tracking - automatically updating zoom calculations
+             * whenever the viewport size changes due to:
+             * - Tab switches (Code-Tab: 50% width ↔ Build-Tab: 100% width)
+             * - CSS transitions (smooth width: 50% → 100% over 500ms)
+             * - Window resizes (user drags browser window)
+             * - Sidebar toggles or other layout changes
+             * 
+             * The ResizeObserver fires callbacks during CSS transitions, allowing smooth
+             * re-fitting of content as the viewport animates to its new size.
+             * 
+             * Benefits over manual setTimeout approach:
+             * - No hardcoded timing assumptions (works regardless of CSS transition duration)
+             * - Handles all viewport size changes (not just tab switches)
+             * - Browser-native API (efficient, no polling)
+             * - Fires during transition (multiple times), enabling smooth visual updates
+             * 
+             * @see shouldAutoFit - Flag to enable/disable auto-fitting during resize
+             * @see fitContentToView - Method called when auto-fit is enabled
+             */
+            this.resizeObserver = new ResizeObserver(entries => {
+                for (const entry of entries) {
+                    const { width, height } = entry.contentRect;
+                    console.log(`PetriNetComponent: Viewport resized to ${width} x ${height}`);
+                    
+                    // Always update viewport dimensions for accurate zoom calculations
+                    this.zoomService.setViewportDimensions(width, height);
+                    
+                    // Auto-fit content if flag is enabled (e.g., during tab switch from Code-Tab)
+                    if (this.shouldAutoFit && width > 0 && height > 0) {
+                        console.log('PetriNetComponent: Auto-fitting content after viewport resize');
+                        this.fitContentToView();
+                    }
+                }
+            });
+            
+            this.resizeObserver.observe(this.drawingArea.nativeElement);
+            console.log('PetriNetComponent: ResizeObserver setup complete');
         }
 
         // Fit content initially if data is already present and view is ready
@@ -282,6 +719,13 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
         if (this.animationTimer) {
             clearTimeout(this.animationTimer);
             this.animationTimer = null;
+        }
+        
+        // Cleanup ResizeObserver to prevent memory leaks
+        if (this.resizeObserver) {
+            this.resizeObserver.disconnect();
+            this.resizeObserver = null;
+            console.log('PetriNetComponent: ResizeObserver disconnected');
         }
         
         if (this.uiService.isAnimationRunning()) {
@@ -589,9 +1033,11 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
 
             if (e.deltaY < 0) {
                 place.token++;
+                this.dataService.triggerDataChanged();
             }
             if (e.deltaY > 0 && place.token > 0) {
                 place.token--;
+                this.dataService.triggerDataChanged();
             }
         }
         if (this.uiService.button === ButtonState.Add) {
@@ -600,6 +1046,7 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
 
             if (e.deltaY < 0) {
                 place.token++;
+                this.dataService.triggerDataChanged();
             }
         } else if (this.uiService.button === ButtonState.Remove) {
             e.preventDefault();
@@ -607,6 +1054,7 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
 
             if (e.deltaY > 0 && place.token > 0) {
                 place.token--;
+                this.dataService.triggerDataChanged();
             }
         }
     }
@@ -862,11 +1310,15 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
     dispatchPlaceClick(event: MouseEvent, place: Place) {
         if (this.uiService.button === ButtonState.Add) {
             place.token++;
+            // Trigger data change notification so simulation gets re-run
+            this.dataService.triggerDataChanged();
         }
 
         if (this.uiService.button === ButtonState.Remove) {
             if (place.token > 0) {
                 place.token--;
+                // Trigger data change notification so simulation gets re-run
+                this.dataService.triggerDataChanged();
             }
         }
 
@@ -925,15 +1377,34 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     // Transitions
+    /**
+     * Handles left-click events on transitions in the Petri net canvas.
+     * 
+     * Behavior varies by tab and button state:
+     * - **Simulation tab**: Switches to manual mode and fires the clicked transition in the token game,
+     *   then updates highlighting to reflect enabled transitions.
+     * - **Build tab + Select button**: Opens the action configuration dialog for the transition.
+     * - **Delete button (any tab)**: Removes the transition from the Petri net.
+     * 
+     * When entering manual mode from automatic mode, any running animation is stopped and
+     * the simulation mode is explicitly set to 'manual', allowing the user to fire transitions
+     * by clicking them directly.
+     * 
+     * @param event - The mouse event triggered by the click
+     * @param transition - The transition that was clicked
+     * 
+     * @see tokenGameService.fire - Executes transition firing logic
+     * @see highlightManualModeTransitions - Updates visual feedback for manual token game
+     * @see UiService.setSimulationMode - Switches between automatic and manual simulation modes
+     */
     dispatchTransitionClick(event: MouseEvent, transition: Transition) {
-        if (this.isFrequencyAnalysisActive && this.uiService.tab === TabState.Simulation) {
-            this.onTransitionClick(transition.id);
-            return; // Prevent other actions when in frequency analysis mode
-        }
-
         // Token game: fire transition
         if (this.uiService.tab === TabState.Simulation) {
+            console.log('🎮 Manual mode: firing transition', transition.id);
+            this.uiService.stopAnimation();
+            this.uiService.setSimulationMode('manual');
             this.tokenGameService.fire(transition);
+            this.highlightManualModeTransitions(transition);
         } else if (
             this.uiService.tab === TabState.Build &&
             this.uiService.button === ButtonState.Select
@@ -948,6 +1419,75 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
         }
     }
 
+    /**
+     * Handles right-click (context menu) events on transitions.
+     * 
+     * This method implements conditional statistics display based on simulation mode and data availability.
+     * It only shows the transition firing statistics dialog when ALL of the following conditions are met:
+     * 
+     * 1. **Frequency analysis is active**: Multi-run simulation results have been loaded and processed
+     * 2. **User is in Simulation tab**: Not in Build, Analyze, or other tabs
+     * 3. **Automatic mode is active**: Not in manual token game mode
+     * 
+     * **When conditions are met:**
+     * - Prevents the default browser context menu from appearing (`event.preventDefault()`)
+     * - Opens a dialog showing how many times this transition fired across all simulation runs
+     * 
+     * **When conditions are NOT met:**
+     * - Does nothing, allowing the default browser context menu to appear
+     * - This ensures no interference with other workflows (e.g., Build tab operations)
+     * 
+     * This approach provides a clean separation between:
+     * - **Automatic mode**: Right-click shows statistics (analysis/inspection workflow)
+     * - **Manual mode**: Right-click has default behavior, left-click fires transitions (interactive workflow)
+     * 
+     * @param event - The context menu event triggered by right-click
+     * @param transition - The transition that was right-clicked
+     * 
+     * @see onTransitionClick - Opens the statistics dialog with transition firing data
+     * @see UiService.isAutomaticMode - Checks if simulation is in automatic playback mode
+     * @see isFrequencyAnalysisActive - Flag set when multi-run results are loaded
+     */
+    onTransitionRightClick(event: MouseEvent, transition: Transition) {
+        // Only show stats in Simulation tab + Automatic mode + when frequency data exists
+        if (
+            !this.isFrequencyAnalysisActive ||
+            this.uiService.tab !== TabState.Simulation ||
+            !this.uiService.isAutomaticMode()
+        ) {
+            return; // Allow default browser behavior
+        }
+
+        // Suppress browser context menu and show stats dialog
+        event.preventDefault();
+        this.onTransitionClick(transition.id);
+    }
+
+    /**
+     * Opens a dialog displaying transition firing statistics from multi-run simulations.
+     * 
+     * This method is invoked when a transition is right-clicked in automatic mode with frequency
+     * analysis active. It shows aggregate data about how often the transition fired across
+     * multiple simulation runs.
+     * 
+     * The dialog displays:
+     * - **Transition ID**: Which transition was clicked
+     * - **Firing count**: Total number of times this transition fired across all runs
+     * - **Total runs**: How many simulation runs were executed
+     * 
+     * **Guard conditions:**
+     * - Returns early if frequency analysis is not active (no multi-run data loaded)
+     * - Returns early if frequency map or multi-run results are missing
+     * 
+     * This method is public to allow programmatic access, though it's primarily called
+     * internally via `onTransitionRightClick`.
+     * 
+     * @param transitionId - The ID of the transition to show statistics for
+     * 
+     * @see TransitionFiringInfoPopupComponent - The dialog component that displays the data
+     * @see UiService.getTransitionFiringFrequencies - Retrieves aggregated firing counts per transition
+     * @see UiService.getMultiRunResults - Retrieves the full multi-run simulation results
+     */
     public onTransitionClick(transitionId: string): void {
         if (!this.isFrequencyAnalysisActive) {
             return; // Do nothing if no frequency data is available
@@ -1293,8 +1833,72 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
     protected readonly transSilentXOffset = transSilentXOffset;
 
     protected readonly TabState = TabState;
-    protected readonly ButtonState = ButtonState;    // Method to start the simulation animation
-    // Renamed to initializeAnimationAndTimeline to avoid conflict and match usage
+    protected readonly ButtonState = ButtonState;
+    
+    /**
+     * Initializes simulation data structures and prepares the component for animation playback.
+     * 
+     * This method serves as the entry point for setting up a new simulation session after
+     * receiving results from the backend simulation API. It transforms raw API response data
+     * into structured internal representations and initializes the component's simulation state.
+     * 
+     * **Core responsibilities:**
+     * 
+     * 1. **Firing sequence normalization**
+     *    - Accepts firing_seq in multiple formats (array, object, string/number IDs)
+     *    - Validates transition IDs against current DataService transitions
+     *    - Converts all formats to standardized `{ transition_id: string }[]` structure
+     *    - Filters out invalid/non-existent transition references
+     * 
+     * 2. **Initial marking snapshot**
+     *    - Captures current token distribution as baseline (initialMarkings Map)
+     *    - This snapshot becomes the "step 0" state for the simulation
+     *    - Used by displayStateForStep() to reset tokens before replaying steps
+     *    - Critical for accurate replay when user jumps between timeline steps
+     * 
+     * 3. **Timeline synchronization**
+     *    - Sets total step count in UiService (enables timeline component rendering)
+     *    - Resets current step to 0 (start of simulation)
+     *    - Invalidates currentStepBeingDisplayed to force initial render
+     *    - Displays step 0 (initial state before any transitions fire)
+     * 
+     * 4. **Component state initialization**
+     *    - Sets isSimulating = true (enables simulation-specific UI)
+     *    - Stores detailed_log for transition firing info popups
+     *    - Stores firing_seq for animation playback and step navigation
+     * 
+     * **Supported firing_seq formats:**
+     * - Array of strings: `["t1", "t2", "t3"]`
+     * - Array of numbers: `[0, 1, 2]` (indices into transitions array)
+     * - Array of objects: `[{transition_id: "t1"}, {transition_id: "t2"}]`
+     * - Object with numeric keys: `{"0": "t1", "1": "t2"}` (converted to array)
+     * 
+     * **Error handling:**
+     * If firing_seq is in an unrecognized format or contains only invalid transitions,
+     * the method logs an error and resets simulation state via UiService.
+     * 
+     * **Typical call flow:**
+     * ```
+     * User clicks "Simulate" → API request → Response received
+     *   ↓
+     * initializeAnimationAndTimeline(results)
+     *   ↓
+     * Firing sequence normalized, initial marking snapshotted
+     *   ↓
+     * Timeline component renders slider (0 to N steps)
+     *   ↓
+     * displayStateForStep(0) shows initial marking
+     * ```
+     * 
+     * @param results - Simulation API response containing firing_seq and detailed_log
+     * @param results.firing_seq - Sequence of transition firings (various formats accepted)
+     * @param results.detailed_log - Detailed information about each firing (for popups)
+     * 
+     * @see displayStateForStep - Method that renders a specific step's state
+     * @see initialMarkings - Map storing the baseline token counts
+     * @see simulationFiringSeq - Normalized firing sequence used for playback
+     * @see UiService.setTotalSimulationSteps - Updates timeline component
+     */
     private initializeAnimationAndTimeline(results: { firing_seq: any, detailed_log: any }): void {
         console.log('PetriNetComponent: initializeAnimationAndTimeline called with', results);
 
@@ -1396,7 +2000,86 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
         this.animateNextStep();
     }
 
-    // MODIFIED: animateNextStep method with dynamic delay and 0x speed handling
+    /**
+     * Executes the next step of automatic simulation playback with dynamic speed adjustment.
+     * 
+     * This is the core animation loop method that orchestrates automatic transition firing
+     * during simulation playback. It handles:
+     * - Speed-based delay calculation (0.25x to 4x multipliers)
+     * - Pause behavior (0x speed stops without exiting play state)
+     * - State validation (checks animation running, simulation data existence)
+     * - Step progression (increments step counter, displays state)
+     * - Completion detection (stops at end of firing sequence)
+     * 
+     * **Animation Loop Mechanism:**
+     * 
+     * The method uses `setTimeout` with dynamically calculated delays to create a recursive
+     * animation loop. Each iteration:
+     * 1. Validates animation should continue (running, non-zero speed, has data)
+     * 2. Displays current step's state (tokens BEFORE transition fires)
+     * 3. Calculates delay: `BASE_ANIMATION_DELAY_MS / speedMultiplier`
+     * 4. Schedules next step via setTimeout
+     * 5. Inside timeout callback: fires transition, increments step, recurses
+     * 
+     * **Speed Multiplier Handling:**
+     * 
+     * - **0x (Pause):** Clears timer, exits method, but keeps animationRunning = true
+     *   - This allows resuming without resetting step position
+     *   - User can resume by moving speed slider above 0x
+     *   - Speed subscription detects 0→>0 transition and calls animateNextStep()
+     * 
+     * - **0.25x - 4x (Active speeds):**
+     *   - Delay = 1000ms / speedMultiplier
+     *   - Examples: 0.25x → 4000ms, 1x → 1000ms, 4x → 250ms
+     *   - Delays are recalculated on EACH step (responsive to mid-playback speed changes)
+     * 
+     * **State Change Resilience:**
+     * 
+     * The method includes multiple validation checkpoints to handle state changes that
+     * occur during the setTimeout delay (e.g., user pauses, changes speed, switches tabs):
+     * - Entry validation: Checks before scheduling timeout
+     * - Timeout validation: Re-checks conditions when timeout executes
+     * - Prevents "zombie timers" that execute after animation should have stopped
+     * 
+     * **Step Progression Logic:**
+     * 
+     * Steps are managed by UiService.currentSimulationStep$:
+     * - Step 0: Initial state (before any transitions fire)
+     * - Step 1: After 1st transition fires, before 2nd fires
+     * - Step N: After Nth transition fires (final state if N = sequence length)
+     * 
+     * The method displays state for current step, then fires the transition for that step,
+     * increments the step counter, and displays the result in the next iteration.
+     * 
+     * **Completion Detection:**
+     * 
+     * Animation completes when `currentStep >= totalSteps - 1`:
+     * - totalSteps = firing_seq.length + 1 (includes initial state)
+     * - Example: 5 firings → totalSteps = 6 → steps 0-5 → stops at step 5
+     * - Final state is displayed with `isFinalStateAfterFiring = true`
+     * - stopAnimation() is called to reset UI (hide pause button, show play button)
+     * 
+     * **Integration with Speed Control:**
+     * 
+     * This method works in tandem with the speedSubscription in ngOnInit():
+     * - Speed change 0x → >0x: Subscription calls animateNextStep() to resume
+     * - Speed change >0x → 0x: Method detects and clears timer (pause)
+     * - Speed change >0x → different >0x: Next iteration uses new delay automatically
+     * 
+     * **Error Recovery:**
+     * 
+     * Multiple defensive checks prevent crashes:
+     * - Null/undefined checks for simulationFiringSeq
+     * - Bounds checking for step indices
+     * - Timer cleanup on early exits
+     * - State validation before and during timeout
+     * 
+     * @see BASE_ANIMATION_DELAY_MS - Base delay (1000ms) used for speed calculations
+     * @see displayStateForStep - Method that renders tokens/highlights for a step
+     * @see speedSubscription - Subscription that resumes animation after 0x pause
+     * @see UiService.currentSimulationStep$ - BehaviorSubject tracking current step
+     * @see animationTimer - Timer reference stored for cleanup
+     */
     private animateNextStep(): void {
         // Get current speed multiplier from UiService
         const speedMultiplier = this.uiService.getAnimationSpeedMultiplier();
@@ -1507,6 +2190,24 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
             console.warn('PetriNetComponent: displayStateForStep called without simulation data.');
             return;
         }
+
+        /**
+         * Tab-awareness guard for automatic simulation highlighting.
+         * 
+         * This ensures that transition highlights during automatic simulation playback
+         * are ONLY shown when in the Simulation tab, matching the behavior of manual mode.
+         * 
+         * Rationale:
+         * - Highlighting outside Simulation tab would be confusing to users
+         * - Prevents unnecessary DOM manipulation when tab is not visible
+         * - Consistent with manual mode behavior (highlightManualModeTransitions also checks tab)
+         */
+        const isInSimulationTab = this.uiService.tab === TabState.Simulation;
+        if (!isInSimulationTab) {
+            console.log('PetriNetComponent: Skipping display highlighting - not in Simulation tab');
+            // Still update markings, but don't apply visual highlights
+        }
+
         // Prevent re-rendering the same state if called multiple times for the same step
         // However, allow if isFinalStateAfterFiring changes, as that implies a different highlight logic
         if (stepIndex === this.currentStepBeingDisplayed && !isFinalStateAfterFiring && this._lastIsFinalState === isFinalStateAfterFiring) {
@@ -1540,7 +2241,8 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
         const detailedLogKey = String(stepIndex);
         const detailedLogEntry = this.simulationDetailedLog[detailedLogKey];
 
-        if (detailedLogEntry) {
+        // Only apply highlighting if we're in the Simulation tab
+        if (isInSimulationTab && detailedLogEntry) {
             const transitionToFireId = detailedLogEntry.transition_to_fire || (this.simulationFiringSeq[stepIndex] ? this.simulationFiringSeq[stepIndex].transition_id : null);
 
             if (!isFinalStateAfterFiring && transitionToFireId) {
@@ -1559,7 +2261,8 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
                     }
                 });
             }
-        } else if (stepIndex === 0 && !isFinalStateAfterFiring) {
+        } else if (isInSimulationTab && stepIndex === 0 && !isFinalStateAfterFiring) {
+            // Initial state highlighting (only in Simulation tab)
             const initialLogEntry = this.simulationDetailedLog["0"];
             if(initialLogEntry && initialLogEntry.enabled_transitions && Array.isArray(initialLogEntry.enabled_transitions)) {
                 const transitionToFireId = initialLogEntry.transition_to_fire || (this.simulationFiringSeq[0] ? this.simulationFiringSeq[0].transition_id : null);
@@ -1567,7 +2270,7 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
                    this.highlightTransition(id, id === transitionToFireId ? 'next-to-fire' : 'enabled');
                 });
             }
-        } else if (isFinalStateAfterFiring && stepIndex >= 0 && stepIndex < this.simulationFiringSeq.length) {
+        } else if (isInSimulationTab && isFinalStateAfterFiring && stepIndex >= 0 && stepIndex < this.simulationFiringSeq.length) {
              // This case is for showing the state *after* transition at stepIndex fired.
              const firedTransitionId = this.simulationFiringSeq[stepIndex].transition_id;
              this.highlightTransition(firedTransitionId, 'fired');
@@ -1645,6 +2348,184 @@ export class PetriNetComponent implements OnInit, OnDestroy, AfterViewInit {
         const highlighted = document.querySelectorAll('.animation-enabled, .animation-fired, .animation-next-to-fire');
         highlighted.forEach(el => {
             el.classList.remove('animation-enabled', 'animation-fired', 'animation-next-to-fire');
+        });
+    }
+
+    /**
+     * Resets all place tokens to their initial Build-Tab values and clears highlights.
+     * 
+     * This method restores the token distribution to the state defined in the Build tab,
+     * effectively undoing all manual transition firings in the Simulation tab.
+     * It also clears all transition highlights to provide a clean visual state.
+     * 
+     * **When to call:**
+     * - Tab switch AWAY from Simulation tab → ensures clean state when returning to Build
+     * - "Return to Automatic Playback" button → resets tokens before automatic simulation
+     * - Any scenario where manual mode changes need to be reverted
+     * 
+     * **Rationale:**
+     * Manual mode token changes should be temporary and not persist across:
+     * 1. Tab switches (Build tab defines the canonical state)
+     * 2. Mode switches (Automatic mode should start from Build-defined marking)
+     * 
+     * This ensures consistency: Build tab = Source of Truth for initial marking.
+     * 
+     * **What gets reset:**
+     * 1. **Tokens** - Restored to initialMarkings values (Build-tab state)
+     * 2. **Highlights** - All transition highlights cleared (like STOP button)
+     * 3. **View** - dataService.triggerDataChanged() updates the display
+     * 
+     * **Implementation:**
+     * Uses the `initialMarkings` Map that was populated when simulation started.
+     * This Map contains Place ID → Token count mappings from the Build tab.
+     * 
+     * **Comparison with STOP button:**
+     * - STOP button: Calls setCurrentSimulationStep(0) → triggers displayStateForStep(0) → shows initial state highlights
+     * - This method: Clears highlights completely → appropriate for tab switches and mode changes
+     * 
+     * **Note:** 
+     * This is different from `tokenGameService.resetGame()` which uses the
+     * game history stack. This method directly sets tokens from Build-tab values,
+     * regardless of manual mode history.
+     * 
+     * @see initialMarkings - Map storing Build-tab token values (Place ID → count)
+     * @see initializeAnimationAndTimeline - Method that populates initialMarkings
+     * @see displayStateForStep - Uses same logic to restore tokens during timeline navigation
+     * @see clearAllTransitionHighlights - Removes all highlight CSS classes
+     * 
+     * @example
+     * // User fires transitions manually, then switches tabs
+     * this.resetTokensToInitialMarking(); // Tokens back to Build-tab values, highlights cleared
+     * 
+     * @example
+     * // User clicks "Return to Automatic Playback" button
+     * this.tokenGameService.clearGameHistory();
+     * this.resetTokensToInitialMarking(); // Start fresh from Build-tab marking, no highlights
+     */
+    /**
+     * Resets all place token counts to their initial Build-tab marking and clears visual highlights.
+     * 
+     * This method serves as a critical safeguard against "marking bleeding" - the unintended
+     * persistence of simulation or manual mode token changes when switching between tabs.
+     * 
+     * **Core responsibilities:**
+     * 1. **Token restoration** - Resets all place tokens to values stored in `initialMarkings`
+     * 2. **Highlight cleanup** - Removes all transition highlighting (fired, enabled, next-to-fire)
+     * 3. **View synchronization** - Triggers UI update to reflect the reset state
+     * 
+     * **The initialMarkings baseline:**
+     * - Created via snapshot when entering Simulation tab (captures Build-tab state)
+     * - Also created as baseline on first tab switch if empty (prevents "reset to 0" scenario)
+     * - Represents the "source of truth" - what the Build tab shows
+     * 
+     * **Fallback behavior:**
+     * If a place is not found in `initialMarkings` (shouldn't happen in normal flow),
+     * it defaults to 0 tokens with a warning. This ensures graceful degradation.
+     * 
+     * **When this is called:**
+     * - **Tab switches AWAY from Simulation** → Ensures Build/Code/Save/Analyze tabs show original marking
+     * - **Manual → Automatic mode transition** → Resets to known baseline before resuming simulation
+     * - **User clicks STOP** in automatic playback → Returns to step 0 with original marking
+     * 
+     * **Why it's important:**
+     * Without this reset, manual token changes in Simulation would "leak" into other tabs,
+     * causing confusion (Build tab showing wrong token counts) and breaking the mental model
+     * that Build tab is the authoritative source for initial marking.
+     * 
+     * @example
+     * // Scenario: User plays manual token game in Simulation, then switches to Build tab
+     * // Expected: Build tab shows original marking (e.g., p1=3), not manual changes (e.g., p1=7)
+     * 
+     * @see initialMarkings - The Map storing the baseline token counts
+     * @see clearAllTransitionHighlights - Helper that removes CSS highlight classes
+     * @see triggerDataChanged - Notifies subscribers to update their views
+     */
+    public resetTokensToInitialMarking(): void {
+        console.log('PetriNetComponent: Resetting tokens to initial Build-tab marking');
+        
+        // Step 1: Reset all tokens to Build-tab values
+        this.dataService.getPlaces().forEach(place => {
+            const initialTokenCount = this.initialMarkings.get(place.id);
+            if (initialTokenCount !== undefined) {
+                place.token = initialTokenCount;
+                console.log(`PetriNetComponent: Reset ${place.id} tokens to ${initialTokenCount}`);
+            } else {
+                // Fallback: If place wasn't in initialMarkings (shouldn't happen), set to 0
+                place.token = 0;
+                console.warn(`PetriNetComponent: Place ${place.id} not found in initialMarkings, defaulting to 0 tokens`);
+            }
+        });
+        
+        // Step 2: Clear all transition highlights (like STOP button behavior)
+        console.log('PetriNetComponent: Clearing all transition highlights');
+        this.clearAllTransitionHighlights();
+        
+        // Step 3: Trigger view update to reflect token changes
+        this.dataService.triggerDataChanged();
+        
+        console.log('PetriNetComponent: Token reset and highlight clearing complete');
+    }
+
+    /**
+     * Updates visual highlights for transitions in manual token game mode.
+     * 
+     * This method manages the highlighting of transitions to provide visual feedback during
+     * manual token game interactions. It is called after every manual transition firing,
+     * rewind, or restart operation.
+     * 
+     * **Tab-awareness:**
+     * Highlighting is ONLY applied when in the Simulation tab. This prevents visual confusion
+     * and ensures highlighting only appears in the appropriate context.
+     * 
+     * **Highlighting logic:**
+     * 1. **Checks if currently in Simulation tab** - exits early if not
+     * 2. **Clears all existing highlights** to ensure a clean state
+     * 3. **Highlights the fired transition** (if provided) with the 'fired' style (light green glow)
+     * 4. **Highlights all currently enabled transitions** with the 'enabled' style (softer glow)
+     *    - A transition is enabled if it has enough tokens in all pre-places to fire
+     *    - The fired transition is excluded from the enabled set to avoid double-highlighting
+     * 
+     * **Usage scenarios:**
+     * - After manual click: `firedTransition` is the transition the user just clicked
+     * - After rewind: `firedTransition` is undefined, only enabled transitions are highlighted
+     * - After restart: `firedTransition` is undefined, showing initial enabled state
+     * 
+     * This approach ensures the user always sees which transitions can fire next in the
+     * current marking, while providing immediate feedback on their last action.
+     * 
+     * **Note:** This method only applies highlighting classes; the actual CSS styling is defined
+     * in `petri-net.component.css` (`.animation-enabled`, `.animation-fired`).
+     * 
+     * @param firedTransition - Optional. The transition that was just fired, to be highlighted
+     *                          with the 'fired' style. If undefined, only enabled transitions
+     *                          are highlighted.
+     * 
+     * @see highlightTransition - Applies CSS classes to individual transition elements
+     * @see clearAllTransitionHighlights - Removes all highlight classes from the canvas
+     * @see Transition.isActive - Computed property that checks if a transition can fire
+     * @see TabState.Simulation - The only tab where highlighting should be active
+     */
+    private highlightManualModeTransitions(firedTransition?: Transition): void {
+        // Guard: Only highlight in Simulation tab
+        if (this.uiService.tab !== TabState.Simulation) {
+            console.log('PetriNetComponent: Skipping highlighting - not in Simulation tab');
+            return;
+        }
+
+        this.clearAllTransitionHighlights();
+
+        if (firedTransition) {
+            this.highlightTransition(firedTransition.id, 'fired');
+        }
+
+        this.dataService.getTransitions().forEach(transition => {
+            if (firedTransition && transition.id === firedTransition.id) {
+                return;
+            }
+
+            if (transition.isActive) {
+                this.highlightTransition(transition.id, 'enabled');
+            }
         });
     }
     // ... other existing methods ...

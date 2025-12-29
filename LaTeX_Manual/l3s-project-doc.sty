@@ -1,0 +1,159 @@
+\ProvidesPackage{l3s-project-doc}
+% ==============================================================================
+% L3S Project Documentation Style
+% Adapted from sethesis.sty for technical project documentation
+% ==============================================================================
+
+% Command definitions for project metadata
+\newcommand{\@projectname}{}
+\newcommand{\@projectsubtitle}{}
+\newcommand{\@institution}{}
+\newcommand{\@researchgroup}{}
+\newcommand{\@university}{}
+\newcommand{\@authorname}{}
+\newcommand{\@authoremail}{}
+\newcommand{\@supervisor}{}
+\newcommand{\@supervisoremail}{}
+\newcommand{\@projectperiod}{}
+\newcommand{\@version}{}
+\newcommand{\@docdate}{}
+\newcommand{\@city}{}
+
+% Setter commands
+\newcommand{\projectname}[1]{\def\@projectname{#1}}
+\newcommand{\projectsubtitle}[1]{\def\@projectsubtitle{#1}}
+\newcommand{\institution}[1]{\def\@institution{#1}}
+\newcommand{\researchgroup}[1]{\def\@researchgroup{#1}}
+\newcommand{\university}[1]{\def\@university{#1}}
+\newcommand{\authorname}[1]{\def\@authorname{#1}}
+\newcommand{\authoremail}[1]{\def\@authoremail{#1}}
+\newcommand{\supervisor}[1]{\def\@supervisor{#1}}
+\newcommand{\supervisoremail}[1]{\def\@supervisoremail{#1}}
+\newcommand{\projectperiod}[1]{\def\@projectperiod{#1}}
+\newcommand{\docversion}[1]{\def\@version{#1}}
+\newcommand{\docdate}[1]{\def\@docdate{#1}}
+\newcommand{\city}[1]{\def\@city{#1}}
+
+% Custom title page for project documentation
+\renewcommand{\maketitle}{
+\begin{titlepage}
+%
+\begin{center}
+\vspace*{1em}
+
+% University and Institution
+\Large {%
+	\textbf{\expandafter{\@university}}\\ 
+	\vspace{0.5em}
+	\textbf{\expandafter{\@institution}}\\
+	\ifx\@researchgroup\@empty%
+	\else 
+		\vspace{0.3em}
+		\large{\expandafter{\@researchgroup}}
+	\fi
+}
+\end{center}
+%
+\vspace*{0.08\textheight}
+%
+% Project Title
+\begin{center}
+\huge { \textbf{\expandafter{\@projectname}} }
+\end{center}
+%
+\vspace*{0.5cm}
+%
+% Subtitle
+\ifx\@projectsubtitle\@empty%
+\else
+\begin{center}
+\Large { \expandafter{\@projectsubtitle} }
+\end{center}
+\fi
+%
+\vspace*{0.03\textheight}
+%
+% Document Type
+\begin{center}
+	\LARGE { \textbf{Technical Documentation} }\\
+	\vspace*{0.5em}
+	\large Version \expandafter{\@version}
+\end{center}
+%
+\vspace*{0.06\textheight}
+%
+% Author
+\begin{center}
+\Large \textbf{Author}\\
+\vspace*{0.5em}
+\large \expandafter{\@authorname}\\
+\small \texttt{\expandafter{\@authoremail}}
+\end{center}
+%
+\vspace*{0.04\textheight}
+%
+% Supervisor
+\ifx\@supervisor\@empty%
+\else
+\begin{center}
+\Large \textbf{Supervisor}\\
+\vspace*{0.5em}
+\large \expandafter{\@supervisor}\\
+\ifx\@supervisoremail\@empty%
+\else
+\small \texttt{\expandafter{\@supervisoremail}}
+\fi
+\end{center}
+\fi
+%
+\vspace*{0.04\textheight}
+%
+% Project Period
+\ifx\@projectperiod\@empty%
+\else
+\begin{center}
+\large Project Period: \expandafter{\@projectperiod}
+\end{center}
+\fi
+%
+\vfill
+%
+% Date and City
+\begin{center}
+\Large \textbf{\expandafter{\@city}, \expandafter{\@docdate}}
+\end{center}
+%
+\end{titlepage}%
+}
+
+% Document Information Page (replaces Erklaerung)
+\newcommand{\makedocinfo}{
+\chapter*{Document Information}
+\addcontentsline{toc}{chapter}{Document Information}
+
+\begin{tabular}{ll}
+\textbf{Project:} & \expandafter{\@projectname} \\
+\textbf{Version:} & \expandafter{\@version} \\
+\textbf{Date:} & \expandafter{\@docdate} \\
+\textbf{Author:} & \expandafter{\@authorname} \\
+\textbf{Institution:} & \expandafter{\@institution} \\
+\end{tabular}
+
+\vspace{2em}
+
+\section*{Version History}
+\begin{tabular}{|l|l|l|p{7cm}|}
+\hline
+\textbf{Version} & \textbf{Date} & \textbf{Author} & \textbf{Changes} \\
+\hline
+1.0 & \expandafter{\@docdate} & \expandafter{\@authorname} & Initial version \\
+\hline
+\end{tabular}
+
+\vspace{2em}
+
+\section*{License}
+This documentation is part of the L3S-Offshore-2 project and is intended for internal use at L3S Research Center.
+
+\vfill
+}

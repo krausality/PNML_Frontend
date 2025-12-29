@@ -1,17 +1,63 @@
-<div class="footer-font" fxLayout="column" fxLayoutAlign="end end">
-    <div>
-        Based on the "I ❤️ Petri Nets" Frontend originally developed by:<br/>
-        Adrian Koder-Horsten, Marcel Tenié, Philipp Alber and Sonja Hartl
+<!-- 
+  Footer-Component mit zwei Hauptsektionen:
+  1. Logo-Sektion (oben links): Zeigt die Logos von L3S und Leibniz Universität Hannover
+  2. Credits-Sektion (unten rechts): Zeigt Projekt-Credits und Links
+  
+  Design-Entscheidung: Die Logos wurden vom Header in den Footer verschoben,
+  um mehr Platz im oberen Bereich zu schaffen und die Markensichtbarkeit
+  im Footer-Bereich zu erhöhen.
+-->
+<div class="footer-container">
+    <!-- Logo-Sektion: Universitäts- und Forschungszentrum-Logos -->
+    <div class="footer-logo-section" fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutGap="30px">
+        <!-- 
+          L3S Research Center Logo mit Link zur Homepage.
+          - target="_blank": Öffnet Link in neuem Tab
+          - rel="noopener noreferrer": Sicherheitsmaßnahme gegen Tabnabbing
+          - aria-label: Verbessert Accessibility für Screen-Reader
+        -->
+        <a href="https://www.l3s.de" 
+           target="_blank" 
+           rel="noopener noreferrer" 
+           aria-label="L3S Research Center Homepage besuchen"
+           class="footer-logo-link">
+            <img src="assets/logos/L3S-Logo-2024-Color.svg" 
+                 alt="L3S Research Center Logo" 
+                 class="footer-logo-img">
+        </a>
+
+        <!-- 
+          Leibniz Universität Hannover Logo mit Link zur Homepage.
+          Logo-Größe: 60px (150% der ursprünglichen Header-Größe von 40px)
+          für bessere Sichtbarkeit gemäß Anforderung.
+        -->
+        <a href="https://www.uni-hannover.de" 
+           target="_blank" 
+           rel="noopener noreferrer" 
+           aria-label="Leibniz Universität Hannover Homepage besuchen"
+           class="footer-logo-link">
+            <img src="assets/logos/LUH-Logo-2025.svg" 
+                 alt="Leibniz Universität Hannover Logo" 
+                 class="footer-logo-img">
+        </a>
     </div>
-    <div style="margin-top: 10px;">
-         Forked and adapted by Martin Krause at L3S Research Center.
-    </div>
-    <div style="margin-top: 15px;">
-        Project Supervision: <a href="https://www.l3s.de/~peng" target="_blank" rel="noopener noreferrer">Shengrui Peng</a>
-        <br/>
-        L3S Research Center, Hannover, Germany
-    </div>
-    <div style="margin-top: 10px;">
-         <a href="https://www.l3s.de/de/imprint" target="_blank" rel="noopener noreferrer">Impressum</a> · <a href="https://www.l3s.de/de/privacy-policy/" target="_blank" rel="noopener noreferrer">Datenschutz</a>
+
+    <!-- Credits-Sektion: Entwickler-Credits, Supervision und rechtliche Links -->
+    <div class="footer-credits-section" fxLayout="column" fxLayoutAlign="end end">
+        <div>
+            Based on the "I ❤️ Petri Nets" Frontend originally developed by:<br/>
+            Adrian Koder-Horsten, Marcel Tenié, Philipp Alber and Sonja Hartl
+        </div>
+        <div style="margin-top: 10px;">
+             Forked and adapted by Martin Krause at L3S Research Center.
+        </div>
+        <div style="margin-top: 15px;">
+            Project Supervision: <a href="https://www.l3s.de/~peng" target="_blank" rel="noopener noreferrer">Shengrui Peng</a>
+            <br/>
+            L3S Research Center, Hannover, Germany
+        </div>
+        <div style="margin-top: 10px;">
+             <a href="https://www.l3s.de/de/imprint" target="_blank" rel="noopener noreferrer">Impressum</a> · <a href="https://www.l3s.de/de/privacy-policy/" target="_blank" rel="noopener noreferrer">Datenschutz</a>
+        </div>
     </div>
 </div>

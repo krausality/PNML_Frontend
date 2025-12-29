@@ -1,0 +1,20 @@
+sequenceDiagram
+    participant User
+    participant PNML as PnmlService
+    participant XML as xml2js Library
+    participant DS as Data Service
+    participant LAY as Layout Service
+
+    User->>PNML: parse(xmlString)
+    PNML->>XML: Convert string to JSON Object
+    XML-->>PNML: Returns raw objects
+    
+    PNML->>PNML: Loop raw objects -> Create Place/Trans/Arc
+    
+    PNML->>DS: Update places[], transitions[]
+    
+    Note over PNML, LAY: If positions are missing...
+    PNML->>LAY: applySugiyamaLayout()
+    
+    PNML->>DS: triggerDataChanged(fitContent = true)
+    DS->>User: Update Screen
