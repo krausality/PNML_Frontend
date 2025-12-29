@@ -143,8 +143,9 @@ This project is a web-based \textbf{Petri net visualizer and editor} that allows
 The following diagram shows the main components and their relationships:
 
 \begin{figure}[H]
-\centering
-\begin{tikzpicture}[node distance=1.5cm and 2cm, scale=0.85, transform shape]
+% Fix: Use left margin space to prevent right-side cropping without reducing scale
+\hspace*{-1cm}
+\begin{tikzpicture}[node distance=1.5cm and 2cm, scale=1, transform shape]
     % Nodes
     \node[component] (dataservice) {Central Data Store\\(DataService)};
     \node[component, right=2.5cm of dataservice] (uiservice) {UI State Manager\\(UiService)};
@@ -155,41 +156,43 @@ The following diagram shows the main components and their relationships:
     \node[component, left=2.5cm of visualizer] (editservice) {Interaction Handler\\(EditMoveElementsService)};
     \node[component, right=2.5cm of visualizer] (tokengame) {Simulation Engine\\(TokenGameService)};
     \node[component, below=1.2cm of visualizer] (zoomservice) {Camera Controller\\(ZoomService)};
-    \node[component, right=2.5cm of uiservice] (planning) {Backend Integrator\\(PlanningService)};
+    % Fix: Moved PlanningService below UiService to save horizontal space
+    \node[component, below=1.2cm of uiservice] (planning) {Backend Integrator\\(PlanningService)};
 
     % Arrows with labels
     \draw[arrow] (dataservice) -- node[right, font=\scriptsize] {stores} (primitives);
     \draw[arrow] (pnmlservice) -- node[above, font=\scriptsize] {populates} (dataservice);
     \draw[arrow] (pnmlservice) -- node[left, font=\scriptsize] {invokes} (layout);
-    \draw[arrow] (visualizer) -- node[right, font=\scriptsize] {renders from} (dataservice);
-    \draw[arrow] (visualizer) -- node[above, font=\scriptsize] {subscribes to} (uiservice);
-    \draw[arrow] (visualizer) -- node[above, font=\scriptsize] {delegates to} (editservice);
+    
+    % Fix: Bent arrow to avoid crossing "Petri Net Primitives"
+    % Routing: Visualizer -> DataService (Around Primitives, Right side)
+    \draw[arrow] (visualizer.north east) to[out=60, in=300] node[pos=0.9, right, font=\scriptsize] {renders from} (dataservice.south east);
+    
+    % Fix: Diagonal routing through the channel between Primitives and Planning
+    \draw[arrow] (visualizer.north east) -- node[midway, sloped, above, font=\scriptsize] {subscribes to} (uiservice.south west);
+    
+    \draw[arrow] (visualizer) -- node[pos=0.35,above, font=\scriptsize] {delegates to} (editservice);
     \draw[arrow] (visualizer) -- node[above, font=\scriptsize] {triggers} (tokengame);
     \draw[arrow] (visualizer) -- node[right, font=\scriptsize] {applies} (zoomservice);
-    \draw[arrow] (editservice) -- node[left, font=\scriptsize] {updates} (dataservice);
-    \draw[arrow] (tokengame) -- node[right, font=\scriptsize] {modifies} (dataservice);
-    \draw[arrow] (layout) -- node[below, font=\scriptsize] {rearranges} (dataservice);
-    \draw[arrow] (uiservice) -- node[above, font=\scriptsize] {triggers} (planning);
-    \draw[arrow] (planning) -- node[below, font=\scriptsize] {returns steps} (uiservice);
+    
+    % Fix: Wide loop to avoid crossing Layout/Pnml boxes (Outer Left Lane)
+    % Changed out=180/in=150 to push the curve further left/up
+    \draw[arrow] (editservice.east) to[out=0, in=200, looseness=1] node[midway, left, font=\scriptsize] {updates} (dataservice.south west);
+    
+    % Fix: Wide loop to avoid crossing UI/Planning boxes (Outer Right Lane)
+    % Changed out=0/in=30 to push the curve further right/up
+    \draw[arrow] (tokengame.east) to[out=0, in=30, looseness=2] node[midway, right, font=\scriptsize] {modifies} (dataservice.north east);
+    
+    % Fix: Straight line fits nicely between Pnml and Primitives
+    \draw[arrow] (layout.north east) -- node[pos=0.7, sloped, above, font=\scriptsize] {rearranges} (dataservice.south west);
+    
+    % Fix: Curved arrows for bidirectional vertical communication
+    \draw[arrow] (uiservice) to[bend left=20] node[right, font=\scriptsize] {triggers} (planning);
+    \draw[arrow] (planning) to[bend left=20] node[pos=0.35,left, font=\scriptsize] {returns steps} (uiservice);
 \end{tikzpicture}
 \caption{PNML\_Frontend System Architecture}
 \label{fig:architecture}
 \end{figure}
-
-\section{Chapters}
-
-\begin{enumerate}
-    \item \hyperref[chap:primitives]{Petri Net Primitives}
-    \item \hyperref[chap:dataservice]{Central Data Store (DataService)}
-    \item \hyperref[chap:visualizer]{The Main Visualizer (PetriNetComponent)}
-    \item \hyperref[chap:pnmlservice]{PNML/XML Translator (PnmlService)}
-    \item \hyperref[chap:layout]{Graph Layout Architect (Sugiyama/Spring Embedder)}
-    \item \hyperref[chap:interaction]{Interaction Handler (EditMoveElementsService)}
-    \item \hyperref[chap:zoom]{Camera Controller (ZoomService)}
-    \item \hyperref[chap:uiservice]{UI State Manager (UiService)}
-    \item \hyperref[chap:tokengame]{Simulation Engine (TokenGameService)}
-    \item \hyperref[chap:planning]{Backend Integrator (PlanningService)}
-\end{enumerate}
 
 % ============================================================================
 % CHAPTER 1: Petri Net Primitives
@@ -1313,10 +1316,11 @@ We provide two different ``Interior Designers'' for two different tastes:
     
     % After Sugiyama - hierarchical
     \begin{scope}[xshift=6cm]
-        \node[place] (sp1) at (0,1) {};
+        % Fix: Increased vertical distance to prevent overlap
+        \node[place] (sp1) at (0,1.5) {};
         \node[transition] (st1) at (0,0) {};
-        \node[place] (sp2) at (-0.8,-1) {};
-        \node[place] (sp3) at (0.8,-1) {};
+        \node[place] (sp2) at (-0.8,-1.5) {};
+        \node[place] (sp3) at (0.8,-1.5) {};
         \draw[arrow] (sp1) -- (st1);
         \draw[arrow] (st1) -- (sp2);
         \draw[arrow] (st1) -- (sp3);
@@ -1325,10 +1329,11 @@ We provide two different ``Interior Designers'' for two different tastes:
     
     % After Spring - organic
     \begin{scope}[xshift=10cm]
-        \node[place] (ep1) at (0,0.8) {};
-        \node[transition] (et1) at (1,0) {};
-        \node[place] (ep2) at (-0.5,-0.8) {};
-        \node[transition] (et2) at (0.8,-1) {};
+        % Fix: Spread out nodes to avoid collisions
+        \node[place] (ep1) at (0,1.2) {};
+        \node[transition] (et1) at (1.2,0.2) {};
+        \node[place] (ep2) at (-0.6,-0.8) {};
+        \node[transition] (et2) at (0.6,-1.8) {};
         \draw[arrow] (ep1) -- (et1);
         \draw[arrow] (et1) -- (ep2);
         \draw[arrow] (ep2) -- (et2);
@@ -1885,24 +1890,30 @@ This is the most critical feature in any diagramming tool.
     % Before - zoomed in too much
     \begin{scope}[xshift=0cm]
         \draw[thick] (0,0) rectangle (3,2);
-        \node[place, scale=2] at (1,1) {};
-        \node[below=0.7cm, align=center] at (1.5,0) {\small Zoomed In (Scale=2.0)\\\scriptsize Can't see other nodes};
+        % Fix: Show the Transition (T1) instead of a random Place to match the right side
+        \node[transition, scale=1.5] at (1.5,1) {}; 
+        \node[below=0.7cm, align=center] at (1.5,0) {\small Zoomed In (Scale=2.0)\\\scriptsize Focused on Transition};
     \end{scope}
     
     % Arrow
-    \draw[-{Stealth[length=4mm]}, very thick] (4,1) -- (5.5,1) node[midway, above, font=\small] {Fit};
+    \draw[-{Stealth[length=4mm]}, very thick] (3.5,1) -- (5.0,1) node[midway, above, font=\small] {Fit};
     
     % After - fit to view
-    \begin{scope}[xshift=7cm]
-        \draw[thick] (0,0) rectangle (3,2);
-        \node[place, scale=0.6] (fitP1) at (0.5,1.5) {};
-        \node[transition, scale=0.6] (fitT1) at (1.5,1) {};
-        \node[place, scale=0.6] (fitP2) at (2.5,0.5) {};
-        \node[place, scale=0.6] (fitP3) at (1,0.5) {};
-        \draw[arrow] (fitP1) -- (fitT1);
-        \draw[arrow] (fitT1) -- (fitP2);
-        \draw[arrow] (fitT1) -- (fitP3);
-        \node[below=0.7cm, align=center] at (1.5,0) {\small Fit Content (Scale=0.5)\\\scriptsize All nodes visible};
+    \begin{scope}[xshift=6cm]
+        \draw[thick] (0,0) rectangle (4,2);
+        
+        % Fix: Better spacing to avoid arrow overlaps
+        \node[place, scale=0.6] (fitP1) at (0.5,1.6) {};
+        \node[transition, scale=0.6] (fitT1) at (2.0,1.0) {};
+        \node[place, scale=0.6] (fitP2) at (3.5,0.4) {};
+        \node[place, scale=0.6] (fitP3) at (0.5,0.4) {};
+        
+        % Fix: Smaller arrow heads for scaled-down view
+        \draw[arrow, -{Stealth[length=2mm]}] (fitP1) -- (fitT1);
+        \draw[arrow, -{Stealth[length=2mm]}] (fitT1) -- (fitP2);
+        \draw[arrow, -{Stealth[length=2mm]}] (fitT1) -- (fitP3);
+        
+        \node[below=0.7cm, align=center] at (2.0,0) {\small Fit Content (Scale=0.5)\\\scriptsize All nodes visible};
     \end{scope}
 \end{tikzpicture}
 \caption{Fit Content adjusts Scale and Offset to show all nodes}

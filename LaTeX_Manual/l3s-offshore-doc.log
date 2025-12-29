@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.7.31)  29 DEC 2025 15:43
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.7.31)  30 DEC 2025 00:11
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -992,7 +992,7 @@ pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.41 ...alizer (PetriNetComponent)}{18}{chapter.4}
+l.40 ...alizer (PetriNetComponent)}{17}{chapter.4}
                                                   % [1
 
 ]
@@ -1010,8 +1010,8 @@ l.41 ...alizer (PetriNetComponent)}{18}{chapter.4}
 [5]
 Chapter 1.
 
-Overfull \hbox (69.43375pt too wide) in paragraph at lines 174--175
- [][] 
+Overfull \hbox (159.1088pt too wide) in paragraph at lines 147--193
+[]|  []
  []
 
 
@@ -1023,275 +1023,273 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.1.1})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.189     \item \hyperref
-                         [chap:uiservice]{UI State Manager (UiService)}]
-
-[7]
+l.200 \chapter
+              {Petri Net Primitives}]
 Chapter 2.
 LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <12> not available
-(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 244.
+(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 247.
 
 
-[8
+[7
 
 
 pdfTeX warning (ext4): destination with the same identifier (name{figure.2.1}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.248     \item \textbf
+l.251     \item \textbf
                        {Shape:} Always a Circle.]
 LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <9> not available
-(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 277.
+(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 280.
 
 
-[9]
-<figures/seq-arc-intersection.png, id=1089, 3147.76pt x 1774.63pt>
+[8]
+<figures/seq-arc-intersection.png, id=1060, 3147.76pt x 1774.63pt>
 File: figures/seq-arc-intersection.png Graphic file (type png)
 <use figures/seq-arc-intersection.png>
 Package pdftex.def Info: figures/seq-arc-intersection.png  used on input line 3
-57.
+60.
 (pdftex.def)             Requested size: 455.24411pt x 256.65134pt.
 
 
-[10
+[9
 pdfTeX warning (ext4): destination with the same identifier (name{figure.2.2}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.370 \begin{lstlisting}[language=TypeScript]
+l.373 \begin{lstlisting}[language=TypeScript]
                                               <./figures/seq-arc-intersection.p
 ng>]
 
-[11]
+[10]
 
-[12]
+[11]
 Chapter 3.
 
 
-[13
+[12
 
 ]
 LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <10.95> not available
-(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 514.
+(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 517.
 
 
-[14
+[13
 pdfTeX warning (ext4): destination with the same identifier (name{figure.3.1}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.575 \begin{lstlisting}[language=TypeScript]
+l.578 \begin{lstlisting}[language=TypeScript]
                                              ]
-<figures/seq-delete-place.png, id=1204, 3147.76pt x 1758.57pt>
+<figures/seq-delete-place.png, id=1175, 3147.76pt x 1758.57pt>
 File: figures/seq-delete-place.png Graphic file (type png)
 <use figures/seq-delete-place.png>
-Package pdftex.def Info: figures/seq-delete-place.png  used on input line 627.
+Package pdftex.def Info: figures/seq-delete-place.png  used on input line 630.
 (pdftex.def)             Requested size: 455.24411pt x 254.3287pt.
 
 
-[15
+[14
 pdfTeX warning (ext4): destination with the same identifier (name{figure.3.2}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.636 \subsection
+l.639 \subsection
                  {The Storage and Safety} <./figures/seq-delete-place.png>]
 
-[16]
+[15]
 
-[17]
+[16]
 Chapter 4.
 
 
-[18
+[17
 
 ]
 
-[19
+[18
 pdfTeX warning (ext4): destination with the same identifier (name{figure.4.1}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.810  
+l.813  
           </g>]
-<figures/seq-create-place.png, id=1300, 3147.76pt x 2059.695pt>
+<figures/seq-create-place.png, id=1271, 3147.76pt x 2059.695pt>
 File: figures/seq-create-place.png Graphic file (type png)
 <use figures/seq-create-place.png>
-Package pdftex.def Info: figures/seq-create-place.png  used on input line 890.
+Package pdftex.def Info: figures/seq-create-place.png  used on input line 893.
 (pdftex.def)             Requested size: 455.24411pt x 297.87813pt.
 
 
-[20]
+[19]
 
-[21
+[20
 pdfTeX warning (ext4): destination with the same identifier (name{figure.4.2}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.924  
+l.927  
               'editable': isPlaceEditable(place),      <!-- Only if editable...
  <./figures/seq-create-place.png>]
 
-[22]
+[21]
 Chapter 5.
 
 
-[23
+[22
 
 ]
 
-[24
+[23
 pdfTeX warning (ext4): destination with the same identifier (name{figure.5.1}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.1083  
+l.1086  
            this.pnmlService.writePNML();]
-<figures/seq-pnml-import.png, id=1419, 3147.76pt x 1698.345pt>
+<figures/seq-pnml-import.png, id=1389, 3147.76pt x 1698.345pt>
 File: figures/seq-pnml-import.png Graphic file (type png)
 <use figures/seq-pnml-import.png>
-Package pdftex.def Info: figures/seq-pnml-import.png  used on input line 1152.
+Package pdftex.def Info: figures/seq-pnml-import.png  used on input line 1155.
 (pdftex.def)             Requested size: 455.24411pt x 245.6188pt.
 
 
-[25]
+[24]
 
-[26
+[25
 pdfTeX warning (ext4): destination with the same identifier (name{figure.5.2}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.1192  
+l.1195  
            const places = this.parsePnmlPlaces(pnmlPlaces); <./figures/seq-pnml
 -import.png>]
 
-[27]
+[26]
 
-[28]
+[27]
 Chapter 6.
 
 
-[29
+[28
 
 ]
 
-[30
+[29
 pdfTeX warning (ext4): destination with the same identifier (name{figure.6.1}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.1388  
-           // 2. Tell the visualizer to update]
-<figures/seq-spring-embedder.png, id=1553, 3147.76pt x 2216.28pt>
+l.1388 \begin{lstlisting}[language=TypeScript]
+                                              ]
+<figures/seq-spring-embedder.png, id=1523, 3147.76pt x 2216.28pt>
 File: figures/seq-spring-embedder.png Graphic file (type png)
 <use figures/seq-spring-embedder.png>
 Package pdftex.def Info: figures/seq-spring-embedder.png  used on input line 14
-23.
+28.
 (pdftex.def)             Requested size: 455.24411pt x 320.52383pt.
 
 
-[31
+[30
 pdfTeX warning (ext4): destination with the same identifier (name{figure.6.2}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.1436 \begin{lstlisting}[language=TypeScript]
+l.1441 \begin{lstlisting}[language=TypeScript]
                                                <./figures/seq-spring-embedder.p
 ng>]
 
-[32
+[31
 pdfTeX warning (ext4): destination with the same identifier (name{figure.6.3}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.1505 N
+l.1510 N
         otice how the \texttt{applySugiyamaLayout} method acts as a manager ...
 ]
 
-[33]
+[32]
 Chapter 7.
 
 
-[34
+[33
 
 ]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 1618.
+(hyperref)                removing `math shift' on input line 1623.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\Delta' on input line 1618.
+(hyperref)                removing `\Delta' on input line 1623.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 1618.
+(hyperref)                removing `math shift' on input line 1623.
 
 
 
-[35
+[34
 pdfTeX warning (ext4): destination with the same identifier (name{figure.7.1}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.1680 \begin{lstlisting}[language=TypeScript]
+l.1685 \begin{lstlisting}[language=TypeScript]
                                               
 pdfTeX warning (ext4): destination with the same identifier (name{figure.7.2}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.1680 \begin{lstlisting}[language=TypeScript]
+l.1685 \begin{lstlisting}[language=TypeScript]
                                               ]
-<figures/seq-drag-node.png, id=1668, 3147.76pt x 2272.49pt>
+<figures/seq-drag-node.png, id=1639, 3147.76pt x 2272.49pt>
 File: figures/seq-drag-node.png Graphic file (type png)
 <use figures/seq-drag-node.png>
-Package pdftex.def Info: figures/seq-drag-node.png  used on input line 1733.
+Package pdftex.def Info: figures/seq-drag-node.png  used on input line 1738.
 (pdftex.def)             Requested size: 455.24411pt x 328.65306pt.
 
 
-[36]
+[35]
 
-[37
+[36
 pdfTeX warning (ext4): destination with the same identifier (name{figure.7.3}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.1764 \end{lstlisting}
+l.1769 \end{lstlisting}
                         <./figures/seq-drag-node.png>]
 
-[38]
+[37]
 
-[39]
+[38]
 Chapter 8.
 
 
-[40
+[39
 
 ]
-<figures/seq-zoom-in.png, id=1780, 3147.76pt x 1244.65pt>
+<figures/seq-zoom-in.png, id=1751, 3147.76pt x 1244.65pt>
 File: figures/seq-zoom-in.png Graphic file (type png)
 <use figures/seq-zoom-in.png>
-Package pdftex.def Info: figures/seq-zoom-in.png  used on input line 1964.
+Package pdftex.def Info: figures/seq-zoom-in.png  used on input line 1975.
 (pdftex.def)             Requested size: 455.24411pt x 180.00432pt.
 
 
-[41
+[40
 pdfTeX warning (ext4): destination with the same identifier (name{figure.8.1}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.1968 
+l.1979 
        ]
 
-[42
+[41
 pdfTeX warning (ext4): destination with the same identifier (name{figure.8.2}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.2012 
+l.2023 
         <./figures/seq-zoom-in.png>]
-Overfull \hbox (65.07599pt too wide) in paragraph at lines 2066--2067
+Overfull \hbox (65.07599pt too wide) in paragraph at lines 2077--2078
 []\T1/cmr/m/n/10.95 We solve this with the \T1/cmr/bx/n/10.95 Svg-Co-or-di-nate
 sSer-vice \T1/cmr/m/n/10.95 (\T1/cmtt/m/n/10.95 src/app/tr-services/svg-coordin
 ates-service.ts\T1/cmr/m/n/10.95 ).
@@ -1299,191 +1297,191 @@ ates-service.ts\T1/cmr/m/n/10.95 ).
 
 
 
-[43]
+[42]
 
-[44]
+[43]
 Chapter 9.
 
 
-[45
+[44
 
 
 pdfTeX warning (ext4): destination with the same identifier (name{figure.9.1}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.2164     \item \textbf
+l.2175     \item \textbf
                         {Simulation:} The playback mode.]
 
-[46]
-<figures/seq-tool-selection.png, id=1906, 3147.76pt x 1762.585pt>
+[45]
+<figures/seq-tool-selection.png, id=1877, 3147.76pt x 1762.585pt>
 File: figures/seq-tool-selection.png Graphic file (type png)
 <use figures/seq-tool-selection.png>
-Package pdftex.def Info: figures/seq-tool-selection.png  used on input line 226
-9.
+Package pdftex.def Info: figures/seq-tool-selection.png  used on input line 228
+0.
 (pdftex.def)             Requested size: 455.24411pt x 254.90936pt.
 
 
-[47
+[46
 pdfTeX warning (ext4): destination with the same identifier (name{figure.9.2}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.2284  
+l.2295  
            // 1. Default start state is 'Build' <./figures/seq-tool-selection.p
 ng>]
 
-[48]
+[47]
 
-[49]
+[48]
 Chapter 10.
 
 
-[50
+[49
 
 ]
 
-[51
+[50
 pdfTeX warning (ext4): destination with the same identifier (name{figure.10.1})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.2470 \begin{lstlisting}[language=TypeScript]
+l.2481 \begin{lstlisting}[language=TypeScript]
                                               
 pdfTeX warning (ext4): destination with the same identifier (name{figure.10.2})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.2470 \begin{lstlisting}[language=TypeScript]
+l.2481 \begin{lstlisting}[language=TypeScript]
                                               ]
-<figures/seq-token-fire.png, id=1987, 3147.76pt x 1573.88pt>
+<figures/seq-token-fire.png, id=1958, 3147.76pt x 1573.88pt>
 File: figures/seq-token-fire.png Graphic file (type png)
 <use figures/seq-token-fire.png>
-Package pdftex.def Info: figures/seq-token-fire.png  used on input line 2540.
+Package pdftex.def Info: figures/seq-token-fire.png  used on input line 2551.
 (pdftex.def)             Requested size: 455.24411pt x 227.61838pt.
 
 
-[52]
+[51]
 
-[53
+[52
 pdfTeX warning (ext4): destination with the same identifier (name{figure.10.3})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.2593 \begin{lstlisting}[language=TypeScript]
+l.2604 \begin{lstlisting}[language=TypeScript]
                                                <./figures/seq-token-fire.png>]
 
-[54]
-Underfull \hbox (badness 10000) in paragraph at lines 2666--2667
+[53]
+Underfull \hbox (badness 10000) in paragraph at lines 2677--2678
 []\T1/cmr/m/n/10.95 It di-rectly ma-nip-u-lates the to-kens in the \T1/cmtt/m/n
 /10.95 DataService\T1/cmr/m/n/10.95 , which causes the
  []
 
 
 
-[55]
+[54]
 Chapter 11.
 
 
-[56
+[55
 
 ]
 
-[57
+[56
 pdfTeX warning (ext4): destination with the same identifier (name{figure.11.1})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.2818 \begin{lstlisting}[language=TypeScript]
+l.2829 \begin{lstlisting}[language=TypeScript]
                                               ]
-<figures/seq-backend-simulation.png, id=2111, 3147.76pt x 1919.17pt>
+<figures/seq-backend-simulation.png, id=2082, 3147.76pt x 1919.17pt>
 File: figures/seq-backend-simulation.png Graphic file (type png)
 <use figures/seq-backend-simulation.png>
 Package pdftex.def Info: figures/seq-backend-simulation.png  used on input line
- 2887.
+ 2898.
 (pdftex.def)             Requested size: 455.24411pt x 277.55505pt.
 
 
-[58]
+[57]
 
-[59
+[58
 pdfTeX warning (ext4): destination with the same identifier (name{figure.11.2})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.2928  
+l.2939  
            formData.append('num_runs', runs.toString()); <./figures/seq-backend
 -simulation.png>]
 
-[60]
-Underfull \hbox (badness 10000) in paragraph at lines 3069--3069
+[59]
+Underfull \hbox (badness 10000) in paragraph at lines 3080--3080
 []$\T1/cmtt/m/n/10.95 POST / simulation -[] petri -[] nets /
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3070--3070
+Underfull \hbox (badness 10000) in paragraph at lines 3081--3081
 []$\T1/cmtt/m/n/10.95 GET / simulation -[] petri -[] nets /
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3071--3071
+Underfull \hbox (badness 10000) in paragraph at lines 3082--3082
 []$\T1/cmtt/m/n/10.95 GET / simulation -[] petri -[] nets /
  []
 
 
-Underfull \hbox (badness 4995) in paragraph at lines 3088--3089
+Underfull \hbox (badness 4995) in paragraph at lines 3099--3100
 []\T1/cmr/m/n/10.95 Calculates ex-pected op-er-a-tion
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3089--3089
+Underfull \hbox (badness 10000) in paragraph at lines 3100--3100
 []$\T1/cmtt/m/n/10.95 POST / offshore -[] plan / calc -[] opt -[] install -[] c
 ycle -[]
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3090--3090
+Underfull \hbox (badness 10000) in paragraph at lines 3101--3101
 []$\T1/cmtt/m/n/10.95 POST / offshore -[] plan / calc -[] opt -[] schedule -[] 
 single -[]
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3091--3091
+Underfull \hbox (badness 10000) in paragraph at lines 3102--3102
 []$\T1/cmtt/m/n/10.95 POST / offshore -[] plan / display -[] single -[] vessel 
 -[]
  []
 
 
 
-[61
+[60
 pdfTeX warning (ext4): destination with the same identifier (name{table.11.1}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.3095 \end{table}
+l.3106 \end{table}
                   ]
 
-[62
+[61
 pdfTeX warning (ext4): destination with the same identifier (name{table.11.2}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.3132 
+l.3143 
        ]
 
-[63] (l3s-offshore-doc.aux)
+[62] (l3s-offshore-doc.aux)
  ***********
 LaTeX2e <2025-06-01> patch level 1
 L3 programming layer <2025-07-19>
  ***********
 Package rerunfilecheck Info: File `l3s-offshore-doc.out' has not changed.
-(rerunfilecheck)             Checksum: ACC12C2DF8A5FBDF416582DE13A6A940;37487.
+(rerunfilecheck)             Checksum: DE467A78D77CB8B2B7D08D35DFA85EF9;37391.
  ) 
 Here is how much of TeX's memory you used:
- 32627 strings out of 468149
- 647782 string characters out of 5432050
- 1493891 words of memory out of 5000000
- 59560 multiletter control sequences out of 15000+600000
+ 32636 strings out of 468149
+ 648219 string characters out of 5432050
+ 1493888 words of memory out of 5000000
+ 59581 multiletter control sequences out of 15000+600000
  648244 words of font info for 92 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  98i,12n,101p,588b,2115s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -1508,9 +1506,9 @@ pData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1728.pk><C:/Users/mpp
 rs/mpp/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><
 C:/Users/mpp/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy1
 0.pfb>
-Output written on l3s-offshore-doc.pdf (64 pages, 2006021 bytes).
+Output written on l3s-offshore-doc.pdf (63 pages, 2000805 bytes).
 PDF statistics:
- 3273 PDF objects out of 3580 (max. 8388607)
- 1173 named destinations out of 1200 (max. 500000)
- 1719 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 3240 PDF objects out of 3580 (max. 8388607)
+ 1161 named destinations out of 1200 (max. 500000)
+ 1711 words of extra memory for PDF output out of 10000 (max. 10000000)
 
