@@ -239,9 +239,6 @@ More info: [Material theming guide](https://material.angular.io/guide/theming)
 
 ---
 
-Absolutely! Here's your improved and extended **Quick Debug FAQ** in English, with a clearer **"Still not working?"** section and an explanation of the `--use-on-cd` feature as an alternative:
-
----
 
 ### 🛠 Quick Debug FAQ (PowerShell + fnm + npm)
 
